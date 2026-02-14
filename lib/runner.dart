@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +18,6 @@ Future<void> run() async {
       await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
       );
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kReleaseMode);
 
       // Setup dependency injection
       await setupDI();
@@ -28,13 +26,11 @@ Future<void> run() async {
       // Catch errors from Flutter framework
       FlutterError.onError = (details) {
         logger.e('FlutterError', details.exception, details.stack);
-        FirebaseCrashlytics.instance.recordFlutterError(details);
       };
 
       // Catch errors from outside Flutter framework
       PlatformDispatcher.instance.onError = (error, stack) {
         logger.f('PlatformDispatcherError', error, stack);
-        FirebaseCrashlytics.instance.recordError(error, stack);
         return true;
       };
 
@@ -44,14 +40,6 @@ Future<void> run() async {
       // Fallback handler (without DI)
       debugPrint('UncaughtZoneError: $error');
       debugPrintStack(stackTrace: stackTrace);
-
-      try {
-        FirebaseCrashlytics.instance.recordError(error, stackTrace);
-      } catch (e, s) {
-        // In case Firebase/Crashlytics aren't ready yet
-        debugPrint('Error while reporting to Crashlytics: $e');
-        debugPrintStack(stackTrace: s);
-      }
     },
   );
 }
