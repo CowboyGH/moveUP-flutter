@@ -15,6 +15,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
+  // ignore: unused_field
   String? _email, _password;
 
   bool _isPasswordVisible = false;
