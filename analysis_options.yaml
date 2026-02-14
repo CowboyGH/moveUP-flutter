@@ -1,0 +1,74 @@
+include: package:flutter_lints/flutter.yaml
+
+formatter:
+  page_width: 100
+  trailing_commas: preserve
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.mocks.dart"
+    - "build/**"
+    - "test/**/*.mocks.dart"
+
+  errors:
+    invalid_use_of_visible_for_testing_member: error
+    invalid_use_of_protected_member: error
+    missing_required_param: error
+    missing_return: error
+    dead_code: warning
+    unused_local_variable: warning
+    unused_import: warning
+    prefer_const_constructors: warning
+    prefer_const_literals_to_create_immutables: warning
+
+linter:
+  rules:
+    # --- Style & Formatting ---
+    - always_declare_return_types
+    - annotate_overrides
+    - avoid_print
+    - avoid_redundant_argument_values
+    - avoid_unnecessary_containers
+    - prefer_final_fields
+    - prefer_final_locals
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_relative_imports
+    - prefer_single_quotes
+    - public_member_api_docs
+    - use_super_parameters
+    - unnecessary_parenthesis
+
+    # --- Safety & Readability ---
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_shadowing_type_parameters
+    - avoid_types_as_parameter_names
+    - curly_braces_in_flow_control_structures
+    - null_closures
+    - unnecessary_late
+    - unnecessary_null_checks
+    - unnecessary_null_in_if_null_operators
+
+    # --- Performance ---
+    - prefer_spread_collections
+    - prefer_if_elements_to_conditional_expressions
+    - use_is_even_rather_than_modulo
+
+    # --- Architecture & Naming ---
+    - type_annotate_public_apis
+
+    # --- Specific recommendations ---
+    - avoid_positional_boolean_parameters
+    - unnecessary_this
+
+    # --- Safety ---
+    - avoid_empty_else
+    - avoid_catching_errors
+    - avoid_slow_async_io
+    - unawaited_futures
