@@ -1,0 +1,114 @@
+# Flutter/Dart related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.lock.json
+.metadata
+
+# Android related
+android/.gradle/
+android/app/build/
+android/gradle/
+android/.idea/
+android/local.properties
+android/key.properties
+android/app/release/
+android/app/debug/
+android/captures/
+android/*.iml
+*.jks
+*.keystore
+*.p12
+google-services.json
+
+# iOS related
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/.generated/
+ios/Runner.xcworkspace/
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+xcuserdata/
+DerivedData/
+*.mobileprovision
+*.cer
+*.p12
+GoogleService-Info.plist
+
+# IDE related
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Git
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# CI/CD
+.gitlab-ci.yml
+.circleci/
+.travis.yml
+azure-pipelines.yml
+
+# Testing and coverage
+coverage/
+test/
+integration_test/
+.test_coverage/
+*.lcov
+*.info
+
+# Documentation
+README.md
+README*.md
+LICENSE
+CHANGELOG.md
+docs/
+CONTRIBUTING.md
+
+# Docker files
+Dockerfile
+Dockerfile.*
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Local configurations
+.env
+.env.*
+.env.local
+.env.*.local
+*.log
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# Firebase
+firebase.json
+.firebaserc
+firestore.rules
+firestore.indexes.json
+storage.rules
