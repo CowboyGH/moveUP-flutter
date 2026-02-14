@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +20,6 @@ Future<void> run() async {
         options: DefaultFirebaseOptions.currentPlatform,
       );
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kReleaseMode);
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
       // Setup dependency injection
       await setupDI();

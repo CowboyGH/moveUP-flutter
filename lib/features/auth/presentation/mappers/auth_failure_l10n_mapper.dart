@@ -10,24 +10,7 @@ extension AuthFailureL10n on AuthFailure {
     final l10n = AppLocalizations.of(context);
 
     return switch (this) {
-      InvalidCredentialFailure() => l10n.auth_error_invalidCredential,
-      WeakPasswordFailure() => l10n.auth_error_weakPassword,
-      WrongPasswordFailure() => l10n.auth_error_wrongPassword,
-      InvalidEmailFailure() => l10n.auth_error_invalidEmail,
-      EmailAlreadyInUseFailure() => l10n.auth_error_emailAlreadyInUse,
-      UserDisabledFailure() => l10n.auth_error_userDisabled,
-      UserTokenExpiredFailure() => l10n.auth_error_userTokenExpired,
-      UserNotFoundFailure() => l10n.auth_error_userNotFound,
-      OperationNotAllowed() => l10n.auth_error_operationNotAllowed,
-      TooManyRequestsFailure() => l10n.auth_error_tooManyRequests,
-      NetworkRequestFailedFailure() => l10n.auth_error_networkRequestFailed,
       UnknownAuthFailure() => l10n.auth_error_unknown,
-      OperationCancelledFailure() => null,
-      OperationInterruptedFailure() => null,
-      ClientConfigurationFailure() => null,
-      ProviderConfigurationFailure() => null,
-      UIUnavailableFailure() => null,
-      UserMismatchFailure() => null,
     };
   }
 }
