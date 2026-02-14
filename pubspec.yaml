@@ -1,12 +1,10 @@
-name: flutter_starter_template
-description: A scalable Flutter Starter Template for building production-ready business applications.
+name: moveup_flutter
+description: Mobile client for the moveUP fitness platform.
 publish_to: 'none'
-version: 0.3.0
+version: 0.1.0
 
 environment:
   sdk: '>=3.10.0 <4.0.0'
-
-license: "MIT"
 
 dependencies:
   bloc_test: ^10.0.0
