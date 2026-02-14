@@ -22,7 +22,7 @@ jobs:
     name: Build & Distribute Android
     if: >
       github.event.pull_request.head.repo.full_name == github.repository &&
-      contains(github.event.pull_request.labels.*.name, 'ready-to-test')
+      contains(github.event.pull_request.labels.*.name, 'status: ready-to-test')
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
