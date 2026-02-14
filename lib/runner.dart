@@ -38,7 +38,7 @@ Future<void> run() async {
         return true;
       };
 
-      runApp(const FlutterStarterTemplate());
+      runApp(const MoveUpApp());
     },
     (error, stackTrace) {
       // Fallback handler (without DI)

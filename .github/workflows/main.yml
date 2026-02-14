@@ -107,7 +107,7 @@ jobs:
           # firebase_options.dart
           echo "import 'package:firebase_core/firebase_core.dart'; import 'package:flutter/foundation.dart'; class DefaultFirebaseOptions { static FirebaseOptions get currentPlatform { if (kIsWeb) throw UnsupportedError('Web not configured'); switch (defaultTargetPlatform) { case TargetPlatform.android: return android; case TargetPlatform.iOS: return ios; default: throw UnsupportedError('Platform not configured'); } } static const FirebaseOptions android = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake'); static const FirebaseOptions ios = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake', iosBundleId: 'fake'); }" > lib/firebase_options.dart               
           # google-services.json
-          echo '{"project_info":{"project_number":"123","project_id":"fake","storage_bucket":"fake"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:123","android_client_info":{"package_name":"com.flutter.starter.template.flutter_starter_template"}},"api_key":[{"current_key":"fake"}]}]}' > android/app/google-services.json
+          echo '{"project_info":{"project_number":"123","project_id":"fake","storage_bucket":"fake"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:123","android_client_info":{"package_name":"com.sibcode.moveup"}},"api_key":[{"current_key":"fake"}]}]}' > android/app/google-services.json
 
       - name: Build Docker image
         id: build
@@ -182,7 +182,7 @@ jobs:
           # Create firebase_options.dart
           echo "import 'package:firebase_core/firebase_core.dart'; import 'package:flutter/foundation.dart'; class DefaultFirebaseOptions { static FirebaseOptions get currentPlatform { if (kIsWeb) throw UnsupportedError('Web not configured'); switch (defaultTargetPlatform) { case TargetPlatform.android: return android; case TargetPlatform.iOS: return ios; default: throw UnsupportedError('Platform not configured'); } } static const FirebaseOptions android = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake'); static const FirebaseOptions ios = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake', iosBundleId: 'fake'); }" > lib/firebase_options.dart
           # Create GoogleService-Info.plist
-          echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>API_KEY</key><string>fake</string><key>GCM_SENDER_ID</key><string>123</string><key>PLIST_VERSION</key><string>1</string><key>BUNDLE_ID</key><string>com.flutter.starter.template.flutterStarterTemplate</string><key>PROJECT_ID</key><string>fake</string><key>STORAGE_BUCKET</key><string>fake</string><key>IS_ADS_ENABLED</key><false/><key>IS_ANALYTICS_ENABLED</key><false/><key>IS_APPINVITE_ENABLED</key><true/><key>IS_GCM_ENABLED</key><true/><key>IS_SIGNIN_ENABLED</key><true/><key>GOOGLE_APP_ID</key><string>1:123:ios:123</string></dict></plist>' > ios/Runner/GoogleService-Info.plist
+          echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>API_KEY</key><string>fake</string><key>GCM_SENDER_ID</key><string>123</string><key>PLIST_VERSION</key><string>1</string><key>BUNDLE_ID</key><string>com.sibcode.moveup</string><key>PROJECT_ID</key><string>fake</string><key>STORAGE_BUCKET</key><string>fake</string><key>IS_ADS_ENABLED</key><false/><key>IS_ANALYTICS_ENABLED</key><false/><key>IS_APPINVITE_ENABLED</key><true/><key>IS_GCM_ENABLED</key><true/><key>IS_SIGNIN_ENABLED</key><true/><key>GOOGLE_APP_ID</key><string>1:123:ios:123</string></dict></plist>' > ios/Runner/GoogleService-Info.plist
           
       - name: Get dependencies
         run: flutter pub get
@@ -204,7 +204,7 @@ jobs:
         run: |
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
-          IPA_NAME="flutter-starter-ios-${{ github.run_number }}-unsigned.ipa"
+          IPA_NAME="moveup-ios-${{ github.run_number }}-unsigned.ipa"
           zip -r "$IPA_NAME" Payload
           rm -rf Payload
       

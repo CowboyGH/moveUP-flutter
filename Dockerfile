@@ -164,7 +164,7 @@ LABEL maintainer="cowboycloud@icloud.com" \
     flutter.version="${FLUTTER_VERSION}" \
     org.opencontainers.image.created="${BUILD_DATE}" \
     org.opencontainers.image.revision="${VCS_REF}" \
-    org.opencontainers.image.title="Flutter Starter Template Android Build" \
+    org.opencontainers.image.title="moveUP Android Build" \
     org.opencontainers.image.description="Production-ready Android APK artifacts"
 
 

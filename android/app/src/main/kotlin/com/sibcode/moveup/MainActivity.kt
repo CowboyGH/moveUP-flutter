@@ -1,4 +1,4 @@
-package com.flutter.starter.template.flutter_starter_template
+package com.sibcode.moveup
 
 import io.flutter.embedding.android.FlutterActivity
 
