@@ -3,25 +3,25 @@
         "platforms": {
             "android": {
                 "default": {
-                    "projectId": "flutter-starter-template-demo",
-                    "appId": "1:342615478088:android:90b7d2d8512fa74206ad7d",
+                    "projectId": "moveup-fb732",
+                    "appId": "1:14967627731:android:b6d30a178dd3a173429926",
                     "fileOutput": "android/app/google-services.json"
                 }
             },
             "ios": {
                 "default": {
-                    "projectId": "flutter-starter-template-demo",
-                    "appId": "1:342615478088:ios:efb343cce927d23906ad7d",
+                    "projectId": "moveup-fb732",
+                    "appId": "1:14967627731:ios:b2b8d52b98a6ff8f429926",
                     "uploadDebugSymbols": true,
                     "fileOutput": "ios/Runner/GoogleService-Info.plist"
                 }
             },
             "dart": {
                 "lib/firebase_options.dart": {
-                    "projectId": "flutter-starter-template-demo",
+                    "projectId": "moveup-fb732",
                     "configurations": {
-                        "android": "1:342615478088:android:90b7d2d8512fa74206ad7d",
-                        "ios": "1:342615478088:ios:efb343cce927d23906ad7d"
+                        "android": "1:14967627731:android:b6d30a178dd3a173429926",
+                        "ios": "1:14967627731:ios:b2b8d52b98a6ff8f429926"
                     }
                 }
             }
