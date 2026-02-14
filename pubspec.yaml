@@ -19,13 +19,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
-  flutter_localizations:
-    sdk: flutter
   flutter_svg: ^2.2.3
   freezed_annotation: ^3.1.0
   get_it: ^9.2.0
   go_router: ^17.0.1
-  intl: ^0.20.2
   json_annotation: ^4.9.0
   logger: ^2.6.2
   mockito: ^5.6.1
