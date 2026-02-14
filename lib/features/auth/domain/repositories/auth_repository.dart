@@ -13,9 +13,6 @@ abstract interface class AuthRepository {
   /// Signs out the currently authenticated user.
   Future<Result<void, AuthFailure>> signOut();
 
-  /// Signs in a user using Google authentication.
-  Future<Result<User, AuthFailure>> signInWithGoogle();
-
   /// Stream of authentication state changes.
   /// Emits [User] when signed in, `null` when signed out.
   Stream<User?> get authStateChanges;
