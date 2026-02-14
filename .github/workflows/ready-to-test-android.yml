@@ -1,0 +1,135 @@
+name: Ready-to-Test Android Distribution
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [labeled, synchronize, reopened]
+
+env:
+  FLUTTER_VERSION: "3.41.0"
+  ANDROID_SDK_VERSION: "35"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ready-to-test-android-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  distribute-android:
+    name: Build & Distribute Android
+    if: >
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      contains(github.event.pull_request.labels.*.name, 'ready-to-test')
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        uses: endersonmenezes/free-disk-space@v3
+        with:
+          remove_android: true
+          remove_dotnet: true
+          remove_haskell: true
+          remove_tool_cache: true
+          remove_swap: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image with Android APK
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: flutter-build:ready-to-test
+          build-args: |
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            VCS_REF=${{ github.sha }}
+            FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
+            ANDROID_SDK_VERSION=${{ env.ANDROID_SDK_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract APK
+        run: |
+          set -euo pipefail
+          docker create --name temp flutter-build:ready-to-test
+          mkdir -p apk-output
+          docker cp temp:/artifacts/. apk-output/
+          docker rm temp
+          ls -lh apk-output/
+
+      - name: Pick APK for distribution
+        id: pick_apk
+        run: |
+          set -euo pipefail
+          APK="$(find apk-output -name '*arm64-v8a*.apk' | head -n1 || true)"
+          if [ -z "$APK" ]; then
+            APK="$(find apk-output -name '*.apk' | head -n1)"
+          fi
+          echo "apk=$APK" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to Firebase App Distribution
+        id: firebase_distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          testers: ${{ secrets.FIREBASE_TESTER_EMAIL }}
+          file: ${{ steps.pick_apk.outputs.apk }}
+          releaseNotes: |
+            PR #${{ github.event.pull_request.number }}
+            Branch: ${{ github.event.pull_request.head.ref }}
+            Commit: ${{ github.sha }}
+
+      - name: Post or update PR comment
+        uses: actions/github-script@v7
+        env:
+          TESTING_URI: ${{ steps.firebase_distribution.outputs.TESTING_URI }}
+          FIREBASE_CONSOLE_URI: ${{ steps.firebase_distribution.outputs.FIREBASE_CONSOLE_URI }}
+        with:
+          script: |
+            const marker = '<!-- ready-to-test-android -->';
+            const body = `${marker}
+            ✅ Android build is ready for QA.
+
+            - Firebase App Tester link: ${process.env.TESTING_URI}
+            - Firebase console release: ${process.env.FIREBASE_CONSOLE_URI}
+            - Label: \`status: ready-to-test\``;
+
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const existing = comments.find(
+              (c) => c.user.type === 'Bot' && c.body && c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body
+              });
+            }
