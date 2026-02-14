@@ -74,6 +74,10 @@ jobs:
           if [ -z "$APK" ]; then
             APK="$(find apk-output -name '*.apk' | head -n1)"
           fi
+          if [ -z "$APK" ]; then
+            echo "::error::No APK found in apk-output/"
+            exit 1
+          fi
           echo "apk=$APK" >> "$GITHUB_OUTPUT"
 
       - name: Upload to Firebase App Distribution
