@@ -110,7 +110,6 @@ jobs:
           echo '{"project_info":{"project_number":"123","project_id":"fake","storage_bucket":"fake"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:123","android_client_info":{"package_name":"com.sibcode.moveup"}},"api_key":[{"current_key":"fake"}]}]}' > android/app/google-services.json
 
       - name: Build Docker image
-        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
