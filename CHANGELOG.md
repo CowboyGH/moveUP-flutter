@@ -11,8 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a dedicated GitHub Actions pipeline (`ready-to-test-android.yml`) to build Android APKs for PRs labeled `ready-to-test`, distribute them via Firebase App Distribution, and post/update a QA comment in the PR.
-
 ### Changed
 
 - Rebranded the project from template naming to `moveUP` for the initial baseline.
