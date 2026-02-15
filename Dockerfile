@@ -136,14 +136,13 @@ COPY . .
 RUN dart run build_runner build --delete-conflicting-outputs
 
 
-# Build Android APK in release mode
-RUN flutter build apk --release --split-per-abi --no-tree-shake-icons
+# Build a single universal Android APK in release mode
+RUN flutter build apk --release --no-tree-shake-icons
 
 
 # Verify that the build succeeded
-RUN test -f /app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk || \
-    test -f /app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk || \
-    (echo "ERROR: APK files not found!" && exit 1)
+RUN test -f /app/build/app/outputs/flutter-apk/app-release.apk || \
+    (echo "ERROR: app-release.apk not found!" && exit 1)
 
 
 # ==========================================
