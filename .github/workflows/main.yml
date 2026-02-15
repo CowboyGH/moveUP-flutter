@@ -62,7 +62,7 @@ jobs:
         run: flutter analyze --fatal-infos
       
       - name: Run tests
-        run: flutter test --coverage || echo "⚠️ No tests found"
+        run: flutter test --coverage
       
       - name: Upload coverage to artifacts
         if: always()
