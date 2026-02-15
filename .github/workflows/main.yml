@@ -50,13 +50,15 @@ jobs:
             static const FirebaseOptions ios = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake', iosBundleId: 'fake');
           }
           EOF
-          dart format lib/firebase_options.dart
           
       - name: Get dependencies
         run: flutter pub get
 
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Format generated code
+        run: dart format .
 
       - name: Verify formatting
         run: dart format --set-exit-if-changed lib/ test/
