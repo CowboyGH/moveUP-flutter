@@ -648,46 +648,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  native_splash_screen:
-    dependency: "direct main"
-    description:
-      name: native_splash_screen
-      sha256: "346f713538ccfb5dd0723e7f699985d64468aabe776de8b544804de253467446"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  native_splash_screen_linux:
-    dependency: transitive
-    description:
-      name: native_splash_screen_linux
-      sha256: e8b6ecc6a2cd9e5c29a57eace024f02e00207378f824a645bf4d5248e1655117
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  native_splash_screen_macos:
-    dependency: transitive
-    description:
-      name: native_splash_screen_macos
-      sha256: cae3c86844d9ebb362c2437a234cffd4839d9ecbe58cf74352b6574c29c3078a
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  native_splash_screen_platform_interface:
-    dependency: transitive
-    description:
-      name: native_splash_screen_platform_interface
-      sha256: d1ba329116ed47dd6422442beaad1cc3ea4f7c2d926c4450b946a959de80d446
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  native_splash_screen_windows:
-    dependency: transitive
-    description:
-      name: native_splash_screen_windows
-      sha256: "9c9f5130b3fc9b0300d564270517ce79530fb04d69b7f7c030ab8678e04e2834"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   native_toolchain_c:
     dependency: transitive
     description:
@@ -745,7 +705,7 @@ packages:
     source: hosted
     version: "2.2.0"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       sha256: "75cca69d1490965be98c73ceaea117e8a04dd21217b37b292c9ddbec0d955bc5"
@@ -761,7 +721,7 @@ packages:
     source: hosted
     version: "1.1.0"
   path_provider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider
       sha256: "50c5dd5b6e1aaf6fb3a78b33f6aa3afca52bf903a8a5298f53101fdaee55bbcd"
