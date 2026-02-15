@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rebranded the project from template naming to `moveUP` for the initial baseline.
 - Aligned Android, iOS and Firebase identifiers to the new project identity (`com.sibcode.moveup`).
 - Updated project/build configuration files to match the new app identity (platform configs, CI/CD, service files).
+- Simplified CI to Android-only: removed iOS job and redundant steps, switched Docker build to a single APK (`app-release.apk`), and tightened formatting/test checks.
 
 ### Removed
 
