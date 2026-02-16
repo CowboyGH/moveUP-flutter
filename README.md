@@ -2,8 +2,8 @@
 
 Mobile client for the moveUP fitness platform.
 
-[![Dart Version](https://img.shields.io/badge/Dart-3.10.0+-blue.svg)](https://dart.dev/)
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.10.0+-blue.svg)](https://flutter.dev/)
+[![Dart Version](https://img.shields.io/badge/Dart-3.11.0+-blue.svg)](https://dart.dev/)
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.40.0+-blue.svg)](https://flutter.dev/)
 
 ---
 
@@ -38,7 +38,7 @@ Mobile client for the moveUP fitness platform.
 
 | Category | Technology |
 | ---------- | ----------- |
-| **Framework** | Flutter 3.10.0+ |
+| **Framework** | Flutter 3.40.0+ |
 | **State Management** | flutter_bloc |
 | **Dependency Injection** | get_it, provider |
 | **Navigation** | go_router |
@@ -103,8 +103,8 @@ lib/
 
 ### Prerequisites
 
-- Flutter SDK: `>=3.10.0`
-- Dart SDK: `>=3.10.0`
+- Flutter SDK: `>=3.41.0`
+- Dart SDK: `>=3.11.0`
 - Firebase project (for Firebase Cloud Messaging)
 
 ### Setup
@@ -185,18 +185,18 @@ http://localhost:8080
 Build Android APK using Docker:
 
 ```bash
-docker build                                                   
-  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-  --build-arg VCS_REF=$(git rev-parse --short HEAD)
-  --progress=plain
-  --no-cache
-  -t fitness-app-android:latest .
+docker build \                                                  
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VCS_REF=$(git rev-parse --short HEAD) \
+  --progress=plain \
+  --no-cache \
+  -t moveUP-app-android:latest .
 ```
 
 Extract APK files:
 
 ```bash
-docker create --name temp-flutter fitness-app-android:latest
+docker create --name temp-flutter moveUP-app-android:latest
 docker cp temp-flutter:/artifacts/. ./apk-output/
 docker rm temp-flutter
 ```
