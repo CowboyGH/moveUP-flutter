@@ -3,7 +3,7 @@
 Mobile client for the moveUP fitness platform.
 
 [![Dart Version](https://img.shields.io/badge/Dart-3.11.0+-blue.svg)](https://dart.dev/)
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.40.0+-blue.svg)](https://flutter.dev/)
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.41.0+-blue.svg)](https://flutter.dev/)
 
 ---
 
@@ -37,7 +37,7 @@ Mobile client for the moveUP fitness platform.
 
 | Category | Technology |
 | ---------- | ----------- |
-| **Framework** | Flutter 3.40.0+ |
+| **Framework** | Flutter 3.41.0+ |
 | **State Management** | flutter_bloc |
 | **Dependency Injection** | get_it, provider |
 | **Navigation** | go_router |
