@@ -13,7 +13,7 @@ import '../utils/logger/logger_setup.dart';
 /// Global instance of the GetIt service locator for dependency management.
 final di = GetIt.instance;
 
-/// Initializes the application's dependencies using GetIt.
+/// Initializes application dependencies in the global [di] container.
 Future<void> setupDI() async {
   // Logger
   di.registerLazySingleton<Logger>(() => createLogger());
@@ -22,7 +22,7 @@ Future<void> setupDI() async {
   // Analytics
   di.registerLazySingleton<AppAnalytics>(() => DebugAnalyticsImpl(di<AppLogger>()));
 
-  /// Connectivity
+  // Connectivity
   di.registerLazySingleton<Connectivity>(() => Connectivity());
   di.registerLazySingleton<NetworkService>(
     () => NetworkServiceImpl(di<Connectivity>()),
