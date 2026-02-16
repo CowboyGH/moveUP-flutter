@@ -15,6 +15,7 @@ Mobile client for the moveUP fitness platform.
 - [📂 Project Structure](#-project-structure)
 - [🛠️ Getting Started](#️-getting-started)
 - [🧪 Testing](#-testing)
+- [📖 Documentation](#-documentation)
 - [🐋 Docker Build](#-docker-build)
 - [📝 Changelog](#-changelog)
 
@@ -152,6 +153,29 @@ flutter test test/features/*/presentation/
 # Coverage (requires lcov)
 flutter test --coverage
 genhtml coverage/lcov.info -o coverage/html
+```
+
+---
+
+## 📖 Documentation
+
+Generate API docs from Dart doc-comments:
+
+```bash
+dart doc --output doc/api
+```
+
+Serve docs locally:
+
+```bash
+dart pub global activate dhttpd
+dart pub global run dhttpd --path doc/api
+```
+
+Then open:
+
+```text
+http://localhost:8080
 ```
 
 ---
