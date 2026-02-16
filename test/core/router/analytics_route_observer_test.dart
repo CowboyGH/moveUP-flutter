@@ -1,13 +1,13 @@
 // ignore_for_file: unawaited_futures
 
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_template/core/router/analytics_route_observer.dart';
-import 'package:flutter_starter_template/core/utils/analytics/app_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:moveup_flutter/core/router/analytics_route_observer.dart';
+import 'package:moveup_flutter/core/utils/analytics/app_analytics.dart';
 
-import 'analytics_route_onserver_test.mocks.dart';
+import 'analytics_route_observer_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<AppAnalytics>()])
 void main() {

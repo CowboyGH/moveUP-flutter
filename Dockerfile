@@ -2,7 +2,7 @@
 # Global ARGs
 # ==========================================
 ARG TARGETPLATFORM=linux/amd64
-ARG FLUTTER_VERSION=3.38.4
+ARG FLUTTER_VERSION=3.41.0
 ARG ANDROID_SDK_VERSION=35
 ARG ANDROID_BUILD_TOOLS_VERSION=35.0.0
 ARG CMDLINE_TOOLS_VERSION=13114758
@@ -136,14 +136,13 @@ COPY . .
 RUN dart run build_runner build --delete-conflicting-outputs
 
 
-# Build Android APK in release mode
-RUN flutter build apk --release --split-per-abi --no-tree-shake-icons
+# Build a single universal Android APK in release mode
+RUN flutter build apk --release --no-tree-shake-icons
 
 
 # Verify that the build succeeded
-RUN test -f /app/build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk || \
-    test -f /app/build/app/outputs/flutter-apk/app-arm64-v8a-release.apk || \
-    (echo "ERROR: APK files not found!" && exit 1)
+RUN test -f /app/build/app/outputs/flutter-apk/app-release.apk || \
+    (echo "ERROR: app-release.apk not found!" && exit 1)
 
 
 # ==========================================
@@ -164,7 +163,7 @@ LABEL maintainer="cowboycloud@icloud.com" \
     flutter.version="${FLUTTER_VERSION}" \
     org.opencontainers.image.created="${BUILD_DATE}" \
     org.opencontainers.image.revision="${VCS_REF}" \
-    org.opencontainers.image.title="Flutter Starter Template Android Build" \
+    org.opencontainers.image.title="moveUP Android Build" \
     org.opencontainers.image.description="Production-ready Android APK artifacts"
 
 

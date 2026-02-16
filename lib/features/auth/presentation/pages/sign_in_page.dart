@@ -1,11 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-import '../bloc/auth_bloc.dart';
-import '../mappers/auth_failure_l10n_mapper.dart';
+import '../../../../core/router/router_paths.dart';
 
-/// A page that allows users to sign in or sign up.
+/// Authentication entry page with sign-in and sign-up form UI.
 class SignInPage extends StatefulWidget {
   /// Creates an instance of [SignInPage].
   const SignInPage({super.key});
@@ -16,10 +15,25 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
+  // ignore: unused_field
   String? _email, _password;
+  late final TapGestureRecognizer _toggleRecognizer;
 
   bool _isPasswordVisible = false;
   bool _isSignIn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _toggleRecognizer = TapGestureRecognizer()
+      ..onTap = () => setState(() => _isSignIn = !_isSignIn);
+  }
+
+  @override
+  void dispose() {
+    _toggleRecognizer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,166 +41,125 @@ class _SignInPageState extends State<SignInPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) => state.maybeWhen(
-              authError: (failure) {
-                final message = failure.toMessage(context);
-                if (message == null) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Center(child: Text(message))),
-                );
-                return null;
-              },
-              orElse: () => const SizedBox.shrink(),
-            ),
-            child: Column(
-              mainAxisAlignment: .center,
-              children: [
-                Form(
-                  key: _formKey,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
-                  child: Column(
-                    crossAxisAlignment: .start,
-                    children: [
-                      Center(
-                        child: Text(
-                          _isSignIn ? 'Sign In' : 'Sign Up',
-                          style: Theme.of(context).textTheme.headlineMedium,
+          child: Column(
+            mainAxisAlignment: .center,
+            children: [
+              Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUnfocus,
+                child: Column(
+                  crossAxisAlignment: .start,
+                  children: [
+                    Center(
+                      child: Text(
+                        _isSignIn ? 'Sign In' : 'Sign Up',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    const Text('Email'),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      autofocus: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Write your email';
+                        }
+                        if (!RegExp(
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                        ).hasMatch(value)) {
+                          return 'Incorrect email format';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) => _email = newValue,
+                      decoration: InputDecoration(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        hintText: 'aaa@gmail.com',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text('Password'),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: !_isPasswordVisible,
+                      autocorrect: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Write your password';
+                        }
+                        if (value.length < 8) {
+                          return 'Password must be at least 8 characters';
+                        }
+                        return null;
+                      },
+                      onSaved: (newValue) => _password = newValue,
+                      decoration: InputDecoration(
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        hintText: '•' * 8,
+                        suffixIcon: IconButton(
+                          onPressed: () => setState(
+                            () => _isPasswordVisible = !_isPasswordVisible,
+                          ),
+                          icon: _isPasswordVisible
+                              ? const Icon(Icons.visibility_rounded)
+                              : const Icon(Icons.visibility_off_rounded),
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      const Text('Email'),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        autocorrect: false,
-                        autofocus: true,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Write your email';
-                          }
-                          if (!RegExp(
-                            r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                          ).hasMatch(value)) {
-                            return 'Incorrect email format';
-                          }
-                          return null;
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          final formState = _formKey.currentState;
+                          if (formState == null || !formState.validate()) return;
+                          formState.save();
+                          context.go(AppRoutePaths.debugPath);
                         },
-                        onSaved: (newValue) => _email = newValue,
-                        decoration: InputDecoration(
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          hintText: 'aaa@gmail.com',
                         ),
+                        child: _isSignIn ? const Text('Sign In') : const Text('Sign Up'),
                       ),
-                      const SizedBox(height: 16),
-                      const Text('Password'),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: !_isPasswordVisible,
-                        autocorrect: false,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Write your password';
-                          }
-                          if (value.length < 8) {
-                            return 'Password must be at least 8 characters';
-                          }
-                          return null;
-                        },
-                        onSaved: (newValue) => _password = newValue,
-                        decoration: InputDecoration(
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          hintText: '•' * 8,
-                          suffixIcon: IconButton(
-                            onPressed: () => setState(
-                              () => _isPasswordVisible = !_isPasswordVisible,
-                            ),
-                            icon: _isPasswordVisible
-                                ? const Icon(Icons.visibility_rounded)
-                                : const Icon(Icons.visibility_off_rounded),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState?.validate() == true) {
-                              _formKey.currentState!.save();
-                              context.read<AuthBloc>().add(
-                                _isSignIn
-                                    ? AuthEvent.signInRequested(
-                                        _email!.trim(),
-                                        _password!.trim(),
-                                      )
-                                    : AuthEvent.signUpRequested(
-                                        _email!.trim(),
-                                        _password!.trim(),
-                                      ),
-                              );
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: _isSignIn ? const Text('Sign In') : const Text('Sign Up'),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () => context.read<AuthBloc>().add(
-                            const AuthEvent.signInWithGoogleRequested(),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: const Text('Sign In with Google'),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                            text: _isSignIn
-                                ? 'Don\'t have an account? '
-                                : 'Already have an account? ',
-                            style: TextStyle(color: Colors.grey[600]),
-                            children: [
-                              TextSpan(
-                                text: _isSignIn ? 'Sign up' : 'Sign in',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => setState(
-                                    () => _isSignIn = !_isSignIn,
-                                  ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: _isSignIn
+                              ? 'Don\'t have an account? '
+                              : 'Already have an account? ',
+                          style: TextStyle(color: Colors.grey[600]),
+                          children: [
+                            TextSpan(
+                              text: _isSignIn ? 'Sign up' : 'Sign in',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
+                              recognizer: _toggleRecognizer,
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
