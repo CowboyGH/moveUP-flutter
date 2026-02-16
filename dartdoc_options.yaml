@@ -1,5 +1,3 @@
 dartdoc:
   exclude:
     - firebase_options
-  nodoc:
-    - lib/firebase_options.dart
