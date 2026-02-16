@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
 
-/// A page that allows users to sign in or sign up.
+/// Authentication entry page with sign-in and sign-up form UI.
 class SignInPage extends StatefulWidget {
   /// Creates an instance of [SignInPage].
   const SignInPage({super.key});
