@@ -108,6 +108,9 @@ class _SignInPageState extends State<SignInPage> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
+                          final formState = _formKey.currentState;
+                          if (formState == null || !formState.validate()) return;
+                          formState.save();
                           context.go(AppRoutePaths.debugPath);
                         },
                         style: ElevatedButton.styleFrom(
