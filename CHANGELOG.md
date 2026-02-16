@@ -13,20 +13,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added `dartdoc_options.yaml` to configure Dart API docs generation and exclude the generated `firebase_options` library.
 - Added API documentation generation and local preview instructions to `README.md`.
 
 ### Changed
 
 - Clarified documentation comments in bootstrap, DI, network, and auth-related files.
 - Rebranded the project from template naming to `moveUP` for the initial baseline.
-- Aligned Android, iOS and Firebase identifiers to the new project identity (`com.sibcode.moveup`).
+- Aligned Android and iOS identifiers to the new project identity (com.sibcode.moveup).
 - Updated project/build configuration files to match the new app identity (platform configs, CI/CD, service files).
 - Simplified CI to Android-only: removed iOS job and redundant steps, switched Docker build to a single APK (`app-release.apk`), and tightened formatting/test checks.
 
 ### Removed
 
 - Removed legacy `flutter_starter_template` references and leftover template scaffolding from the codebase.
+- Removed Firebase integration from the baseline (runtime initialization, Firebase dependencies, platform plugins/config references, and CI mock Firebase file generation).
 
 ### Fixed
 

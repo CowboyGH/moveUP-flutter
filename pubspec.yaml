@@ -11,8 +11,6 @@ dependencies:
   connectivity_plus: ^7.0.0
   dio: ^5.9.1
   equatable: ^2.0.8
-  firebase_core: ^4.4.0
-  firebase_messaging: ^16.1.1
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1

@@ -1,3 +1,0 @@
-dartdoc:
-  exclude:
-    - firebase_options

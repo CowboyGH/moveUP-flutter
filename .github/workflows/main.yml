@@ -31,26 +31,6 @@ jobs:
           channel: 'stable'
           cache: true
       
-      - name: Create fake firebase_options.dart
-        run: |
-          mkdir -p lib
-          cat <<EOF > lib/firebase_options.dart
-          // ignore_for_file: type=lint
-          import 'package:firebase_core/firebase_core.dart'; import 'package:flutter/foundation.dart';
-          class DefaultFirebaseOptions {
-            static FirebaseOptions get currentPlatform {
-              if (kIsWeb) throw UnsupportedError('Web not configured');
-              switch (defaultTargetPlatform) {
-                case TargetPlatform.android: return android;
-                case TargetPlatform.iOS: return ios;
-                default: throw UnsupportedError('Platform not configured');
-              }
-            }
-            static const FirebaseOptions android = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake');
-            static const FirebaseOptions ios = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake', iosBundleId: 'fake');
-          }
-          EOF
-          
       - name: Get dependencies
         run: flutter pub get
 
@@ -103,14 +83,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: Create mock configuration files
-        run: |
-          mkdir -p lib
-          # firebase_options.dart
-          echo "import 'package:firebase_core/firebase_core.dart'; import 'package:flutter/foundation.dart'; class DefaultFirebaseOptions { static FirebaseOptions get currentPlatform { if (kIsWeb) throw UnsupportedError('Web not configured'); switch (defaultTargetPlatform) { case TargetPlatform.android: return android; case TargetPlatform.iOS: return ios; default: throw UnsupportedError('Platform not configured'); } } static const FirebaseOptions android = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake'); static const FirebaseOptions ios = FirebaseOptions(apiKey: 'fake', appId: 'fake', messagingSenderId: 'fake', projectId: 'fake', storageBucket: 'fake', iosBundleId: 'fake'); }" > lib/firebase_options.dart               
-          # google-services.json
-          echo '{"project_info":{"project_number":"123","project_id":"fake","storage_bucket":"fake"},"client":[{"client_info":{"mobilesdk_app_id":"1:123:android:123","android_client_info":{"package_name":"com.sibcode.moveup"}},"api_key":[{"current_key":"fake"}]}]}' > android/app/google-services.json
-
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:

@@ -29,7 +29,6 @@ Mobile client for the moveUP fitness platform.
 - 📝 **Logging** with `AppLogger` abstraction and Mixin for Bloc/Cubit
 - 🧭 **Navigation** with GoRouter
 - 🌐 **Connectivity Tracking** with connectivity_plus
-- 🔔 **Push Notifications** (Firebase Cloud Messaging)
 - 📦 **Modular Structure** for scalable feature development
 
 ---
@@ -43,7 +42,6 @@ Mobile client for the moveUP fitness platform.
 | **Dependency Injection** | get_it, provider |
 | **Navigation** | go_router |
 | **Connectivity Tracking** | connectivity_plus |
-| **Push Notifications** | firebase_messaging |
 | **HTTP Client** | dio + retrofit |
 | **Code Generation** | freezed, json_serializable, build_runner |
 | **Logging** | logger |
@@ -105,7 +103,6 @@ lib/
 
 - Flutter SDK: `>=3.41.0`
 - Dart SDK: `>=3.11.0`
-- Firebase project (for Firebase Cloud Messaging)
 
 ### Setup
 
@@ -115,23 +112,13 @@ lib/
    flutter pub get
    ```
 
-2. **Configure Firebase:**
-
-   ```bash
-   # Install FlutterFire CLI
-   dart pub global activate flutterfire_cli
-   
-   # Configure Firebase
-   flutterfire configure
-   ```
-
-3. **Run code generation:**
+2. **Run code generation:**
 
    ```bash
    flutter pub run build_runner build --delete-conflicting-outputs
    ```
 
-4. **Run the app:**
+3. **Run the app:**
 
    ```bash
    flutter run
