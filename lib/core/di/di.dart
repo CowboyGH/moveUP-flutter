@@ -1,7 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 
+import '../../api/service/api_client.dart';
+import '../../api/service/api_paths.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -28,6 +31,23 @@ Future<void> setupDI() async {
     () => NetworkServiceImpl(di<Connectivity>()),
     dispose: (param) => param.dispose(),
   );
+
+  // API Client
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: ApiPaths.baseUrl,
+      headers: const <String, dynamic>{
+        Headers.acceptHeader: Headers.jsonContentType,
+        Headers.contentTypeHeader: Headers.jsonContentType,
+      },
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+      sendTimeout: const Duration(seconds: 10),
+    ),
+  );
+
+  di.registerLazySingleton(() => dio);
+  di.registerLazySingleton(() => ApiClient(di<Dio>()));
 
   await di.allReady();
 }
