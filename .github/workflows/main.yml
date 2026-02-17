@@ -34,6 +34,9 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Create .env file
+        run: echo "API_URL=${{ secrets.API_URL }}" > .env
+
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
 
@@ -95,6 +98,7 @@ jobs:
             VCS_REF=${{ github.sha }}
             FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
             ANDROID_SDK_VERSION=${{ env.ANDROID_SDK_VERSION }}
+            API_URL=${{ secrets.API_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
