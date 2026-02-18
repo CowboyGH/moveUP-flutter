@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # ==========================================
 # Global ARGs
 # ==========================================
@@ -6,7 +8,6 @@ ARG FLUTTER_VERSION=3.41.0
 ARG ANDROID_SDK_VERSION=35
 ARG ANDROID_BUILD_TOOLS_VERSION=35.0.0
 ARG CMDLINE_TOOLS_VERSION=13114758
-ARG API_URL
 
 
 # ==========================================
@@ -20,7 +21,6 @@ ARG FLUTTER_VERSION
 ARG ANDROID_SDK_VERSION
 ARG ANDROID_BUILD_TOOLS_VERSION
 ARG CMDLINE_TOOLS_VERSION
-ARG API_URL
 
 
 # Disable interactive prompts
@@ -133,8 +133,11 @@ RUN flutter pub get
 # Copy entire project
 COPY . .
 
-# Create .env file
-RUN echo "API_URL=$API_URL" > .env
+# Create .env file from secret
+RUN --mount=type=secret,id=api_url \
+    API_URL="$(cat /run/secrets/api_url)" && \
+    test -n "$API_URL" && \
+    printf 'API_URL=%s\n' "$API_URL" > .env
 
 
 # Run code generation
