@@ -7,5 +7,5 @@ part 'api_client.g.dart';
 @RestApi()
 abstract class ApiClient {
   /// Creates an instance of [ApiClient].
-  factory ApiClient(Dio dio, {String baseUrl}) = _ApiClient;
+  factory ApiClient(Dio dio, {String? baseUrl}) = _ApiClient;
 }
