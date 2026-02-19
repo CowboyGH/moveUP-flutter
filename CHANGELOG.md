@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added envied config for managing environment variables.
 - Added API client starter setup (Dio + Retrofit).
+- Added lightweight Dio `InterceptorsWrapper` (debug-only): logs request/response/error metadata without body dump.
 
 ### Updated
 
