@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 
@@ -48,6 +49,30 @@ Future<void> setupDI() async {
 
   di.registerLazySingleton(() => dio);
   di.registerLazySingleton(() => ApiClient(di<Dio>()));
+
+  if (kDebugMode) {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          di<AppLogger>().d('-> ${options.method} ${options.uri}');
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          di<AppLogger>().d(
+            '<- ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.uri}',
+          );
+          return handler.next(response);
+        },
+        onError: (DioException error, handler) {
+          final request = error.requestOptions;
+          di<AppLogger>().w(
+            'x ${error.response?.statusCode ?? '-'} ${request.method} ${request.uri} ${error.message ?? ''}',
+          );
+          return handler.next(error);
+        },
+      ),
+    );
+  }
 
   await di.allReady();
 }
