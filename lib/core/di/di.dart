@@ -51,22 +51,23 @@ Future<void> setupDI() async {
   di.registerLazySingleton(() => ApiClient(di<Dio>()));
 
   if (kDebugMode) {
+    final logger = di<AppLogger>();
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          di<AppLogger>().d('-> ${options.method} ${options.uri}');
+          logger.d('-> ${options.method} ${options.uri}');
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          di<AppLogger>().d(
+          logger.d(
             '<- ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.uri}',
           );
           return handler.next(response);
         },
         onError: (DioException error, handler) {
           final request = error.requestOptions;
-          di<AppLogger>().w(
-            'x ${error.response?.statusCode ?? '-'} ${request.method} ${request.uri} ${error.message ?? ''}',
+          logger.w(
+            'x ${error.response?.statusCode ?? '-'} ${error.type} ${request.method} ${request.uri} ${error.message ?? ''}',
           );
           return handler.next(error);
         },
