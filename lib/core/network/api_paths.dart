@@ -1,4 +1,4 @@
-import '../../core/env/env.dart';
+import '../env/env.dart';
 
 /// API paths used in the application.
 abstract class ApiPaths {

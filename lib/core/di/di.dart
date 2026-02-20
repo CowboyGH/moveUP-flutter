@@ -5,7 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 
 import '../../features/auth/data/remote/auth_api_client.dart';
-import '../../api/service/api_paths.dart';
+import '../network/api_paths.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
 import '../utils/analytics/app_analytics.dart';
