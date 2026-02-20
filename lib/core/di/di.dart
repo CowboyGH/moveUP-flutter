@@ -1,11 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 
 import '../../features/auth/data/remote/auth_api_client.dart';
-import '../network/api_paths.dart';
+import '../network/dio_setup.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -34,46 +33,8 @@ Future<void> setupDI() async {
   );
 
   // API Client
-  final dio = Dio(
-    BaseOptions(
-      baseUrl: ApiPaths.baseUrl,
-      headers: const <String, dynamic>{
-        Headers.acceptHeader: Headers.jsonContentType,
-        Headers.contentTypeHeader: Headers.jsonContentType,
-      },
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 15),
-      sendTimeout: const Duration(seconds: 10),
-    ),
-  );
-
-  di.registerLazySingleton(() => dio);
+  di.registerLazySingleton<Dio>(() => createDioClient());
   di.registerLazySingleton(() => AuthApiClient(di<Dio>()));
-
-  if (kDebugMode) {
-    final logger = di<AppLogger>();
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          logger.d('-> ${options.method} ${options.uri}');
-          return handler.next(options);
-        },
-        onResponse: (response, handler) {
-          logger.d(
-            '<- ${response.statusCode} ${response.requestOptions.method} ${response.requestOptions.uri}',
-          );
-          return handler.next(response);
-        },
-        onError: (DioException error, handler) {
-          final request = error.requestOptions;
-          logger.w(
-            'x ${error.response?.statusCode ?? '-'} ${error.type} ${request.method} ${request.uri} ${error.message ?? ''}',
-          );
-          return handler.next(error);
-        },
-      ),
-    );
-  }
 
   await di.allReady();
 }
