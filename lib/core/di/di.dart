@@ -32,9 +32,9 @@ Future<void> setupDI() async {
     dispose: (param) => param.dispose(),
   );
 
-  // API Client
+  // Auth API Client
   di.registerLazySingleton<Dio>(() => createDioClient(logger: di<AppLogger>()));
-  di.registerLazySingleton(() => AuthApiClient(di<Dio>()));
+  di.registerLazySingleton<AuthApiClient>(() => AuthApiClient(di<Dio>()));
 
   await di.allReady();
 }
