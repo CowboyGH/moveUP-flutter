@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'error_response_dto.g.dart';
 
 /// DTO for the error response.
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ErrorResponseDto {
   /// Error code.
   final String code;
@@ -16,7 +16,4 @@ class ErrorResponseDto {
 
   /// Creates a [ErrorResponseDto] instance from a JSON map.
   factory ErrorResponseDto.fromJson(Map<String, dynamic> json) => _$ErrorResponseDtoFromJson(json);
-
-  /// Converts the [ErrorResponseDto] instance to a JSON map.
-  Map<String, dynamic> toJson() => _$ErrorResponseDtoToJson(this);
 }
