@@ -3,15 +3,12 @@ import '../app_failure.dart';
 /// Network application error.
 sealed class NetworkFailure extends AppFailure {
   /// Stable error code for business logic mapping.
-  abstract final String code;
-
-  /// HTTP status code when available.
-  final int? statusCode;
+  final String code;
 
   /// Creates an instance of [NetworkFailure].
   const NetworkFailure(
     super.message, {
-    this.statusCode,
+    required this.code,
     super.parentException,
     super.stackTrace,
   });
@@ -19,238 +16,118 @@ sealed class NetworkFailure extends AppFailure {
 
 /// No internet connection error.
 final class NoNetworkFailure extends NetworkFailure {
-  @override
-  final String code = 'no_network';
-
   /// Creates an instance of [NoNetworkFailure].
   const NoNetworkFailure({
+    String code = 'no_network',
     super.parentException,
     super.stackTrace,
-  }) : super('Отсутствует интернет-соединение');
+  }) : super('Отсутствует интернет-соединение', code: code);
 }
 
-/// Request connection timeout error.
+/// Connection timeout error.
 final class ConnectionTimeoutFailure extends NetworkFailure {
-  @override
-  final String code = 'connection_timeout';
-
   /// Creates an instance of [ConnectionTimeoutFailure].
   const ConnectionTimeoutFailure({
+    String code = 'connection_timeout',
     super.parentException,
     super.stackTrace,
-  }) : super('Превышено время ожидания подключения');
-}
-
-/// Request send timeout error.
-final class SendTimeoutFailure extends NetworkFailure {
-  @override
-  final String code = 'send_timeout';
-
-  /// Creates an instance of [SendTimeoutFailure].
-  const SendTimeoutFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Превышено время отправки запроса');
-}
-
-/// Request receive timeout error.
-final class ReceiveTimeoutFailure extends NetworkFailure {
-  @override
-  final String code = 'receive_timeout';
-
-  /// Creates an instance of [ReceiveTimeoutFailure].
-  const ReceiveTimeoutFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Превышено время ожидания ответа');
-}
-
-/// Request cancelled error.
-final class RequestCancelledFailure extends NetworkFailure {
-  @override
-  final String code = 'request_cancelled';
-
-  /// Creates an instance of [RequestCancelledFailure].
-  const RequestCancelledFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Запрос был отменен');
+  }) : super('Сервер не отвечает. Попробуйте позже', code: code);
 }
 
 /// HTTP 400 error.
 final class BadRequestFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [BadRequestFailure].
   const BadRequestFailure({
-    this.code = 'bad_request',
-    String message = 'Некорректный запрос',
+    String code = 'bad_request',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 400);
+  }) : super('Некорректный запрос', code: code);
 }
 
 /// HTTP 401 error.
 final class UnauthorizedFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [UnauthorizedFailure].
   const UnauthorizedFailure({
-    this.code = 'unauthorized',
-    String message = 'Не авторизован',
+    String code = 'unauthorized',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 401);
+  }) : super('Не авторизован', code: code);
 }
 
 /// HTTP 403 error.
 final class ForbiddenFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [ForbiddenFailure].
   const ForbiddenFailure({
-    this.code = 'forbidden',
-    String message = 'Доступ запрещен',
+    String code = 'forbidden',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 403);
+  }) : super('Доступ запрещен', code: code);
 }
 
 /// HTTP 404 error.
 final class NotFoundFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [NotFoundFailure].
   const NotFoundFailure({
-    this.code = 'not_found',
-    String message = 'Ресурс не найден',
+    String code = 'not_found',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 404);
+  }) : super('Ресурс не найден', code: code);
 }
 
 /// HTTP 409 error.
 final class ConflictFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [ConflictFailure].
   const ConflictFailure({
-    this.code = 'conflict',
-    String message = 'Конфликт данных',
+    String code = 'conflict',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 409);
+  }) : super('Конфликт данных', code: code);
 }
 
 /// HTTP 422 error.
 final class ValidationFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Detailed validation errors by field.
-  final Map<String, List<String>>? errors;
+  final Map<String, List<String>> errors;
 
   /// Creates an instance of [ValidationFailure].
   const ValidationFailure({
-    this.code = 'validation_failed',
-    String message = 'Ошибка валидации',
-    this.errors,
+    String code = 'validation_failed',
+    this.errors = const {},
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 422);
+  }) : super('Ошибка валидации', code: code);
 }
 
 /// HTTP 429 error.
 final class RateLimitedFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [RateLimitedFailure].
   const RateLimitedFailure({
-    this.code = 'rate_limited',
-    String message = 'Слишком много запросов',
+    String code = 'rate_limited',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 429);
+  }) : super('Слишком много запросов', code: code);
 }
 
-/// HTTP 500 error.
+/// HTTP 5xx error.
 final class ServerErrorFailure extends NetworkFailure {
-  @override
-  final String code;
-
   /// Creates an instance of [ServerErrorFailure].
   const ServerErrorFailure({
-    this.code = 'server_error',
-    String message = 'Внутренняя ошибка сервера',
+    String code = 'server_error',
     super.parentException,
     super.stackTrace,
-  }) : super(message, statusCode: 500);
-}
-
-/// HTTP 503 error.
-final class ServiceUnavailableFailure extends NetworkFailure {
-  @override
-  final String code;
-
-  /// Creates an instance of [ServiceUnavailableFailure].
-  const ServiceUnavailableFailure({
-    this.code = 'service_unavailable',
-    String message = 'Сервис временно недоступен',
-    super.parentException,
-    super.stackTrace,
-  }) : super(message, statusCode: 503);
-}
-
-/// HTTP 504 error.
-final class GatewayTimeoutFailure extends NetworkFailure {
-  @override
-  final String code;
-
-  /// Creates an instance of [GatewayTimeoutFailure].
-  const GatewayTimeoutFailure({
-    this.code = 'gateway_timeout',
-    String message = 'Сервер не ответил вовремя',
-    super.parentException,
-    super.stackTrace,
-  }) : super(message, statusCode: 504);
-}
-
-/// Unexpected HTTP status code.
-final class UnexpectedStatusCodeFailure extends NetworkFailure {
-  @override
-  final String code;
-
-  /// Creates an instance of [UnexpectedStatusCodeFailure].
-  const UnexpectedStatusCodeFailure({
-    required int statusCode,
-    this.code = 'unexpected_status_code',
-    String? message,
-    super.parentException,
-    super.stackTrace,
-  }) : super(
-         message ?? 'Неожиданный код ответа: $statusCode',
-         statusCode: statusCode,
-       );
+  }) : super('Ошибка сервера. Попробуйте позже', code: code);
 }
 
 /// Unknown network error.
 final class UnknownNetworkFailure extends NetworkFailure {
-  @override
-  final String code = 'unknown_network';
-
   /// Original error message.
   final String? originalMessage;
 
   /// Creates an instance of [UnknownNetworkFailure].
   const UnknownNetworkFailure({
+    String code = 'unknown_network',
     this.originalMessage,
     super.parentException,
     super.stackTrace,
-  }) : super(originalMessage ?? 'Неизвестная ошибка сети');
+  }) : super('Неизвестная ошибка сети', code: code);
 }
