@@ -10,33 +10,6 @@ sealed class AuthFailure extends AppFailure {
   });
 }
 
-/// No network connection error.
-final class AuthNoNetworkFailure extends AuthFailure {
-  /// Creates an instance of [AuthNoNetworkFailure].
-  const AuthNoNetworkFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Проверьте подключение к интернету и попробуйте снова');
-}
-
-/// Request timeout error.
-final class AuthConnectionTimeoutFailure extends AuthFailure {
-  /// Creates an instance of [AuthConnectionTimeoutFailure].
-  const AuthConnectionTimeoutFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Сервер не отвечает. Попробуйте позже');
-}
-
-/// Server error for auth requests.
-final class AuthServerErrorFailure extends AuthFailure {
-  /// Creates an instance of [AuthServerErrorFailure].
-  const AuthServerErrorFailure({
-    super.parentException,
-    super.stackTrace,
-  }) : super('Ошибка сервера. Попробуйте позже');
-}
-
 /// Invalid credentials error.
 final class InvalidCredentialsFailure extends AuthFailure {
   /// Creates an instance of [InvalidCredentialsFailure].

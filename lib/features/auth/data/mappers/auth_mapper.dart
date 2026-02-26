@@ -10,21 +10,6 @@ extension AuthFailureMapper on NetworkFailure {
         : const <String, List<String>>{};
 
     switch (code) {
-      case 'no_network':
-        return AuthNoNetworkFailure(
-          parentException: parentException,
-          stackTrace: stackTrace,
-        );
-      case 'connection_timeout':
-        return AuthConnectionTimeoutFailure(
-          parentException: parentException,
-          stackTrace: stackTrace,
-        );
-      case 'server_error':
-        return AuthServerErrorFailure(
-          parentException: parentException,
-          stackTrace: stackTrace,
-        );
       case 'invalid_credentials':
         return InvalidCredentialsFailure(
           parentException: parentException,
