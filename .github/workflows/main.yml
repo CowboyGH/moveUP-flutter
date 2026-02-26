@@ -1,8 +1,8 @@
-name: Flutter CI/CD Pipeline
+name: Main PR Release Workflow
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
