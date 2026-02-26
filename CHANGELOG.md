@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated Dockerfile and CI workflow to inject API_URL via GitHub Secrets.
 
+### Changed
+
+- CI: Split the pipeline: PRs to main now run the release workflow, while PRs to develop run a separate analysis-only workflow.
+
 ## [0.1.0] - 2026-02-16
 
 ### Added
