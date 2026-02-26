@@ -98,17 +98,9 @@ final class UnauthorizedAuthFailure extends AuthFailure {
 
 /// Unknown authentication error.
 final class UnknownAuthFailure extends AuthFailure {
-  /// Optional error code from backend for diagnostics.
-  final String? code;
-
-  /// Original error message.
-  final String? originalMessage;
-
   /// Creates an instance of [UnknownAuthFailure].
   const UnknownAuthFailure({
-    this.code,
-    this.originalMessage,
     super.parentException,
     super.stackTrace,
-  }) : super(originalMessage ?? 'Не удалось выполнить действие. Попробуйте снова');
+  }) : super('Не удалось выполнить действие. Попробуйте снова');
 }

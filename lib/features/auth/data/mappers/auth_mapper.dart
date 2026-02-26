@@ -68,8 +68,6 @@ extension AuthFailureMapper on NetworkFailure {
         );
       default:
         return UnknownAuthFailure(
-          code: code,
-          originalMessage: message,
           parentException: parentException,
           stackTrace: stackTrace,
         );
