@@ -45,12 +45,6 @@ extension AuthFailureMapper on NetworkFailure {
           parentException: parentException,
           stackTrace: stackTrace,
         );
-      case 'not_found':
-        return UnknownAuthFailure(
-          code: code,
-          parentException: parentException,
-          stackTrace: stackTrace,
-        );
       default:
         return UnknownAuthFailure(
           parentException: parentException,
