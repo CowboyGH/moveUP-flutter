@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # ==========================================
 # Global ARGs
 # ==========================================
@@ -130,6 +132,12 @@ RUN flutter pub get
 
 # Copy entire project
 COPY . .
+
+# Create .env file from secret
+RUN --mount=type=secret,id=api_url \
+    API_URL="$(cat /run/secrets/api_url)" && \
+    test -n "$API_URL" && \
+    printf 'API_URL=%s\n' "$API_URL" > .env
 
 
 # Run code generation

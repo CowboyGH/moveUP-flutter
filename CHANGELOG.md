@@ -11,15 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added envied config for managing environment variables.
+- Added API client starter setup (Dio + Retrofit).
+- Added lightweight Dio `InterceptorsWrapper` (debug-only): logs request/response/error metadata without body dump.
+
+### Updated
+
+- Updated Dockerfile and CI workflow to inject API_URL via GitHub Secrets.
+
+## [0.1.0] - 2026-02-16
+
+### Added
+
+- Added API documentation generation and local preview instructions to `README.md`.
+
 ### Changed
 
+- Clarified documentation comments in bootstrap, DI, network, and auth-related files.
 - Rebranded the project from template naming to `moveUP` for the initial baseline.
-- Aligned Android, iOS and Firebase identifiers to the new project identity (`com.sibcode.moveup`).
+- Aligned Android and iOS identifiers to the new project identity (com.sibcode.moveup).
 - Updated project/build configuration files to match the new app identity (platform configs, CI/CD, service files).
+- Simplified CI to Android-only: removed iOS job and redundant steps, switched Docker build to a single APK (`app-release.apk`), and tightened formatting/test checks.
 
 ### Removed
 
 - Removed legacy `flutter_starter_template` references and leftover template scaffolding from the codebase.
+- Removed Firebase integration from the baseline (runtime initialization, Firebase dependencies, platform plugins/config references, and CI mock Firebase file generation).
 
 ### Fixed
 
@@ -27,6 +44,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Breaking
 
-- Android Application ID / Namespace changed to `com.sibcode.moveup`.
-- iOS Bundle Identifier changed to `com.sibcode.moveup`.
+- Android Application ID / Namespace and iOS Bundle Identifier changed to `com.sibcode.moveup`.
 - App root widget rename: `FlutterStarterTemplate` -> `MoveUpApp`.

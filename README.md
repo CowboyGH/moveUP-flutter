@@ -2,8 +2,8 @@
 
 Mobile client for the moveUP fitness platform.
 
-[![Dart Version](https://img.shields.io/badge/Dart-3.10.0+-blue.svg)](https://dart.dev/)
-[![Flutter Version](https://img.shields.io/badge/Flutter-3.10.0+-blue.svg)](https://flutter.dev/)
+[![Dart Version](https://img.shields.io/badge/Dart-3.11.0+-blue.svg)](https://dart.dev/)
+[![Flutter Version](https://img.shields.io/badge/Flutter-3.41.0+-blue.svg)](https://flutter.dev/)
 
 ---
 
@@ -15,6 +15,7 @@ Mobile client for the moveUP fitness platform.
 - [📂 Project Structure](#-project-structure)
 - [🛠️ Getting Started](#️-getting-started)
 - [🧪 Testing](#-testing)
+- [📖 Documentation](#-documentation)
 - [🐋 Docker Build](#-docker-build)
 - [📝 Changelog](#-changelog)
 
@@ -28,7 +29,6 @@ Mobile client for the moveUP fitness platform.
 - 📝 **Logging** with `AppLogger` abstraction and Mixin for Bloc/Cubit
 - 🧭 **Navigation** with GoRouter
 - 🌐 **Connectivity Tracking** with connectivity_plus
-- 🔔 **Push Notifications** (Firebase Cloud Messaging)
 - 📦 **Modular Structure** for scalable feature development
 
 ---
@@ -37,12 +37,11 @@ Mobile client for the moveUP fitness platform.
 
 | Category | Technology |
 | ---------- | ----------- |
-| **Framework** | Flutter 3.10.0+ |
+| **Framework** | Flutter 3.41.0+ |
 | **State Management** | flutter_bloc |
 | **Dependency Injection** | get_it, provider |
 | **Navigation** | go_router |
 | **Connectivity Tracking** | connectivity_plus |
-| **Push Notifications** | firebase_messaging |
 | **HTTP Client** | dio + retrofit |
 | **Code Generation** | freezed, json_serializable, build_runner |
 | **Logging** | logger |
@@ -102,9 +101,8 @@ lib/
 
 ### Prerequisites
 
-- Flutter SDK: `>=3.10.0`
-- Dart SDK: `>=3.10.0`
-- Firebase project (for Firebase Cloud Messaging)
+- Flutter SDK: `>=3.41.0`
+- Dart SDK: `>=3.11.0`
 
 ### Setup
 
@@ -114,23 +112,13 @@ lib/
    flutter pub get
    ```
 
-2. **Configure Firebase:**
-
-   ```bash
-   # Install FlutterFire CLI
-   dart pub global activate flutterfire_cli
-   
-   # Configure Firebase
-   flutterfire configure
-   ```
-
-3. **Run code generation:**
+2. **Run code generation:**
 
    ```bash
    flutter pub run build_runner build --delete-conflicting-outputs
    ```
 
-4. **Run the app:**
+3. **Run the app:**
 
    ```bash
    flutter run
@@ -156,23 +144,46 @@ genhtml coverage/lcov.info -o coverage/html
 
 ---
 
+## 📖 Documentation
+
+Generate API docs from Dart doc-comments:
+
+```bash
+dart doc --output doc/api
+```
+
+Serve docs locally:
+
+```bash
+dart pub global activate dhttpd
+dart pub global run dhttpd --path doc/api
+```
+
+Then open:
+
+```text
+http://localhost:8080
+```
+
+---
+
 ## 🐋 Docker Build
 
 Build Android APK using Docker:
 
 ```bash
-docker build                                                   
-  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-  --build-arg VCS_REF=$(git rev-parse --short HEAD)
-  --progress=plain
-  --no-cache
-  -t fitness-app-android:latest .
+docker build \                                                  
+  --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+  --build-arg VCS_REF=$(git rev-parse --short HEAD) \
+  --progress=plain \
+  --no-cache \
+  -t moveUP-app-android:latest .
 ```
 
 Extract APK files:
 
 ```bash
-docker create --name temp-flutter fitness-app-android:latest
+docker create --name temp-flutter moveUP-app-android:latest
 docker cp temp-flutter:/artifacts/. ./apk-output/
 docker rm temp-flutter
 ```

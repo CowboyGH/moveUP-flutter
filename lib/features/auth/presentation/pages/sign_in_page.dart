@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
 
-/// A page that allows users to sign in or sign up.
+/// Authentication entry page with sign-in and sign-up form UI.
 class SignInPage extends StatefulWidget {
   /// Creates an instance of [SignInPage].
   const SignInPage({super.key});
@@ -17,9 +17,23 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   // ignore: unused_field
   String? _email, _password;
+  late final TapGestureRecognizer _toggleRecognizer;
 
   bool _isPasswordVisible = false;
   bool _isSignIn = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _toggleRecognizer = TapGestureRecognizer()
+      ..onTap = () => setState(() => _isSignIn = !_isSignIn);
+  }
+
+  @override
+  void dispose() {
+    _toggleRecognizer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +122,9 @@ class _SignInPageState extends State<SignInPage> {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
+                          final formState = _formKey.currentState;
+                          if (formState == null || !formState.validate()) return;
+                          formState.save();
                           context.go(AppRoutePaths.debugPath);
                         },
                         style: ElevatedButton.styleFrom(
@@ -133,10 +150,7 @@ class _SignInPageState extends State<SignInPage> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                               ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => setState(
-                                  () => _isSignIn = !_isSignIn,
-                                ),
+                              recognizer: _toggleRecognizer,
                             ),
                           ],
                         ),
