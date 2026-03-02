@@ -3,12 +3,12 @@ import 'package:dio/dio.dart';
 import '../../utils/logger/app_logger.dart';
 
 /// A simple logging interceptor for Dio.
-final class LoggingInterceptor implements Interceptor {
+final class LoggingInterceptor extends InterceptorsWrapper {
   /// The logger instance used for logging requests and responses.
   final AppLogger logger;
 
   /// Creates an instance of [LoggingInterceptor].
-  const LoggingInterceptor(this.logger);
+  LoggingInterceptor(this.logger);
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
