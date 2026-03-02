@@ -4,4 +4,7 @@ import '../env/env.dart';
 abstract class ApiPaths {
   /// The base URL for the API.
   static final String baseUrl = Env.apiUrl;
+
+  /// The endpoint for refreshing the access token.
+  static const String refresh = '/refresh';
 }

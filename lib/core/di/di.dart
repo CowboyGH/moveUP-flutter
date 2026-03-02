@@ -41,7 +41,12 @@ Future<void> setupDI() async {
   );
 
   // Auth API Client
-  di.registerLazySingleton<Dio>(() => createDioClient(logger: di<AppLogger>()));
+  di.registerLazySingleton<Dio>(
+    () => createDioClient(
+      logger: di<AppLogger>(),
+      tokenStorage: di<TokenStorage>(),
+    ),
+  );
   di.registerLazySingleton<AuthApiClient>(() => AuthApiClient(di<Dio>()));
 
   await di.allReady();
