@@ -5,9 +5,10 @@ import '../../../../core/failures/network/network_failure.dart';
 extension AuthFailureMapper on NetworkFailure {
   /// Maps a [NetworkFailure] into an auth-specific failure.
   AuthFailure toAuthFailure() {
-    final Map<String, List<String>> fieldErrors = this is ValidationFailure
-        ? (this as ValidationFailure).errors
-        : const <String, List<String>>{};
+    final fieldErrors = switch (this) {
+      ValidationFailure(:final errors) => errors,
+      _ => const <String, List<String>>{},
+    };
 
     switch (code) {
       case 'invalid_credentials':
