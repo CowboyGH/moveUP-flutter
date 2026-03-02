@@ -49,11 +49,10 @@ final class AuthInterceptor extends QueuedInterceptor {
 
           requestOptions.extra['retried'] = true;
           requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
-          final retryResponse = await _dio.fetch(requestOptions);
 
+          final retryResponse = await _dio.fetch(requestOptions);
           return handler.resolve(retryResponse);
         }
-
         return handler.next(err);
       } on DioException catch (e) {
         final refreshCode = _extractCode(e.response?.data);
@@ -84,7 +83,6 @@ final class AuthInterceptor extends QueuedInterceptor {
     if (accessToken != null && accessToken.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $accessToken';
     }
-
     return handler.next(options);
   }
 
