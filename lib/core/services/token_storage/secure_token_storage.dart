@@ -25,9 +25,4 @@ final class SecureTokenStorage implements TokenStorage {
   Future<void> deleteAccessToken() async {
     await _secureStorage.delete(key: _accessTokenKey);
   }
-
-  @override
-  Future<bool> hasAccessToken() {
-    return _secureStorage.containsKey(key: _accessTokenKey);
-  }
 }

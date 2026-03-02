@@ -79,35 +79,5 @@ void main() {
       verify(secureStorage.delete(key: accessTokenKey)).called(1);
       verifyNoMoreInteractions(secureStorage);
     });
-
-    test('hasAccessToken returns true when token exists', () async {
-      // Arrange
-      when(
-        secureStorage.containsKey(key: accessTokenKey),
-      ).thenAnswer((_) async => true);
-
-      // Act
-      final hasAccessToken = await tokenStorage.hasAccessToken();
-
-      // Assert
-      expect(hasAccessToken, true);
-      verify(secureStorage.containsKey(key: accessTokenKey)).called(1);
-      verifyNoMoreInteractions(secureStorage);
-    });
-
-    test('hasAccessToken returns false when token does not exist', () async {
-      // Arrange
-      when(
-        secureStorage.containsKey(key: accessTokenKey),
-      ).thenAnswer((_) async => false);
-
-      // Act
-      final hasAccessToken = await tokenStorage.hasAccessToken();
-
-      // Assert
-      expect(hasAccessToken, false);
-      verify(secureStorage.containsKey(key: accessTokenKey)).called(1);
-      verifyNoMoreInteractions(secureStorage);
-    });
   });
 }

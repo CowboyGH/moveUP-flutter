@@ -8,7 +8,4 @@ abstract interface class TokenStorage {
 
   /// Clears access token from storage.
   Future<void> deleteAccessToken();
-
-  /// Checks whether access token exists in storage.
-  Future<bool> hasAccessToken();
 }
