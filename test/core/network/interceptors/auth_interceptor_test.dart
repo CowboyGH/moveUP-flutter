@@ -79,9 +79,11 @@ void main() {
   group('AuthInterceptor.onError', () {
     test('passes through when refresh response has no access_token', () async {
       // Arrange
+      when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'old_token');
       final refreshSuccessResponseWithoutCode = Response<Map<String, dynamic>>(
         requestOptions: RequestOptions(path: ApiPaths.refresh),
         statusCode: 200,
+        data: <String, dynamic>{},
       );
       var refreshCallCount = 0;
       final interceptor = AuthInterceptor(
@@ -104,7 +106,8 @@ void main() {
       await Future.delayed(Duration.zero);
 
       // Assert
-      expect(refreshCallCount, 0);
+      expect(refreshCallCount, 1);
+      verify(tokenStorage.getAccessToken()).called(1);
       verifyNever(tokenStorage.saveAccessToken('new_token'));
       verifyNever(dio.fetch(err.requestOptions));
       expect(handler.resolveCount, 0);
