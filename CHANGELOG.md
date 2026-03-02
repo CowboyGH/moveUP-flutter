@@ -14,14 +14,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added envied config for managing environment variables.
 - Added API client starter setup (Dio + Retrofit).
 - Added lightweight Dio `InterceptorsWrapper` (debug-only): logs request/response/error metadata without body dump.
-
-### Updated
-
-- Updated Dockerfile and CI workflow to inject API_URL via GitHub Secrets.
+- Added secure token persistence with `flutter_secure_storage` (`TokenStorage` + `SecureTokenStorage`).
+- Added core network/auth foundation under `lib/core/network/*`:
+  - Dio setup and API paths.
+  - Logging and auth interceptors (with access token refresh flow).
+  - Typed network error DTOs and `DioException` mapper.
+- Added typed `NetworkFailure` and `AuthFailure` mapping.
+- Added auth data scaffolding: `AuthApiClient`, base `UserDto`, and auth mapper.
 
 ### Changed
 
+- Updated Dockerfile and CI workflow to inject API_URL via GitHub Secrets.
 - CI: Split the pipeline: PRs to main now run the release workflow, while PRs to develop run a separate analysis-only workflow.
+- Reorganized network/auth structure from legacy `lib/api/service/*` to `lib/core/network/*` and `lib/features/auth/data/*`.
+- Updated DI registrations to use the new network setup, token storage, and feature-scoped auth API client.
+- Simplified `TokenStorage` to read/write/delete only.
+- Reduced `AuthRepository` to a temporary empty interface until feature-specific methods are introduced.
+
+### Fixed
+
+- Fixed `ErrorResponseDto` serialization configuration by disabling generated `toJson` where it is not used.
+
+### Removed
+
+- Removed legacy API client scaffold at `lib/api/service/api_client.dart`.
 
 ## [0.1.0] - 2026-02-16
 
