@@ -47,7 +47,4 @@ class UserDto {
 
   /// Creates a [UserDto] instance from a JSON map.
   factory UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
-
-  /// Converts the [UserDto] instance to a JSON map.
-  Map<String, dynamic> toJson() => _$UserDtoToJson(this);
 }
