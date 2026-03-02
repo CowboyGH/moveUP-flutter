@@ -15,7 +15,7 @@ class UserDto {
   final String email;
 
   /// Avatar of the user.
-  final String avatar;
+  final String? avatar;
 
   /// Role identifier for the user.
   @JsonKey(name: 'role_id')
