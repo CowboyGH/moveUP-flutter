@@ -12,22 +12,11 @@ Dio createDioClient({
   required AppLogger logger,
   required TokenStorage tokenStorage,
 }) {
-  final baseOptions = BaseOptions(
-    baseUrl: ApiPaths.baseUrl,
-    headers: const <String, dynamic>{
-      Headers.acceptHeader: Headers.jsonContentType,
-      Headers.contentTypeHeader: Headers.jsonContentType,
-    },
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 15),
-    sendTimeout: const Duration(seconds: 10),
-  );
-
   /// Main Dio instance for all API calls.
-  final dio = Dio(baseOptions);
+  final dio = Dio(_createDioBaseOptions());
 
   /// Separate Dio instance for token refresh only to avoid interceptor loops.
-  final refreshDio = Dio(baseOptions);
+  final refreshDio = Dio(_createDioBaseOptions());
 
   dio.interceptors.add(
     AuthInterceptor(
@@ -53,3 +42,14 @@ Dio createDioClient({
 
   return dio;
 }
+
+BaseOptions _createDioBaseOptions() => BaseOptions(
+  baseUrl: ApiPaths.baseUrl,
+  headers: const <String, dynamic>{
+    Headers.acceptHeader: Headers.jsonContentType,
+    Headers.contentTypeHeader: Headers.jsonContentType,
+  },
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 15),
+  sendTimeout: const Duration(seconds: 10),
+);
