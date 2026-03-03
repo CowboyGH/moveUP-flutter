@@ -1,7 +1,16 @@
+import 'package:dio/dio.dart';
+
 import '../../../../core/failures/feature/auth/auth_failure.dart';
+import '../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../core/result/result.dart';
+import '../../../../core/services/token_storage/token_storage.dart';
+import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../dto/login_request_dto.dart';
+import '../mappers/auth_mapper.dart';
+import '../mappers/user_entity_mapper.dart';
+import '../remote/auth_api_client.dart';
 
 /// Implementation of [AuthRepository].
 final class AuthRepositoryImpl implements AuthRepository {
@@ -18,8 +27,25 @@ final class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._logger, this._apiClient, this._tokenStorage);
 
   @override
-  Future<Result<User, AuthFailure>> signIn(String email, String password) {
-    // TODO: implement signIn
-    throw UnimplementedError();
+  Future<Result<User, AuthFailure>> signIn(String email, String password) async {
+    _logger.i('SignIn attempt');
+    try {
+      final request = LoginRequestDto(email: email, password: password);
+      final response = await _apiClient.login(request);
+      await _tokenStorage.saveAccessToken(response.accessToken);
+      _logger.i('SignIn successful');
+      return Result.success(response.user.toEntity());
+    } on DioException catch (e, s) {
+      _logger.w(
+        'SignIn failed with Dio error: type=${e.type}, status=${e.response?.statusCode}',
+        e,
+        s,
+      );
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('SignIn failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
   }
 }
