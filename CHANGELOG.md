@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Typed network error DTOs and `DioException` mapper.
 - Added typed `NetworkFailure` and `AuthFailure` mapping.
 - Added auth data scaffolding: `AuthApiClient`, base `UserDto`, and auth mapper.
+- Added login API contract and DTOs in auth data layer (`LoginRequestDto`, `LoginResponseDto`, `LoginSessionDto`) and wired `AuthApiClient.login`.
+- Added auth domain/data login flow: `AuthRepository.signIn` contract and `AuthRepositoryImpl` with token persistence.
+- Added sign-in presentation flow: `SignInCubit`, `SignInPageBuilder`, and `SignInPage` integrated with router.
+- Added unit tests for user entity mapping, sign-in repository flow, and `SignInCubit` states.
 
 ### Changed
 
@@ -30,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated DI registrations to use the new network setup, token storage, and feature-scoped auth API client.
 - Simplified `TokenStorage` to read/write/delete only.
 - Reduced `AuthRepository` to a temporary empty interface until feature-specific methods are introduced.
+- Updated DI to register `AuthRepository` implementation and provide sign-in dependencies (`AppLogger`, `AuthApiClient`, `TokenStorage`).
+- Updated auth presentation routing to resolve sign-in dependencies via `SignInPageBuilder`.
+- Updated `SignInCubit` to use constructor-injected `AppLogger` instead of `AppLoggerMixin` for clearer dependencies and easier testing.
 
 ### Fixed
 
