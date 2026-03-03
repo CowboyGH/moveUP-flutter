@@ -1,10 +1,11 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
+import '../cubits/sign_in_cubit.dart';
 
-/// Authentication entry page with sign-in and sign-up form UI.
+/// Sign-in page.
 class SignInPage extends StatefulWidget {
   /// Creates an instance of [SignInPage].
   const SignInPage({super.key});
@@ -15,154 +16,212 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
-  // ignore: unused_field
-  String? _email, _password;
-  late final TapGestureRecognizer _toggleRecognizer;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  bool _isSignIn = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _toggleRecognizer = TapGestureRecognizer()
-      ..onTap = () => setState(() => _isSignIn = !_isSignIn);
-  }
 
   @override
   void dispose() {
-    _toggleRecognizer.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
+  }
+
+  String? _emailValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Введите email';
+    }
+
+    final emailPattern = RegExp(r'^[\w\-.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailPattern.hasMatch(value.trim())) {
+      return 'Неверный формат email';
+    }
+    return null;
+  }
+
+  String? _passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Введите пароль';
+    }
+
+    if (value.length < 8 || value.length > 64) {
+      return 'Пароль должен быть от 8 до 64 символов';
+    }
+
+    final allowedCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
+    if (!allowedCharsPattern.hasMatch(value)) {
+      return 'Только латинские буквы и цифры';
+    }
+
+    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+    final hasDigit = RegExp(r'\d').hasMatch(value);
+    if (!hasLetter || !hasDigit) {
+      return 'Пароль должен содержать буквы и цифры';
+    }
+
+    return null;
+  }
+
+  void _showSnack(String message) {
+    final messenger = ScaffoldMessenger.of(context);
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _submit() {
+    final form = _formKey.currentState;
+    if (form == null || !form.validate()) {
+      return;
+    }
+
+    context.read<SignInCubit>().signIn(
+      _emailController.text.trim(),
+      _passwordController.text,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: .center,
-            children: [
-              Form(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.onUnfocus,
-                child: Column(
-                  crossAxisAlignment: .start,
-                  children: [
-                    Center(
-                      child: Text(
-                        _isSignIn ? 'Sign In' : 'Sign Up',
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+    return BlocConsumer<SignInCubit, SignInState>(
+      listener: (context, state) {
+        state.whenOrNull(
+          succeed: (_) => context.go(AppRoutePaths.debugPath),
+          failed: (failure) {
+            if (failure.message.isNotEmpty) {
+              _showSnack(failure.message);
+            }
+          },
+        );
+      },
+      builder: (context, state) {
+        final isInProgress = state.maybeWhen(
+          inProgress: () => true,
+          orElse: () => false,
+        );
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: isInProgress ? null : () => context.go(AppRoutePaths.debugPath),
+                      child: const Text('Пропустить'),
                     ),
-                    const SizedBox(height: 32),
-                    const Text('Email'),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      autocorrect: false,
-                      autofocus: true,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Write your email';
-                        }
-                        if (!RegExp(
-                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                        ).hasMatch(value)) {
-                          return 'Incorrect email format';
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _email = newValue,
-                      decoration: InputDecoration(
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        hintText: 'aaa@gmail.com',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text('Password'),
-                    const SizedBox(height: 8),
-                    TextFormField(
-                      keyboardType: TextInputType.visiblePassword,
-                      obscureText: !_isPasswordVisible,
-                      autocorrect: false,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Write your password';
-                        }
-                        if (value.length < 8) {
-                          return 'Password must be at least 8 characters';
-                        }
-                        return null;
-                      },
-                      onSaved: (newValue) => _password = newValue,
-                      decoration: InputDecoration(
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        hintText: '•' * 8,
-                        suffixIcon: IconButton(
-                          onPressed: () => setState(
-                            () => _isPasswordVisible = !_isPasswordVisible,
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(24),
                           ),
-                          icon: _isPasswordVisible
-                              ? const Icon(Icons.visibility_rounded)
-                              : const Icon(Icons.visibility_off_rounded),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          final formState = _formKey.currentState;
-                          if (formState == null || !formState.validate()) return;
-                          formState.save();
-                          context.go(AppRoutePaths.debugPath);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: _isSignIn ? const Text('Sign In') : const Text('Sign Up'),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: _isSignIn
-                              ? 'Don\'t have an account? '
-                              : 'Already have an account? ',
-                          style: TextStyle(color: Colors.grey[600]),
-                          children: [
-                            TextSpan(
-                              text: _isSignIn ? 'Sign up' : 'Sign in',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              recognizer: _toggleRecognizer,
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  'Авторизация',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const SizedBox(height: 32),
+                                TextFormField(
+                                  controller: _emailController,
+                                  enabled: !isInProgress,
+                                  keyboardType: TextInputType.emailAddress,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Введите email',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                  ),
+                                  validator: _emailValidator,
+                                ),
+                                const SizedBox(height: 12),
+                                TextFormField(
+                                  controller: _passwordController,
+                                  enabled: !isInProgress,
+                                  keyboardType: TextInputType.visiblePassword,
+                                  obscureText: !_isPasswordVisible,
+                                  textInputAction: TextInputAction.done,
+                                  onFieldSubmitted: (_) => _submit(),
+                                  decoration: InputDecoration(
+                                    hintText: 'Введите пароль',
+                                    border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                    suffixIcon: IconButton(
+                                      onPressed: isInProgress
+                                          ? null
+                                          : () => setState(() {
+                                              _isPasswordVisible = !_isPasswordVisible;
+                                            }),
+                                      icon: Icon(
+                                        _isPasswordVisible
+                                            ? Icons.visibility_rounded
+                                            : Icons.visibility_off_rounded,
+                                      ),
+                                    ),
+                                  ),
+                                  validator: _passwordValidator,
+                                ),
+                                const SizedBox(height: 8),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: TextButton(
+                                    onPressed: () => context.go(AppRoutePaths.debugPath),
+                                    child: const Text('Забыли пароль?'),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                FilledButton(
+                                  onPressed: isInProgress ? null : _submit,
+                                  style: FilledButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(52),
+                                  ),
+                                  child: isInProgress
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator.adaptive(),
+                                        )
+                                      : const Text('Войти'),
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Еще нет аккаунта?',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                const SizedBox(height: 4),
+                                TextButton(
+                                  onPressed: () => context.go(AppRoutePaths.debugPath),
+                                  child: const Text('Зарегистрироваться'),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

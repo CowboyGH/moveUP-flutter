@@ -5,6 +5,8 @@ import 'package:get_it/get_it.dart';
 import 'package:logger/logger.dart';
 
 import '../../features/auth/data/remote/auth_api_client.dart';
+import '../../features/auth/data/repositories/auth_repository_impl.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../network/dio_setup.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
@@ -40,7 +42,7 @@ Future<void> setupDI() async {
     () => SecureTokenStorage(const FlutterSecureStorage()),
   );
 
-  // Auth API Client
+  // Authentication
   di.registerLazySingleton<Dio>(
     () => createDioClient(
       logger: di<AppLogger>(),
@@ -48,6 +50,13 @@ Future<void> setupDI() async {
     ),
   );
   di.registerLazySingleton<AuthApiClient>(() => AuthApiClient(di<Dio>()));
+  di.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      di<AppLogger>(),
+      di<AuthApiClient>(),
+      di<TokenStorage>(),
+    ),
+  );
 
   await di.allReady();
 }
