@@ -33,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reorganized network/auth structure from legacy `lib/api/service/*` to `lib/core/network/*` and `lib/features/auth/data/*`.
 - Updated DI registrations to use the new network setup, token storage, and feature-scoped auth API client.
 - Simplified `TokenStorage` to read/write/delete only.
-- Reduced `AuthRepository` to a temporary empty interface until feature-specific methods are introduced.
 - Updated DI to register `AuthRepository` implementation and provide sign-in dependencies (`AppLogger`, `AuthApiClient`, `TokenStorage`).
 - Updated auth presentation routing to resolve sign-in dependencies via `SignInPageBuilder`.
 - Updated `SignInCubit` to use constructor-injected `AppLogger` instead of `AppLoggerMixin` for clearer dependencies and easier testing.
