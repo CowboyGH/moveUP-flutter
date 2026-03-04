@@ -33,7 +33,7 @@ class _SignInPageState extends State<SignInPage> {
       return 'Введите email';
     }
 
-    final emailPattern = RegExp(r'^[\w\-.]+@([\w-]+\.)+[\w-]{2,4}$');
+    final emailPattern = RegExp(r'^[\w\-.]+@([\w-]+\.)+[\w-]{2,}$');
     if (!emailPattern.hasMatch(value.trim())) {
       return 'Неверный формат email';
     }
