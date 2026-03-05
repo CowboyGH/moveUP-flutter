@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/auth/data/dto/login_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/login_session_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/register_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
 
 /// Test fixture for login session DTO.
@@ -22,7 +23,7 @@ UserDto createUserDto({
   required String email,
   String? avatar = 'avatar',
   int roleId = 1,
-  String emailVerifiedAt = 'emailVerifiedAt',
+  String? emailVerifiedAt = 'emailVerifiedAt',
   String updatedAt = 'updatedAt',
   String createdAt = 'createdAt',
 }) => UserDto(
@@ -64,24 +65,41 @@ MeResponseDto createMeResponseDto({
   user: user,
 );
 
+/// Test fixture for register response DTO.
+RegisterResponseDto createRegisterResponseDto({
+  bool success = true,
+  String message =
+      'Регистрация прошла успешно. Проверьте вашу почту для получения кода подтверждения.',
+  required UserDto user,
+}) => RegisterResponseDto(
+  success: success,
+  message: message,
+  user: user,
+);
+
 /// Test fixture for Dio bad response exception.
 DioException createDioBadResponseException({
   required String path,
   required int statusCode,
   required String code,
   String message = 'error_message',
+  Map<String, List<String>>? errors,
 }) {
   final requestOptions = RequestOptions(path: path);
+  final data = <String, dynamic>{
+    'code': code,
+    'message': message,
+  };
+  if (errors != null) {
+    data['errors'] = errors;
+  }
   return DioException(
     requestOptions: requestOptions,
     type: DioExceptionType.badResponse,
     response: Response<Map<String, dynamic>>(
       requestOptions: requestOptions,
       statusCode: statusCode,
-      data: <String, dynamic>{
-        'code': code,
-        'message': message,
-      },
+      data: data,
     ),
   );
 }
