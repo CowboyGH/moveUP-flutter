@@ -170,11 +170,11 @@ class _SignInPageState extends State<SignInPage> {
                                   validator: _passwordValidator,
                                 ),
                                 const SizedBox(height: 8),
-                                Align(
+                                const Align(
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
-                                    onPressed: () {},
-                                    child: const Text('Забыли пароль?'),
+                                    onPressed: null,
+                                    child: Text('Забыли пароль?'),
                                   ),
                                 ),
                                 const SizedBox(height: 24),
@@ -198,9 +198,9 @@ class _SignInPageState extends State<SignInPage> {
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
                                 const SizedBox(height: 4),
-                                TextButton(
-                                  onPressed: () {},
-                                  child: const Text('Зарегистрироваться'),
+                                const TextButton(
+                                  onPressed: null,
+                                  child: Text('Зарегистрироваться'),
                                 ),
                               ],
                             ),
