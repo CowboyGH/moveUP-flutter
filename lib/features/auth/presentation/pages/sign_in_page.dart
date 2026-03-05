@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -98,7 +99,9 @@ class _SignInPageState extends State<SignInPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: isInProgress ? null : () => context.go(AppRoutePaths.debugPath),
+                      onPressed: (!kDebugMode || isInProgress)
+                          ? null
+                          : () => context.go(AppRoutePaths.debugPath),
                       child: const Text('Пропустить'),
                     ),
                   ),
@@ -169,7 +172,8 @@ class _SignInPageState extends State<SignInPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
-                                    onPressed: () => context.go(AppRoutePaths.debugPath),
+                                    onPressed: () =>
+                                        kDebugMode ? context.go(AppRoutePaths.debugPath) : null,
                                     child: const Text('Забыли пароль?'),
                                   ),
                                 ),
@@ -195,7 +199,8 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 TextButton(
-                                  onPressed: () => context.go(AppRoutePaths.debugPath),
+                                  onPressed: () =>
+                                      kDebugMode ? context.go(AppRoutePaths.debugPath) : null,
                                   child: const Text('Зарегистрироваться'),
                                 ),
                               ],
