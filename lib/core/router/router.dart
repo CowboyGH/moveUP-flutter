@@ -14,7 +14,7 @@ import 'router_paths.dart';
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
 
 /// Determines the redirect path based on the current [authState] and [state].
-String? _regirect(AuthSessionState authState, GoRouterState state) {
+String? _redirect(AuthSessionState authState, GoRouterState state) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   return authState.when(
     initial: () {
@@ -44,7 +44,7 @@ String? _regirect(AuthSessionState authState, GoRouterState state) {
 final router = GoRouter(
   initialLocation: AppRoutePaths.signInPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
-  redirect: (_, state) => _regirect(_sessionCubit.state, state),
+  redirect: (_, state) => _redirect(_sessionCubit.state, state),
   refreshListenable: GoRouterCubitRefreshStream(_sessionCubit.stream),
   routes: [
     GoRoute(
