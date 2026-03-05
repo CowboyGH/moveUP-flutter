@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../core/router/router_paths.dart';
+import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_in_cubit.dart';
 
 /// Sign-in page.
@@ -79,7 +78,7 @@ class _SignInPageState extends State<SignInPage> {
     return BlocConsumer<SignInCubit, SignInState>(
       listener: (context, state) {
         state.whenOrNull(
-          succeed: (_) => context.go(AppRoutePaths.debugPath),
+          succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
           failed: (failure) {
             if (failure.message.isNotEmpty) {
               _showSnack(failure.message);
@@ -103,7 +102,7 @@ class _SignInPageState extends State<SignInPage> {
                     child: TextButton(
                       onPressed: (!kDebugMode || isInProgress)
                           ? null
-                          : () => context.go(AppRoutePaths.debugPath),
+                          : () => context.read<AuthSessionCubit>().continueAsGuest(),
                       child: const Text('Пропустить'),
                     ),
                   ),
@@ -174,9 +173,7 @@ class _SignInPageState extends State<SignInPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
-                                    onPressed: (!kDebugMode || isInProgress)
-                                        ? null
-                                        : () => context.go(AppRoutePaths.debugPath),
+                                    onPressed: () {},
                                     child: const Text('Забыли пароль?'),
                                   ),
                                 ),
@@ -202,9 +199,7 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 TextButton(
-                                  onPressed: (!kDebugMode || isInProgress)
-                                      ? null
-                                      : () => context.go(AppRoutePaths.debugPath),
+                                  onPressed: () {},
                                   child: const Text('Зарегистрироваться'),
                                 ),
                               ],
