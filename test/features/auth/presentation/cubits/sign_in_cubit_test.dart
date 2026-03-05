@@ -4,19 +4,14 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
-import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:moveup_flutter/features/auth/presentation/cubits/sign_in_cubit.dart';
 
 import 'sign_in_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([
-  MockSpec<AppLogger>(),
-  MockSpec<AuthRepository>(),
-])
+@GenerateNiceMocks([MockSpec<AuthRepository>()])
 void main() {
-  late MockAppLogger logger;
   late MockAuthRepository repository;
   late SignInCubit signInCubit;
 
@@ -26,9 +21,8 @@ void main() {
   const user = User(id: 1, name: name, email: email);
 
   setUp(() {
-    logger = MockAppLogger();
     repository = MockAuthRepository();
-    signInCubit = SignInCubit(logger, repository);
+    signInCubit = SignInCubit(repository);
     provideDummy<Result<User, AuthFailure>>(const Success(user));
   });
 
