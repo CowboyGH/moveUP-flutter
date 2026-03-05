@@ -24,6 +24,8 @@ final class SignInCubit extends Cubit<SignInState> {
     emit(const SignInState.inProgress());
 
     final result = await _repository.signIn(email, password);
+    if (isClosed) return;
+
     switch (result) {
       case Success(data: final user):
         emit(SignInState.succeed(user));
