@@ -81,18 +81,11 @@ void main() {
 
     test('returns InvalidCredentialsFailure when api returns 401 invalid_credentials', () async {
       // Arrange
-      final requestOptions = RequestOptions();
-      final exception = DioException(
-        requestOptions: requestOptions,
-        type: DioExceptionType.badResponse,
-        response: Response<Map<String, dynamic>>(
-          requestOptions: requestOptions,
-          statusCode: 401,
-          data: <String, dynamic>{
-            'code': 'invalid_credentials',
-            'message': 'Invalid credentials',
-          },
-        ),
+      final exception = createDioBadResponseException(
+        path: '/login',
+        statusCode: 401,
+        code: 'invalid_credentials',
+        message: 'Invalid credentials',
       );
       when(apiClient.login(any)).thenThrow(exception);
 
