@@ -172,8 +172,9 @@ class _SignInPageState extends State<SignInPage> {
                                 Align(
                                   alignment: Alignment.centerLeft,
                                   child: TextButton(
-                                    onPressed: () =>
-                                        kDebugMode ? context.go(AppRoutePaths.debugPath) : null,
+                                    onPressed: (!kDebugMode || isInProgress)
+                                        ? null
+                                        : () => context.go(AppRoutePaths.debugPath),
                                     child: const Text('Забыли пароль?'),
                                   ),
                                 ),
@@ -199,8 +200,9 @@ class _SignInPageState extends State<SignInPage> {
                                 ),
                                 const SizedBox(height: 4),
                                 TextButton(
-                                  onPressed: () =>
-                                      kDebugMode ? context.go(AppRoutePaths.debugPath) : null,
+                                  onPressed: (!kDebugMode || isInProgress)
+                                      ? null
+                                      : () => context.go(AppRoutePaths.debugPath),
                                   child: const Text('Зарегистрироваться'),
                                 ),
                               ],
