@@ -16,7 +16,15 @@ final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
 /// Determines the redirect path based on the current [authState] and [state].
 String? _regirect(AuthSessionState authState, GoRouterState state) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
-  return authState.maybeWhen(
+  return authState.when(
+    initial: () {
+      if (isAuthScreen) return null;
+      return AppRoutePaths.signInPath;
+    },
+    checking: () {
+      if (isAuthScreen) return null;
+      return AppRoutePaths.signInPath;
+    },
     guest: () {
       if (isAuthScreen) return AppRoutePaths.debugPath;
       return null;
@@ -29,7 +37,6 @@ String? _regirect(AuthSessionState authState, GoRouterState state) {
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
-    orElse: () => null,
   );
 }
 
