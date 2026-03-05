@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Typed network error DTOs and `DioException` mapper.
 - Added typed `NetworkFailure` and `AuthFailure` mapping.
 - Added auth data scaffolding: `AuthApiClient`, base `UserDto`, and auth mapper.
+- Added login API contract and DTOs in auth data layer (`LoginRequestDto`, `LoginResponseDto`, `LoginSessionDto`) and wired `AuthApiClient.login`.
+- Added auth domain/data login flow: `AuthRepository.signIn` contract and `AuthRepositoryImpl` with token persistence.
+- Added sign-in presentation flow: `SignInCubit`, `SignInPageBuilder`, and `SignInPage` integrated with router.
+- Added unit tests for user entity mapping, sign-in repository flow, and `SignInCubit` states.
 
 ### Changed
 
@@ -29,11 +33,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reorganized network/auth structure from legacy `lib/api/service/*` to `lib/core/network/*` and `lib/features/auth/data/*`.
 - Updated DI registrations to use the new network setup, token storage, and feature-scoped auth API client.
 - Simplified `TokenStorage` to read/write/delete only.
-- Reduced `AuthRepository` to a temporary empty interface until feature-specific methods are introduced.
+- Updated DI to register `AuthRepository` implementation and provide sign-in dependencies (`AppLogger`, `AuthApiClient`, `TokenStorage`).
+- Updated auth presentation routing to resolve sign-in dependencies via `SignInPageBuilder`.
+- Simplified `SignInCubit` by removing logger dependency and keeping state transitions focused on auth flow.
+- Reduced debug log noise: removed duplicate sign-in logs in repository/cubit, switched debug analytics logs to debug level, and set debug logger `methodCount` to `0`.
+- Updated sign-in form behavior: simplified password validation for login (`not empty` + max length), relaxed email regex TLD bound, and gated temporary debug routes (`/debug`) behind debug-only checks.
 
 ### Fixed
 
 - Fixed `ErrorResponseDto` serialization configuration by disabling generated `toJson` where it is not used.
+- Fixed potential emit-after-close in SignInCubit by guarding with isClosed after awaiting repository response.
+- Fixed sign-in page debug shortcuts to be truly disabled in release and improved email validation to accept common addresses (e.g. with '+').
 
 ### Removed
 
