@@ -45,19 +45,8 @@ class _SignInPageState extends State<SignInPage> {
       return 'Введите пароль';
     }
 
-    if (value.length < 8 || value.length > 64) {
-      return 'Пароль должен быть от 8 до 64 символов';
-    }
-
-    final allowedCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
-    if (!allowedCharsPattern.hasMatch(value)) {
-      return 'Только латинские буквы и цифры';
-    }
-
-    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
-    final hasDigit = RegExp(r'\d').hasMatch(value);
-    if (!hasLetter || !hasDigit) {
-      return 'Пароль должен содержать буквы и цифры';
+    if (value.length > 128) {
+      return 'Пароль слишком длинный';
     }
 
     return null;
