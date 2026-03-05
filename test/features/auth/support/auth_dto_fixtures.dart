@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/auth/data/dto/login_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/login_session_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
 
 /// Test fixture for login session DTO.
@@ -52,3 +54,34 @@ LoginResponseDto createLoginResponseDto({
   session: session,
   user: user,
 );
+
+/// Test fixture for me response DTO.
+MeResponseDto createMeResponseDto({
+  bool success = true,
+  required UserDto user,
+}) => MeResponseDto(
+  success: success,
+  user: user,
+);
+
+/// Test fixture for Dio bad response exception.
+DioException createDioBadResponseException({
+  required String path,
+  required int statusCode,
+  required String code,
+  String message = 'error_message',
+}) {
+  final requestOptions = RequestOptions(path: path);
+  return DioException(
+    requestOptions: requestOptions,
+    type: DioExceptionType.badResponse,
+    response: Response<Map<String, dynamic>>(
+      requestOptions: requestOptions,
+      statusCode: statusCode,
+      data: <String, dynamic>{
+        'code': code,
+        'message': message,
+      },
+    ),
+  );
+}
