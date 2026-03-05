@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 
 import '../dto/login_request_dto.dart';
 import '../dto/login_response_dto.dart';
+import '../dto/me_response_dto.dart';
 
 part 'auth_api_client.g.dart';
 
@@ -15,4 +16,8 @@ abstract class AuthApiClient {
   /// Sends login request and returns auth data.
   @POST('/login')
   Future<LoginResponseDto> login(@Body() LoginRequestDto request);
+
+  /// Returns current authorized user profile.
+  @GET('/me')
+  Future<MeResponseDto> me();
 }
