@@ -28,19 +28,12 @@ final class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<User, AuthFailure>> signIn(String email, String password) async {
-    _logger.i('SignIn attempt');
     try {
       final request = LoginRequestDto(email: email, password: password);
       final response = await _apiClient.login(request);
       await _tokenStorage.saveAccessToken(response.accessToken);
-      _logger.i('SignIn successful');
       return Result.success(response.user.toEntity());
-    } on DioException catch (e, s) {
-      _logger.w(
-        'SignIn failed with Dio error: type=${e.type}, status=${e.response?.statusCode}',
-        e,
-        s,
-      );
+    } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toAuthFailure());
     } catch (e, s) {
