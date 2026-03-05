@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'core/di/di.dart';
 import 'core/utils/logger/app_logger.dart';
 import 'features/app/app.dart';
+import 'features/auth/presentation/cubits/auth_session_cubit.dart';
 
 /// The main entry point of the application.
 Future<void> run() async {
@@ -15,6 +16,9 @@ Future<void> run() async {
 
       // Setup dependency injection
       await setupDI();
+
+      unawaited(di<AuthSessionCubit>().restoreSession());
+
       final logger = di<AppLogger>();
 
       // Catch errors from Flutter framework

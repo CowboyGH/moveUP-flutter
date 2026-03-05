@@ -41,4 +41,18 @@ final class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
     }
   }
+
+  @override
+  Future<Result<User, AuthFailure>> getCurrentUser() async {
+    try {
+      final response = await _apiClient.me();
+      return Result.success(response.user.toEntity());
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('GetCurrentUser failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
 }

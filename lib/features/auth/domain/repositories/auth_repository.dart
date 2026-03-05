@@ -6,4 +6,7 @@ import '../entities/user.dart';
 abstract interface class AuthRepository {
   /// Signs in a user with email and password.
   Future<Result<User, AuthFailure>> signIn(String email, String password);
+
+  /// Returns current authorized user.
+  Future<Result<User, AuthFailure>> getCurrentUser();
 }

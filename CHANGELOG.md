@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added auth domain/data login flow: `AuthRepository.signIn` contract and `AuthRepositoryImpl` with token persistence.
 - Added sign-in presentation flow: `SignInCubit`, `SignInPageBuilder`, and `SignInPage` integrated with router.
 - Added unit tests for user entity mapping, sign-in repository flow, and `SignInCubit` states.
+- Added `/me` auth API integration: `AuthApiClient.me` and `MeResponseDto`.
+- Added auth session foundation with `AuthSessionCubit` (`initial/checking/guest/authenticated/unauthenticated`) and startup session restore.
+- Added session-aware router refresh integration via `GoRouterCubitRefreshStream`.
+- Added unit tests for `AuthRepositoryImpl.getCurrentUser` and `AuthSessionCubit`.
 
 ### Changed
 
@@ -38,6 +42,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified `SignInCubit` by removing logger dependency and keeping state transitions focused on auth flow.
 - Reduced debug log noise: removed duplicate sign-in logs in repository/cubit, switched debug analytics logs to debug level, and set debug logger `methodCount` to `0`.
 - Updated sign-in form behavior: simplified password validation for login (`not empty` + max length), relaxed email regex TLD bound, and gated temporary debug routes (`/debug`) behind debug-only checks.
+- Extended `AuthRepository` with `getCurrentUser` and implemented mapping flow in `AuthRepositoryImpl`.
+- Updated sign-in UI flow to drive navigation through `AuthSessionCubit` (`onSignInSuccess` / `continueAsGuest`) instead of direct success navigation.
+- Updated `SignInPageBuilder` to provide the shared `AuthSessionCubit` instance from DI for router/session consistency.
+- Updated app bootstrap to call `restoreSession()` asynchronously on startup.
+- Refactored auth repository tests to reuse shared Dio exception fixtures.
 
 ### Fixed
 
