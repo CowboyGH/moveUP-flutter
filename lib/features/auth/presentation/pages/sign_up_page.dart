@@ -181,66 +181,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   validator: _passwordValidator,
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: isInProgress ? null : () => setState(() => _isAgree = !_isAgree),
-                      child: Container(
-                        height: 16,
-                        width: 16,
-                        margin: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: _isAgree
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(
-                            color: _isAgree
-                                ? Colors.transparent
-                                : Theme.of(context).colorScheme.outline,
-                          ),
-                        ),
-                        child: _isAgree
-                            ? Icon(
-                                Icons.check,
-                                size: 12,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              )
-                            : null,
-                      ),
-                    ),
-                    Flexible(
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Я согласен с ',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            TextSpan(
-                              text: 'Политикой конфиденциальности ',
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'и даю ',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                            TextSpan(
-                              text: 'Согласие на обработку персональных данных',
-                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                fontWeight: FontWeight.w500,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                _ConsentRow(
+                  isAgree: _isAgree,
+                  enabled: !isInProgress,
+                  onTap: () => setState(() => _isAgree = !_isAgree),
                 ),
                 const SizedBox(height: 24),
                 FilledButton(
@@ -267,6 +211,80 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Local sign-up widget for consent checkbox and legal text.
+final class _ConsentRow extends StatelessWidget {
+  final bool isAgree;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _ConsentRow({
+    required this.isAgree,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        GestureDetector(
+          onTap: enabled ? onTap : null,
+          child: Container(
+            height: 16,
+            width: 16,
+            margin: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: isAgree ? Theme.of(context).colorScheme.primary : Colors.transparent,
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(
+                color: isAgree ? Colors.transparent : Theme.of(context).colorScheme.outline,
+              ),
+            ),
+            child: isAgree
+                ? Icon(
+                    Icons.check,
+                    size: 12,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  )
+                : null,
+          ),
+        ),
+        Flexible(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: 'Я согласен с ',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                TextSpan(
+                  text: 'Политикой конфиденциальности ',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                TextSpan(
+                  text: 'и даю ',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+                TextSpan(
+                  text: 'Согласие на обработку персональных данных',
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
