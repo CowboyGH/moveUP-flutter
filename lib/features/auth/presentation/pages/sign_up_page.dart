@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
-import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
+import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
 
 /// Sign-up page.
@@ -101,8 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if (!_isAgree) {
-      // TODO: сделать норм текст
-      _showSnack('Подтвердите согласие');
+      _showSnack('Подтвердите согласие с условиями обработки персональных данных');
       return;
     }
 
