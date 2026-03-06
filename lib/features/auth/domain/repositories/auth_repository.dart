@@ -10,6 +10,9 @@ abstract interface class AuthRepository {
   /// Signs up a user with name, email and password.
   Future<Result<User, AuthFailure>> signUp(String name, String email, String password);
 
+  /// Verifies user email by OTP code.
+  Future<Result<User, AuthFailure>> verifyEmail(String email, String code);
+
   /// Returns current authorized user.
   Future<Result<User, AuthFailure>> getCurrentUser();
 }

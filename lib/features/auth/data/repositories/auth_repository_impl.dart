@@ -9,6 +9,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/register_request_dto.dart';
+import '../dto/verify_email_request_dto.dart';
 import '../mappers/auth_mapper.dart';
 import '../mappers/user_entity_mapper.dart';
 import '../remote/auth_api_client.dart';
@@ -54,6 +55,22 @@ final class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(networkFailure.toAuthFailure());
     } catch (e, s) {
       _logger.e('SignUp failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
+
+  @override
+  Future<Result<User, AuthFailure>> verifyEmail(String email, String code) async {
+    try {
+      final request = VerifyEmailRequestDto(email: email, code: code);
+      final response = await _apiClient.verifyEmail(request);
+      await _tokenStorage.saveAccessToken(response.accessToken);
+      return Result.success(response.user.toEntity());
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('VerifyEmail failed with unexpected error', e, s);
       return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
     }
   }
