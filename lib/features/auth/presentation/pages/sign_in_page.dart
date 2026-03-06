@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_in_cubit.dart';
+import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_text_field.dart';
@@ -147,15 +148,10 @@ class _SignInPageState extends State<SignInPage> {
                       : const Text('Войти'),
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  'Еще нет аккаунта?',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 4),
-                TextButton(
+                AuthSwitchSection(
+                  title: 'Еще нет аккаунта?',
+                  actionText: 'Зарегистрироваться',
                   onPressed: isInProgress ? null : () => context.go(AppRoutePaths.signUpPath),
-                  child: const Text('Зарегистрироваться'),
                 ),
               ],
             ),
