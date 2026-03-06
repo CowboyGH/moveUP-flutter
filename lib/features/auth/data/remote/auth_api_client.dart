@@ -6,6 +6,8 @@ import '../dto/login_response_dto.dart';
 import '../dto/me_response_dto.dart';
 import '../dto/register_request_dto.dart';
 import '../dto/register_response_dto.dart';
+import '../dto/verify_email_request_dto.dart';
+import '../dto/verify_email_response_dto.dart';
 
 part 'auth_api_client.g.dart';
 
@@ -22,6 +24,10 @@ abstract class AuthApiClient {
   /// Sends register request and returns registered user payload.
   @POST('/register')
   Future<RegisterResponseDto> register(@Body() RegisterRequestDto request);
+
+  /// Sends verify email request and returns auth data.
+  @POST('/verify-email')
+  Future<VerifyEmailResponseDto> verifyEmail(@Body() VerifyEmailRequestDto request);
 
   /// Returns current authorized user profile.
   @GET('/me')
