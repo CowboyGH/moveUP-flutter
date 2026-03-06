@@ -88,4 +88,26 @@ void main() {
       expect(AuthValidators.password('ABC12345'), isNull);
     });
   });
+
+  group('AuthValidators.otpCode', () {
+    const requiredCodeMessage = 'Введите код';
+    const invalidCodeMessage = 'Код должен состоять из 6 цифр';
+
+    test('returns required error when value is empty', () {
+      expect(AuthValidators.otpCode(null), requiredCodeMessage);
+      expect(AuthValidators.otpCode(''), requiredCodeMessage);
+      expect(AuthValidators.otpCode('   '), requiredCodeMessage);
+    });
+
+    test('returns invalid error when value is non-digit or wrong length', () {
+      expect(AuthValidators.otpCode('abc123'), invalidCodeMessage);
+      expect(AuthValidators.otpCode('12345'), invalidCodeMessage);
+      expect(AuthValidators.otpCode('1234567'), invalidCodeMessage);
+    });
+
+    test('returns null when value is valid', () {
+      expect(AuthValidators.otpCode('123456'), isNull);
+      expect(AuthValidators.otpCode(' 123456 '), isNull);
+    });
+  });
 }
