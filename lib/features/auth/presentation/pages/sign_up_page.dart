@@ -67,8 +67,10 @@ class _SignUpPageState extends State<SignUpPage> {
       listener: (context, state) {
         state.whenOrNull(
           succeed: (_) {
-            _showSnack('Регистрация прошла успешно. Проверьте почту для получения кода.');
-            context.go(AppRoutePaths.signInPath);
+            context.go(
+              AppRoutePaths.verifyEmailPath,
+              extra: _emailController.text.trim(),
+            );
           },
           failed: (failure) {
             if (failure.message.isNotEmpty) {

@@ -6,6 +6,7 @@ abstract final class AuthValidators {
   static final RegExp _allowedPasswordCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
   static final RegExp _passwordHasLetterPattern = RegExp(r'[A-Za-z]');
   static final RegExp _passwordHasDigitPattern = RegExp(r'\d');
+  static final RegExp _otpCodePattern = RegExp(r'^\d{6}$');
 
   /// Validates a user name value.
   static String? name(String? value) {
@@ -55,6 +56,18 @@ abstract final class AuthValidators {
       return 'Пароль должен содержать буквы и цифры';
     }
 
+    return null;
+  }
+
+  /// Validates OTP verification code.
+  static String? otpCode(String? value) {
+    final trimmedValue = value?.trim() ?? '';
+    if (trimmedValue.isEmpty) {
+      return 'Введите код';
+    }
+    if (!_otpCodePattern.hasMatch(trimmedValue)) {
+      return 'Код должен состоять из 6 цифр';
+    }
     return null;
   }
 }

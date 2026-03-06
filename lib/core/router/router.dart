@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
+import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -59,6 +60,19 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.signUpPath,
       builder: (_, _) => const SignUpPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.verifyEmailPath,
+      redirect: (_, state) {
+        final extra = state.extra;
+        if (extra is! String || extra.trim().isEmpty) {
+          return AppRoutePaths.signUpPath;
+        }
+        return null;
+      },
+      builder: (_, state) => VerifyEmailPageBuilder(
+        email: (state.extra as String).trim(),
+      ),
     ),
   ],
 );
