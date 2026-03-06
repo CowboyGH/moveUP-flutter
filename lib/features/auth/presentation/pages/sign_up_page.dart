@@ -7,6 +7,8 @@ import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
 import '../widgets/auth_flow_shell.dart';
+import '../widgets/auth_password_field.dart';
+import '../widgets/auth_text_field.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -23,7 +25,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _isPasswordVisible = false;
   bool _isAgree = false;
 
   @override
@@ -152,59 +153,30 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                TextFormField(
+                AuthTextField(
                   controller: _nameController,
                   enabled: !isInProgress,
+                  hintText: 'Введите имя',
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    hintText: 'Введите имя',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                  ),
                   validator: _nameValidator,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
+                AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
+                  hintText: 'Введите email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    hintText: 'Введите email',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                  ),
                   validator: _emailValidator,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
+                AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  keyboardType: TextInputType.visiblePassword,
-                  obscureText: !_isPasswordVisible,
+                  hintText: 'Введите пароль',
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
-                  decoration: InputDecoration(
-                    hintText: 'Введите пароль',
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: isInProgress
-                          ? null
-                          : () => setState(() {
-                              _isPasswordVisible = !_isPasswordVisible;
-                            }),
-                      icon: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_rounded
-                            : Icons.visibility_off_rounded,
-                      ),
-                    ),
-                  ),
                   validator: _passwordValidator,
                 ),
                 const SizedBox(height: 12),
