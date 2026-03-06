@@ -4,6 +4,7 @@ import 'package:moveup_flutter/features/auth/data/dto/login_session_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/register_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 
 /// Test fixture for login session DTO.
 LoginSessionDto createLoginSessionDto({
@@ -74,6 +75,23 @@ RegisterResponseDto createRegisterResponseDto({
 }) => RegisterResponseDto(
   success: success,
   message: message,
+  user: user,
+);
+
+/// Test fixture for verify email response DTO.
+VerifyEmailResponseDto createVerifyEmailResponseDto({
+  bool success = true,
+  String message = 'Email успешно подтвержден.',
+  String accessToken = 'test_access_token',
+  String tokenType = 'bearer',
+  int expiresIn = 3600,
+  required UserDto user,
+}) => VerifyEmailResponseDto(
+  success: success,
+  message: message,
+  accessToken: accessToken,
+  tokenType: tokenType,
+  expiresIn: expiresIn,
   user: user,
 );
 
