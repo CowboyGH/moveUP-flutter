@@ -11,4 +11,7 @@ abstract class AppRoutePaths {
 
   /// Route path for the sign-up page.
   static const signUpPath = '$authPrefix/sign-up';
+
+  /// Route path for the verify-email page.
+  static const verifyEmailPath = '$authPrefix/verify-email';
 }
