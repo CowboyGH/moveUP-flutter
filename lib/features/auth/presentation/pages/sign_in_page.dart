@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_in_cubit.dart';
+import '../validators/auth_validators.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
@@ -29,32 +30,6 @@ class _SignInPageState extends State<SignInPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  String? _emailValidator(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Введите email';
-    }
-
-    final emailPattern = RegExp(
-      r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~%-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$",
-    );
-    if (!emailPattern.hasMatch(value.trim())) {
-      return 'Неверный формат email';
-    }
-    return null;
-  }
-
-  String? _passwordValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Введите пароль';
-    }
-
-    if (value.length > 128) {
-      return 'Пароль слишком длинный';
-    }
-
-    return null;
   }
 
   void _showSnack(String message) {
@@ -114,7 +89,7 @@ class _SignInPageState extends State<SignInPage> {
                   hintText: 'Введите email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  validator: _emailValidator,
+                  validator: AuthValidators.email,
                 ),
                 const SizedBox(height: 12),
                 AuthPasswordField(
@@ -123,7 +98,7 @@ class _SignInPageState extends State<SignInPage> {
                   hintText: 'Введите пароль',
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
-                  validator: _passwordValidator,
+                  validator: AuthValidators.password,
                 ),
                 const SizedBox(height: 8),
                 const Align(

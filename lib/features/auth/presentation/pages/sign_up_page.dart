@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
+import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
@@ -33,57 +34,6 @@ class _SignUpPageState extends State<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  String? _nameValidator(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Введите имя';
-    }
-    if (value.length > 20) {
-      return 'Длина имени должна быть не более 20 символов';
-    }
-    return null;
-  }
-
-  String? _emailValidator(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Введите email';
-    }
-
-    final emailPattern = RegExp(
-      r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~%-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$",
-    );
-
-    if (!emailPattern.hasMatch(value.trim())) {
-      return 'Неверный формат email';
-    }
-    return null;
-  }
-
-  String? _passwordValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Введите пароль';
-    }
-
-    if (value.length < 8) {
-      return 'Пароль должен содержать минимум 8 символов';
-    }
-    if (value.length > 64) {
-      return 'Пароль должен быть не длиннее 64 символов';
-    }
-
-    final allowedCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
-    if (!allowedCharsPattern.hasMatch(value)) {
-      return 'Пароль должен содержать только латинские буквы и цифры';
-    }
-
-    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
-    final hasDigit = RegExp(r'\d').hasMatch(value);
-    if (!hasLetter || !hasDigit) {
-      return 'Пароль должен содержать буквы и цифры';
-    }
-
-    return null;
   }
 
   void _showSnack(String message) {
@@ -158,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   hintText: 'Введите имя',
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
-                  validator: _nameValidator,
+                  validator: AuthValidators.name,
                 ),
                 const SizedBox(height: 12),
                 AuthTextField(
@@ -167,7 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   hintText: 'Введите email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  validator: _emailValidator,
+                  validator: AuthValidators.email,
                 ),
                 const SizedBox(height: 12),
                 AuthPasswordField(
@@ -176,7 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   hintText: 'Введите пароль',
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
-                  validator: _passwordValidator,
+                  validator: AuthValidators.password,
                 ),
                 const SizedBox(height: 12),
                 _ConsentRow(
