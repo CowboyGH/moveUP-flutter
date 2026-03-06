@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
+import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -54,6 +55,10 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.signInPath,
       builder: (_, _) => const SignInPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.signUpPath,
+      builder: (_, _) => const SignUpPageBuilder(),
     ),
   ],
 );

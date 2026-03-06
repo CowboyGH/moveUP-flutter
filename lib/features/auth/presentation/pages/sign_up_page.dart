@@ -5,29 +5,42 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
-import '../cubits/sign_in_cubit.dart';
+import '../cubits/sign_up_cubit.dart';
 
-/// Sign-in page.
-class SignInPage extends StatefulWidget {
-  /// Creates an instance of [SignInPage].
-  const SignInPage({super.key});
+/// Sign-up page.
+class SignUpPage extends StatefulWidget {
+  /// Creates an instance of [SignUpPage].
+  const SignUpPage({super.key});
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
+  bool _isAgree = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  String? _nameValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Введите имя';
+    }
+    if (value.length > 20) {
+      return 'Длина имени должна быть не более 20 символов';
+    }
+    return null;
   }
 
   String? _emailValidator(String? value) {
@@ -38,6 +51,7 @@ class _SignInPageState extends State<SignInPage> {
     final emailPattern = RegExp(
       r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~%-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$",
     );
+
     if (!emailPattern.hasMatch(value.trim())) {
       return 'Неверный формат email';
     }
@@ -49,8 +63,22 @@ class _SignInPageState extends State<SignInPage> {
       return 'Введите пароль';
     }
 
-    if (value.length > 128) {
-      return 'Пароль слишком длинный';
+    if (value.length < 8) {
+      return 'Пароль должен содержать минимум 8 символов';
+    }
+    if (value.length > 64) {
+      return 'Пароль должен быть не длиннее 64 символов';
+    }
+
+    final allowedCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
+    if (!allowedCharsPattern.hasMatch(value)) {
+      return 'Пароль должен содержать только латинские буквы и цифры';
+    }
+
+    final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+    final hasDigit = RegExp(r'\d').hasMatch(value);
+    if (!hasLetter || !hasDigit) {
+      return 'Пароль должен содержать буквы и цифры';
     }
 
     return null;
@@ -69,7 +97,14 @@ class _SignInPageState extends State<SignInPage> {
       return;
     }
 
-    context.read<SignInCubit>().signIn(
+    if (!_isAgree) {
+      // TODO: сделать норм текст
+      _showSnack('Подтвердите согласие');
+      return;
+    }
+
+    context.read<SignUpCubit>().signUp(
+      _nameController.text.trim(),
       _emailController.text.trim(),
       _passwordController.text,
     );
@@ -77,10 +112,13 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SignInCubit, SignInState>(
+    return BlocConsumer<SignUpCubit, SignUpState>(
       listener: (context, state) {
         state.whenOrNull(
-          succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
+          succeed: (_) {
+            _showSnack('Регистрация прошла успешно. Проверьте почту для получения кода.');
+            context.go(AppRoutePaths.signInPath);
+          },
           failed: (failure) {
             if (failure.message.isNotEmpty) {
               _showSnack(failure.message);
@@ -96,7 +134,7 @@ class _SignInPageState extends State<SignInPage> {
         return Scaffold(
           body: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 children: [
                   Align(
@@ -112,7 +150,7 @@ class _SignInPageState extends State<SignInPage> {
                     child: Center(
                       child: SingleChildScrollView(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 36),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(24),
@@ -123,13 +161,27 @@ class _SignInPageState extends State<SignInPage> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Text(
-                                  'Авторизация',
+                                  'Регистрация',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 const SizedBox(height: 32),
+                                TextFormField(
+                                  controller: _nameController,
+                                  enabled: !isInProgress,
+                                  keyboardType: TextInputType.name,
+                                  textInputAction: TextInputAction.next,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Введите имя',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    ),
+                                  ),
+                                  validator: _nameValidator,
+                                ),
+                                const SizedBox(height: 12),
                                 TextFormField(
                                   controller: _emailController,
                                   enabled: !isInProgress,
@@ -171,13 +223,71 @@ class _SignInPageState extends State<SignInPage> {
                                   ),
                                   validator: _passwordValidator,
                                 ),
-                                const SizedBox(height: 8),
-                                const Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: TextButton(
-                                    onPressed: null,
-                                    child: Text('Забыли пароль?'),
-                                  ),
+                                const SizedBox(height: 12),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: isInProgress
+                                          ? null
+                                          : () => setState(() => _isAgree = !_isAgree),
+                                      child: Container(
+                                        height: 16,
+                                        width: 16,
+                                        margin: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: _isAgree
+                                              ? Theme.of(context).colorScheme.primary
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.circular(3),
+                                          border: Border.all(
+                                            color: _isAgree
+                                                ? Colors.transparent
+                                                : Theme.of(context).colorScheme.outline,
+                                          ),
+                                        ),
+                                        child: _isAgree
+                                            ? Icon(
+                                                Icons.check,
+                                                size: 12,
+                                                color: Theme.of(context).colorScheme.onPrimary,
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Я согласен с ',
+                                              style: Theme.of(context).textTheme.bodySmall,
+                                            ),
+                                            TextSpan(
+                                              text: 'Политикой конфиденциальности ',
+                                              style: Theme.of(context).textTheme.bodySmall!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w500,
+                                                    decoration: TextDecoration.underline,
+                                                  ),
+                                            ),
+                                            TextSpan(
+                                              text: 'и даю ',
+                                              style: Theme.of(context).textTheme.bodySmall,
+                                            ),
+                                            TextSpan(
+                                              text: 'Согласие на обработку персональных данных',
+                                              style: Theme.of(context).textTheme.bodySmall!
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.w500,
+                                                    decoration: TextDecoration.underline,
+                                                  ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 24),
                                 FilledButton(
@@ -191,11 +301,11 @@ class _SignInPageState extends State<SignInPage> {
                                           width: 20,
                                           child: CircularProgressIndicator.adaptive(),
                                         )
-                                      : const Text('Войти'),
+                                      : const Text('Зарегистрироваться'),
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  'Еще нет аккаунта?',
+                                  'Уже есть аккаунт?',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 ),
@@ -203,8 +313,8 @@ class _SignInPageState extends State<SignInPage> {
                                 TextButton(
                                   onPressed: isInProgress
                                       ? null
-                                      : () => context.go(AppRoutePaths.signUpPath),
-                                  child: const Text('Зарегистрироваться'),
+                                      : () => context.go(AppRoutePaths.signInPath),
+                                  child: const Text('Войти'),
                                 ),
                               ],
                             ),
