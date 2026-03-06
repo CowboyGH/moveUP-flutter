@@ -8,4 +8,7 @@ abstract class AppRoutePaths {
 
   /// Route path for the sign-in page.
   static const signInPath = '$authPrefix/sign-in';
+
+  /// Route path for the sign-up page.
+  static const signUpPath = '$authPrefix/sign-up';
 }

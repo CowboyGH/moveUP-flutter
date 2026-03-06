@@ -23,7 +23,7 @@ class UserDto {
 
   /// Timestamp of the user email verification.
   @JsonKey(name: 'email_verified_at')
-  final String emailVerifiedAt;
+  final String? emailVerifiedAt;
 
   /// Timestamp of the last update to the user information.
   @JsonKey(name: 'updated_at')

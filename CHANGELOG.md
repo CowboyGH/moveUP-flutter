@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added auth session foundation with `AuthSessionCubit` (`initial/checking/guest/authenticated/unauthenticated`) and startup session restore.
 - Added session-aware router refresh integration via `GoRouterCubitRefreshStream`.
 - Added unit tests for `AuthRepositoryImpl.getCurrentUser` and `AuthSessionCubit`.
+- Added register API contract and DTOs in auth data layer (`RegisterRequestDto`, `RegisterResponseDto`) and wired `AuthApiClient.register`.
+- Added auth domain/data sign-up flow: `AuthRepository.signUp` contract and `AuthRepositoryImpl` implementation.
+- Added sign-up presentation flow: `SignUpCubit`, `SignUpPageBuilder`, and `SignUpPage` integrated with router.
+- Added unit tests for `AuthRepositoryImpl.signUp` and `SignUpCubit`.
+- Added shared auth UI widgets for reusable screen composition: (`AuthFlowShell`, `AuthTextField`, `AuthPasswordField`, `AuthSwitchSection`)
 
 ### Changed
 
@@ -47,6 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `SignInPageBuilder` to provide the shared `AuthSessionCubit` instance from DI for router/session consistency.
 - Updated app bootstrap to call `restoreSession()` asynchronously on startup.
 - Refactored auth repository tests to reuse shared Dio exception fixtures.
+- Updated `UserDto.emailVerifiedAt` to nullable to align with `/register` response payload.
+- Refactored sign-in and sign-up pages to use shared auth widgets and unified auth layout.
+- Updated sign-up consent UX: extracted local `ConsentRow` widget and clarified validation snackbar message.
 
 ### Fixed
 
