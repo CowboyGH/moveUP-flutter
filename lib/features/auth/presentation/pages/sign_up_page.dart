@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
+import '../widgets/auth_flow_shell.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -131,200 +132,169 @@ class _SignUpPageState extends State<SignUpPage> {
           inProgress: () => true,
           orElse: () => false,
         );
-        return Scaffold(
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: (!kDebugMode || isInProgress)
-                          ? null
-                          : () => context.read<AuthSessionCubit>().continueAsGuest(),
-                      child: const Text('Пропустить'),
+        return AuthFlowShell(
+          topRightAction: TextButton(
+            onPressed: (!kDebugMode || isInProgress)
+                ? null
+                : () => context.read<AuthSessionCubit>().continueAsGuest(),
+            child: const Text('Пропустить'),
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Регистрация',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                TextFormField(
+                  controller: _nameController,
+                  enabled: !isInProgress,
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Введите имя',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                   ),
-                  Expanded(
-                    child: Center(
-                      child: SingleChildScrollView(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 36),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  'Регистрация',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 32),
-                                TextFormField(
-                                  controller: _nameController,
-                                  enabled: !isInProgress,
-                                  keyboardType: TextInputType.name,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Введите имя',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                  ),
-                                  validator: _nameValidator,
-                                ),
-                                const SizedBox(height: 12),
-                                TextFormField(
-                                  controller: _emailController,
-                                  enabled: !isInProgress,
-                                  keyboardType: TextInputType.emailAddress,
-                                  textInputAction: TextInputAction.next,
-                                  decoration: const InputDecoration(
-                                    hintText: 'Введите email',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                  ),
-                                  validator: _emailValidator,
-                                ),
-                                const SizedBox(height: 12),
-                                TextFormField(
-                                  controller: _passwordController,
-                                  enabled: !isInProgress,
-                                  keyboardType: TextInputType.visiblePassword,
-                                  obscureText: !_isPasswordVisible,
-                                  textInputAction: TextInputAction.done,
-                                  onFieldSubmitted: (_) => _submit(),
-                                  decoration: InputDecoration(
-                                    hintText: 'Введите пароль',
-                                    border: const OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                                    ),
-                                    suffixIcon: IconButton(
-                                      onPressed: isInProgress
-                                          ? null
-                                          : () => setState(() {
-                                              _isPasswordVisible = !_isPasswordVisible;
-                                            }),
-                                      icon: Icon(
-                                        _isPasswordVisible
-                                            ? Icons.visibility_rounded
-                                            : Icons.visibility_off_rounded,
-                                      ),
-                                    ),
-                                  ),
-                                  validator: _passwordValidator,
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: isInProgress
-                                          ? null
-                                          : () => setState(() => _isAgree = !_isAgree),
-                                      child: Container(
-                                        height: 16,
-                                        width: 16,
-                                        margin: const EdgeInsets.all(4),
-                                        decoration: BoxDecoration(
-                                          color: _isAgree
-                                              ? Theme.of(context).colorScheme.primary
-                                              : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(3),
-                                          border: Border.all(
-                                            color: _isAgree
-                                                ? Colors.transparent
-                                                : Theme.of(context).colorScheme.outline,
-                                          ),
-                                        ),
-                                        child: _isAgree
-                                            ? Icon(
-                                                Icons.check,
-                                                size: 12,
-                                                color: Theme.of(context).colorScheme.onPrimary,
-                                              )
-                                            : null,
-                                      ),
-                                    ),
-                                    Flexible(
-                                      child: RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text: 'Я согласен с ',
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            ),
-                                            TextSpan(
-                                              text: 'Политикой конфиденциальности ',
-                                              style: Theme.of(context).textTheme.bodySmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.w500,
-                                                    decoration: TextDecoration.underline,
-                                                  ),
-                                            ),
-                                            TextSpan(
-                                              text: 'и даю ',
-                                              style: Theme.of(context).textTheme.bodySmall,
-                                            ),
-                                            TextSpan(
-                                              text: 'Согласие на обработку персональных данных',
-                                              style: Theme.of(context).textTheme.bodySmall!
-                                                  .copyWith(
-                                                    fontWeight: FontWeight.w500,
-                                                    decoration: TextDecoration.underline,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 24),
-                                FilledButton(
-                                  onPressed: isInProgress ? null : _submit,
-                                  style: FilledButton.styleFrom(
-                                    minimumSize: const Size.fromHeight(52),
-                                  ),
-                                  child: isInProgress
-                                      ? const SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator.adaptive(),
-                                        )
-                                      : const Text('Зарегистрироваться'),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  'Уже есть аккаунт?',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                                const SizedBox(height: 4),
-                                TextButton(
-                                  onPressed: isInProgress
-                                      ? null
-                                      : () => context.go(AppRoutePaths.signInPath),
-                                  child: const Text('Войти'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                  validator: _nameValidator,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _emailController,
+                  enabled: !isInProgress,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    hintText: 'Введите email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                  ),
+                  validator: _emailValidator,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _passwordController,
+                  enabled: !isInProgress,
+                  keyboardType: TextInputType.visiblePassword,
+                  obscureText: !_isPasswordVisible,
+                  textInputAction: TextInputAction.done,
+                  onFieldSubmitted: (_) => _submit(),
+                  decoration: InputDecoration(
+                    hintText: 'Введите пароль',
+                    border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: isInProgress
+                          ? null
+                          : () => setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            }),
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility_rounded
+                            : Icons.visibility_off_rounded,
                       ),
                     ),
                   ),
-                ],
-              ),
+                  validator: _passwordValidator,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: isInProgress ? null : () => setState(() => _isAgree = !_isAgree),
+                      child: Container(
+                        height: 16,
+                        width: 16,
+                        margin: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: _isAgree
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(
+                            color: _isAgree
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.outline,
+                          ),
+                        ),
+                        child: _isAgree
+                            ? Icon(
+                                Icons.check,
+                                size: 12,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              )
+                            : null,
+                      ),
+                    ),
+                    Flexible(
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Я согласен с ',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            TextSpan(
+                              text: 'Политикой конфиденциальности ',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'и даю ',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                            TextSpan(
+                              text: 'Согласие на обработку персональных данных',
+                              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                FilledButton(
+                  onPressed: isInProgress ? null : _submit,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(52),
+                  ),
+                  child: isInProgress
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : const Text('Зарегистрироваться'),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Уже есть аккаунт?',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 4),
+                TextButton(
+                  onPressed: isInProgress ? null : () => context.go(AppRoutePaths.signInPath),
+                  child: const Text('Войти'),
+                ),
+              ],
             ),
           ),
         );
