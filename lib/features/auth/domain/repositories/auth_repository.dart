@@ -13,6 +13,9 @@ abstract interface class AuthRepository {
   /// Verifies user email by OTP code.
   Future<Result<User, AuthFailure>> verifyEmail(String email, String code);
 
+  /// Resends OTP code for auth verification flow.
+  Future<Result<void, AuthFailure>> resendOtpCode(String email);
+
   /// Returns current authorized user.
   Future<Result<User, AuthFailure>> getCurrentUser();
 }

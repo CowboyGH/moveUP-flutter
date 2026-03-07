@@ -9,6 +9,7 @@ import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/register_request_dto.dart';
+import '../dto/resend_verification_code_request_dto.dart';
 import '../dto/verify_email_request_dto.dart';
 import '../mappers/auth_mapper.dart';
 import '../mappers/user_entity_mapper.dart';
@@ -71,6 +72,21 @@ final class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(networkFailure.toAuthFailure());
     } catch (e, s) {
       _logger.e('VerifyEmail failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
+
+  @override
+  Future<Result<void, AuthFailure>> resendOtpCode(String email) async {
+    try {
+      final request = ResendVerificationCodeRequestDto(email: email);
+      await _apiClient.resendVerificationCode(request);
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('ResendOtpCode failed with unexpected error', e, s);
       return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
     }
   }
