@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/router_paths.dart';
 import '../cubits/forgot_password_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
@@ -46,7 +48,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     return BlocConsumer<ForgotPasswordCubit, ForgotPasswordState>(
       listener: (context, state) {
         state.whenOrNull(
-          succeed: () => _showSnack('Код для сброса пароля отправлен на вашу почту'),
+          succeed: () => context.push(
+            AppRoutePaths.verifyResetCodePath,
+            extra: _emailController.text.trim(),
+          ),
           failed: (failure) {
             if (failure.message.isNotEmpty) {
               _showSnack(failure.message);

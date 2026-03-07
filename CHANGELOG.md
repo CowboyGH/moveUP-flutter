@@ -49,6 +49,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added forgot-password presentation flow: `ForgotPasswordCubit`, `ForgotPasswordPageBuilder`, and `ForgotPasswordPage` integrated with router.
 - Added new auth route path for password recovery request: `/auth/forgot-password`.
 - Added unit tests for `AuthRepositoryImpl.forgotPassword` and `ForgotPasswordCubit`.
+- Added verify-reset-code API contract and DTOs in auth data layer (`VerifyResetCodeRequestDto`, `VerifyResetCodeResponseDto`) and wired `AuthApiClient.verifyResetCode`.
+- Added auth domain/data verify-reset-code flow: `AuthRepository.verifyResetCode` contract and `AuthRepositoryImpl` implementation.
+- Added verify-reset-code presentation flow: `VerifyResetCodeCubit`, `VerifyResetCodePageBuilder`, and `VerifyResetCodePage` integrated with router.
+- Added new auth route path for password recovery OTP verification: `/auth/forgot-password/verify-code`.
+- Added unit tests for `AuthRepositoryImpl.verifyResetCode` and `VerifyResetCodeCubit`.
 
 ### Changed
 
@@ -71,8 +76,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored sign-in and sign-up pages to use shared auth widgets and unified auth layout.
 - Updated sign-up consent UX: extracted local `ConsentRow` widget and clarified validation snackbar message.
 - Updated sign-up success flow to navigate to verify-email screen and pass email through route `extra`.
+- Updated forgot-password success flow to navigate to verify-reset-code screen and pass email through route `extra`.
 - Updated router verify-email route handling with route-level guard: redirects to sign-up when email `extra` is missing/empty.
+- Updated router verify-reset-code route handling with route-level guard: redirects to forgot-password when email `extra` is missing/empty.
 - Updated verify-email page to use `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling instead of local timer-only placeholder logic.
+- Updated verify-reset-code page to reuse `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling.
 - Updated sign-in forgot-password action to route to the dedicated password recovery request screen.
 
 ### Fixed

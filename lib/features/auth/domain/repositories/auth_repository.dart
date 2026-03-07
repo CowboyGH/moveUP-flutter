@@ -13,10 +13,13 @@ abstract interface class AuthRepository {
   /// Requests password reset OTP for the given email.
   Future<Result<void, AuthFailure>> forgotPassword(String email);
 
+  /// Verifies password reset OTP for the given email.
+  Future<Result<void, AuthFailure>> verifyResetCode(String email, String code);
+
   /// Verifies user email by OTP code.
   Future<Result<User, AuthFailure>> verifyEmail(String email, String code);
 
-  /// Resends OTP code for auth verification flow.
+  /// Resends OTP code for email-based OTP flows.
   Future<Result<void, AuthFailure>> resendOtpCode(String email);
 
   /// Returns current authorized user.
