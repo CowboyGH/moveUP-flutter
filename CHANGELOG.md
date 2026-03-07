@@ -34,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added sign-up presentation flow: `SignUpCubit`, `SignUpPageBuilder`, and `SignUpPage` integrated with router.
 - Added unit tests for `AuthRepositoryImpl.signUp` and `SignUpCubit`.
 - Added shared auth UI widgets for reusable screen composition: (`AuthFlowShell`, `AuthTextField`, `AuthPasswordField`, `AuthSwitchSection`)
+- Added verify-email API contract and DTOs in auth data layer (`VerifyEmailRequestDto`, `VerifyEmailResponseDto`) and wired `AuthApiClient.verifyEmail`.
+- Added auth domain/data verify-email flow: `AuthRepository.verifyEmail` contract and `AuthRepositoryImpl` implementation with token persistence.
+- Added verify-email presentation flow: `VerifyEmailCubit`, `VerifyEmailPageBuilder`, and `VerifyEmailPage` integrated with router.
+- Added new auth route path for OTP verification: `/auth/verify-email`.
+- Added local resend-code countdown placeholder UI on verify-email screen (without backend resend endpoint integration).
+- Added unit tests for `AuthRepositoryImpl.verifyEmail` and `VerifyEmailCubit`.
+- Added shared OTP validator in auth presentation validators and test coverage for OTP validation cases.
 
 ### Changed
 
@@ -55,6 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `UserDto.emailVerifiedAt` to nullable to align with `/register` response payload.
 - Refactored sign-in and sign-up pages to use shared auth widgets and unified auth layout.
 - Updated sign-up consent UX: extracted local `ConsentRow` widget and clarified validation snackbar message.
+- Updated sign-up success flow to navigate to verify-email screen and pass email through route `extra`.
+- Updated router verify-email route handling with route-level guard: redirects to sign-up when email `extra` is missing/empty.
 
 ### Fixed
 
