@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
+import '../../features/auth/presentation/pages/forgot_password_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
@@ -60,6 +61,10 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.signUpPath,
       builder: (_, _) => const SignUpPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.forgotPasswordPath,
+      builder: (_, _) => const ForgotPasswordPageBuilder(),
     ),
     GoRoute(
       path: AppRoutePaths.verifyEmailPath,
