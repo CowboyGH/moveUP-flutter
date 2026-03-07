@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../cubits/auth_session_cubit.dart';
+import '../cubits/otp_resend_cubit.dart';
 import '../cubits/verify_email_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
@@ -25,18 +24,14 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   final _formKey = GlobalKey<FormState>();
   final _codeController = TextEditingController();
 
-  Timer? _resendTimer;
-  int _secondsLeft = 60;
-
   @override
   void initState() {
     super.initState();
-    _startResendTimer();
+    context.read<OtpResendCubit>().startCooldown();
   }
 
   @override
   void dispose() {
-    _resendTimer?.cancel();
     _codeController.dispose();
     super.dispose();
   }
@@ -60,117 +55,118 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     );
   }
 
-  void _startResendTimer() {
-    _resendTimer?.cancel();
-    setState(() => _secondsLeft = 60);
-    _resendTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) {
-        timer.cancel();
-        return;
-      }
-      if (_secondsLeft <= 1) {
-        timer.cancel();
-        setState(() => _secondsLeft = 0);
-        return;
-      }
-      setState(() => _secondsLeft -= 1);
-    });
-  }
-
-  String get timerText {
-    final minutes = (_secondsLeft ~/ 60).toString().padLeft(2, '0');
-    final seconds = (_secondsLeft % 60).toString().padLeft(2, '0');
+  String _formatTimer(int secondsLeft) {
+    final minutes = (secondsLeft ~/ 60).toString().padLeft(2, '0');
+    final seconds = (secondsLeft % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
   }
 
-  void _onResendPressed() {
-    _showSnack('[Unreleased]: Письмо было направлено на почту.');
-    _startResendTimer();
-  }
+  void _onResendPressed() => context.read<OtpResendCubit>().resendOtpCode(widget.email);
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<VerifyEmailCubit, VerifyEmailState>(
-      listener: (context, state) {
-        state.whenOrNull(
-          succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
-          failed: (failure) {
-            if (failure.message.isNotEmpty) {
+    final verifyEmailState = context.watch<VerifyEmailCubit>().state;
+    final otpResendState = context.watch<OtpResendCubit>().state;
+    final isVerifyEmailInProgress = verifyEmailState.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    final isResendInProgress = otpResendState.isInProgress;
+    final canResend =
+        !isVerifyEmailInProgress && !isResendInProgress && otpResendState.secondsLeft == 0;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<VerifyEmailCubit, VerifyEmailState>(
+          listener: (context, state) {
+            state.whenOrNull(
+              succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
+              failed: (failure) {
+                if (failure.message.isNotEmpty) {
+                  _showSnack(failure.message);
+                }
+              },
+            );
+          },
+        ),
+        BlocListener<OtpResendCubit, OtpResendState>(
+          listenWhen: (previous, current) =>
+              previous.isSucceeded != current.isSucceeded || previous.failure != current.failure,
+          listener: (context, state) {
+            if (state.isSucceeded) {
+              _showSnack('Новый код подтверждения отправлен на вашу почту');
+              return;
+            }
+
+            final failure = state.failure;
+            if (failure != null && failure.message.isNotEmpty) {
               _showSnack(failure.message);
             }
           },
-        );
-      },
-      builder: (context, state) {
-        final isInProgress = state.maybeWhen(
-          inProgress: () => true,
-          orElse: () => false,
-        );
-        final canResend = !isInProgress && _secondsLeft == 0;
-        return AuthFlowShell(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Регистрация',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+        ),
+      ],
+      child: AuthFlowShell(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Регистрация',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Введите код из письма, чтобы подтвердить вашу почту и завершить регистрацию',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 32),
+              AuthTextField(
+                controller: _codeController,
+                enabled: !isVerifyEmailInProgress,
+                hintText: 'Введите код',
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _submit(),
+                validator: AuthValidators.otpCode,
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: canResend ? _onResendPressed : null,
+                    child: const Text('Отправить повторно'),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Введите код из письма, чтобы подтвердить вашу почту и завершить регистрацию',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 32),
-                AuthTextField(
-                  controller: _codeController,
-                  enabled: !isInProgress,
-                  hintText: 'Введите код',
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (_) => _submit(),
-                  validator: AuthValidators.otpCode,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: canResend ? _onResendPressed : null,
-                      child: const Text('Отправить повторно'),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      timerText,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: isInProgress ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
+                  const SizedBox(width: 8),
+                  Text(
+                    _formatTimer(otpResendState.secondsLeft),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                   ),
-                  child: isInProgress
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : const Text('Отправить'),
+                ],
+              ),
+              const SizedBox(height: 24),
+              FilledButton(
+                onPressed: isVerifyEmailInProgress ? null : _submit,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(52),
                 ),
-              ],
-            ),
+                child: isVerifyEmailInProgress
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                    : const Text('Отправить'),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }
