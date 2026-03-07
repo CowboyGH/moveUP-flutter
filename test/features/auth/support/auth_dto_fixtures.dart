@@ -3,6 +3,7 @@ import 'package:moveup_flutter/features/auth/data/dto/login_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/login_session_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/register_response_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 
@@ -93,6 +94,15 @@ VerifyEmailResponseDto createVerifyEmailResponseDto({
   tokenType: tokenType,
   expiresIn: expiresIn,
   user: user,
+);
+
+/// Test fixture for resend verification code response DTO.
+ResendVerificationCodeResponseDto createResendVerificationCodeResponseDto({
+  bool success = true,
+  String message = 'success_message',
+}) => ResendVerificationCodeResponseDto(
+  success: success,
+  message: message,
 );
 
 /// Test fixture for Dio bad response exception.
