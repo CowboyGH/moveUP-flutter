@@ -8,6 +8,7 @@ import '../../features/auth/presentation/pages/forgot_password_page_builder.dart
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
+import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -65,6 +66,19 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.forgotPasswordPath,
       builder: (_, _) => const ForgotPasswordPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.verifyResetCodePath,
+      redirect: (_, state) {
+        final extra = state.extra;
+        if (extra is! String || extra.trim().isEmpty) {
+          return AppRoutePaths.forgotPasswordPath;
+        }
+        return null;
+      },
+      builder: (_, state) => VerifyResetCodePageBuilder(
+        email: (state.extra as String).trim(),
+      ),
     ),
     GoRoute(
       path: AppRoutePaths.verifyEmailPath,
