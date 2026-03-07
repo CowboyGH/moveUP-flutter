@@ -12,6 +12,8 @@ import '../dto/resend_verification_code_request_dto.dart';
 import '../dto/resend_verification_code_response_dto.dart';
 import '../dto/verify_email_request_dto.dart';
 import '../dto/verify_email_response_dto.dart';
+import '../dto/verify_reset_code_request_dto.dart';
+import '../dto/verify_reset_code_response_dto.dart';
 
 part 'auth_api_client.g.dart';
 
@@ -42,6 +44,10 @@ abstract class AuthApiClient {
   Future<ResendVerificationCodeResponseDto> resendVerificationCode(
     @Body() ResendVerificationCodeRequestDto request,
   );
+
+  /// Sends verify reset code request and returns backend message.
+  @POST('/verify-reset-code')
+  Future<VerifyResetCodeResponseDto> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
 
   /// Returns current authorized user profile.
   @GET('/me')
