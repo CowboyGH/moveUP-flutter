@@ -7,6 +7,7 @@ import '../../../../core/services/token_storage/token_storage.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../dto/forgot_password_request_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/register_request_dto.dart';
 import '../dto/resend_verification_code_request_dto.dart';
@@ -56,6 +57,21 @@ final class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(networkFailure.toAuthFailure());
     } catch (e, s) {
       _logger.e('SignUp failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
+
+  @override
+  Future<Result<void, AuthFailure>> forgotPassword(String email) async {
+    try {
+      final request = ForgotPasswordRequestDto(email: email);
+      await _apiClient.forgotPassword(request);
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('ForgotPassword failed with unexpected error', e, s);
       return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
     }
   }

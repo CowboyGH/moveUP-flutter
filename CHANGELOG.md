@@ -38,13 +38,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added auth domain/data verify-email flow: `AuthRepository.verifyEmail` contract and `AuthRepositoryImpl` implementation with token persistence.
 - Added verify-email presentation flow: `VerifyEmailCubit`, `VerifyEmailPageBuilder`, and `VerifyEmailPage` integrated with router.
 - Added new auth route path for OTP verification: `/auth/verify-email`.
-- Added local resend-code countdown placeholder UI on verify-email screen (without backend resend endpoint integration).
 - Added unit tests for `AuthRepositoryImpl.verifyEmail` and `VerifyEmailCubit`.
 - Added shared OTP validator in auth presentation validators and test coverage for OTP validation cases.
 - Added resend verification code API contract and DTOs in auth data layer (`ResendVerificationCodeRequestDto`, `ResendVerificationCodeResponseDto`) and wired `AuthApiClient.resendVerificationCode`.
-- Added shared OTP resend domain/data flow: `OtpResendFlow`, `AuthRepository.resendOtpCode`, and `AuthRepositoryImpl.resendOtpCode`.
+- Added shared OTP resend domain/data flow: `AuthRepository.resendOtpCode` and `AuthRepositoryImpl` implementation.
 - Added shared `OtpResendCubit` with built-in cooldown state for OTP resend use cases.
 - Added unit tests for `AuthRepositoryImpl.resendOtpCode` and `OtpResendCubit`.
+- Added forgot-password API contract and DTOs in auth data layer (`ForgotPasswordRequestDto`, `ForgotPasswordResponseDto`) and wired `AuthApiClient.forgotPassword`.
+- Added auth domain/data forgot-password flow: `AuthRepository.forgotPassword` contract and `AuthRepositoryImpl` implementation.
+- Added forgot-password presentation flow: `ForgotPasswordCubit`, `ForgotPasswordPageBuilder`, and `ForgotPasswordPage` integrated with router.
+- Added new auth route path for password recovery request: `/auth/forgot-password`.
+- Added unit tests for `AuthRepositoryImpl.forgotPassword` and `ForgotPasswordCubit`.
 
 ### Changed
 
@@ -69,6 +73,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated sign-up success flow to navigate to verify-email screen and pass email through route `extra`.
 - Updated router verify-email route handling with route-level guard: redirects to sign-up when email `extra` is missing/empty.
 - Updated verify-email page to use `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling instead of local timer-only placeholder logic.
+- Updated sign-in forgot-password action to route to the dedicated password recovery request screen.
 
 ### Fixed
 
