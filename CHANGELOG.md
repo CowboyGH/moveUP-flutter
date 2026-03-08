@@ -59,6 +59,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added reset-password presentation flow: `ResetPasswordCubit`, `ResetPasswordPageBuilder`, and `ResetPasswordPage` integrated with router.
 - Added new auth route path for the final password recovery step: `/auth/forgot-password/reset`.
 - Added unit tests for `AuthRepositoryImpl.resetPassword` and `ResetPasswordCubit`.
+- Added logout API contract and DTOs in auth data layer (`LogoutResponseDto`) and wired `AuthApiClient.logout`.
+- Added auth domain/data logout flow: `AuthRepository.logout` contract and `AuthRepositoryImpl` implementation.
+- Added logout presentation flow: `LogoutCubit` and logout action wiring on the debug screen.
+- Added unit tests for `AuthRepositoryImpl.logout`, `LogoutCubit`, and updated `AuthSessionCubit.logout`.
 
 ### Changed
 
@@ -90,6 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated verify-reset-code page to reuse `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling.
 - Updated password recovery flow to finish with `go(signInPath)` after successful password reset.
 - Updated sign-in forgot-password action to route to the dedicated password recovery request screen.
+- Updated `AuthSessionCubit.logout` to finish only the local session state; backend logout is now handled through the dedicated logout flow before session transition.
 
 ### Fixed
 
