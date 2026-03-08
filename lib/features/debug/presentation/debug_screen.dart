@@ -15,7 +15,7 @@ class DebugScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => di<AuthSessionCubit>()),
+        BlocProvider.value(value: di<AuthSessionCubit>()),
         BlocProvider(
           create: (context) => LogoutCubit(di<AuthRepository>()),
         ),
