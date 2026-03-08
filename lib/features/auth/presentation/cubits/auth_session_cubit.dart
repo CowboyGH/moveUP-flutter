@@ -70,13 +70,8 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Clears session and emits unauthenticated state.
   Future<void> logout() async {
-    // TODO(feature/auth-logout): call backend /logout before local token cleanup.
-    try {
-      await _tokenStorage.deleteAccessToken();
-    } finally {
-      if (!isClosed) {
-        emit(const AuthSessionState.unauthenticated());
-      }
+    if (!isClosed) {
+      emit(const AuthSessionState.unauthenticated());
     }
   }
 }

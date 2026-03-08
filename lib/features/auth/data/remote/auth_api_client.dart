@@ -5,6 +5,7 @@ import '../dto/forgot_password_request_dto.dart';
 import '../dto/forgot_password_response_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/login_response_dto.dart';
+import '../dto/logout_response_dto.dart';
 import '../dto/me_response_dto.dart';
 import '../dto/register_request_dto.dart';
 import '../dto/register_response_dto.dart';
@@ -32,6 +33,10 @@ abstract class AuthApiClient {
   /// Sends register request and returns registered user payload.
   @POST('/register')
   Future<RegisterResponseDto> register(@Body() RegisterRequestDto request);
+
+  /// Sends logout request and returns backend message.
+  @POST('/logout')
+  Future<LogoutResponseDto> logout();
 
   /// Sends forgot password request and returns backend message.
   @POST('/forgot-password')

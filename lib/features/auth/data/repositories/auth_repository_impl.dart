@@ -33,6 +33,25 @@ final class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._logger, this._apiClient, this._tokenStorage);
 
   @override
+  Future<Result<void, AuthFailure>> logout() async {
+    try {
+      await _apiClient.logout();
+      await _tokenStorage.deleteAccessToken();
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      final failure = networkFailure.toAuthFailure();
+      if (failure is UnauthorizedAuthFailure) {
+        await _tokenStorage.deleteAccessToken();
+      }
+      return Result.failure(failure);
+    } catch (e, s) {
+      _logger.e('Logout failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
+
+  @override
   Future<Result<User, AuthFailure>> signIn(String email, String password) async {
     try {
       final request = LoginRequestDto(email: email, password: password);

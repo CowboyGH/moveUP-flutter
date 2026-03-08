@@ -127,14 +127,14 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'logout deletes token and emits unauthenticated',
-      setUp: () {
-        when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
-      },
+      'logout emits unauthenticated without touching token storage directly',
       build: () => authSessionCubit,
       act: (cubit) => cubit.logout(),
       expect: () => const [AuthSessionState.unauthenticated()],
-      verify: (_) => verify(tokenStorage.deleteAccessToken()).called(1),
+      verify: (_) {
+        verifyNoMoreInteractions(repository);
+        verifyNoMoreInteractions(tokenStorage);
+      },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
