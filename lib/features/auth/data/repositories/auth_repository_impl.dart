@@ -97,8 +97,8 @@ final class AuthRepositoryImpl implements AuthRepository {
     try {
       final request = VerifyEmailRequestDto(email: email, code: code);
       final response = await _apiClient.verifyEmail(request);
-      await _tokenStorage.saveAccessToken(response.accessToken);
-      return Result.success(response.user.toEntity());
+      await _tokenStorage.saveAccessToken(response.data.accessToken);
+      return Result.success(response.data.user.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toAuthFailure());
