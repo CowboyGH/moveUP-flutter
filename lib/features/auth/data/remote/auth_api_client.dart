@@ -8,6 +8,8 @@ import '../dto/login_response_dto.dart';
 import '../dto/me_response_dto.dart';
 import '../dto/register_request_dto.dart';
 import '../dto/register_response_dto.dart';
+import '../dto/reset_password_request_dto.dart';
+import '../dto/reset_password_response_dto.dart';
 import '../dto/resend_verification_code_request_dto.dart';
 import '../dto/resend_verification_code_response_dto.dart';
 import '../dto/verify_email_request_dto.dart';
@@ -48,6 +50,10 @@ abstract class AuthApiClient {
   /// Sends verify reset code request and returns backend message.
   @POST('/verify-reset-code')
   Future<VerifyResetCodeResponseDto> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
+
+  /// Sends reset password request and returns backend message.
+  @POST('/reset-password')
+  Future<ResetPasswordResponseDto> resetPassword(@Body() ResetPasswordRequestDto request);
 
   /// Returns current authorized user profile.
   @GET('/me')
