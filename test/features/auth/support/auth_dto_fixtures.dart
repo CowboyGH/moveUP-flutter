@@ -5,6 +5,7 @@ import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/register_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/verify_email_auth_data_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 
 /// Test fixture for login session DTO.
@@ -90,10 +91,12 @@ VerifyEmailResponseDto createVerifyEmailResponseDto({
 }) => VerifyEmailResponseDto(
   success: success,
   message: message,
-  accessToken: accessToken,
-  tokenType: tokenType,
-  expiresIn: expiresIn,
-  user: user,
+  data: VerifyEmailAuthDataDto(
+    accessToken: accessToken,
+    tokenType: tokenType,
+    expiresIn: expiresIn,
+    user: user,
+  ),
 );
 
 /// Test fixture for resend verification code response DTO.
