@@ -10,6 +10,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../dto/forgot_password_request_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/register_request_dto.dart';
+import '../dto/reset_password_request_dto.dart';
 import '../dto/resend_verification_code_request_dto.dart';
 import '../dto/verify_email_request_dto.dart';
 import '../dto/verify_reset_code_request_dto.dart';
@@ -88,6 +89,31 @@ final class AuthRepositoryImpl implements AuthRepository {
       return Result.failure(networkFailure.toAuthFailure());
     } catch (e, s) {
       _logger.e('VerifyResetCode failed with unexpected error', e, s);
+      return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
+    }
+  }
+
+  @override
+  Future<Result<void, AuthFailure>> resetPassword(
+    String email,
+    String code,
+    String password,
+    String passwordConfirmation,
+  ) async {
+    try {
+      final request = ResetPasswordRequestDto(
+        email: email,
+        code: code,
+        password: password,
+        passwordConfirmation: passwordConfirmation,
+      );
+      await _apiClient.resetPassword(request);
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toAuthFailure());
+    } catch (e, s) {
+      _logger.e('ResetPassword failed with unexpected error', e, s);
       return Result.failure(UnknownAuthFailure(parentException: e, stackTrace: s));
     }
   }
