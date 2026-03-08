@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/router/router_paths.dart';
 import '../cubits/otp_resend_cubit.dart';
 import '../cubits/verify_reset_code_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_text_field.dart';
+import 'reset_password_route_args.dart';
 
 /// Verify-reset-code page.
 class VerifyResetCodePage extends StatefulWidget {
@@ -78,7 +81,13 @@ class _VerifyResetCodePageState extends State<VerifyResetCodePage> {
         BlocListener<VerifyResetCodeCubit, VerifyResetCodeState>(
           listener: (context, state) {
             state.whenOrNull(
-              succeed: () => _showSnack('Код сброса пароля успешно подтвержден.'),
+              succeed: () => context.push(
+                AppRoutePaths.resetPasswordPath,
+                extra: ResetPasswordRouteArgs(
+                  email: widget.email,
+                  code: _codeController.text.trim(),
+                ),
+              ),
               failed: (failure) {
                 if (failure.message.isNotEmpty) {
                   _showSnack(failure.message);

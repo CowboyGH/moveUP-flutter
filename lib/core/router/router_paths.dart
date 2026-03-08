@@ -18,6 +18,9 @@ abstract class AppRoutePaths {
   /// Route path for the verify-reset-code page.
   static const verifyResetCodePath = '$forgotPasswordPath/verify-code';
 
+  /// Route path for the reset-password page.
+  static const resetPasswordPath = '$forgotPasswordPath/reset';
+
   /// Route path for the verify-email page.
   static const verifyEmailPath = '$authPrefix/verify-email';
 }
