@@ -19,7 +19,11 @@ final class SignInCubit extends Cubit<SignInState> {
 
   /// Attempts to sign in with [email] and [password].
   Future<void> signIn(String email, String password) async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    if (isInProgress) return;
 
     emit(const SignInState.inProgress());
 

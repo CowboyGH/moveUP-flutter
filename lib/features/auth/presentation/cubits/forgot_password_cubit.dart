@@ -18,7 +18,11 @@ final class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
 
   /// Attempts to request password reset OTP for [email].
   Future<void> forgotPassword(String email) async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    if (isInProgress) return;
 
     emit(const ForgotPasswordState.inProgress());
 

@@ -18,7 +18,8 @@ final class LogoutCubit extends Cubit<LogoutState> {
 
   /// Attempts to logout the current user.
   Future<void> logout() async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(inProgress: () => true, orElse: () => false);
+    if (isInProgress) return;
 
     emit(const LogoutState.inProgress());
 

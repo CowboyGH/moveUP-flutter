@@ -19,7 +19,11 @@ final class VerifyEmailCubit extends Cubit<VerifyEmailState> {
 
   /// Attempts to verify email with [email] and otp [code].
   Future<void> verifyEmail(String email, String code) async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    if (isInProgress) return;
 
     emit(const VerifyEmailState.inProgress());
 

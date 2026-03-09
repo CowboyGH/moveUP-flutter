@@ -18,7 +18,11 @@ final class VerifyResetCodeCubit extends Cubit<VerifyResetCodeState> {
 
   /// Attempts to verify reset code [code] for [email].
   Future<void> verifyResetCode(String email, String code) async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    if (isInProgress) return;
 
     emit(const VerifyResetCodeState.inProgress());
 
