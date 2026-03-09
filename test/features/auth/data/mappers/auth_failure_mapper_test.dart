@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/failures/network/network_failure.dart';
-import 'package:moveup_flutter/features/auth/data/mappers/auth_mapper.dart';
+import 'package:moveup_flutter/features/auth/data/mappers/auth_failure_mapper.dart';
 
 void main() {
   group('AuthFailureMapper.toAuthFailure', () {

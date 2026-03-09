@@ -10,11 +10,11 @@ import '../../domain/repositories/auth_repository.dart';
 import '../dto/forgot_password_request_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/register_request_dto.dart';
-import '../dto/reset_password_request_dto.dart';
 import '../dto/resend_verification_code_request_dto.dart';
+import '../dto/reset_password_request_dto.dart';
 import '../dto/verify_email_request_dto.dart';
 import '../dto/verify_reset_code_request_dto.dart';
-import '../mappers/auth_mapper.dart';
+import '../mappers/auth_failure_mapper.dart';
 import '../mappers/user_entity_mapper.dart';
 import '../remote/auth_api_client.dart';
 
