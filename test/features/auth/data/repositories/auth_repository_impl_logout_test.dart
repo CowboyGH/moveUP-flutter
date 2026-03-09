@@ -58,31 +58,34 @@ void main() {
       verifyNoMoreInteractions(tokenStorage);
     });
 
-    test('returns UnauthorizedAuthFailure and deletes token when api returns 401 unauthorized', () async {
-      // Arrange
-      final exception = createDioBadResponseException(
-        path: '/logout',
-        statusCode: 401,
-        code: 'unauthorized',
-      );
-      when(apiClient.logout()).thenThrow(exception);
-      when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
+    test(
+      'returns UnauthorizedAuthFailure and deletes token when api returns 401 unauthorized',
+      () async {
+        // Arrange
+        final exception = createDioBadResponseException(
+          path: '/logout',
+          statusCode: 401,
+          code: 'unauthorized',
+        );
+        when(apiClient.logout()).thenThrow(exception);
+        when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
 
-      // Act
-      final result = await repository.logout();
+        // Act
+        final result = await repository.logout();
 
-      // Assert
-      expect(result.isFailure, isTrue);
+        // Assert
+        expect(result.isFailure, isTrue);
 
-      final failure = result.failure!;
-      expect(failure, isA<UnauthorizedAuthFailure>());
-      expect(failure.parentException, isA<DioException>());
+        final failure = result.failure!;
+        expect(failure, isA<UnauthorizedAuthFailure>());
+        expect(failure.parentException, isA<DioException>());
 
-      verify(apiClient.logout()).called(1);
-      verifyNoMoreInteractions(apiClient);
-      verify(tokenStorage.deleteAccessToken()).called(1);
-      verifyNoMoreInteractions(tokenStorage);
-    });
+        verify(apiClient.logout()).called(1);
+        verifyNoMoreInteractions(apiClient);
+        verify(tokenStorage.deleteAccessToken()).called(1);
+        verifyNoMoreInteractions(tokenStorage);
+      },
+    );
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
       // Arrange

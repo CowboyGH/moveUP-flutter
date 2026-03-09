@@ -32,14 +32,12 @@ void main() {
   });
 
   group('AuthRepositoryImpl.getCurrentUser', () {
-    const email = 'test@mail.com';
-
     late UserDto userDto;
     late MeResponseDto meResponseDto;
 
     setUp(() {
-      userDto = createUserDto(email: email);
-      meResponseDto = createMeResponseDto(user: userDto);
+      userDto = createUserDto();
+      meResponseDto = MeResponseDto(success: true, user: userDto);
     });
 
     test('returns success(user) when api me succeeds', () async {
@@ -60,6 +58,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnauthorizedAuthFailure when api returns 401 token_expired', () async {
@@ -80,6 +79,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
@@ -99,6 +99,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
   });
 }

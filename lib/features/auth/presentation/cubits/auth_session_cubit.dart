@@ -23,7 +23,11 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Restores current session from storage and backend.
   Future<void> restoreSession() async {
-    if (state is _Checking) return;
+    final isChecking = state.maybeWhen(
+      checking: () => true,
+      orElse: () => false,
+    );
+    if (isChecking) return;
 
     emit(const AuthSessionState.checking());
 

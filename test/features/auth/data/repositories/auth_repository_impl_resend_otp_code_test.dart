@@ -38,7 +38,10 @@ void main() {
     late ResendVerificationCodeResponseDto resendVerificationCodeResponseDto;
 
     setUp(() {
-      resendVerificationCodeResponseDto = createResendVerificationCodeResponseDto();
+      resendVerificationCodeResponseDto = ResendVerificationCodeResponseDto(
+        success: true,
+        message: 'success_message',
+      );
     });
 
     test('returns success when api resend-verification-code succeeds', () async {

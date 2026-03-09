@@ -44,9 +44,13 @@ void main() {
     late LoginResponseDto loginResponseDto;
 
     setUp(() {
-      loginSessionDto = createLoginSessionDto();
-      userDto = createUserDto(email: email);
-      loginResponseDto = createLoginResponseDto(
+      loginSessionDto = LoginSessionDto(
+        lifetimeDays: 1,
+        inactivityLimitDays: 1,
+        accessTokenExpiresInMinutes: 1,
+      );
+      userDto = createUserDto();
+      loginResponseDto = _createLoginResponseDto(
         accessToken: accessToken,
         session: loginSessionDto,
         user: userDto,
@@ -67,10 +71,10 @@ void main() {
       expect(result.isSuccess, isTrue);
 
       final user = result.success!;
-      expect(user.id, 1);
-      expect(user.name, 'name');
-      expect(user.email, email);
-      expect(user.avatar, 'avatar');
+      expect(user.id, userDto.id);
+      expect(user.name, userDto.name);
+      expect(user.email, userDto.email);
+      expect(user.avatar, userDto.avatar);
 
       _verifyLoginRequest(apiClient, email, password);
       verifyNoMoreInteractions(apiClient);
@@ -102,6 +106,7 @@ void main() {
       _verifyLoginRequest(apiClient, email, password);
       verifyNoMoreInteractions(apiClient);
       verifyNever(tokenStorage.saveAccessToken(accessToken));
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when token storage fails', () async {
@@ -127,6 +132,24 @@ void main() {
     });
   });
 }
+
+LoginResponseDto _createLoginResponseDto({
+  bool success = true,
+  required String accessToken,
+  String tokenType = 'bearer',
+  int expiresIn = 1,
+  int refreshExpiresIn = 1,
+  required LoginSessionDto session,
+  required UserDto user,
+}) => LoginResponseDto(
+  success: success,
+  accessToken: accessToken,
+  tokenType: tokenType,
+  expiresIn: expiresIn,
+  refreshExpiresIn: refreshExpiresIn,
+  session: session,
+  user: user,
+);
 
 void _verifyLoginRequest(
   MockAuthApiClient apiClient,

@@ -42,15 +42,12 @@ void main() {
     late RegisterResponseDto registerResponseDto;
 
     setUp(() {
-      userDto = createUserDto(
-        email: email,
-        avatar: null,
-        roleId: 2,
-        emailVerifiedAt: null,
-        createdAt: '2026-02-13T10:57:14.000000Z',
-        updatedAt: '2026-02-13T10:57:14.000000Z',
+      userDto = createUserDto(avatar: null);
+      registerResponseDto = RegisterResponseDto(
+        success: true,
+        message: 'success_message',
+        user: userDto,
       );
-      registerResponseDto = createRegisterResponseDto(user: userDto);
     });
 
     test('returns success(user) when api register succeeds', () async {
@@ -71,7 +68,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns ValidationFailedFailure when api returns 422 validation_failed', () async {
@@ -100,7 +97,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
@@ -120,7 +117,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
   });
 }
@@ -135,11 +132,4 @@ void _verifyRegisterRequest(
   expect(captured.name, expectedName);
   expect(captured.email, expectedEmail);
   expect(captured.password, expectedPassword);
-}
-
-void _verifyTokenStorageUntouched(MockTokenStorage tokenStorage) {
-  verifyNever(tokenStorage.saveAccessToken(any));
-  verifyNever(tokenStorage.getAccessToken());
-  verifyNever(tokenStorage.deleteAccessToken());
-  verifyNoMoreInteractions(tokenStorage);
 }

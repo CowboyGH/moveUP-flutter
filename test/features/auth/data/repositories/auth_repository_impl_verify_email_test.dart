@@ -6,6 +6,7 @@ import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/verify_email_auth_data_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_request_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
@@ -42,8 +43,8 @@ void main() {
     late VerifyEmailResponseDto verifyEmailResponseDto;
 
     setUp(() {
-      userDto = createUserDto(email: email, avatar: null);
-      verifyEmailResponseDto = createVerifyEmailResponseDto(user: userDto);
+      userDto = createUserDto(avatar: null);
+      verifyEmailResponseDto = _createVerifyEmailResponseDto(user: userDto);
     });
 
     test('returns success(user) and stores access token when api verify-email succeeds', () async {
@@ -69,34 +70,32 @@ void main() {
       verifyNoMoreInteractions(tokenStorage);
     });
 
-    test('returns ValidationFailedFailure when api returns 422 validation_failed', () async {
-      // Arrange
-      const errors = <String, List<String>>{
-        'code': ['The code field is required.'],
-      };
-      final exception = createDioBadResponseException(
-        path: '/verify-email',
-        statusCode: 422,
-        code: 'validation_failed',
-        errors: errors,
-      );
-      when(apiClient.verifyEmail(any)).thenThrow(exception);
+    test(
+      'returns EmailAlreadyVerifiedFailure when api returns 400 email_already_verified',
+      () async {
+        // Arrange
+        final exception = createDioBadResponseException(
+          path: '/verify-email',
+          statusCode: 400,
+          code: 'email_already_verified',
+        );
+        when(apiClient.verifyEmail(any)).thenThrow(exception);
 
-      // Act
-      final result = await repository.verifyEmail(email, code);
+        // Act
+        final result = await repository.verifyEmail(email, code);
 
-      // Assert
-      expect(result.isFailure, isTrue);
+        // Assert
+        expect(result.isFailure, isTrue);
 
-      final failure = result.failure!;
-      expect(failure, isA<ValidationFailedFailure>());
-      expect(failure.parentException, isA<DioException>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+        final failure = result.failure!;
+        expect(failure, isA<EmailAlreadyVerifiedFailure>());
+        expect(failure.parentException, isA<DioException>());
 
-      _verifyVerifyEmailRequest(apiClient, email, code);
-      verifyNoMoreInteractions(apiClient);
-      verifyNoMoreInteractions(tokenStorage);
-    });
+        _verifyVerifyEmailRequest(apiClient, email, code);
+        verifyNoMoreInteractions(apiClient);
+        verifyNoMoreInteractions(tokenStorage);
+      },
+    );
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
       // Arrange
@@ -119,6 +118,24 @@ void main() {
     });
   });
 }
+
+VerifyEmailResponseDto _createVerifyEmailResponseDto({
+  bool success = true,
+  String message = 'Email успешно подтвержден.',
+  String accessToken = 'test_access_token',
+  String tokenType = 'bearer',
+  int expiresIn = 3600,
+  required UserDto user,
+}) => VerifyEmailResponseDto(
+  success: success,
+  message: message,
+  data: VerifyEmailAuthDataDto(
+    accessToken: accessToken,
+    tokenType: tokenType,
+    expiresIn: expiresIn,
+    user: user,
+  ),
+);
 
 void _verifyVerifyEmailRequest(
   MockAuthApiClient apiClient,

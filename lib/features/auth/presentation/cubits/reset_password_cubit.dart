@@ -23,7 +23,11 @@ final class ResetPasswordCubit extends Cubit<ResetPasswordState> {
     String password,
     String passwordConfirmation,
   ) async {
-    if (state is _InProgress) return;
+    final isInProgress = state.maybeWhen(
+      inProgress: () => true,
+      orElse: () => false,
+    );
+    if (isInProgress) return;
 
     emit(const ResetPasswordState.inProgress());
 
