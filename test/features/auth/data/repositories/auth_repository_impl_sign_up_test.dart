@@ -43,7 +43,11 @@ void main() {
 
     setUp(() {
       userDto = createUserDto(avatar: null);
-      registerResponseDto = _createRegisterResponseDto(user: userDto);
+      registerResponseDto = RegisterResponseDto(
+        success: true,
+        message: 'success_message',
+        user: userDto,
+      );
     });
 
     test('returns success(user) when api register succeeds', () async {
@@ -117,16 +121,6 @@ void main() {
     });
   });
 }
-
-RegisterResponseDto _createRegisterResponseDto({
-  bool success = true,
-  String message = 'success_message',
-  required UserDto user,
-}) => RegisterResponseDto(
-  success: success,
-  message: message,
-  user: user,
-);
 
 void _verifyRegisterRequest(
   MockAuthApiClient apiClient,

@@ -38,7 +38,10 @@ void main() {
     late ForgotPasswordResponseDto forgotPasswordResponseDto;
 
     setUp(() {
-      forgotPasswordResponseDto = createForgotPasswordResponseDto();
+      forgotPasswordResponseDto = ForgotPasswordResponseDto(
+        success: true,
+        message: 'success_message',
+      );
     });
 
     test('returns success when api forgot-password succeeds', () async {
@@ -106,14 +109,6 @@ void main() {
     });
   });
 }
-
-ForgotPasswordResponseDto createForgotPasswordResponseDto({
-  bool success = true,
-  String message = 'success_message',
-}) => ForgotPasswordResponseDto(
-  success: success,
-  message: message,
-);
 
 void _verifyForgotPasswordRequest(
   MockAuthApiClient apiClient,

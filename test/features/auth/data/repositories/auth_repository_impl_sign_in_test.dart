@@ -44,7 +44,11 @@ void main() {
     late LoginResponseDto loginResponseDto;
 
     setUp(() {
-      loginSessionDto = _createLoginSessionDto();
+      loginSessionDto = LoginSessionDto(
+        lifetimeDays: 1,
+        inactivityLimitDays: 1,
+        accessTokenExpiresInMinutes: 1,
+      );
       userDto = createUserDto();
       loginResponseDto = _createLoginResponseDto(
         accessToken: accessToken,
@@ -127,16 +131,6 @@ void main() {
     });
   });
 }
-
-LoginSessionDto _createLoginSessionDto({
-  int lifetimeDays = 1,
-  int inactivityLimitDays = 1,
-  int accessTokenExpiresInMinutes = 1,
-}) => LoginSessionDto(
-  lifetimeDays: lifetimeDays,
-  inactivityLimitDays: inactivityLimitDays,
-  accessTokenExpiresInMinutes: accessTokenExpiresInMinutes,
-);
 
 LoginResponseDto _createLoginResponseDto({
   bool success = true,
