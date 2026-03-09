@@ -95,16 +95,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated password recovery flow to finish with `go(signInPath)` after successful password reset.
 - Updated sign-in forgot-password action to route to the dedicated password recovery request screen.
 - Updated `AuthSessionCubit.logout` to finish only the local session state; backend logout is now handled through the dedicated logout flow before session transition.
+- Updated app composition to provide the shared `AuthSessionCubit` from the app root instead of feature-local builders.
+- Updated auth cubits to use the public Freezed state API for in-progress guards instead of generated private classes.
+- Updated auth mapper naming from `auth_mapper.dart` to `auth_failure_mapper.dart` for clearer responsibility.
+- Updated auth repository tests to inline feature-specific DTO fixtures, unify shared `UserDto` test defaults, and align `TokenStorage` interaction assertions.
+- Updated verify-email repository coverage to assert `EmailAlreadyVerifiedFailure` (`400`) instead of the old validation-failure case.
 
 ### Fixed
 
 - Fixed `ErrorResponseDto` serialization configuration by disabling generated `toJson` where it is not used.
 - Fixed potential emit-after-close in SignInCubit by guarding with isClosed after awaiting repository response.
 - Fixed sign-in page debug shortcuts to be truly disabled in release and improved email validation to accept common addresses (e.g. with '+').
+- Fixed redundant `fromJson` generation for `LoginRequestDto` request serialization.
 
 ### Removed
 
 - Removed legacy API client scaffold at `lib/api/service/api_client.dart`.
+- Removed unused `AppLoggerMixin`.
 
 ## [0.1.0] - 2026-02-16
 
