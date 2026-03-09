@@ -100,5 +100,3 @@ void main() {
     });
   });
 }
-
-// TODO: create void _verifyMeRequest
