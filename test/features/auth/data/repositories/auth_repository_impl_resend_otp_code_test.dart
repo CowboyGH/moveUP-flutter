@@ -38,7 +38,7 @@ void main() {
     late ResendVerificationCodeResponseDto resendVerificationCodeResponseDto;
 
     setUp(() {
-      resendVerificationCodeResponseDto = createResendVerificationCodeResponseDto();
+      resendVerificationCodeResponseDto = _createResendVerificationCodeResponseDto();
     });
 
     test('returns success when api resend-verification-code succeeds', () async {
@@ -108,6 +108,14 @@ void main() {
     });
   });
 }
+
+ResendVerificationCodeResponseDto _createResendVerificationCodeResponseDto({
+  bool success = true,
+  String message = 'success_message',
+}) => ResendVerificationCodeResponseDto(
+  success: success,
+  message: message,
+);
 
 void _verifyResendVerificationCodeRequest(
   MockAuthApiClient apiClient,

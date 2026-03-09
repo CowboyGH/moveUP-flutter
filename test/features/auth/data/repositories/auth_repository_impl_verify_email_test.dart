@@ -6,6 +6,7 @@ import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
+import 'package:moveup_flutter/features/auth/data/dto/verify_email_auth_data_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_request_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
@@ -43,7 +44,7 @@ void main() {
 
     setUp(() {
       userDto = createUserDto(email: email, avatar: null);
-      verifyEmailResponseDto = createVerifyEmailResponseDto(user: userDto);
+      verifyEmailResponseDto = _createVerifyEmailResponseDto(user: userDto);
     });
 
     test('returns success(user) and stores access token when api verify-email succeeds', () async {
@@ -119,6 +120,24 @@ void main() {
     });
   });
 }
+
+VerifyEmailResponseDto _createVerifyEmailResponseDto({
+  bool success = true,
+  String message = 'Email успешно подтвержден.',
+  String accessToken = 'test_access_token',
+  String tokenType = 'bearer',
+  int expiresIn = 3600,
+  required UserDto user,
+}) => VerifyEmailResponseDto(
+  success: success,
+  message: message,
+  data: VerifyEmailAuthDataDto(
+    accessToken: accessToken,
+    tokenType: tokenType,
+    expiresIn: expiresIn,
+    user: user,
+  ),
+);
 
 void _verifyVerifyEmailRequest(
   MockAuthApiClient apiClient,

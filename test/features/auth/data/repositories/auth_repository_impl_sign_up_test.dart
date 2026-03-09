@@ -50,7 +50,7 @@ void main() {
         createdAt: '2026-02-13T10:57:14.000000Z',
         updatedAt: '2026-02-13T10:57:14.000000Z',
       );
-      registerResponseDto = createRegisterResponseDto(user: userDto);
+      registerResponseDto = _createRegisterResponseDto(user: userDto);
     });
 
     test('returns success(user) when api register succeeds', () async {
@@ -125,6 +125,16 @@ void main() {
   });
 }
 
+RegisterResponseDto _createRegisterResponseDto({
+  bool success = true,
+  String message = 'success_message',
+  required UserDto user,
+}) => RegisterResponseDto(
+  success: success,
+  message: message,
+  user: user,
+);
+
 void _verifyRegisterRequest(
   MockAuthApiClient apiClient,
   String expectedName,
@@ -137,6 +147,7 @@ void _verifyRegisterRequest(
   expect(captured.password, expectedPassword);
 }
 
+// TODO: replace method with verifyNoMoreInteractions(tokenStorage);
 void _verifyTokenStorageUntouched(MockTokenStorage tokenStorage) {
   verifyNever(tokenStorage.saveAccessToken(any));
   verifyNever(tokenStorage.getAccessToken());

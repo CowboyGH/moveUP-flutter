@@ -39,7 +39,7 @@ void main() {
 
     setUp(() {
       userDto = createUserDto(email: email);
-      meResponseDto = createMeResponseDto(user: userDto);
+      meResponseDto = _createMeResponseDto(user: userDto);
     });
 
     test('returns success(user) when api me succeeds', () async {
@@ -102,3 +102,13 @@ void main() {
     });
   });
 }
+
+MeResponseDto _createMeResponseDto({
+  bool success = true,
+  required UserDto user,
+}) => MeResponseDto(
+  success: success,
+  user: user,
+);
+
+// TODO: create void _verifyMeRequest

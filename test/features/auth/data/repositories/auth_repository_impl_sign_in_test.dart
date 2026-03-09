@@ -44,9 +44,9 @@ void main() {
     late LoginResponseDto loginResponseDto;
 
     setUp(() {
-      loginSessionDto = createLoginSessionDto();
+      loginSessionDto = _createLoginSessionDto();
       userDto = createUserDto(email: email);
-      loginResponseDto = createLoginResponseDto(
+      loginResponseDto = _createLoginResponseDto(
         accessToken: accessToken,
         session: loginSessionDto,
         user: userDto,
@@ -127,6 +127,34 @@ void main() {
     });
   });
 }
+
+LoginSessionDto _createLoginSessionDto({
+  int lifetimeDays = 1,
+  int inactivityLimitDays = 1,
+  int accessTokenExpiresInMinutes = 1,
+}) => LoginSessionDto(
+  lifetimeDays: lifetimeDays,
+  inactivityLimitDays: inactivityLimitDays,
+  accessTokenExpiresInMinutes: accessTokenExpiresInMinutes,
+);
+
+LoginResponseDto _createLoginResponseDto({
+  bool success = true,
+  required String accessToken,
+  String tokenType = 'bearer',
+  int expiresIn = 1,
+  int refreshExpiresIn = 1,
+  required LoginSessionDto session,
+  required UserDto user,
+}) => LoginResponseDto(
+  success: success,
+  accessToken: accessToken,
+  tokenType: tokenType,
+  expiresIn: expiresIn,
+  refreshExpiresIn: refreshExpiresIn,
+  session: session,
+  user: user,
+);
 
 void _verifyLoginRequest(
   MockAuthApiClient apiClient,

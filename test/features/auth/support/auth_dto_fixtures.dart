@@ -1,24 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:moveup_flutter/features/auth/data/dto/login_response_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/login_session_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/me_response_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/register_response_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/verify_email_auth_data_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/verify_email_response_dto.dart';
 
-/// Test fixture for login session DTO.
-LoginSessionDto createLoginSessionDto({
-  int lifetimeDays = 1,
-  int inactivityLimitDays = 1,
-  int accessTokenExpiresInMinutes = 1,
-}) => LoginSessionDto(
-  lifetimeDays: lifetimeDays,
-  inactivityLimitDays: inactivityLimitDays,
-  accessTokenExpiresInMinutes: accessTokenExpiresInMinutes,
-);
-
+// TODO: refactor parameters
 /// Test fixture for user DTO.
 UserDto createUserDto({
   int id = 1,
@@ -38,74 +21,6 @@ UserDto createUserDto({
   emailVerifiedAt: emailVerifiedAt,
   updatedAt: updatedAt,
   createdAt: createdAt,
-);
-
-/// Test fixture for login response DTO.
-LoginResponseDto createLoginResponseDto({
-  bool success = true,
-  required String accessToken,
-  String tokenType = 'bearer',
-  int expiresIn = 1,
-  int refreshExpiresIn = 1,
-  required LoginSessionDto session,
-  required UserDto user,
-}) => LoginResponseDto(
-  success: success,
-  accessToken: accessToken,
-  tokenType: tokenType,
-  expiresIn: expiresIn,
-  refreshExpiresIn: refreshExpiresIn,
-  session: session,
-  user: user,
-);
-
-/// Test fixture for me response DTO.
-MeResponseDto createMeResponseDto({
-  bool success = true,
-  required UserDto user,
-}) => MeResponseDto(
-  success: success,
-  user: user,
-);
-
-/// Test fixture for register response DTO.
-RegisterResponseDto createRegisterResponseDto({
-  bool success = true,
-  String message =
-      'Регистрация прошла успешно. Проверьте вашу почту для получения кода подтверждения.',
-  required UserDto user,
-}) => RegisterResponseDto(
-  success: success,
-  message: message,
-  user: user,
-);
-
-/// Test fixture for verify email response DTO.
-VerifyEmailResponseDto createVerifyEmailResponseDto({
-  bool success = true,
-  String message = 'Email успешно подтвержден.',
-  String accessToken = 'test_access_token',
-  String tokenType = 'bearer',
-  int expiresIn = 3600,
-  required UserDto user,
-}) => VerifyEmailResponseDto(
-  success: success,
-  message: message,
-  data: VerifyEmailAuthDataDto(
-    accessToken: accessToken,
-    tokenType: tokenType,
-    expiresIn: expiresIn,
-    user: user,
-  ),
-);
-
-/// Test fixture for resend verification code response DTO.
-ResendVerificationCodeResponseDto createResendVerificationCodeResponseDto({
-  bool success = true,
-  String message = 'success_message',
-}) => ResendVerificationCodeResponseDto(
-  success: success,
-  message: message,
 );
 
 /// Test fixture for Dio bad response exception.
