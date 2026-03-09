@@ -43,7 +43,7 @@ void main() {
     late VerifyEmailResponseDto verifyEmailResponseDto;
 
     setUp(() {
-      userDto = createUserDto(email: email, avatar: null);
+      userDto = createUserDto(avatar: null);
       verifyEmailResponseDto = _createVerifyEmailResponseDto(user: userDto);
     });
 

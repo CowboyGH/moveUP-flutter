@@ -42,14 +42,7 @@ void main() {
     late RegisterResponseDto registerResponseDto;
 
     setUp(() {
-      userDto = createUserDto(
-        email: email,
-        avatar: null,
-        roleId: 2,
-        emailVerifiedAt: null,
-        createdAt: '2026-02-13T10:57:14.000000Z',
-        updatedAt: '2026-02-13T10:57:14.000000Z',
-      );
+      userDto = createUserDto(avatar: null);
       registerResponseDto = _createRegisterResponseDto(user: userDto);
     });
 

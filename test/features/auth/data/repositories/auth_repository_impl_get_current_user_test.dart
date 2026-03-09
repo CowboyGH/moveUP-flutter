@@ -32,13 +32,11 @@ void main() {
   });
 
   group('AuthRepositoryImpl.getCurrentUser', () {
-    const email = 'test@mail.com';
-
     late UserDto userDto;
     late MeResponseDto meResponseDto;
 
     setUp(() {
-      userDto = createUserDto(email: email);
+      userDto = createUserDto();
       meResponseDto = _createMeResponseDto(user: userDto);
     });
 

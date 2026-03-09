@@ -1,26 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/auth/data/dto/user_dto.dart';
 
-// TODO: refactor parameters
+const testUserDtoId = 1;
+const testUserDtoName = 'test_name';
+const testUserDtoEmail = 'test_email';
+const testUserDtoAvatar = 'avatar';
+const testUserDtoRoleId = 1;
+const testUserDtoEmailVerifiedAt = 'emailVerifiedAt';
+const testUserDtoUpdatedAt = 'updatedAt';
+const testUserDtoCreatedAt = 'createdAt';
+
 /// Test fixture for user DTO.
 UserDto createUserDto({
-  int id = 1,
-  String name = 'name',
-  required String email,
-  String? avatar = 'avatar',
-  int roleId = 1,
-  String? emailVerifiedAt = 'emailVerifiedAt',
-  String updatedAt = 'updatedAt',
-  String createdAt = 'createdAt',
+  String? avatar = testUserDtoAvatar,
 }) => UserDto(
-  id: id,
-  name: name,
-  email: email,
+  id: testUserDtoId,
+  name: testUserDtoName,
+  email: testUserDtoEmail,
   avatar: avatar,
-  roleId: roleId,
-  emailVerifiedAt: emailVerifiedAt,
-  updatedAt: updatedAt,
-  createdAt: createdAt,
+  roleId: testUserDtoRoleId,
+  emailVerifiedAt: testUserDtoEmailVerifiedAt,
+  updatedAt: testUserDtoUpdatedAt,
+  createdAt: testUserDtoCreatedAt,
 );
 
 /// Test fixture for Dio bad response exception.

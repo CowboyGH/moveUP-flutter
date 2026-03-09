@@ -45,7 +45,7 @@ void main() {
 
     setUp(() {
       loginSessionDto = _createLoginSessionDto();
-      userDto = createUserDto(email: email);
+      userDto = createUserDto();
       loginResponseDto = _createLoginResponseDto(
         accessToken: accessToken,
         session: loginSessionDto,
@@ -67,10 +67,10 @@ void main() {
       expect(result.isSuccess, isTrue);
 
       final user = result.success!;
-      expect(user.id, 1);
-      expect(user.name, 'name');
-      expect(user.email, email);
-      expect(user.avatar, 'avatar');
+      expect(user.id, userDto.id);
+      expect(user.name, userDto.name);
+      expect(user.email, userDto.email);
+      expect(user.avatar, userDto.avatar);
 
       _verifyLoginRequest(apiClient, email, password);
       verifyNoMoreInteractions(apiClient);
