@@ -68,7 +68,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns ValidationFailedFailure when api returns 422 validation_failed', () async {
@@ -97,7 +97,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
@@ -117,7 +117,7 @@ void main() {
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);
-      _verifyTokenStorageUntouched(tokenStorage);
+      verifyNoMoreInteractions(tokenStorage);
     });
   });
 }
@@ -132,12 +132,4 @@ void _verifyRegisterRequest(
   expect(captured.name, expectedName);
   expect(captured.email, expectedEmail);
   expect(captured.password, expectedPassword);
-}
-
-// TODO: replace method with verifyNoMoreInteractions(tokenStorage);
-void _verifyTokenStorageUntouched(MockTokenStorage tokenStorage) {
-  verifyNever(tokenStorage.saveAccessToken(any));
-  verifyNever(tokenStorage.getAccessToken());
-  verifyNever(tokenStorage.deleteAccessToken());
-  verifyNoMoreInteractions(tokenStorage);
 }
