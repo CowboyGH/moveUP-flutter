@@ -106,6 +106,7 @@ void main() {
       _verifyLoginRequest(apiClient, email, password);
       verifyNoMoreInteractions(apiClient);
       verifyNever(tokenStorage.saveAccessToken(accessToken));
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when token storage fails', () async {

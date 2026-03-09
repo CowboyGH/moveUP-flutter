@@ -47,6 +47,7 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verifyNever(repository.getCurrentUser());
         verifyNever(tokenStorage.deleteAccessToken());
+        verifyNoMoreInteractions(tokenStorage);
       },
     );
 
@@ -66,6 +67,7 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verifyNever(tokenStorage.deleteAccessToken());
+        verifyNoMoreInteractions(tokenStorage);
       },
     );
 
@@ -88,6 +90,7 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verify(tokenStorage.deleteAccessToken()).called(1);
+        verifyNoMoreInteractions(tokenStorage);
       },
     );
 
@@ -109,6 +112,7 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verifyNever(tokenStorage.deleteAccessToken());
+        verifyNoMoreInteractions(tokenStorage);
       },
     );
 
@@ -155,6 +159,7 @@ void main() {
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
+        verifyNoMoreInteractions(tokenStorage);
       },
     );
   });

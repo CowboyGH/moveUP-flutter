@@ -58,6 +58,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnauthorizedAuthFailure when api returns 401 token_expired', () async {
@@ -78,6 +79,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
@@ -97,6 +99,7 @@ void main() {
 
       verify(apiClient.me()).called(1);
       verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
     });
   });
 }
