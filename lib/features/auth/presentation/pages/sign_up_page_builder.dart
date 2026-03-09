@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/di.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
 import 'sign_up_page.dart';
 
@@ -14,13 +13,8 @@ class SignUpPageBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => SignUpCubit(di<AuthRepository>()),
-        ),
-        BlocProvider.value(value: di<AuthSessionCubit>()),
-      ],
+    return BlocProvider(
+      create: (context) => SignUpCubit(di<AuthRepository>()),
       child: const SignUpPage(),
     );
   }

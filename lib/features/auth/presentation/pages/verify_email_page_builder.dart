@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/di.dart';
 import '../../domain/repositories/auth_repository.dart';
-import '../cubits/auth_session_cubit.dart';
 import '../cubits/otp_resend_cubit.dart';
 import '../cubits/verify_email_cubit.dart';
 import 'verify_email_page.dart';
@@ -26,7 +25,6 @@ class VerifyEmailPageBuilder extends StatelessWidget {
         BlocProvider(
           create: (context) => OtpResendCubit(di<AuthRepository>()),
         ),
-        BlocProvider.value(value: di<AuthSessionCubit>()),
       ],
       child: VerifyEmailPage(email: email),
     );
