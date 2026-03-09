@@ -70,34 +70,32 @@ void main() {
       verifyNoMoreInteractions(tokenStorage);
     });
 
-    test('returns ValidationFailedFailure when api returns 422 validation_failed', () async {
-      // Arrange
-      const errors = <String, List<String>>{
-        'code': ['The code field is required.'],
-      };
-      final exception = createDioBadResponseException(
-        path: '/verify-email',
-        statusCode: 422,
-        code: 'validation_failed',
-        errors: errors,
-      );
-      when(apiClient.verifyEmail(any)).thenThrow(exception);
+    test(
+      'returns EmailAlreadyVerifiedFailure when api returns 400 email_already_verified',
+      () async {
+        // Arrange
+        final exception = createDioBadResponseException(
+          path: '/verify-email',
+          statusCode: 400,
+          code: 'email_already_verified',
+        );
+        when(apiClient.verifyEmail(any)).thenThrow(exception);
 
-      // Act
-      final result = await repository.verifyEmail(email, code);
+        // Act
+        final result = await repository.verifyEmail(email, code);
 
-      // Assert
-      expect(result.isFailure, isTrue);
+        // Assert
+        expect(result.isFailure, isTrue);
 
-      final failure = result.failure!;
-      expect(failure, isA<ValidationFailedFailure>());
-      expect(failure.parentException, isA<DioException>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+        final failure = result.failure!;
+        expect(failure, isA<EmailAlreadyVerifiedFailure>());
+        expect(failure.parentException, isA<DioException>());
 
-      _verifyVerifyEmailRequest(apiClient, email, code);
-      verifyNoMoreInteractions(apiClient);
-      verifyNoMoreInteractions(tokenStorage);
-    });
+        _verifyVerifyEmailRequest(apiClient, email, code);
+        verifyNoMoreInteractions(apiClient);
+        verifyNoMoreInteractions(tokenStorage);
+      },
+    );
 
     test('returns UnknownAuthFailure when unexpected exception occurs', () async {
       // Arrange
