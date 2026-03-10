@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
-import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/reset_password_cubit.dart';
 import '../validators/auth_validators.dart';
@@ -94,7 +93,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       },
       builder: (context, state) {
         final textTheme = AppTextTheme.of(context);
-        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
