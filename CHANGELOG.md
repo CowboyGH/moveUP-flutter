@@ -63,6 +63,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added auth domain/data logout flow: `AuthRepository.logout` contract and `AuthRepositoryImpl` implementation.
 - Added logout presentation flow: `LogoutCubit` and logout action wiring on the debug screen.
 - Added unit tests for `AuthRepositoryImpl.logout`, `LogoutCubit`, and updated `AuthSessionCubit.logout`.
+- Added UIKit color and gradient tokens via `AppColorTheme`, `AppColors`, and `AppGradients`.
+- Added Montserrat font kit and shared text theming via `AppTextStyle` and `AppTextTheme`.
+- Added shared UIKit theme foundation via `AppThemeData`.
+- Added shared UIKit widgets: `MainButton` with loading/disabled states, `SvgPictureWidget`, and `NetworkImageWidget`.
 
 ### Changed
 
@@ -100,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated auth mapper naming from `auth_mapper.dart` to `auth_failure_mapper.dart` for clearer responsibility.
 - Updated auth repository tests to inline feature-specific DTO fixtures, unify shared `UserDto` test defaults, and align `TokenStorage` interaction assertions.
 - Updated verify-email repository coverage to assert `EmailAlreadyVerifiedFailure` (`400`) instead of the old validation-failure case.
+- Updated default button theming in `AppThemeData` to align with the starter UIKit styles.
 
 ### Fixed
 
