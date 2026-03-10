@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/button_state.dart';
+import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/reset_password_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
@@ -72,6 +76,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return null;
   }
 
+  void _handleBack() =>
+      Navigator.of(context).canPop() ? context.pop() : context.go(AppRoutePaths.forgotPasswordPath);
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ResetPasswordCubit, ResetPasswordState>(
@@ -86,28 +93,37 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         );
       },
       builder: (context, state) {
+        final textTheme = AppTextTheme.of(context);
+        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
         );
         return AuthFlowShell(
+          showBackButton: true,
+          onBackPressed: _handleBack,
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Восстановление\nпароля',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: textTheme.title,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Введите новый пароль, чтобы завершить восстановление доступа',
+                  textAlign: TextAlign.center,
+                  style: textTheme.body,
                 ),
                 const SizedBox(height: 32),
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  hintText: 'Введите новый пароль',
+                  labelText: 'Новый пароль',
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.password,
                 ),
@@ -115,24 +131,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 AuthPasswordField(
                   controller: _passwordConfirmationController,
                   enabled: !isInProgress,
-                  hintText: 'Подтвердите пароль',
+                  labelText: 'Повторите пароль',
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: _passwordConfirmationValidator,
                 ),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: isInProgress ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
-                  ),
-                  child: isInProgress
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : const Text('Отправить'),
+                MainButton(
+                  state: isInProgress ? ButtonState.loading : ButtonState.enabled,
+                  onPressed: _submit,
+                  child: const Text('Отправить'),
                 ),
               ],
             ),

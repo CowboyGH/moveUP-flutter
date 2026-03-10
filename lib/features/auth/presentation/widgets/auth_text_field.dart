@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
+
 /// Reusable auth text field with shared decoration style.
 class AuthTextField extends StatelessWidget {
   /// Text controller.
@@ -8,8 +11,14 @@ class AuthTextField extends StatelessWidget {
   /// Whether the field is enabled.
   final bool enabled;
 
+  /// Field label shown above the input.
+  final String labelText;
+
   /// Placeholder text.
-  final String hintText;
+  final String? hintText;
+
+  /// Optional custom hint widget.
+  final Widget? hint;
 
   /// Keyboard configuration.
   final TextInputType keyboardType;
@@ -33,9 +42,11 @@ class AuthTextField extends StatelessWidget {
   const AuthTextField({
     required this.controller,
     required this.enabled,
-    required this.hintText,
+    required this.labelText,
     required this.keyboardType,
     required this.textInputAction,
+    this.hintText,
+    this.hint,
     this.validator,
     this.onFieldSubmitted,
     this.suffixIcon,
@@ -45,21 +56,33 @@ class AuthTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      enabled: enabled,
-      keyboardType: keyboardType,
-      obscureText: obscureText,
-      textInputAction: textInputAction,
-      onFieldSubmitted: onFieldSubmitted,
-      decoration: InputDecoration(
-        hintText: hintText,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+    final colorTheme = AppColorTheme.of(context);
+    final textTheme = AppTextTheme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          labelText,
+          style: textTheme.label.copyWith(color: colorTheme.onSurface),
         ),
-        suffixIcon: suffixIcon,
-      ),
-      validator: validator,
+        const SizedBox(height: 4),
+        TextFormField(
+          controller: controller,
+          enabled: enabled,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
+          style: textTheme.body.copyWith(color: colorTheme.onSurface),
+          cursorColor: colorTheme.primary,
+          decoration: InputDecoration(
+            hint: hint,
+            hintText: hint == null ? hintText : null,
+            suffixIcon: suffixIcon,
+          ),
+          validator: validator,
+        ),
+      ],
     );
   }
 }
