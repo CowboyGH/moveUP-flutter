@@ -63,15 +63,19 @@ abstract class AppThemeData {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: _lightColorTheme.onSurface,
+        overlayColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        textStyle: _textTheme.label.copyWith(color: _lightColorTheme.onSurface),
+        textStyle: _textTheme.body,
       ),
     ),
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         foregroundColor: _lightColorTheme.onSurface,
+        overlayColor: Colors.transparent,
+        shadowColor: Colors.transparent,
         padding: EdgeInsets.zero,
         minimumSize: const Size.square(24),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
