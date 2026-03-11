@@ -7,19 +7,11 @@ part 'verify_email_response_dto.g.dart';
 /// DTO for verify email response.
 @JsonSerializable(createToJson: false)
 class VerifyEmailResponseDto {
-  /// Indicates whether verify email request succeeded.
-  final bool success;
-
-  /// Backend message about verification result.
-  final String message;
-
   /// Nested auth payload.
   final VerifyEmailAuthDataDto data;
 
   /// Creates an instance of [VerifyEmailResponseDto].
   VerifyEmailResponseDto({
-    required this.success,
-    required this.message,
     required this.data,
   });
 

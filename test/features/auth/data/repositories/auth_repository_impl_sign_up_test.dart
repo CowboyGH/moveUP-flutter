@@ -43,11 +43,7 @@ void main() {
 
     setUp(() {
       userDto = createUserDto(avatar: null);
-      registerResponseDto = RegisterResponseDto(
-        success: true,
-        message: 'success_message',
-        user: userDto,
-      );
+      registerResponseDto = RegisterResponseDto(user: userDto);
     });
 
     test('returns success(user) when api register succeeds', () async {
