@@ -69,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added shared UIKit widgets: `MainButton` with loading/disabled states, `SvgPictureWidget`, and `NetworkImageWidget`.
 - Added auth UI visual assets for the updated auth flow layout (`arrow_back`, password visibility icons, decorative auth figure).
 - Added shared inline resend widget for OTP screens: `AuthResendCodeText`.
+- Added bundled legal document text assets for privacy policy, personal data processing consent, and public offer.
+- Added shared legal-document presentation flow: `LegalDocumentType`, `LegalDocumentPage`, and auth route wiring for document viewing.
 
 ### Changed
 
@@ -112,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated sign-in, sign-up, verify-email, forgot-password, verify-reset-code, and reset-password screens to the new auth layout and `MainButton` usage.
 - Updated OTP verification screens to reuse a shared resend/timer presentation widget for consistent spacing and interaction behavior.
 - Updated app bootstrap to lock the app to portrait orientation.
+- Updated sign-up consent text to open the relevant legal documents from underlined inline links.
 
 ### Fixed
 
@@ -121,6 +124,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed redundant `fromJson` generation for `LoginRequestDto` request serialization.
 - Fixed auth back-button accessibility by restoring a full-size tap target in `AuthFlowShell`.
 - Fixed auth field accessibility by restoring semantic labels for custom labeled inputs.
+- Fixed sign-up consent checkbox semantics by exposing it to assistive technologies while preserving the custom visual style.
 
 ### Removed
 
