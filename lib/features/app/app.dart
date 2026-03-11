@@ -16,6 +16,7 @@ class MoveUpApp extends StatelessWidget {
     return BlocProvider.value(
       value: di<AuthSessionCubit>(),
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         routerConfig: router,
         theme: AppThemeData.lightTheme,
       ),
