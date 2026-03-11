@@ -55,12 +55,14 @@ class AuthFlowShell extends StatelessWidget {
                       if (showBackButton)
                         IconButton(
                           onPressed: onBackPressed,
-                          constraints: const BoxConstraints.tightFor(width: 24, height: 24),
                           padding: EdgeInsets.zero,
-                          icon: SvgPictureWidget.icon(
-                            'arrow_back',
-                            fit: BoxFit.scaleDown,
-                            color: colorTheme.onBackground,
+                          icon: SizedBox.square(
+                            dimension: 24,
+                            child: SvgPictureWidget.icon(
+                              'arrow_back',
+                              fit: BoxFit.scaleDown,
+                              color: colorTheme.onBackground,
+                            ),
                           ),
                         )
                       else
