@@ -59,8 +59,9 @@ class _AuthResendCodeTextState extends State<AuthResendCodeText> {
         children: [
           TextSpan(
             text: 'Отправить повторно',
-            style: textTheme.label.copyWith(
+            style: textTheme.body.copyWith(
               color: widget.enabled ? colorTheme.onSurface : colorTheme.hint,
+              fontWeight: widget.secondsLeft != 0 ? FontWeight.normal : FontWeight.w500,
             ),
             recognizer: _recognizer,
           ),
