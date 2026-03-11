@@ -119,6 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed potential emit-after-close in SignInCubit by guarding with isClosed after awaiting repository response.
 - Fixed sign-in page debug shortcuts to be truly disabled in release and improved email validation to accept common addresses (e.g. with '+').
 - Fixed redundant `fromJson` generation for `LoginRequestDto` request serialization.
+- Fixed auth back-button accessibility by restoring a full-size tap target in `AuthFlowShell`.
+- Fixed auth field accessibility by restoring semantic labels for custom labeled inputs.
 
 ### Removed
 
