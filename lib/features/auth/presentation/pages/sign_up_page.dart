@@ -41,12 +41,12 @@ class _SignUpPageState extends State<SignUpPage> {
     super.initState();
     _privacyPolicyTapRecognizer = TapGestureRecognizer()
       ..onTap = () => context.push(
-        AppRoutePaths.legalDocumentPage,
+        AppRoutePaths.legalDocumentPath,
         extra: LegalDocumentType.privacyPolicy,
       );
     _dataProcessingConsentTapRecognizer = TapGestureRecognizer()
       ..onTap = () => context.push(
-        AppRoutePaths.legalDocumentPage,
+        AppRoutePaths.legalDocumentPath,
         extra: LegalDocumentType.dataProcessingConsent,
       );
   }
