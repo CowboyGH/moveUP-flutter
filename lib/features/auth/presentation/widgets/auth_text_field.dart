@@ -61,26 +61,32 @@ class AuthTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          labelText,
-          style: textTheme.label.copyWith(color: colorTheme.onSurface),
+        ExcludeSemantics(
+          child: Text(
+            labelText,
+            style: textTheme.label.copyWith(color: colorTheme.onSurface),
+          ),
         ),
         const SizedBox(height: 4),
-        TextFormField(
-          controller: controller,
-          enabled: enabled,
-          keyboardType: keyboardType,
-          obscureText: obscureText,
-          textInputAction: textInputAction,
-          onFieldSubmitted: onFieldSubmitted,
-          style: textTheme.body.copyWith(color: colorTheme.onSurface),
-          cursorColor: colorTheme.primary,
-          decoration: InputDecoration(
-            hint: hint,
-            hintText: hint == null ? hintText : null,
-            suffixIcon: suffixIcon,
+        Semantics(
+          label: labelText,
+          textField: true,
+          child: TextFormField(
+            controller: controller,
+            enabled: enabled,
+            keyboardType: keyboardType,
+            obscureText: obscureText,
+            textInputAction: textInputAction,
+            onFieldSubmitted: onFieldSubmitted,
+            style: textTheme.body.copyWith(color: colorTheme.onSurface),
+            cursorColor: colorTheme.primary,
+            decoration: InputDecoration(
+              hint: hint,
+              hintText: hint == null ? hintText : null,
+              suffixIcon: suffixIcon,
+            ),
+            validator: validator,
           ),
-          validator: validator,
         ),
       ],
     );
