@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
+import 'legal_document_type.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -29,14 +31,33 @@ class _SignUpPageState extends State<SignUpPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final TapGestureRecognizer _privacyPolicyTapRecognizer;
+  late final TapGestureRecognizer _dataProcessingConsentTapRecognizer;
 
   bool _isAgree = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _privacyPolicyTapRecognizer = TapGestureRecognizer()
+      ..onTap = () => context.push(
+        AppRoutePaths.legalDocumentPage,
+        extra: LegalDocumentType.privacyPolicy,
+      );
+    _dataProcessingConsentTapRecognizer = TapGestureRecognizer()
+      ..onTap = () => context.push(
+        AppRoutePaths.legalDocumentPage,
+        extra: LegalDocumentType.dataProcessingConsent,
+      );
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _privacyPolicyTapRecognizer.dispose();
+    _dataProcessingConsentTapRecognizer.dispose();
     super.dispose();
   }
 
@@ -158,6 +179,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   isAgree: _isAgree,
                   enabled: !isInProgress,
                   onTap: () => setState(() => _isAgree = !_isAgree),
+                  privacyPolicyTapRecognizer: isInProgress ? null : _privacyPolicyTapRecognizer,
+                  dataProcessingConsentTapRecognizer: isInProgress
+                      ? null
+                      : _dataProcessingConsentTapRecognizer,
                 ),
                 const SizedBox(height: 24),
                 MainButton(
@@ -185,11 +210,15 @@ final class _ConsentRow extends StatelessWidget {
   final bool isAgree;
   final bool enabled;
   final VoidCallback onTap;
+  final TapGestureRecognizer? privacyPolicyTapRecognizer;
+  final TapGestureRecognizer? dataProcessingConsentTapRecognizer;
 
   const _ConsentRow({
     required this.isAgree,
     required this.enabled,
     required this.onTap,
+    required this.privacyPolicyTapRecognizer,
+    required this.dataProcessingConsentTapRecognizer,
   });
 
   @override
@@ -236,6 +265,7 @@ final class _ConsentRow extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
+                  recognizer: privacyPolicyTapRecognizer,
                 ),
                 TextSpan(
                   text: ' и даю ',
@@ -248,6 +278,7 @@ final class _ConsentRow extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
+                  recognizer: dataProcessingConsentTapRecognizer,
                 ),
               ],
             ),
