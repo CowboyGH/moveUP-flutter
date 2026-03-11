@@ -6,7 +6,6 @@ import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/reset_password_request_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/reset_password_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
 import 'package:moveup_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
@@ -38,18 +37,9 @@ void main() {
     const password = 'test_password';
     const passwordConfirmation = 'test_password';
 
-    late ResetPasswordResponseDto resetPasswordResponseDto;
-
-    setUp(() {
-      resetPasswordResponseDto = ResetPasswordResponseDto(
-        success: true,
-        message: 'success_message',
-      );
-    });
-
     test('returns success when api reset-password succeeds', () async {
       // Arrange
-      when(apiClient.resetPassword(any)).thenAnswer((_) async => resetPasswordResponseDto);
+      when(apiClient.resetPassword(any)).thenAnswer((_) async {});
 
       // Act
       final result = await repository.resetPassword(

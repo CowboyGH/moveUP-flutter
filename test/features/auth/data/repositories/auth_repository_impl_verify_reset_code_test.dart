@@ -6,7 +6,6 @@ import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/verify_reset_code_request_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/verify_reset_code_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
 import 'package:moveup_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
@@ -36,18 +35,9 @@ void main() {
     const email = 'test@mail.com';
     const code = '123456';
 
-    late VerifyResetCodeResponseDto verifyResetCodeResponseDto;
-
-    setUp(() {
-      verifyResetCodeResponseDto = VerifyResetCodeResponseDto(
-        success: true,
-        message: 'success_message',
-      );
-    });
-
     test('returns success when api verify-reset-code succeeds', () async {
       // Arrange
-      when(apiClient.verifyResetCode(any)).thenAnswer((_) async => verifyResetCodeResponseDto);
+      when(apiClient.verifyResetCode(any)).thenAnswer((_) async {});
 
       // Act
       final result = await repository.verifyResetCode(email, code);

@@ -5,7 +5,6 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
-import 'package:moveup_flutter/features/auth/data/dto/logout_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
 import 'package:moveup_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
@@ -32,18 +31,9 @@ void main() {
   });
 
   group('AuthRepositoryImpl.logout', () {
-    late LogoutResponseDto logoutResponseDto;
-
-    setUp(() {
-      logoutResponseDto = LogoutResponseDto(
-        success: true,
-        message: 'success_message',
-      );
-    });
-
     test('returns success and deletes token when api logout succeeds', () async {
       // Arrange
-      when(apiClient.logout()).thenAnswer((_) async => logoutResponseDto);
+      when(apiClient.logout()).thenAnswer((_) async {});
       when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
 
       // Act

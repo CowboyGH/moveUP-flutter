@@ -8,9 +8,6 @@ part 'login_response_dto.g.dart';
 /// DTO for the login response.
 @JsonSerializable(createToJson: false)
 class LoginResponseDto {
-  /// Indicates whether the login request succeeded.
-  final bool success;
-
   /// JWT access token.
   @JsonKey(name: 'access_token')
   final String accessToken;
@@ -35,7 +32,6 @@ class LoginResponseDto {
 
   /// Creates an instance of [LoginResponseDto].
   LoginResponseDto({
-    required this.success,
     required this.accessToken,
     required this.tokenType,
     required this.expiresIn,

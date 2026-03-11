@@ -120,15 +120,11 @@ void main() {
 }
 
 VerifyEmailResponseDto _createVerifyEmailResponseDto({
-  bool success = true,
-  String message = 'Email успешно подтвержден.',
   String accessToken = 'test_access_token',
   String tokenType = 'bearer',
   int expiresIn = 3600,
   required UserDto user,
 }) => VerifyEmailResponseDto(
-  success: success,
-  message: message,
   data: VerifyEmailAuthDataDto(
     accessToken: accessToken,
     tokenType: tokenType,
