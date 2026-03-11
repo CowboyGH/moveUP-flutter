@@ -67,6 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Montserrat font kit and shared text theming via `AppTextStyle` and `AppTextTheme`.
 - Added shared UIKit theme foundation via `AppThemeData`.
 - Added shared UIKit widgets: `MainButton` with loading/disabled states, `SvgPictureWidget`, and `NetworkImageWidget`.
+- Added auth UI visual assets for the updated auth flow layout (`arrow_back`, password visibility icons, decorative auth figure).
+- Added shared inline resend widget for OTP screens: `AuthResendCodeText`.
 
 ### Changed
 
@@ -105,6 +107,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated auth repository tests to inline feature-specific DTO fixtures, unify shared `UserDto` test defaults, and align `TokenStorage` interaction assertions.
 - Updated verify-email repository coverage to assert `EmailAlreadyVerifiedFailure` (`400`) instead of the old validation-failure case.
 - Updated default button theming in `AppThemeData` to align with the starter UIKit styles.
+- Updated auth screen shell to match the new mobile layout: decorative background figure, top action slot, optional back button, and revised card paddings.
+- Updated shared auth form widgets to use labeled inputs, themed icons, password hint dots, and UIKit-based typography/colors.
+- Updated sign-in, sign-up, verify-email, forgot-password, verify-reset-code, and reset-password screens to the new auth layout and `MainButton` usage.
+- Updated OTP verification screens to reuse a shared resend/timer presentation widget for consistent spacing and interaction behavior.
+- Updated app bootstrap to lock the app to portrait orientation.
 
 ### Fixed
 
@@ -112,6 +119,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed potential emit-after-close in SignInCubit by guarding with isClosed after awaiting repository response.
 - Fixed sign-in page debug shortcuts to be truly disabled in release and improved email validation to accept common addresses (e.g. with '+').
 - Fixed redundant `fromJson` generation for `LoginRequestDto` request serialization.
+- Fixed auth back-button accessibility by restoring a full-size tap target in `AuthFlowShell`.
+- Fixed auth field accessibility by restoring semantic labels for custom labeled inputs.
 
 ### Removed
 

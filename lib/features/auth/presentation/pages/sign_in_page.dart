@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/button_state.dart';
+import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_in_cubit.dart';
 import '../validators/auth_validators.dart';
@@ -51,6 +55,8 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
+  void _continueAsGuest() => context.read<AuthSessionCubit>().continueAsGuest();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SignInCubit, SignInState>(
@@ -65,28 +71,46 @@ class _SignInPageState extends State<SignInPage> {
         );
       },
       builder: (context, state) {
+        final textTheme = AppTextTheme.of(context);
+        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
         );
         return AuthFlowShell(
+          topRightAction: TextButton(
+            onPressed: isInProgress ? null : _continueAsGuest,
+            style: TextButton.styleFrom(
+              textStyle: textTheme.label.copyWith(fontSize: 14),
+              foregroundColor: colorTheme.onSurface,
+              overlayColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+            ),
+            child: const Text('Пропустить'),
+          ),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   'Авторизация',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: textTheme.title,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Введите email и пароль, чтобы войти в аккаунт',
+                  textAlign: TextAlign.center,
+                  style: textTheme.body,
                 ),
                 const SizedBox(height: 32),
                 AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
-                  hintText: 'Введите email',
+                  labelText: 'Email',
+                  hintText: 'email@example.com',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.email,
@@ -95,7 +119,7 @@ class _SignInPageState extends State<SignInPage> {
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  hintText: 'Введите пароль',
+                  labelText: 'Пароль',
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.password,
@@ -107,24 +131,22 @@ class _SignInPageState extends State<SignInPage> {
                     onPressed: isInProgress
                         ? null
                         : () => context.push(AppRoutePaths.forgotPasswordPath),
+                    style: TextButton.styleFrom(
+                      textStyle: textTheme.label,
+                      foregroundColor: colorTheme.onSurface,
+                      overlayColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                    ),
                     child: const Text('Забыли пароль?'),
                   ),
                 ),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: isInProgress ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
-                  ),
-                  child: isInProgress
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : const Text('Войти'),
+                MainButton(
+                  state: isInProgress ? ButtonState.loading : ButtonState.enabled,
+                  onPressed: _submit,
+                  child: const Text('Войти'),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 AuthSwitchSection(
                   title: 'Еще нет аккаунта?',
                   actionText: 'Зарегистрироваться',
