@@ -227,27 +227,33 @@ final class _ConsentRow extends StatelessWidget {
     final colorTheme = AppColorTheme.of(context);
     return Row(
       children: [
-        InkWell(
+        Semantics(
+          label: 'Согласие на обработку персональных данных',
+          checked: isAgree,
+          enabled: enabled,
           onTap: enabled ? onTap : null,
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            height: 16,
-            width: 16,
-            margin: const EdgeInsets.only(left: 4, right: 6),
-            decoration: BoxDecoration(
-              color: isAgree ? colorTheme.primary : Colors.transparent,
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(
-                color: isAgree ? colorTheme.primary : const Color(0xFF727272),
+          child: InkWell(
+            onTap: enabled ? onTap : null,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 16,
+              width: 16,
+              margin: const EdgeInsets.only(left: 4, right: 6),
+              decoration: BoxDecoration(
+                color: isAgree ? colorTheme.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(
+                  color: isAgree ? colorTheme.primary : const Color(0xFF727272),
+                ),
               ),
+              child: isAgree
+                  ? Icon(
+                      Icons.check_rounded,
+                      size: 12,
+                      color: colorTheme.onPrimary,
+                    )
+                  : null,
             ),
-            child: isAgree
-                ? Icon(
-                    Icons.check_rounded,
-                    size: 12,
-                    color: colorTheme.onPrimary,
-                  )
-                : null,
           ),
         ),
         Flexible(
