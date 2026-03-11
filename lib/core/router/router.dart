@@ -68,7 +68,7 @@ final router = GoRouter(
       builder: (_, _) => const SignUpPageBuilder(),
     ),
     GoRoute(
-      path: AppRoutePaths.legalDocumentPage,
+      path: AppRoutePaths.legalDocumentPath,
       redirect: (context, state) {
         final extra = state.extra;
         if (extra is! LegalDocumentType) {
