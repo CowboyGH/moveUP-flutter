@@ -8,6 +8,7 @@ import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_request_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
 import 'package:moveup_flutter/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:moveup_flutter/features/auth/domain/entities/otp_resend_flow.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
 
 import '../../support/auth_dto_fixtures.dart';
@@ -33,13 +34,15 @@ void main() {
 
   group('AuthRepositoryImpl.resendOtpCode', () {
     const email = 'test@mail.com';
+    const emailVerificationFlow = OtpResendFlow.emailVerification;
+    const resetPasswordFlow = OtpResendFlow.resetPassword;
 
     test('returns success when api resend-verification-code succeeds', () async {
       // Arrange
       when(apiClient.resendVerificationCode(any)).thenAnswer((_) async {});
 
       // Act
-      final result = await repository.resendOtpCode(email);
+      final result = await repository.resendOtpCode(email, emailVerificationFlow);
 
       // Assert
       expect(result.isSuccess, isTrue);
@@ -63,7 +66,7 @@ void main() {
       when(apiClient.resendVerificationCode(any)).thenThrow(exception);
 
       // Act
-      final result = await repository.resendOtpCode(email);
+      final result = await repository.resendOtpCode(email, emailVerificationFlow);
 
       // Assert
       expect(result.isFailure, isTrue);
@@ -84,7 +87,7 @@ void main() {
       when(apiClient.resendVerificationCode(any)).thenThrow(unknownException);
 
       // Act
-      final result = await repository.resendOtpCode(email);
+      final result = await repository.resendOtpCode(email, emailVerificationFlow);
 
       // Assert
       expect(result.isFailure, isTrue);
@@ -97,6 +100,21 @@ void main() {
       verifyNoMoreInteractions(apiClient);
       verifyNoMoreInteractions(tokenStorage);
     });
+
+    test('returns success when api resend-reset-code succeeds', () async {
+      // Arrange
+      when(apiClient.resendResetCode(any)).thenAnswer((_) async {});
+
+      // Act
+      final result = await repository.resendOtpCode(email, resetPasswordFlow);
+
+      // Assert
+      expect(result.isSuccess, isTrue);
+
+      _verifyResendResetCodeRequest(apiClient, email);
+      verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
+    });
   });
 }
 
@@ -106,6 +124,16 @@ void _verifyResendVerificationCodeRequest(
 ) {
   final captured =
       verify(apiClient.resendVerificationCode(captureAny)).captured.single
+          as ResendVerificationCodeRequestDto;
+  expect(captured.email, expectedEmail);
+}
+
+void _verifyResendResetCodeRequest(
+  MockAuthApiClient apiClient,
+  String expectedEmail,
+) {
+  final captured =
+      verify(apiClient.resendResetCode(captureAny)).captured.single
           as ResendVerificationCodeRequestDto;
   expect(captured.email, expectedEmail);
 }
