@@ -124,6 +124,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced hardcoded auth UI asset names and legal document asset paths with shared `AppAssets`.
 - Replaced auth/debug error and consent snackbars with shared feedback dialogs.
 - Removed redundant success feedback modals from OTP resend and code-verification flows where the UI or navigation already confirms success.
+- Updated UIKit app background color to white to match the finalized auth mockup.
+- Updated the decorative auth figure accent color to the secondary palette.
+- Updated the auth card outline to use a full 1px gradient border around the entire contour.
 
 ### Fixed
 
@@ -134,6 +137,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed auth back-button accessibility by restoring a full-size tap target in `AuthFlowShell`.
 - Fixed auth field accessibility by restoring semantic labels for custom labeled inputs.
 - Fixed sign-up consent checkbox semantics by exposing it to assistive technologies while preserving the custom visual style.
+- Fixed password visibility toggle accessibility by replacing tooltip-only labeling with explicit semantics.
 
 ### Removed
 
