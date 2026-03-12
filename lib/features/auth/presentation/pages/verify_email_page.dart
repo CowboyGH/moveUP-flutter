@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -97,7 +98,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               previous.isSucceeded != current.isSucceeded || previous.failure != current.failure,
           listener: (context, state) {
             if (state.isSucceeded) {
-              _showSnack('Новый код подтверждения отправлен на вашу почту');
+              _showSnack(AppStrings.verifyEmailResendSuccess);
               return;
             }
 
@@ -118,13 +119,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Регистрация',
+                AppStrings.verifyEmailTitle,
                 textAlign: TextAlign.center,
                 style: textTheme.title,
               ),
               const SizedBox(height: 12),
               Text(
-                'Введите код из письма, чтобы подтвердить почту и завершить регистрацию',
+                AppStrings.verifyEmailSubtitle,
                 textAlign: TextAlign.center,
                 style: textTheme.body,
               ),
@@ -132,8 +133,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               AuthTextField(
                 controller: _codeController,
                 enabled: !isVerifyEmailInProgress,
-                labelText: 'Код',
-                hintText: '******',
+                labelText: AppStrings.codeLabel,
+                hintText: AppStrings.codeHint,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
@@ -149,7 +150,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               MainButton(
                 state: isVerifyEmailInProgress ? ButtonState.loading : ButtonState.enabled,
                 onPressed: _submit,
-                child: const Text('Отправить'),
+                child: const Text(AppStrings.sendButton),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -86,7 +87,7 @@ class _SignInPageState extends State<SignInPage> {
               overlayColor: Colors.transparent,
               shadowColor: Colors.transparent,
             ),
-            child: const Text('Пропустить'),
+            child: const Text(AppStrings.skipButton),
           ),
           child: Form(
             key: _formKey,
@@ -95,13 +96,13 @@ class _SignInPageState extends State<SignInPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Авторизация',
+                  AppStrings.signInTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.title,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Введите email и пароль, чтобы войти в аккаунт',
+                  AppStrings.signInSubtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.body,
                 ),
@@ -109,8 +110,8 @@ class _SignInPageState extends State<SignInPage> {
                 AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
-                  labelText: 'Email',
-                  hintText: 'email@example.com',
+                  labelText: AppStrings.emailLabel,
+                  hintText: AppStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.email,
@@ -119,7 +120,7 @@ class _SignInPageState extends State<SignInPage> {
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  labelText: 'Пароль',
+                  labelText: AppStrings.signInPasswordLabel,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.password,
@@ -137,19 +138,19 @@ class _SignInPageState extends State<SignInPage> {
                       overlayColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                     ),
-                    child: const Text('Забыли пароль?'),
+                    child: const Text(AppStrings.signInForgotPasswordButton),
                   ),
                 ),
                 const SizedBox(height: 24),
                 MainButton(
                   state: isInProgress ? ButtonState.loading : ButtonState.enabled,
                   onPressed: _submit,
-                  child: const Text('Войти'),
+                  child: const Text(AppStrings.signInSubmitButton),
                 ),
                 const SizedBox(height: 20),
                 AuthSwitchSection(
-                  title: 'Еще нет аккаунта?',
-                  actionText: 'Зарегистрироваться',
+                  title: AppStrings.signInSwitchTitle,
+                  actionText: AppStrings.signInSwitchAction,
                   onPressed: isInProgress ? null : () => context.go(AppRoutePaths.signUpPath),
                 ),
               ],

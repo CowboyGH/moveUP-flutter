@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
@@ -64,7 +65,7 @@ class LegalDocumentPage extends StatelessWidget {
                     if (snapshot.hasError) {
                       return Center(
                         child: Text(
-                          'Не удалось загрузить документ.',
+                          AppStrings.legalDocumentLoadError,
                           textAlign: TextAlign.center,
                           style: textTheme.body.copyWith(color: colorTheme.onSurface),
                         ),

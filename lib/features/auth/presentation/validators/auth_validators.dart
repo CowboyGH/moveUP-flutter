@@ -1,3 +1,5 @@
+import '../../../../core/constants/app_strings.dart';
+
 /// Shared validators for auth presentation forms.
 abstract final class AuthValidators {
   static final RegExp _emailPattern = RegExp(
@@ -12,10 +14,10 @@ abstract final class AuthValidators {
   static String? name(String? value) {
     final normalizedValue = value?.trim() ?? '';
     if (normalizedValue.isEmpty) {
-      return 'Введите имя';
+      return AppStrings.authNameRequired;
     }
     if (normalizedValue.length > 20) {
-      return 'Длина имени должна быть не более 20 символов';
+      return AppStrings.authNameMaxLength;
     }
     return null;
   }
@@ -24,11 +26,11 @@ abstract final class AuthValidators {
   static String? email(String? value) {
     final trimmedValue = value?.trim() ?? '';
     if (trimmedValue.isEmpty) {
-      return 'Введите email';
+      return AppStrings.authEmailRequired;
     }
 
     if (!_emailPattern.hasMatch(trimmedValue)) {
-      return 'Неверный формат email';
+      return AppStrings.authEmailFormat;
     }
     return null;
   }
@@ -36,24 +38,24 @@ abstract final class AuthValidators {
   /// Validates a password value by current auth policy.
   static String? password(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Введите пароль';
+      return AppStrings.authPasswordRequired;
     }
 
     if (value.length < 8) {
-      return 'Пароль должен содержать минимум 8 символов';
+      return AppStrings.authPasswordMinLength;
     }
     if (value.length > 64) {
-      return 'Пароль должен быть не длиннее 64 символов';
+      return AppStrings.authPasswordMaxLength;
     }
 
     if (!_allowedPasswordCharsPattern.hasMatch(value)) {
-      return 'Пароль должен содержать только латинские буквы и цифры';
+      return AppStrings.authPasswordAllowedChars;
     }
 
     final hasLetter = _passwordHasLetterPattern.hasMatch(value);
     final hasDigit = _passwordHasDigitPattern.hasMatch(value);
     if (!hasLetter || !hasDigit) {
-      return 'Пароль должен содержать буквы и цифры';
+      return AppStrings.authPasswordLetterAndDigit;
     }
 
     return null;
@@ -63,10 +65,10 @@ abstract final class AuthValidators {
   static String? otpCode(String? value) {
     final trimmedValue = value?.trim() ?? '';
     if (trimmedValue.isEmpty) {
-      return 'Введите код';
+      return AppStrings.authOtpCodeRequired;
     }
     if (!_otpCodePattern.hasMatch(trimmedValue)) {
-      return 'Код должен состоять из 6 цифр';
+      return AppStrings.authOtpCodeFormat;
     }
     return null;
   }
