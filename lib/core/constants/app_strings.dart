@@ -86,6 +86,27 @@ abstract final class AppStrings {
   static const authOtpCodeRequired = 'Введите код';
   static const authOtpCodeFormat = 'Код должен состоять из 6 цифр';
 
+  /// Auth failures.
+  static const authInvalidCredentials = 'Неверные учетные данные';
+  static const authValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const authEmailAlreadyVerified = 'Email уже подтвержден. Войдите в аккаунт';
+  static const authEmailNotVerified = 'Подтвердите email, чтобы продолжить';
+  static const authRateLimited = 'Слишком много попыток. Попробуйте позже';
+  static const authUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
+  /// Network failures.
+  static const networkNoConnection = 'Отсутствует интернет-соединение';
+  static const networkTimeout = 'Сервер не отвечает. Попробуйте позже';
+  static const networkBadRequest = 'Некорректный запрос';
+  static const networkUnauthorized = 'Не авторизован';
+  static const networkForbidden = 'Доступ запрещен';
+  static const networkNotFound = 'Ресурс не найден';
+  static const networkConflict = 'Конфликт данных';
+  static const networkValidation = 'Ошибка валидации';
+  static const networkRateLimited = 'Слишком много запросов';
+  static const networkServerError = 'Ошибка сервера. Попробуйте позже';
+  static const networkUnknown = 'Неизвестная ошибка сети';
+
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';
 }
