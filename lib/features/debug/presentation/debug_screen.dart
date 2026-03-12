@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/constants/app_strings.dart';
+import '../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../auth/domain/repositories/auth_repository.dart';
 import '../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../auth/presentation/cubits/logout_cubit.dart';
@@ -26,10 +28,11 @@ class DebugScreen extends StatelessWidget {
             succeed: () => context.read<AuthSessionCubit>().logout(),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
-                final messenger = ScaffoldMessenger.of(context);
-                messenger
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(SnackBar(content: Text(failure.message)));
+                showAppFeedbackDialog(
+                  context,
+                  title: AppStrings.feedbackErrorTitle,
+                  message: failure.message,
+                );
               }
             },
           );
@@ -50,7 +53,7 @@ class DebugScreen extends StatelessWidget {
                           width: 20,
                           child: CircularProgressIndicator.adaptive(),
                         )
-                      : const Text('Выйти'),
+                      : const Text(AppStrings.debugLogoutButton),
                 );
               },
             ),

@@ -40,26 +40,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added new auth route path for OTP verification: `/auth/verify-email`.
 - Added unit tests for `AuthRepositoryImpl.verifyEmail` and `VerifyEmailCubit`.
 - Added shared OTP validator in auth presentation validators and test coverage for OTP validation cases.
-- Added resend verification code API contract and DTOs in auth data layer (`ResendVerificationCodeRequestDto`, `ResendVerificationCodeResponseDto`) and wired `AuthApiClient.resendVerificationCode`.
+- Added resend verification code API contract in auth data layer (`ResendVerificationCodeRequestDto`) and wired `AuthApiClient.resendVerificationCode`.
 - Added shared OTP resend domain/data flow: `AuthRepository.resendOtpCode` and `AuthRepositoryImpl` implementation.
 - Added shared `OtpResendCubit` with built-in cooldown state for OTP resend use cases.
 - Added unit tests for `AuthRepositoryImpl.resendOtpCode` and `OtpResendCubit`.
-- Added forgot-password API contract and DTOs in auth data layer (`ForgotPasswordRequestDto`, `ForgotPasswordResponseDto`) and wired `AuthApiClient.forgotPassword`.
+- Added forgot-password API contract in auth data layer (`ForgotPasswordRequestDto`) and wired `AuthApiClient.forgotPassword`.
 - Added auth domain/data forgot-password flow: `AuthRepository.forgotPassword` contract and `AuthRepositoryImpl` implementation.
 - Added forgot-password presentation flow: `ForgotPasswordCubit`, `ForgotPasswordPageBuilder`, and `ForgotPasswordPage` integrated with router.
 - Added new auth route path for password recovery request: `/auth/forgot-password`.
 - Added unit tests for `AuthRepositoryImpl.forgotPassword` and `ForgotPasswordCubit`.
-- Added verify-reset-code API contract and DTOs in auth data layer (`VerifyResetCodeRequestDto`, `VerifyResetCodeResponseDto`) and wired `AuthApiClient.verifyResetCode`.
+- Added verify-reset-code API contract in auth data layer (`VerifyResetCodeRequestDto`) and wired `AuthApiClient.verifyResetCode`.
 - Added auth domain/data verify-reset-code flow: `AuthRepository.verifyResetCode` contract and `AuthRepositoryImpl` implementation.
 - Added verify-reset-code presentation flow: `VerifyResetCodeCubit`, `VerifyResetCodePageBuilder`, and `VerifyResetCodePage` integrated with router.
 - Added new auth route path for password recovery OTP verification: `/auth/forgot-password/verify-code`.
 - Added unit tests for `AuthRepositoryImpl.verifyResetCode` and `VerifyResetCodeCubit`.
-- Added reset-password API contract and DTOs in auth data layer (`ResetPasswordRequestDto`, `ResetPasswordResponseDto`) and wired `AuthApiClient.resetPassword`.
+- Added reset-password API contract in auth data layer (`ResetPasswordRequestDto`) and wired `AuthApiClient.resetPassword`.
 - Added auth domain/data reset-password flow: `AuthRepository.resetPassword` contract and `AuthRepositoryImpl` implementation.
 - Added reset-password presentation flow: `ResetPasswordCubit`, `ResetPasswordPageBuilder`, and `ResetPasswordPage` integrated with router.
 - Added new auth route path for the final password recovery step: `/auth/forgot-password/reset`.
 - Added unit tests for `AuthRepositoryImpl.resetPassword` and `ResetPasswordCubit`.
-- Added logout API contract and DTOs in auth data layer (`LogoutResponseDto`) and wired `AuthApiClient.logout`.
+- Added logout API contract in auth data layer and wired `AuthApiClient.logout`.
 - Added auth domain/data logout flow: `AuthRepository.logout` contract and `AuthRepositoryImpl` implementation.
 - Added logout presentation flow: `LogoutCubit` and logout action wiring on the debug screen.
 - Added unit tests for `AuthRepositoryImpl.logout`, `LogoutCubit`, and updated `AuthSessionCubit.logout`.
@@ -69,6 +69,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added shared UIKit widgets: `MainButton` with loading/disabled states, `SvgPictureWidget`, and `NetworkImageWidget`.
 - Added auth UI visual assets for the updated auth flow layout (`arrow_back`, password visibility icons, decorative auth figure).
 - Added shared inline resend widget for OTP screens: `AuthResendCodeText`.
+- Added shared UIKit `AppBackButton` for auth-style back navigation.
+- Added shared UIKit `AppFeedbackDialog` for auth-style alert feedback and bundled `exclamation_point` icon asset.
+- Added bundled legal document text assets for privacy policy, personal data processing consent, and public offer.
+- Added shared legal-document presentation flow: `LegalDocumentType`, `LegalDocumentPage`, and auth route wiring for document viewing.
+- Added shared core constants: `AppStrings` for app copy and `AppAssets` for UI asset references.
 
 ### Changed
 
@@ -112,6 +117,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated sign-in, sign-up, verify-email, forgot-password, verify-reset-code, and reset-password screens to the new auth layout and `MainButton` usage.
 - Updated OTP verification screens to reuse a shared resend/timer presentation widget for consistent spacing and interaction behavior.
 - Updated app bootstrap to lock the app to portrait orientation.
+- Updated sign-up consent text to open the relevant legal documents from underlined inline links.
+- Simplified auth API contracts by removing transport-only response DTOs from `logout`, `forgot-password`, `resend-verification-code`, `verify-reset-code`, and `reset-password`.
+- Trimmed unused `success` and `message` transport fields from remaining auth response DTOs where the client only consumes the payload.
+- Replaced hardcoded auth UI copy, validator messages, auth/network failure texts, and legal-document titles with shared `AppStrings`.
+- Replaced hardcoded auth UI asset names and legal document asset paths with shared `AppAssets`.
+- Replaced auth/debug error and consent snackbars with shared feedback dialogs.
+- Removed redundant success feedback modals from OTP resend and code-verification flows where the UI or navigation already confirms success.
 
 ### Fixed
 
@@ -121,11 +133,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed redundant `fromJson` generation for `LoginRequestDto` request serialization.
 - Fixed auth back-button accessibility by restoring a full-size tap target in `AuthFlowShell`.
 - Fixed auth field accessibility by restoring semantic labels for custom labeled inputs.
+- Fixed sign-up consent checkbox semantics by exposing it to assistive technologies while preserving the custom visual style.
 
 ### Removed
 
 - Removed legacy API client scaffold at `lib/api/service/api_client.dart`.
 - Removed unused `AppLoggerMixin`.
+- Removed unused auth response DTOs for transport-only success/message payloads.
 
 ## [0.1.0] - 2026-02-16
 

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/otp_resend_cubit.dart';
@@ -40,13 +42,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void dispose() {
     _codeController.dispose();
     super.dispose();
-  }
-
-  void _showSnack(String message) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _submit() {
@@ -86,7 +81,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
               failed: (failure) {
                 if (failure.message.isNotEmpty) {
-                  _showSnack(failure.message);
+                  showAppFeedbackDialog(
+                    context,
+                    title: AppStrings.feedbackErrorTitle,
+                    message: failure.message,
+                  );
                 }
               },
             );
@@ -96,14 +95,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           listenWhen: (previous, current) =>
               previous.isSucceeded != current.isSucceeded || previous.failure != current.failure,
           listener: (context, state) {
-            if (state.isSucceeded) {
-              _showSnack('Новый код подтверждения отправлен на вашу почту');
-              return;
-            }
-
             final failure = state.failure;
             if (failure != null && failure.message.isNotEmpty) {
-              _showSnack(failure.message);
+              showAppFeedbackDialog(
+                context,
+                title: AppStrings.feedbackErrorTitle,
+                message: failure.message,
+              );
             }
           },
         ),
@@ -118,13 +116,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Регистрация',
+                AppStrings.verifyEmailTitle,
                 textAlign: TextAlign.center,
                 style: textTheme.title,
               ),
               const SizedBox(height: 12),
               Text(
-                'Введите код из письма, чтобы подтвердить почту и завершить регистрацию',
+                AppStrings.verifyEmailSubtitle,
                 textAlign: TextAlign.center,
                 style: textTheme.body,
               ),
@@ -132,8 +130,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               AuthTextField(
                 controller: _codeController,
                 enabled: !isVerifyEmailInProgress,
-                labelText: 'Код',
-                hintText: '******',
+                labelText: AppStrings.codeLabel,
+                hintText: AppStrings.codeHint,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
@@ -149,7 +147,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               MainButton(
                 state: isVerifyEmailInProgress ? ButtonState.loading : ButtonState.enabled,
                 onPressed: _submit,
-                child: const Text('Отправить'),
+                child: const Text(AppStrings.sendButton),
               ),
             ],
           ),

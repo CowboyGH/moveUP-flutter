@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import 'auth_text_field.dart';
@@ -70,7 +71,7 @@ class _AuthPasswordFieldState extends State<AuthPasswordField> {
             builder: (context) {
               final iconColor = IconTheme.of(context).color ?? AppColorTheme.of(context).border;
               return SvgPictureWidget.icon(
-                _isPasswordVisible ? 'eye_open' : 'eye_close',
+                _isPasswordVisible ? AppAssets.iconEyeOpen : AppAssets.iconEyeClose,
                 fit: BoxFit.scaleDown,
                 color: iconColor,
               );

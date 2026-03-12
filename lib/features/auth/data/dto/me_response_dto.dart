@@ -7,15 +7,11 @@ part 'me_response_dto.g.dart';
 /// DTO for the current user response.
 @JsonSerializable(createToJson: false)
 class MeResponseDto {
-  /// Indicates whether request succeeded.
-  final bool success;
-
   /// Current authorized user.
   final UserDto user;
 
   /// Creates an instance of [MeResponseDto].
   MeResponseDto({
-    required this.success,
     required this.user,
   });
 

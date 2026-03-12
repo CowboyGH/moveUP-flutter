@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/reset_password_cubit.dart';
 import '../validators/auth_validators.dart';
@@ -42,13 +44,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     super.dispose();
   }
 
-  void _showSnack(String message) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  }
-
   void _submit() {
     final form = _formKey.currentState;
     if (form == null || !form.validate()) {
@@ -65,11 +60,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
   String? _passwordConfirmationValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Подтвердите пароль';
+      return AppStrings.resetPasswordPasswordConfirmationRequired;
     }
 
     if (value != _passwordController.text) {
-      return 'Пароли не совпадают';
+      return AppStrings.resetPasswordPasswordMismatch;
     }
 
     return null;
@@ -86,7 +81,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           succeed: () => context.go(AppRoutePaths.signInPath),
           failed: (failure) {
             if (failure.message.isNotEmpty) {
-              _showSnack(failure.message);
+              showAppFeedbackDialog(
+                context,
+                title: AppStrings.feedbackErrorTitle,
+                message: failure.message,
+              );
             }
           },
         );
@@ -107,13 +106,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Восстановление\nпароля',
+                  AppStrings.resetPasswordTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.title,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Введите новый пароль, чтобы завершить восстановление доступа',
+                  AppStrings.resetPasswordSubtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.body,
                 ),
@@ -121,7 +120,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  labelText: 'Новый пароль',
+                  labelText: AppStrings.resetPasswordNewPasswordLabel,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.password,
                 ),
@@ -129,7 +128,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 AuthPasswordField(
                   controller: _passwordConfirmationController,
                   enabled: !isInProgress,
-                  labelText: 'Повторите пароль',
+                  labelText: AppStrings.resetPasswordPasswordConfirmationLabel,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: _passwordConfirmationValidator,
@@ -138,7 +137,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 MainButton(
                   state: isInProgress ? ButtonState.loading : ButtonState.enabled,
                   onPressed: _submit,
-                  child: const Text('Отправить'),
+                  child: const Text(AppStrings.sendButton),
                 ),
               ],
             ),

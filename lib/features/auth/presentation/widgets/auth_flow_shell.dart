@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
+import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 
@@ -41,7 +43,7 @@ class AuthFlowShell extends StatelessWidget {
                   width: 262,
                   height: 288,
                   child: ExcludeSemantics(
-                    child: SvgPictureWidget.frame('figure'),
+                    child: SvgPictureWidget.frame(AppAssets.imageFigure),
                   ),
                 ),
               ),
@@ -53,18 +55,7 @@ class AuthFlowShell extends StatelessWidget {
                   Row(
                     children: [
                       if (showBackButton)
-                        IconButton(
-                          onPressed: onBackPressed,
-                          padding: EdgeInsets.zero,
-                          icon: SizedBox.square(
-                            dimension: 24,
-                            child: SvgPictureWidget.icon(
-                              'arrow_back',
-                              fit: BoxFit.scaleDown,
-                              color: colorTheme.onBackground,
-                            ),
-                          ),
-                        )
+                        AppBackButton(onPressed: onBackPressed)
                       else
                         const SizedBox.square(dimension: 24),
 

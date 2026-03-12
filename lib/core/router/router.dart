@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/forgot_password_page_builder.dart';
+import '../../features/auth/presentation/pages/legal_document_page.dart';
+import '../../features/auth/presentation/pages/legal_document_type.dart';
 import '../../features/auth/presentation/pages/reset_password_page_builder.dart';
 import '../../features/auth/presentation/pages/reset_password_route_args.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
@@ -64,6 +66,19 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.signUpPath,
       builder: (_, _) => const SignUpPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.legalDocumentPath,
+      redirect: (context, state) {
+        final extra = state.extra;
+        if (extra is! LegalDocumentType) {
+          return AppRoutePaths.signUpPath;
+        }
+        return null;
+      },
+      builder: (_, state) => LegalDocumentPage(
+        legalDocumentType: state.extra as LegalDocumentType,
+      ),
     ),
     GoRoute(
       path: AppRoutePaths.forgotPasswordPath,
