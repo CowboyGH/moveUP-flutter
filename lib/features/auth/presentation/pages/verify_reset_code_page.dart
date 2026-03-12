@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/button_state.dart';
+import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/otp_resend_cubit.dart';
 import '../cubits/verify_reset_code_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
+import '../widgets/auth_resend_code_text.dart';
 import '../widgets/auth_text_field.dart';
 import 'reset_password_route_args.dart';
 
@@ -57,16 +62,14 @@ class _VerifyResetCodePageState extends State<VerifyResetCodePage> {
     );
   }
 
-  String _formatTimer(int secondsLeft) {
-    final minutes = (secondsLeft ~/ 60).toString().padLeft(2, '0');
-    final seconds = (secondsLeft % 60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
-  }
-
   void _onResendPressed() => context.read<OtpResendCubit>().resendOtpCode(widget.email);
+
+  void _handleBack() =>
+      Navigator.of(context).canPop() ? context.pop() : context.go(AppRoutePaths.forgotPasswordPath);
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
     final verifyResetCodeState = context.watch<VerifyResetCodeCubit>().state;
     final otpResendState = context.watch<OtpResendCubit>().state;
     final isVerifyResetCodeInProgress = verifyResetCodeState.maybeWhen(
@@ -101,7 +104,7 @@ class _VerifyResetCodePageState extends State<VerifyResetCodePage> {
               previous.isSucceeded != current.isSucceeded || previous.failure != current.failure,
           listener: (context, state) {
             if (state.isSucceeded) {
-              _showSnack('Код для сброса пароля повторно отправлен на вашу почту.');
+              _showSnack(AppStrings.verifyResetCodeResendSuccess);
               return;
             }
             final failure = state.failure;
@@ -112,63 +115,47 @@ class _VerifyResetCodePageState extends State<VerifyResetCodePage> {
         ),
       ],
       child: AuthFlowShell(
+        showBackButton: true,
+        onBackPressed: _handleBack,
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Восстановление\nпароля',
+                AppStrings.verifyResetCodeTitle,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: textTheme.title,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
-                'Введите код, отправленный на почту',
+                AppStrings.verifyResetCodeSubtitle,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: textTheme.body,
               ),
               const SizedBox(height: 32),
               AuthTextField(
                 controller: _codeController,
                 enabled: !isVerifyResetCodeInProgress,
-                hintText: 'Введите код',
+                labelText: AppStrings.codeLabel,
+                hintText: AppStrings.codeHint,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) => _submit(),
                 validator: AuthValidators.otpCode,
               ),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  TextButton(
-                    onPressed: canResend ? _onResendPressed : null,
-                    child: const Text('Отправить повторно'),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    _formatTimer(otpResendState.secondsLeft),
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
-                  ),
-                ],
+              AuthResendCodeText(
+                enabled: canResend,
+                secondsLeft: otpResendState.secondsLeft,
+                onPressed: _onResendPressed,
               ),
               const SizedBox(height: 24),
-              FilledButton(
-                onPressed: isVerifyResetCodeInProgress ? null : _submit,
-                style: FilledButton.styleFrom(
-                  minimumSize: const Size.fromHeight(52),
-                ),
-                child: isVerifyResetCodeInProgress
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator.adaptive(),
-                      )
-                    : const Text('Отправить'),
+              MainButton(
+                state: isVerifyResetCodeInProgress ? ButtonState.loading : ButtonState.enabled,
+                onPressed: _submit,
+                child: const Text(AppStrings.sendButton),
               ),
             ],
           ),

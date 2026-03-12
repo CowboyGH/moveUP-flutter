@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/di/di.dart';
+import '../../../core/constants/app_strings.dart';
 import '../../auth/domain/repositories/auth_repository.dart';
 import '../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../auth/presentation/cubits/logout_cubit.dart';
@@ -50,7 +51,7 @@ class DebugScreen extends StatelessWidget {
                           width: 20,
                           child: CircularProgressIndicator.adaptive(),
                         )
-                      : const Text('Выйти'),
+                      : const Text(AppStrings.debugLogoutButton),
                 );
               },
             ),

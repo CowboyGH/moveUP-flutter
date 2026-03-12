@@ -2,21 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../dto/forgot_password_request_dto.dart';
-import '../dto/forgot_password_response_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/login_response_dto.dart';
-import '../dto/logout_response_dto.dart';
 import '../dto/me_response_dto.dart';
 import '../dto/register_request_dto.dart';
 import '../dto/register_response_dto.dart';
 import '../dto/reset_password_request_dto.dart';
-import '../dto/reset_password_response_dto.dart';
 import '../dto/resend_verification_code_request_dto.dart';
-import '../dto/resend_verification_code_response_dto.dart';
 import '../dto/verify_email_request_dto.dart';
 import '../dto/verify_email_response_dto.dart';
 import '../dto/verify_reset_code_request_dto.dart';
-import '../dto/verify_reset_code_response_dto.dart';
 
 part 'auth_api_client.g.dart';
 
@@ -34,31 +29,29 @@ abstract class AuthApiClient {
   @POST('/register')
   Future<RegisterResponseDto> register(@Body() RegisterRequestDto request);
 
-  /// Sends logout request and returns backend message.
+  /// Sends logout request.
   @POST('/logout')
-  Future<LogoutResponseDto> logout();
+  Future<void> logout();
 
-  /// Sends forgot password request and returns backend message.
+  /// Sends forgot password request.
   @POST('/forgot-password')
-  Future<ForgotPasswordResponseDto> forgotPassword(@Body() ForgotPasswordRequestDto request);
+  Future<void> forgotPassword(@Body() ForgotPasswordRequestDto request);
 
   /// Sends verify email request and returns auth data.
   @POST('/verify-email')
   Future<VerifyEmailResponseDto> verifyEmail(@Body() VerifyEmailRequestDto request);
 
-  /// Sends resend verification code request and returns backend message.
+  /// Sends resend verification code request.
   @POST('/resend-verification-code')
-  Future<ResendVerificationCodeResponseDto> resendVerificationCode(
-    @Body() ResendVerificationCodeRequestDto request,
-  );
+  Future<void> resendVerificationCode(@Body() ResendVerificationCodeRequestDto request);
 
-  /// Sends verify reset code request and returns backend message.
+  /// Sends verify reset code request.
   @POST('/verify-reset-code')
-  Future<VerifyResetCodeResponseDto> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
+  Future<void> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
 
-  /// Sends reset password request and returns backend message.
+  /// Sends reset password request.
   @POST('/reset-password')
-  Future<ResetPasswordResponseDto> resetPassword(@Body() ResetPasswordRequestDto request);
+  Future<void> resetPassword(@Body() ResetPasswordRequestDto request);
 
   /// Returns current authorized user profile.
   @GET('/me')

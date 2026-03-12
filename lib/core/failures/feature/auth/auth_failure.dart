@@ -1,3 +1,4 @@
+import '../../../constants/app_strings.dart';
 import '../../app_failure.dart';
 
 /// Auth application error.
@@ -16,7 +17,7 @@ final class InvalidCredentialsFailure extends AuthFailure {
   const InvalidCredentialsFailure({
     super.parentException,
     super.stackTrace,
-  }) : super('Неверные учетные данные');
+  }) : super(AppStrings.authInvalidCredentials);
 }
 
 /// Validation failed error.
@@ -29,7 +30,7 @@ final class ValidationFailedFailure extends AuthFailure {
     super.parentException,
     super.stackTrace,
     this.fieldErrors = const {},
-  }) : super('Проверьте введенные данные и попробуйте снова');
+  }) : super(AppStrings.authValidationFailed);
 }
 
 /// Email already verified error.
@@ -38,7 +39,7 @@ final class EmailAlreadyVerifiedFailure extends AuthFailure {
   const EmailAlreadyVerifiedFailure({
     super.parentException,
     super.stackTrace,
-  }) : super('Email уже подтвержден. Войдите в аккаунт');
+  }) : super(AppStrings.authEmailAlreadyVerified);
 }
 
 /// Email not verified error.
@@ -47,7 +48,7 @@ final class EmailNotVerifiedFailure extends AuthFailure {
   const EmailNotVerifiedFailure({
     super.parentException,
     super.stackTrace,
-  }) : super('Подтвердите email, чтобы продолжить');
+  }) : super(AppStrings.authEmailNotVerified);
 }
 
 /// Auth Rate limited error.
@@ -56,7 +57,7 @@ final class AuthRateLimitedFailure extends AuthFailure {
   const AuthRateLimitedFailure({
     super.parentException,
     super.stackTrace,
-  }) : super('Слишком много попыток. Попробуйте позже');
+  }) : super(AppStrings.authRateLimited);
 }
 
 /// Unauthorized error.
@@ -75,5 +76,5 @@ final class UnknownAuthFailure extends AuthFailure {
   const UnknownAuthFailure({
     super.parentException,
     super.stackTrace,
-  }) : super('Не удалось выполнить действие. Попробуйте снова');
+  }) : super(AppStrings.authUnknown);
 }

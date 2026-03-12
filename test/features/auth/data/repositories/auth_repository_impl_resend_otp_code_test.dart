@@ -6,7 +6,6 @@ import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_request_dto.dart';
-import 'package:moveup_flutter/features/auth/data/dto/resend_verification_code_response_dto.dart';
 import 'package:moveup_flutter/features/auth/data/remote/auth_api_client.dart';
 import 'package:moveup_flutter/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
@@ -35,20 +34,9 @@ void main() {
   group('AuthRepositoryImpl.resendOtpCode', () {
     const email = 'test@mail.com';
 
-    late ResendVerificationCodeResponseDto resendVerificationCodeResponseDto;
-
-    setUp(() {
-      resendVerificationCodeResponseDto = ResendVerificationCodeResponseDto(
-        success: true,
-        message: 'success_message',
-      );
-    });
-
     test('returns success when api resend-verification-code succeeds', () async {
       // Arrange
-      when(
-        apiClient.resendVerificationCode(any),
-      ).thenAnswer((_) async => resendVerificationCodeResponseDto);
+      when(apiClient.resendVerificationCode(any)).thenAnswer((_) async {});
 
       // Act
       final result = await repository.resendOtpCode(email);

@@ -134,7 +134,6 @@ void main() {
 }
 
 LoginResponseDto _createLoginResponseDto({
-  bool success = true,
   required String accessToken,
   String tokenType = 'bearer',
   int expiresIn = 1,
@@ -142,7 +141,6 @@ LoginResponseDto _createLoginResponseDto({
   required LoginSessionDto session,
   required UserDto user,
 }) => LoginResponseDto(
-  success: success,
   accessToken: accessToken,
   tokenType: tokenType,
   expiresIn: expiresIn,

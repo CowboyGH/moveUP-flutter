@@ -37,7 +37,7 @@ void main() {
 
     setUp(() {
       userDto = createUserDto();
-      meResponseDto = MeResponseDto(success: true, user: userDto);
+      meResponseDto = MeResponseDto(user: userDto);
     });
 
     test('returns success(user) when api me succeeds', () async {

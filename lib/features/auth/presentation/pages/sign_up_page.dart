@@ -1,8 +1,14 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/button_state.dart';
+import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
 import '../validators/auth_validators.dart';
@@ -10,6 +16,7 @@ import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
+import 'legal_document_type.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -25,14 +32,33 @@ class _SignUpPageState extends State<SignUpPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final TapGestureRecognizer _privacyPolicyTapRecognizer;
+  late final TapGestureRecognizer _dataProcessingConsentTapRecognizer;
 
   bool _isAgree = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _privacyPolicyTapRecognizer = TapGestureRecognizer()
+      ..onTap = () => context.push(
+        AppRoutePaths.legalDocumentPath,
+        extra: LegalDocumentType.privacyPolicy,
+      );
+    _dataProcessingConsentTapRecognizer = TapGestureRecognizer()
+      ..onTap = () => context.push(
+        AppRoutePaths.legalDocumentPath,
+        extra: LegalDocumentType.dataProcessingConsent,
+      );
+  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _privacyPolicyTapRecognizer.dispose();
+    _dataProcessingConsentTapRecognizer.dispose();
     super.dispose();
   }
 
@@ -50,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if (!_isAgree) {
-      _showSnack('Подтвердите согласие с условиями обработки персональных данных');
+      _showSnack(AppStrings.signUpConsentSnack);
       return;
     }
 
@@ -80,6 +106,8 @@ class _SignUpPageState extends State<SignUpPage> {
         );
       },
       builder: (context, state) {
+        final textTheme = AppTextTheme.of(context);
+        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
@@ -89,25 +117,41 @@ class _SignUpPageState extends State<SignUpPage> {
             onPressed: isInProgress
                 ? null
                 : () => context.read<AuthSessionCubit>().continueAsGuest(),
-            child: const Text('Пропустить'),
+            style: TextButton.styleFrom(
+              textStyle: textTheme.label.copyWith(
+                fontSize: 14,
+                height: 21 / 14,
+                fontWeight: FontWeight.w500,
+              ),
+              foregroundColor: colorTheme.onSurface,
+              overlayColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+            ),
+            child: const Text(AppStrings.skipButton),
           ),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Регистрация',
+                  AppStrings.signUpTitle,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: textTheme.title,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  AppStrings.signUpSubtitle,
+                  textAlign: TextAlign.center,
+                  style: textTheme.body,
                 ),
                 const SizedBox(height: 32),
                 AuthTextField(
                   controller: _nameController,
                   enabled: !isInProgress,
-                  hintText: 'Введите имя',
+                  labelText: AppStrings.signUpNameLabel,
+                  hintText: AppStrings.signUpNameHint,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.name,
@@ -116,7 +160,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
-                  hintText: 'Введите email',
+                  labelText: AppStrings.emailLabel,
+                  hintText: AppStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.email,
@@ -125,35 +170,31 @@ class _SignUpPageState extends State<SignUpPage> {
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  hintText: 'Введите пароль',
+                  labelText: AppStrings.signUpPasswordLabel,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.password,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 _ConsentRow(
                   isAgree: _isAgree,
                   enabled: !isInProgress,
                   onTap: () => setState(() => _isAgree = !_isAgree),
+                  privacyPolicyTapRecognizer: isInProgress ? null : _privacyPolicyTapRecognizer,
+                  dataProcessingConsentTapRecognizer: isInProgress
+                      ? null
+                      : _dataProcessingConsentTapRecognizer,
                 ),
                 const SizedBox(height: 24),
-                FilledButton(
-                  onPressed: isInProgress ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(52),
-                  ),
-                  child: isInProgress
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : const Text('Зарегистрироваться'),
+                MainButton(
+                  state: isInProgress ? ButtonState.loading : ButtonState.enabled,
+                  onPressed: _submit,
+                  child: const Text(AppStrings.signUpSubmitButton),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 AuthSwitchSection(
-                  title: 'Уже есть аккаунт?',
-                  actionText: 'Войти',
+                  title: AppStrings.signUpSwitchTitle,
+                  actionText: AppStrings.signUpSwitchAction,
                   onPressed: isInProgress ? null : () => context.go(AppRoutePaths.signInPath),
                 ),
               ],
@@ -170,38 +211,50 @@ final class _ConsentRow extends StatelessWidget {
   final bool isAgree;
   final bool enabled;
   final VoidCallback onTap;
+  final TapGestureRecognizer? privacyPolicyTapRecognizer;
+  final TapGestureRecognizer? dataProcessingConsentTapRecognizer;
 
   const _ConsentRow({
     required this.isAgree,
     required this.enabled,
     required this.onTap,
+    required this.privacyPolicyTapRecognizer,
+    required this.dataProcessingConsentTapRecognizer,
   });
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
+    final colorTheme = AppColorTheme.of(context);
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
+        Semantics(
+          label: AppStrings.signUpConsentCheckboxLabel,
+          checked: isAgree,
+          enabled: enabled,
           onTap: enabled ? onTap : null,
-          child: Container(
-            height: 16,
-            width: 16,
-            margin: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: isAgree ? Theme.of(context).colorScheme.primary : Colors.transparent,
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(
-                color: isAgree ? Colors.transparent : Theme.of(context).colorScheme.outline,
+          child: InkWell(
+            onTap: enabled ? onTap : null,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 16,
+              width: 16,
+              margin: const EdgeInsets.only(left: 4, right: 6),
+              decoration: BoxDecoration(
+                color: isAgree ? colorTheme.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(
+                  color: isAgree ? colorTheme.primary : const Color(0xFF727272),
+                ),
               ),
+              child: isAgree
+                  ? Icon(
+                      Icons.check_rounded,
+                      size: 12,
+                      color: colorTheme.onPrimary,
+                    )
+                  : null,
             ),
-            child: isAgree
-                ? Icon(
-                    Icons.check,
-                    size: 12,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  )
-                : null,
           ),
         ),
         Flexible(
@@ -209,26 +262,30 @@ final class _ConsentRow extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'Я согласен с ',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  text: AppStrings.signUpConsentPrefix,
+                  style: textTheme.bodySmall.copyWith(color: colorTheme.onSurface),
                 ),
                 TextSpan(
-                  text: 'Политикой конфиденциальности ',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  text: AppStrings.signUpConsentPrivacyPolicy,
+                  style: textTheme.bodySmall.copyWith(
+                    color: colorTheme.onSurface,
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
+                  recognizer: privacyPolicyTapRecognizer,
                 ),
                 TextSpan(
-                  text: 'и даю ',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  text: AppStrings.signUpConsentMiddle,
+                  style: textTheme.bodySmall.copyWith(color: colorTheme.onSurface),
                 ),
                 TextSpan(
-                  text: 'Согласие на обработку персональных данных',
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  text: AppStrings.signUpConsentDataProcessing,
+                  style: textTheme.bodySmall.copyWith(
+                    color: colorTheme.onSurface,
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
+                  recognizer: dataProcessingConsentTapRecognizer,
                 ),
               ],
             ),
