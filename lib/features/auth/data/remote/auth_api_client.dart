@@ -45,6 +45,10 @@ abstract class AuthApiClient {
   @POST('/resend-verification-code')
   Future<void> resendVerificationCode(@Body() ResendVerificationCodeRequestDto request);
 
+  /// Sends resend reset code request.
+  @POST('/resend-reset-code')
+  Future<void> resendResetCode(@Body() ResendVerificationCodeRequestDto request);
+
   /// Sends verify reset code request.
   @POST('/verify-reset-code')
   Future<void> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
