@@ -69,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added shared UIKit widgets: `MainButton` with loading/disabled states, `SvgPictureWidget`, and `NetworkImageWidget`.
 - Added auth UI visual assets for the updated auth flow layout (`arrow_back`, password visibility icons, decorative auth figure).
 - Added shared inline resend widget for OTP screens: `AuthResendCodeText`.
+- Added shared UIKit `AppBackButton` for auth-style back navigation.
+- Added shared UIKit `AppFeedbackDialog` for auth-style alert feedback and bundled `exclamation_point` icon asset.
 - Added bundled legal document text assets for privacy policy, personal data processing consent, and public offer.
 - Added shared legal-document presentation flow: `LegalDocumentType`, `LegalDocumentPage`, and auth route wiring for document viewing.
 - Added shared core constants: `AppStrings` for app copy and `AppAssets` for UI asset references.
@@ -120,6 +122,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Trimmed unused `success` and `message` transport fields from remaining auth response DTOs where the client only consumes the payload.
 - Replaced hardcoded auth UI copy, validator messages, auth/network failure texts, and legal-document titles with shared `AppStrings`.
 - Replaced hardcoded auth UI asset names and legal document asset paths with shared `AppAssets`.
+- Replaced auth/debug error and consent snackbars with shared feedback dialogs.
+- Removed redundant success feedback modals from OTP resend and code-verification flows where the UI or navigation already confirms success.
 
 ### Fixed
 

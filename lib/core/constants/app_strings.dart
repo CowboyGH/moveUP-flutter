@@ -70,6 +70,10 @@ abstract final class AppStrings {
   static const legalPublicOfferTitle = 'Публичная оферта';
   static const legalDocumentLoadError = 'Не удалось загрузить документ.';
 
+  /// Feedback dialogs.
+  static const feedbackErrorTitle = 'Что-то пошло не так';
+  static const feedbackConsentRequiredTitle = 'Необходимо Ваше согласие';
+
   /// Auth widgets.
   static const authResendCodeAction = 'Отправить повторно';
 

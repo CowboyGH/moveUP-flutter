@@ -6,6 +6,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/otp_resend_cubit.dart';
@@ -41,13 +42,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void dispose() {
     _codeController.dispose();
     super.dispose();
-  }
-
-  void _showSnack(String message) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   void _submit() {
@@ -87,7 +81,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
               succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
               failed: (failure) {
                 if (failure.message.isNotEmpty) {
-                  _showSnack(failure.message);
+                  showAppFeedbackDialog(
+                    context,
+                    title: AppStrings.feedbackErrorTitle,
+                    message: failure.message,
+                  );
                 }
               },
             );
@@ -97,14 +95,13 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
           listenWhen: (previous, current) =>
               previous.isSucceeded != current.isSucceeded || previous.failure != current.failure,
           listener: (context, state) {
-            if (state.isSucceeded) {
-              _showSnack(AppStrings.verifyEmailResendSuccess);
-              return;
-            }
-
             final failure = state.failure;
             if (failure != null && failure.message.isNotEmpty) {
-              _showSnack(failure.message);
+              showAppFeedbackDialog(
+                context,
+                title: AppStrings.feedbackErrorTitle,
+                message: failure.message,
+              );
             }
           },
         ),

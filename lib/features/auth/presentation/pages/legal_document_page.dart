@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
-import '../../../../uikit/images/svg_picture_widget.dart';
+import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import 'legal_document_type.dart';
@@ -25,7 +24,6 @@ class LegalDocumentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
     return Scaffold(
       body: SafeArea(
@@ -37,18 +35,7 @@ class LegalDocumentPage extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: () => _handleBack(context),
-                  padding: EdgeInsets.zero,
-                  icon: SizedBox.square(
-                    dimension: 24,
-                    child: SvgPictureWidget.icon(
-                      AppAssets.iconArrowBack,
-                      fit: BoxFit.scaleDown,
-                      color: colorTheme.onBackground,
-                    ),
-                  ),
-                ),
+                child: AppBackButton(onPressed: () => _handleBack(context)),
               ),
               const SizedBox(height: 24),
               Text(
@@ -61,6 +48,7 @@ class LegalDocumentPage extends StatelessWidget {
                 child: FutureBuilder<String>(
                   future: _loadDocument(),
                   builder: (context, snapshot) {
+                    final colorTheme = AppColorTheme.of(context);
                     final bodyStyle = textTheme.body.copyWith(color: colorTheme.onSurface);
 
                     if (snapshot.hasError) {
