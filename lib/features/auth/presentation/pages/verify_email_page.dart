@@ -8,6 +8,7 @@ import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
+import '../../domain/entities/otp_resend_flow.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/otp_resend_cubit.dart';
 import '../cubits/verify_email_cubit.dart';
@@ -56,7 +57,8 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
     );
   }
 
-  void _onResendPressed() => context.read<OtpResendCubit>().resendOtpCode(widget.email);
+  void _onResendPressed() =>
+      context.read<OtpResendCubit>().resendOtpCode(widget.email, OtpResendFlow.emailVerification);
 
   void _handleBack() =>
       Navigator.of(context).canPop() ? context.pop() : context.go(AppRoutePaths.signUpPath);
