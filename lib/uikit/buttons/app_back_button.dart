@@ -15,15 +15,19 @@ class AppBackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
-    return IconButton(
-      onPressed: onPressed,
-      padding: EdgeInsets.zero,
-      icon: SizedBox.square(
-        dimension: 24,
-        child: SvgPictureWidget.icon(
-          AppAssets.iconArrowBack,
-          fit: BoxFit.scaleDown,
-          color: colorTheme.onBackground,
+    return Semantics(
+      button: true,
+      label: MaterialLocalizations.of(context).backButtonTooltip,
+      child: IconButton(
+        onPressed: onPressed,
+        padding: EdgeInsets.zero,
+        icon: SizedBox.square(
+          dimension: 24,
+          child: SvgPictureWidget.icon(
+            AppAssets.iconArrowBack,
+            fit: BoxFit.scaleDown,
+            color: colorTheme.onBackground,
+          ),
         ),
       ),
     );
