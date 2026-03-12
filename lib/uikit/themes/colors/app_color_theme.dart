@@ -41,7 +41,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
   const AppColorTheme.light()
     : primary = AppColors.primary900,
       onPrimary = AppColors.white,
-      background = AppColors.grey100,
+      background = AppColors.white,
       onBackground = AppColors.black,
       surface = AppColors.white,
       onSurface = AppColors.black,
