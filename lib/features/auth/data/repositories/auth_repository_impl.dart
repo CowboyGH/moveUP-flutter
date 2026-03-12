@@ -5,6 +5,7 @@ import '../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
 import '../../../../core/utils/logger/app_logger.dart';
+import '../../domain/entities/otp_resend_flow.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../dto/forgot_password_request_dto.dart';
@@ -154,10 +155,15 @@ final class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Result<void, AuthFailure>> resendOtpCode(String email) async {
+  Future<Result<void, AuthFailure>> resendOtpCode(String email, OtpResendFlow flow) async {
     try {
       final request = ResendVerificationCodeRequestDto(email: email);
-      await _apiClient.resendVerificationCode(request);
+      switch (flow) {
+        case OtpResendFlow.emailVerification:
+          await _apiClient.resendVerificationCode(request);
+        case OtpResendFlow.resetPassword:
+          await _apiClient.resendResetCode(request);
+      }
       return const Result.success(null);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
