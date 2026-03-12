@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/result/result.dart';
+import '../../domain/entities/otp_resend_flow.dart';
 import '../../domain/repositories/auth_repository.dart';
 
 part 'otp_resend_cubit.freezed.dart';
@@ -22,8 +23,8 @@ final class OtpResendCubit extends Cubit<OtpResendState> {
   /// Creates an instance of [OtpResendCubit].
   OtpResendCubit(this._repository) : super(const OtpResendState());
 
-  /// Attempts to resend OTP code for [email].
-  Future<void> resendOtpCode(String email) async {
+  /// Attempts to resend OTP code for [email] and [flow].
+  Future<void> resendOtpCode(String email, OtpResendFlow flow) async {
     if (state.isInProgress || state.secondsLeft > 0) return;
 
     emit(
@@ -34,7 +35,7 @@ final class OtpResendCubit extends Cubit<OtpResendState> {
       ),
     );
 
-    final result = await _repository.resendOtpCode(email);
+    final result = await _repository.resendOtpCode(email, flow);
     if (isClosed) return;
 
     switch (result) {

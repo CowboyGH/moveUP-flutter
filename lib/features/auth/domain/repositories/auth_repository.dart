@@ -1,5 +1,6 @@
 import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/result/result.dart';
+import '../entities/otp_resend_flow.dart';
 import '../entities/user.dart';
 
 /// Repository interface for authentication operations.
@@ -31,7 +32,7 @@ abstract interface class AuthRepository {
   Future<Result<User, AuthFailure>> verifyEmail(String email, String code);
 
   /// Resends OTP code for email-based OTP flows.
-  Future<Result<void, AuthFailure>> resendOtpCode(String email);
+  Future<Result<void, AuthFailure>> resendOtpCode(String email, OtpResendFlow flow);
 
   /// Returns current authorized user.
   Future<Result<User, AuthFailure>> getCurrentUser();

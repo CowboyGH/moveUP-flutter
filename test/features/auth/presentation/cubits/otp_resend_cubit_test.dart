@@ -5,6 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
+import 'package:moveup_flutter/features/auth/domain/entities/otp_resend_flow.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:moveup_flutter/features/auth/presentation/cubits/otp_resend_cubit.dart';
 
@@ -16,6 +17,8 @@ void main() {
   late OtpResendCubit otpResendCubit;
 
   const email = 'email';
+  const emailVerificationFlow = OtpResendFlow.emailVerification;
+  const resetPasswordFlow = OtpResendFlow.resetPassword;
 
   setUp(() {
     repository = MockAuthRepository();
@@ -32,19 +35,19 @@ void main() {
 
     blocTest<OtpResendCubit, OtpResendState>(
       'resendOtpCode is executed only once when called twice during inProgress',
-      setUp: () => when(repository.resendOtpCode(email)).thenAnswer(
+      setUp: () => when(repository.resendOtpCode(email, emailVerificationFlow)).thenAnswer(
         (_) async => const Success<void, AuthFailure>(null),
       ),
       build: () => otpResendCubit,
       act: (cubit) {
-        cubit.resendOtpCode(email);
-        cubit.resendOtpCode(email);
+        cubit.resendOtpCode(email, emailVerificationFlow);
+        cubit.resendOtpCode(email, emailVerificationFlow);
       },
       expect: () => const [
         OtpResendState(isInProgress: true),
         OtpResendState(secondsLeft: 60, isSucceeded: true),
       ],
-      verify: (_) => verify(repository.resendOtpCode(email)).called(1),
+      verify: (_) => verify(repository.resendOtpCode(email, emailVerificationFlow)).called(1),
     );
 
     test('startCooldown sets countdown to 60', () {
@@ -68,38 +71,38 @@ void main() {
       fakeAsync((_) {
         otpResendCubit.startCooldown();
 
-        otpResendCubit.resendOtpCode(email);
+        otpResendCubit.resendOtpCode(email, emailVerificationFlow);
 
-        verifyNever(repository.resendOtpCode(any));
+        verifyNever(repository.resendOtpCode(any, any));
       });
     });
 
     blocTest<OtpResendCubit, OtpResendState>(
       'emits inProgress and success state, then restarts cooldown on success',
-      setUp: () => when(repository.resendOtpCode(email)).thenAnswer(
+      setUp: () => when(repository.resendOtpCode(email, resetPasswordFlow)).thenAnswer(
         (_) async => const Success<void, AuthFailure>(null),
       ),
       build: () => otpResendCubit,
-      act: (cubit) => cubit.resendOtpCode(email),
+      act: (cubit) => cubit.resendOtpCode(email, resetPasswordFlow),
       expect: () => const [
         OtpResendState(isInProgress: true),
         OtpResendState(secondsLeft: 60, isSucceeded: true),
       ],
-      verify: (_) => verify(repository.resendOtpCode(email)).called(1),
+      verify: (_) => verify(repository.resendOtpCode(email, resetPasswordFlow)).called(1),
     );
 
     blocTest<OtpResendCubit, OtpResendState>(
       'emits inProgress and failure on repository failure',
-      setUp: () => when(repository.resendOtpCode(email)).thenAnswer(
+      setUp: () => when(repository.resendOtpCode(email, resetPasswordFlow)).thenAnswer(
         (_) async => const Failure(authFailure),
       ),
       build: () => otpResendCubit,
-      act: (cubit) => cubit.resendOtpCode(email),
+      act: (cubit) => cubit.resendOtpCode(email, resetPasswordFlow),
       expect: () => const [
         OtpResendState(isInProgress: true),
         OtpResendState(failure: authFailure),
       ],
-      verify: (_) => verify(repository.resendOtpCode(email)).called(1),
+      verify: (_) => verify(repository.resendOtpCode(email, resetPasswordFlow)).called(1),
     );
   });
 }

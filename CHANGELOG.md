@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added unit tests for `AuthRepositoryImpl.verifyEmail` and `VerifyEmailCubit`.
 - Added shared OTP validator in auth presentation validators and test coverage for OTP validation cases.
 - Added resend verification code API contract in auth data layer (`ResendVerificationCodeRequestDto`) and wired `AuthApiClient.resendVerificationCode`.
+- Added password recovery resend API contract in auth data layer and wired `AuthApiClient.resendResetCode`.
 - Added shared OTP resend domain/data flow: `AuthRepository.resendOtpCode` and `AuthRepositoryImpl` implementation.
 - Added shared `OtpResendCubit` with built-in cooldown state for OTP resend use cases.
 - Added unit tests for `AuthRepositoryImpl.resendOtpCode` and `OtpResendCubit`.
@@ -103,6 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated router reset-password route handling with route-level guard: redirects to forgot-password when typed recovery args are missing/invalid.
 - Updated verify-email page to use `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling instead of local timer-only placeholder logic.
 - Updated verify-reset-code page to reuse `OtpResendCubit` for resend requests, cooldown timer, and success/error snackbar handling.
+- Updated shared OTP resend flow to route requests by `OtpResendFlow`, using `/resend-verification-code` for email verification and `/resend-reset-code` for password recovery.
 - Updated password recovery flow to finish with `go(signInPath)` after successful password reset.
 - Updated sign-in forgot-password action to route to the dedicated password recovery request screen.
 - Updated `AuthSessionCubit.logout` to finish only the local session state; backend logout is now handled through the dedicated logout flow before session transition.
