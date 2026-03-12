@@ -4,6 +4,7 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/colors/app_gradients.dart';
 
 /// Shared layout shell for auth screens.
 class AuthFlowShell extends StatelessWidget {
@@ -66,13 +67,27 @@ class AuthFlowShell extends StatelessWidget {
                   Expanded(
                     child: Center(
                       child: SingleChildScrollView(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+                        child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: colorTheme.surface,
+                            gradient: AppGradients.secondaryLinear,
                             borderRadius: BorderRadius.circular(24),
                           ),
-                          child: child,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: colorTheme.surface,
+                                borderRadius: BorderRadius.circular(23),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 36,
+                                ),
+                                child: child,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),

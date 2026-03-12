@@ -76,6 +76,8 @@ abstract final class AppStrings {
 
   /// Auth widgets.
   static const authResendCodeAction = 'Отправить повторно';
+  static const authShowPassword = 'Показать пароль';
+  static const authHidePassword = 'Скрыть пароль';
 
   /// Auth validators.
   static const authNameRequired = 'Введите имя';
