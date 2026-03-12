@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_assets.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import 'auth_text_field.dart';
@@ -63,19 +64,22 @@ class _AuthPasswordFieldState extends State<AuthPasswordField> {
       validator: widget.validator,
       suffixIcon: Padding(
         padding: const EdgeInsets.only(right: 12),
-        child: IconButton(
-          onPressed: widget.enabled ? _toggleVisibility : null,
-          tooltip: _isPasswordVisible ? 'Скрыть пароль' : 'Показать пароль',
-          constraints: const BoxConstraints.tightFor(width: 18, height: 18),
-          icon: Builder(
-            builder: (context) {
-              final iconColor = IconTheme.of(context).color ?? AppColorTheme.of(context).border;
-              return SvgPictureWidget.icon(
-                _isPasswordVisible ? AppAssets.iconEyeOpen : AppAssets.iconEyeClose,
-                fit: BoxFit.scaleDown,
-                color: iconColor,
-              );
-            },
+        child: Semantics(
+          button: true,
+          label: _isPasswordVisible ? AppStrings.authHidePassword : AppStrings.authShowPassword,
+          child: IconButton(
+            onPressed: widget.enabled ? _toggleVisibility : null,
+            constraints: const BoxConstraints.tightFor(width: 18, height: 18),
+            icon: Builder(
+              builder: (context) {
+                final iconColor = IconTheme.of(context).color ?? AppColorTheme.of(context).border;
+                return SvgPictureWidget.icon(
+                  _isPasswordVisible ? AppAssets.iconEyeOpen : AppAssets.iconEyeClose,
+                  fit: BoxFit.scaleDown,
+                  color: iconColor,
+                );
+              },
+            ),
           ),
         ),
       ),
