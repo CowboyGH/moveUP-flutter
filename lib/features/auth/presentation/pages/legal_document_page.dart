@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
@@ -42,7 +43,7 @@ class LegalDocumentPage extends StatelessWidget {
                   icon: SizedBox.square(
                     dimension: 24,
                     child: SvgPictureWidget.icon(
-                      'arrow_back',
+                      AppAssets.iconArrowBack,
                       fit: BoxFit.scaleDown,
                       color: colorTheme.onBackground,
                     ),

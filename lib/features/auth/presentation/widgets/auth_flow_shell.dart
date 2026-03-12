@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 
@@ -41,7 +42,7 @@ class AuthFlowShell extends StatelessWidget {
                   width: 262,
                   height: 288,
                   child: ExcludeSemantics(
-                    child: SvgPictureWidget.frame('figure'),
+                    child: SvgPictureWidget.frame(AppAssets.imageFigure),
                   ),
                 ),
               ),
@@ -59,7 +60,7 @@ class AuthFlowShell extends StatelessWidget {
                           icon: SizedBox.square(
                             dimension: 24,
                             child: SvgPictureWidget.icon(
-                              'arrow_back',
+                              AppAssets.iconArrowBack,
                               fit: BoxFit.scaleDown,
                               color: colorTheme.onBackground,
                             ),
