@@ -23,13 +23,13 @@ Mobile client for the moveUP fitness platform.
 
 ## 🚀 Highlights
 
-- 🏛️ **Clean Architecture** (Data → Domain → Presentation)
-- 💉 **Dependency Injection** (GetIt + Provider)
-- ⚠️ **Error Handling** (Result pattern + Failure hierarchy)
-- 📝 **Logging** with `AppLogger` abstraction and Mixin for Bloc/Cubit
-- 🧭 **Navigation** with GoRouter
-- 🌐 **Connectivity Tracking** with connectivity_plus
-- 📦 **Modular Structure** for scalable feature development
+- 🔐 **End-to-end Auth Flow**: sign in, sign up, email verification, password recovery, OTP verification, password reset, and logout
+- 🏛️ **Clean Architecture** in feature modules (Data → Domain → Presentation)
+- 🌐 **Network Layer** built on Dio + Retrofit
+- 🧭 **Navigation** with GoRouter and session-aware redirects
+- 🎨 **UIKit + Theming** with shared buttons, dialogs, images, colors, gradients, and text styles
+- ⚠️ **Error Handling** via `Result` and typed `Failure` hierarchies
+- 💉 **Dependency Injection** with GetIt + Provider
 
 ---
 
@@ -79,20 +79,30 @@ This app follows **Clean Architecture** principles:
 
 ```text
 lib/
-├── core/                  # Shared infrastructure
+├── core/
+│   ├── constants/         # Shared app strings and asset references
 │   ├── di/                # Dependency injection
-│   ├── failures/          # Error handling (Failure)
-│   ├── result/            # Result-pattern
-│   ├── router/            # Navigation (GoRouter)
-│   ├── services/          # Services (Network, etc.)
-│   └── utils/             # Utilities (Logger, Analytics)
-├── features/              # Feature modules (Clean Architecture)
-│   └── [feature_name]/
-│       ├── data/          # DTOs, DataSources, Repository Impl
-│       ├── domain/        # Entities, UseCases, Repository Interfaces
-│       └── presentation/  # Pages, Widgets, BLoC/Cubit
-├── uikit/                 # Shared UI components
-└── main.dart              # App entry point
+│   ├── env/               # Envied-based environment config
+│   ├── failures/          # Feature and network failure types
+│   ├── network/           # Dio setup, interceptors, mappers, error DTOs
+│   ├── result/            # Result pattern
+│   ├── router/            # GoRouter config and route paths
+│   ├── services/          # Cross-feature services (network, token storage)
+│   └── utils/             # Logger and analytics utilities
+├── features/
+│   ├── app/               # App composition and root widget
+│   ├── auth/
+│   │   ├── data/          # DTOs, API client, repository implementation
+│   │   ├── domain/        # Entities and repository contracts
+│   │   └── presentation/  # Pages, widgets, cubits, validators
+│   └── debug/             # Internal debug screen
+├── uikit/
+│   ├── buttons/           # Shared buttons
+│   ├── dialogs/           # Shared dialogs
+│   ├── images/            # Shared image widgets
+│   └── themes/            # Color, gradient, and typography system
+├── main.dart              # Main entry point
+└── runner.dart            # Bootstrap entrypoint
 ```
 
 ---
@@ -106,19 +116,27 @@ lib/
 
 ### Setup
 
-1. **Install dependencies:**
+1. **Create a local `.env` file in the project root.**
+
+   ```bash
+   touch .env
+   ```
+
+2. **Fill in `API_URL` in `.env`.**
+
+3. **Install dependencies:**
 
    ```bash
    flutter pub get
    ```
 
-2. **Run code generation:**
+4. **Run code generation:**
 
    ```bash
    flutter pub run build_runner build --delete-conflicting-outputs
    ```
 
-3. **Run the app:**
+5. **Run the app:**
 
    ```bash
    flutter run
