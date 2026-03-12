@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -75,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if (!_isAgree) {
-      _showSnack('Подтвердите согласие с условиями обработки персональных данных');
+      _showSnack(AppStrings.signUpConsentSnack);
       return;
     }
 
@@ -126,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
               overlayColor: Colors.transparent,
               shadowColor: Colors.transparent,
             ),
-            child: const Text('Пропустить'),
+            child: const Text(AppStrings.skipButton),
           ),
           child: Form(
             key: _formKey,
@@ -135,13 +136,13 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Регистрация',
+                  AppStrings.signUpTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.title,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Создайте аккаунт, чтобы сохранить прогресс и получить персональную программу',
+                  AppStrings.signUpSubtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.body,
                 ),
@@ -149,8 +150,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 AuthTextField(
                   controller: _nameController,
                   enabled: !isInProgress,
-                  labelText: 'Имя',
-                  hintText: 'Иван',
+                  labelText: AppStrings.signUpNameLabel,
+                  hintText: AppStrings.signUpNameHint,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.name,
@@ -159,8 +160,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
-                  labelText: 'Email',
-                  hintText: 'email@example.com',
+                  labelText: AppStrings.emailLabel,
+                  hintText: AppStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
                   validator: AuthValidators.email,
@@ -169,7 +170,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 AuthPasswordField(
                   controller: _passwordController,
                   enabled: !isInProgress,
-                  labelText: 'Пароль',
+                  labelText: AppStrings.signUpPasswordLabel,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
                   validator: AuthValidators.password,
@@ -188,12 +189,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 MainButton(
                   state: isInProgress ? ButtonState.loading : ButtonState.enabled,
                   onPressed: _submit,
-                  child: const Text('Зарегистрироваться'),
+                  child: const Text(AppStrings.signUpSubmitButton),
                 ),
                 const SizedBox(height: 20),
                 AuthSwitchSection(
-                  title: 'Уже есть аккаунт?',
-                  actionText: 'Войти',
+                  title: AppStrings.signUpSwitchTitle,
+                  actionText: AppStrings.signUpSwitchAction,
                   onPressed: isInProgress ? null : () => context.go(AppRoutePaths.signInPath),
                 ),
               ],
@@ -228,7 +229,7 @@ final class _ConsentRow extends StatelessWidget {
     return Row(
       children: [
         Semantics(
-          label: 'Согласие на обработку персональных данных',
+          label: AppStrings.signUpConsentCheckboxLabel,
           checked: isAgree,
           enabled: enabled,
           onTap: enabled ? onTap : null,
@@ -261,11 +262,11 @@ final class _ConsentRow extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: 'Я согласен с ',
+                  text: AppStrings.signUpConsentPrefix,
                   style: textTheme.bodySmall.copyWith(color: colorTheme.onSurface),
                 ),
                 TextSpan(
-                  text: 'Политикой конфиденциальности',
+                  text: AppStrings.signUpConsentPrivacyPolicy,
                   style: textTheme.bodySmall.copyWith(
                     color: colorTheme.onSurface,
                     fontWeight: FontWeight.w500,
@@ -274,11 +275,11 @@ final class _ConsentRow extends StatelessWidget {
                   recognizer: privacyPolicyTapRecognizer,
                 ),
                 TextSpan(
-                  text: ' и даю ',
+                  text: AppStrings.signUpConsentMiddle,
                   style: textTheme.bodySmall.copyWith(color: colorTheme.onSurface),
                 ),
                 TextSpan(
-                  text: 'Согласие на обработку персональных данных',
+                  text: AppStrings.signUpConsentDataProcessing,
                   style: textTheme.bodySmall.copyWith(
                     color: colorTheme.onSurface,
                     fontWeight: FontWeight.w500,

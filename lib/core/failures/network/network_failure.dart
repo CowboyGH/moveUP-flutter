@@ -1,3 +1,4 @@
+import '../../constants/app_strings.dart';
 import '../app_failure.dart';
 
 /// Network application error.
@@ -21,7 +22,7 @@ final class NoNetworkFailure extends NetworkFailure {
     String code = 'no_network',
     super.parentException,
     super.stackTrace,
-  }) : super('Отсутствует интернет-соединение', code: code);
+  }) : super(AppStrings.networkNoConnection, code: code);
 }
 
 /// Connection timeout error.
@@ -31,7 +32,7 @@ final class ConnectionTimeoutFailure extends NetworkFailure {
     String code = 'connection_timeout',
     super.parentException,
     super.stackTrace,
-  }) : super('Сервер не отвечает. Попробуйте позже', code: code);
+  }) : super(AppStrings.networkTimeout, code: code);
 }
 
 /// HTTP 400 error.
@@ -41,7 +42,7 @@ final class BadRequestFailure extends NetworkFailure {
     String code = 'bad_request',
     super.parentException,
     super.stackTrace,
-  }) : super('Некорректный запрос', code: code);
+  }) : super(AppStrings.networkBadRequest, code: code);
 }
 
 /// HTTP 401 error.
@@ -51,7 +52,7 @@ final class UnauthorizedFailure extends NetworkFailure {
     String code = 'unauthorized',
     super.parentException,
     super.stackTrace,
-  }) : super('Не авторизован', code: code);
+  }) : super(AppStrings.networkUnauthorized, code: code);
 }
 
 /// HTTP 403 error.
@@ -61,7 +62,7 @@ final class ForbiddenFailure extends NetworkFailure {
     String code = 'forbidden',
     super.parentException,
     super.stackTrace,
-  }) : super('Доступ запрещен', code: code);
+  }) : super(AppStrings.networkForbidden, code: code);
 }
 
 /// HTTP 404 error.
@@ -71,7 +72,7 @@ final class NotFoundFailure extends NetworkFailure {
     String code = 'not_found',
     super.parentException,
     super.stackTrace,
-  }) : super('Ресурс не найден', code: code);
+  }) : super(AppStrings.networkNotFound, code: code);
 }
 
 /// HTTP 409 error.
@@ -81,7 +82,7 @@ final class ConflictFailure extends NetworkFailure {
     String code = 'conflict',
     super.parentException,
     super.stackTrace,
-  }) : super('Конфликт данных', code: code);
+  }) : super(AppStrings.networkConflict, code: code);
 }
 
 /// HTTP 422 error.
@@ -95,7 +96,7 @@ final class ValidationFailure extends NetworkFailure {
     this.errors = const {},
     super.parentException,
     super.stackTrace,
-  }) : super('Ошибка валидации', code: code);
+  }) : super(AppStrings.networkValidation, code: code);
 }
 
 /// HTTP 429 error.
@@ -105,7 +106,7 @@ final class RateLimitedFailure extends NetworkFailure {
     String code = 'rate_limited',
     super.parentException,
     super.stackTrace,
-  }) : super('Слишком много запросов', code: code);
+  }) : super(AppStrings.networkRateLimited, code: code);
 }
 
 /// HTTP 5xx error.
@@ -115,7 +116,7 @@ final class ServerErrorFailure extends NetworkFailure {
     String code = 'server_error',
     super.parentException,
     super.stackTrace,
-  }) : super('Ошибка сервера. Попробуйте позже', code: code);
+  }) : super(AppStrings.networkServerError, code: code);
 }
 
 /// Unknown network error.
@@ -129,5 +130,5 @@ final class UnknownNetworkFailure extends NetworkFailure {
     this.originalMessage,
     super.parentException,
     super.stackTrace,
-  }) : super('Неизвестная ошибка сети', code: code);
+  }) : super(AppStrings.networkUnknown, code: code);
 }

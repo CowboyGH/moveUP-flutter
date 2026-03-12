@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -81,13 +82,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Забыли пароль?',
+                  AppStrings.forgotPasswordTitle,
                   textAlign: TextAlign.center,
                   style: textTheme.title,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Введите email, который вы использовали при регистрации, и мы отправим код для сброса пароля',
+                  AppStrings.forgotPasswordSubtitle,
                   textAlign: TextAlign.center,
                   style: textTheme.body,
                 ),
@@ -95,8 +96,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 AuthTextField(
                   controller: _emailController,
                   enabled: !isInProgress,
-                  labelText: 'Email',
-                  hintText: 'email@example.com',
+                  labelText: AppStrings.emailLabel,
+                  hintText: AppStrings.emailHint,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (_) => _submit(),
@@ -106,7 +107,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 MainButton(
                   state: isInProgress ? ButtonState.loading : ButtonState.enabled,
                   onPressed: _submit,
-                  child: const Text('Отправить'),
+                  child: const Text(AppStrings.sendButton),
                 ),
               ],
             ),

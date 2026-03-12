@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 
@@ -58,7 +59,7 @@ class _AuthResendCodeTextState extends State<AuthResendCodeText> {
       text: TextSpan(
         children: [
           TextSpan(
-            text: 'Отправить повторно',
+            text: AppStrings.authResendCodeAction,
             style: textTheme.body.copyWith(
               color: widget.enabled ? colorTheme.onSurface : colorTheme.hint,
               fontWeight: widget.secondsLeft != 0 ? FontWeight.normal : FontWeight.w500,

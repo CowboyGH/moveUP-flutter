@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added shared inline resend widget for OTP screens: `AuthResendCodeText`.
 - Added bundled legal document text assets for privacy policy, personal data processing consent, and public offer.
 - Added shared legal-document presentation flow: `LegalDocumentType`, `LegalDocumentPage`, and auth route wiring for document viewing.
+- Added shared core constants: `AppStrings` for app copy and `AppAssets` for UI asset references.
 
 ### Changed
 
@@ -117,6 +118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated sign-up consent text to open the relevant legal documents from underlined inline links.
 - Simplified auth API contracts by removing transport-only response DTOs from `logout`, `forgot-password`, `resend-verification-code`, `verify-reset-code`, and `reset-password`.
 - Trimmed unused `success` and `message` transport fields from remaining auth response DTOs where the client only consumes the payload.
+- Replaced hardcoded auth UI copy, validator messages, auth/network failure texts, and legal-document titles with shared `AppStrings`.
+- Replaced hardcoded auth UI asset names and legal document asset paths with shared `AppAssets`.
 
 ### Fixed
 

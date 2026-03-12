@@ -1,21 +1,24 @@
+import '../../../../core/constants/app_assets.dart';
+import '../../../../core/constants/app_strings.dart';
+
 /// Types of built-in legal documents available in the app.
 enum LegalDocumentType {
   /// Privacy policy document.
   privacyPolicy(
-    title: 'Политика конфиденциальности',
-    assetPath: 'assets/legal/privacy_policy.txt',
+    title: AppStrings.legalPrivacyPolicyTitle,
+    assetPath: AppAssets.legalPrivacyPolicy,
   ),
 
   /// Personal data processing consent document.
   dataProcessingConsent(
-    title: 'Согласие на обработку персональных данных',
-    assetPath: 'assets/legal/data_processing_consent.txt',
+    title: AppStrings.legalDataProcessingConsentTitle,
+    assetPath: AppAssets.legalDataProcessingConsent,
   ),
 
   /// Public offer document.
   publicOffer(
-    title: 'Публичная оферта',
-    assetPath: 'assets/legal/public_offer.txt',
+    title: AppStrings.legalPublicOfferTitle,
+    assetPath: AppAssets.legalPublicOffer,
   )
   ;
 
