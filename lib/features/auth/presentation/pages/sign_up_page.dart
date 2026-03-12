@@ -7,6 +7,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
@@ -62,13 +63,6 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  void _showSnack(String message) {
-    final messenger = ScaffoldMessenger.of(context);
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  }
-
   void _submit() {
     final form = _formKey.currentState;
     if (form == null || !form.validate()) {
@@ -76,7 +70,11 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if (!_isAgree) {
-      _showSnack(AppStrings.signUpConsentSnack);
+      showAppFeedbackDialog(
+        context,
+        title: AppStrings.feedbackConsentRequiredTitle,
+        message: AppStrings.signUpConsentSnack,
+      );
       return;
     }
 
@@ -100,7 +98,11 @@ class _SignUpPageState extends State<SignUpPage> {
           },
           failed: (failure) {
             if (failure.message.isNotEmpty) {
-              _showSnack(failure.message);
+              showAppFeedbackDialog(
+                context,
+                title: AppStrings.feedbackErrorTitle,
+                message: failure.message,
+              );
             }
           },
         );

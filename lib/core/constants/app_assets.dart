@@ -4,6 +4,7 @@
 abstract final class AppAssets {
   /// Icons.
   static const iconArrowBack = 'arrow_back';
+  static const iconExclamationPoint = 'exclamation_point';
   static const iconEyeClose = 'eye_close';
   static const iconEyeOpen = 'eye_open';
 
