@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No unreleased changes yet._
 
-## [0.2.0] - 2026-03-12
+## [0.2.0] - 2026-03-13
 
 ### Added
 
@@ -84,7 +84,9 @@ _No unreleased changes yet._
 
 - Dockerfile and CI now inject `API_URL` through GitHub Secrets.
 - CI is split by target branch: PRs to `main` run the release workflow, while PRs to `develop` run analysis-only checks.
+- CI workflows now fall back to a placeholder `API_URL` when the secret is missing and use non-mutating formatting checks for `lib/` and `test/`.
 - Legacy `lib/api/service/*` networking was replaced with `lib/core/network/*` and `lib/features/auth/data/*`.
+- Auth API and refresh endpoints are now centralized in `ApiPaths` behind a shared `apiPrefix`.
 - DI registrations now use the new network stack, token storage, and feature-scoped auth API client.
 - `TokenStorage` was narrowed to read, write, and delete operations only.
 - DI now provides sign-in dependencies through the registered `AuthRepository` implementation, `AppLogger`, `AuthApiClient`, and `TokenStorage`.
@@ -97,6 +99,7 @@ _No unreleased changes yet._
 - `SignInPageBuilder` now provides the shared `AuthSessionCubit` instance from DI for router/session consistency.
 - App bootstrap now restores the session asynchronously on startup.
 - Auth repository tests now reuse shared Dio exception fixtures.
+- `AuthSessionCubit` now has an explicit DI dispose callback, and startup session restore is triggered after global error handlers are configured.
 - `UserDto.emailVerifiedAt` is now nullable to match the `/register` payload.
 - Sign-in and sign-up pages were rebuilt on shared auth widgets and a unified auth layout.
 - Sign-up consent UX now uses a local `ConsentRow` widget and a clearer validation feedback message.
@@ -120,6 +123,7 @@ _No unreleased changes yet._
 - Shared auth form widgets now use labeled inputs, themed icons, password hint dots, and UIKit-based typography/colors.
 - Sign-in, sign-up, verify-email, forgot-password, verify-reset-code, and reset-password screens were aligned to the new auth layout and `MainButton` usage.
 - OTP verification screens now share a unified resend/timer presentation widget.
+- `AuthResendCodeText` now uses a unified resend-availability state for both interaction and styling.
 - App bootstrap now locks the app to portrait mode.
 - Sign-up consent text now opens the relevant legal documents through underlined inline links.
 - Transport-only auth response DTOs were removed from `logout`, `forgot-password`, `resend-verification-code`, `verify-reset-code`, and `reset-password`.
@@ -138,10 +142,13 @@ _No unreleased changes yet._
 - `SignInCubit` now guards against emit-after-close after awaiting repository responses.
 - Sign-in debug shortcuts are now truly disabled in release, and email validation now accepts common addresses such as `+` aliases.
 - `LoginRequestDto` no longer generates redundant `fromJson`.
+- Cancelled Dio requests are now mapped to `UnknownNetworkFailure` instead of `NoNetworkFailure`.
 - Auth back-button accessibility now uses a full-size tap target in `AuthFlowShell`.
 - Custom labeled auth inputs now expose semantic labels correctly.
 - The sign-up consent checkbox now exposes semantics to assistive technologies while preserving the custom visual style.
 - The password visibility toggle now uses explicit semantics instead of tooltip-only labeling.
+- Session restore now clears stale persisted tokens before emitting `unauthenticated` on any restore failure.
+- Repository test coverage now includes failure paths for password-recovery OTP resend.
 
 ### Removed
 
