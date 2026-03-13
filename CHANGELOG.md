@@ -84,7 +84,7 @@ _No unreleased changes yet._
 
 - Dockerfile and CI now inject `API_URL` through GitHub Secrets.
 - CI is split by target branch: PRs to `main` run the release workflow, while PRs to `develop` run analysis-only checks.
-- CI workflows now fall back to a placeholder `API_URL` when the secret is missing and use non-mutating formatting checks for `lib/` and `test/`.
+- CI workflows now fall back to a placeholder `API_URL` when the secret is missing, verify formatting on tracked Dart sources before code generation, and format generated outputs after `build_runner`.
 - Legacy `lib/api/service/*` networking was replaced with `lib/core/network/*` and `lib/features/auth/data/*`.
 - Auth API and refresh endpoints are now centralized in `ApiPaths` behind a shared `apiPrefix`.
 - DI registrations now use the new network stack, token storage, and feature-scoped auth API client.
