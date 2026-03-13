@@ -115,6 +115,55 @@ void main() {
       verifyNoMoreInteractions(apiClient);
       verifyNoMoreInteractions(tokenStorage);
     });
+
+    test('returns ValidationFailedFailure when api resend-reset-code returns 422 validation_failed', () async {
+      // Arrange
+      const errors = <String, List<String>>{
+        'email': ['The email field is required.'],
+      };
+      final exception = createDioBadResponseException(
+        path: '/resend-reset-code',
+        statusCode: 422,
+        code: 'validation_failed',
+        errors: errors,
+      );
+      when(apiClient.resendResetCode(any)).thenThrow(exception);
+
+      // Act
+      final result = await repository.resendOtpCode(email, resetPasswordFlow);
+
+      // Assert
+      expect(result.isFailure, isTrue);
+
+      final failure = result.failure!;
+      expect(failure, isA<ValidationFailedFailure>());
+      expect(failure.parentException, isA<DioException>());
+      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+
+      _verifyResendResetCodeRequest(apiClient, email);
+      verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
+    });
+
+    test('returns UnknownAuthFailure when api resend-reset-code throws unexpected exception', () async {
+      // Arrange
+      final unknownException = Exception('unexpected_error');
+      when(apiClient.resendResetCode(any)).thenThrow(unknownException);
+
+      // Act
+      final result = await repository.resendOtpCode(email, resetPasswordFlow);
+
+      // Assert
+      expect(result.isFailure, isTrue);
+
+      final failure = result.failure!;
+      expect(failure, isA<UnknownAuthFailure>());
+      expect(failure.parentException, unknownException);
+
+      _verifyResendResetCodeRequest(apiClient, email);
+      verifyNoMoreInteractions(apiClient);
+      verifyNoMoreInteractions(tokenStorage);
+    });
   });
 }
 
