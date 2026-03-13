@@ -43,6 +43,24 @@ void main() {
       expect(failure.message, isNotEmpty);
     });
 
+    test('toNetworkFailure returns UnknownNetworkFailure for cancel', () {
+      // Arrange
+      final exception = DioException(
+        requestOptions: requestOptions,
+        type: DioExceptionType.cancel,
+      );
+
+      // Act
+      final failure = exception.toNetworkFailure();
+
+      // Assert
+      expect(failure, isA<UnknownNetworkFailure>());
+
+      expect(failure.parentException, exception);
+      expect(failure.code, 'unknown_network');
+      expect(failure.message, isNotEmpty);
+    });
+
     test('toNetworkFailure returns UnknownNetworkFailure for badResponse with null statusCode', () {
       // Arrange
 

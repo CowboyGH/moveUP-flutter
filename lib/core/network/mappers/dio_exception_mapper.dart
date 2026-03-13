@@ -13,9 +13,14 @@ extension DioExceptionMapper on DioException {
         return ConnectionTimeoutFailure(parentException: this, stackTrace: stackTrace);
       case DioExceptionType.sendTimeout ||
           DioExceptionType.receiveTimeout ||
-          DioExceptionType.cancel ||
           DioExceptionType.connectionError:
         return NoNetworkFailure(parentException: this, stackTrace: stackTrace);
+      case DioExceptionType.cancel:
+        return UnknownNetworkFailure(
+          originalMessage: message,
+          parentException: this,
+          stackTrace: stackTrace,
+        );
       case DioExceptionType.badResponse:
         final int? statusCode = response?.statusCode;
         // early return to avoid unnecessary parsing
