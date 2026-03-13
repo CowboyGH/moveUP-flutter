@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/result/result.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
+import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 
@@ -17,8 +18,12 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   /// Secure storage for access token management.
   final TokenStorage _tokenStorage;
 
+  /// Logger for non-fatal session cleanup errors.
+  final AppLogger _logger;
+
   /// Creates an instance of [AuthSessionCubit].
-  AuthSessionCubit(this._repository, this._tokenStorage) : super(const AuthSessionState.initial());
+  AuthSessionCubit(this._repository, this._tokenStorage, this._logger)
+    : super(const AuthSessionState.initial());
 
   /// Restores current session from storage and backend.
   Future<void> restoreSession() async {
@@ -46,14 +51,26 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
         case Success(data: final user):
           emit(AuthSessionState.authenticated(user));
         case Failure():
-          await _tokenStorage.deleteAccessToken();
+          await _clearTokenSafely();
           if (isClosed) return;
           emit(const AuthSessionState.unauthenticated());
       }
     } catch (_) {
-      await _tokenStorage.deleteAccessToken();
+      await _clearTokenSafely();
       if (isClosed) return;
       emit(const AuthSessionState.unauthenticated());
+    }
+  }
+
+  Future<void> _clearTokenSafely() async {
+    try {
+      await _tokenStorage.deleteAccessToken();
+    } catch (error, stackTrace) {
+      _logger.e(
+        'Failed to clear access token during session restore.',
+        error,
+        stackTrace,
+      );
     }
   }
 

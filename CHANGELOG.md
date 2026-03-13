@@ -148,6 +148,7 @@ _No unreleased changes yet._
 - The sign-up consent checkbox now exposes semantics to assistive technologies while preserving the custom visual style.
 - The password visibility toggle now uses explicit semantics instead of tooltip-only labeling.
 - Session restore now clears stale persisted tokens before emitting `unauthenticated` on any restore failure.
+- `AuthSessionCubit.restoreSession` now still exits `checking` even if persisted token cleanup fails.
 - Repository test coverage now includes failure paths for password-recovery OTP resend.
 
 ### Removed

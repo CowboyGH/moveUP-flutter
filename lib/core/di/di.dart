@@ -62,6 +62,7 @@ Future<void> setupDI() async {
     () => AuthSessionCubit(
       di<AuthRepository>(),
       di<TokenStorage>(),
+      di<AppLogger>(),
     ),
     dispose: (cubit) => cubit.close(),
   );
