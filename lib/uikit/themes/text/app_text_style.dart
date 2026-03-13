@@ -1,4 +1,4 @@
-//ignore_for_file: public_member_api_docs
+// ignore_for_file: public_member_api_docs
 import 'package:flutter/material.dart';
 
 /// The text styles used in the app.

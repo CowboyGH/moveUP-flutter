@@ -53,7 +53,8 @@ class _AuthResendCodeTextState extends State<AuthResendCodeText> {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    _recognizer.onTap = widget.enabled ? widget.onPressed : null;
+    final canResend = widget.enabled && widget.onPressed != null && widget.secondsLeft == 0;
+    _recognizer.onTap = canResend ? widget.onPressed : null;
 
     return RichText(
       text: TextSpan(
@@ -61,8 +62,8 @@ class _AuthResendCodeTextState extends State<AuthResendCodeText> {
           TextSpan(
             text: AppStrings.authResendCodeAction,
             style: textTheme.body.copyWith(
-              color: widget.enabled ? colorTheme.onSurface : colorTheme.hint,
-              fontWeight: widget.secondsLeft != 0 ? FontWeight.normal : FontWeight.w500,
+              color: canResend ? colorTheme.onSurface : colorTheme.hint,
+              fontWeight: canResend ? FontWeight.w500 : FontWeight.normal,
             ),
             recognizer: _recognizer,
           ),
