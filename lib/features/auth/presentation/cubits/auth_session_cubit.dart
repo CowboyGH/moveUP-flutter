@@ -67,8 +67,8 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     emit(AuthSessionState.authenticated(user));
   }
 
-  /// Clears session and emits unauthenticated state.
-  Future<void> logout() async {
+  /// Marks the current session as unauthenticated.
+  void clearSession() {
     if (!isClosed) {
       emit(const AuthSessionState.unauthenticated());
     }

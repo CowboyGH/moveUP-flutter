@@ -112,7 +112,7 @@ _No unreleased changes yet._
 - Shared OTP resend routing now switches by `OtpResendFlow`, using `/resend-verification-code` for email verification and `/resend-reset-code` for password recovery.
 - Password recovery now finishes with `go(signInPath)` after a successful password reset.
 - The sign-in forgot-password action now opens the dedicated password recovery request screen.
-- `AuthSessionCubit.logout` now completes only the local session transition, while backend logout happens in the dedicated logout flow first.
+- `AuthSessionCubit.clearSession` now completes only the local session transition, while backend logout happens in the dedicated logout flow first.
 - The shared `AuthSessionCubit` is now provided from the app root instead of feature-local builders.
 - Auth cubits now use the public Freezed state API for in-progress guards instead of generated private classes.
 - `auth_mapper.dart` was renamed to `auth_failure_mapper.dart` to reflect its actual responsibility.

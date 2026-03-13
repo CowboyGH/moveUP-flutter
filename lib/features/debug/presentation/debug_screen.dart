@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/di/di.dart';
 import '../../../core/constants/app_strings.dart';
+import '../../../core/di/di.dart';
 import '../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../auth/domain/repositories/auth_repository.dart';
 import '../../auth/presentation/cubits/auth_session_cubit.dart';
@@ -25,7 +25,7 @@ class DebugScreen extends StatelessWidget {
       child: BlocListener<LogoutCubit, LogoutState>(
         listener: (context, state) {
           state.whenOrNull(
-            succeed: () => context.read<AuthSessionCubit>().logout(),
+            succeed: () => context.read<AuthSessionCubit>().clearSession(),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
                 showAppFeedbackDialog(

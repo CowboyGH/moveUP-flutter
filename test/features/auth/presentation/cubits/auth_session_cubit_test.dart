@@ -130,9 +130,9 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'logout emits unauthenticated without touching token storage directly',
+      'clearSession emits unauthenticated without touching token storage directly',
       build: () => authSessionCubit,
-      act: (cubit) => cubit.logout(),
+      act: (cubit) => cubit.clearSession(),
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
         verifyNoMoreInteractions(repository);
