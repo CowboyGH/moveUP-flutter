@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../../../core/network/api_paths.dart';
 import '../dto/forgot_password_request_dto.dart';
 import '../dto/login_request_dto.dart';
 import '../dto/login_response_dto.dart';
@@ -22,42 +23,42 @@ abstract class AuthApiClient {
   factory AuthApiClient(Dio dio, {String? baseUrl}) = _AuthApiClient;
 
   /// Sends login request and returns auth data.
-  @POST('/login')
+  @POST(ApiPaths.login)
   Future<LoginResponseDto> login(@Body() LoginRequestDto request);
 
   /// Sends register request and returns registered user payload.
-  @POST('/register')
+  @POST(ApiPaths.register)
   Future<RegisterResponseDto> register(@Body() RegisterRequestDto request);
 
   /// Sends logout request.
-  @POST('/logout')
+  @POST(ApiPaths.logout)
   Future<void> logout();
 
   /// Sends forgot password request.
-  @POST('/forgot-password')
+  @POST(ApiPaths.forgotPassword)
   Future<void> forgotPassword(@Body() ForgotPasswordRequestDto request);
 
   /// Sends verify email request and returns auth data.
-  @POST('/verify-email')
+  @POST(ApiPaths.verifyEmail)
   Future<VerifyEmailResponseDto> verifyEmail(@Body() VerifyEmailRequestDto request);
 
   /// Sends resend verification code request.
-  @POST('/resend-verification-code')
+  @POST(ApiPaths.resendVerificationCode)
   Future<void> resendVerificationCode(@Body() ResendVerificationCodeRequestDto request);
 
   /// Sends resend reset code request.
-  @POST('/resend-reset-code')
+  @POST(ApiPaths.resendResetCode)
   Future<void> resendResetCode(@Body() ResendVerificationCodeRequestDto request);
 
   /// Sends verify reset code request.
-  @POST('/verify-reset-code')
+  @POST(ApiPaths.verifyResetCode)
   Future<void> verifyResetCode(@Body() VerifyResetCodeRequestDto request);
 
   /// Sends reset password request.
-  @POST('/reset-password')
+  @POST(ApiPaths.resetPassword)
   Future<void> resetPassword(@Body() ResetPasswordRequestDto request);
 
   /// Returns current authorized user profile.
-  @GET('/me')
+  @GET(ApiPaths.me)
   Future<MeResponseDto> me();
 }
