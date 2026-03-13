@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
 import '../../domain/entities/user.dart';
@@ -46,19 +45,15 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
       switch (result) {
         case Success(data: final user):
           emit(AuthSessionState.authenticated(user));
-        case Failure(:final error):
-          if (error is UnauthorizedAuthFailure) {
-            // Defensive cleanup for terminal 401 after interceptor refresh/retry
-            // (e.g. race condition or backend/client state mismatch).
-            await _tokenStorage.deleteAccessToken();
-            if (isClosed) return;
-          }
+        case Failure():
+          await _tokenStorage.deleteAccessToken();
+          if (isClosed) return;
           emit(const AuthSessionState.unauthenticated());
       }
     } catch (_) {
-      if (!isClosed) {
-        emit(const AuthSessionState.unauthenticated());
-      }
+      await _tokenStorage.deleteAccessToken();
+      if (isClosed) return;
+      emit(const AuthSessionState.unauthenticated());
     }
   }
 

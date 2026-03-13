@@ -72,12 +72,12 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits unauthenticated and deletes token on UnauthorizedAuthFailure',
+      'restoreSession emits unauthenticated and deletes token on auth failure',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
         when(
           repository.getCurrentUser(),
-        ).thenAnswer((_) async => const Failure(UnauthorizedAuthFailure()));
+        ).thenAnswer((_) async => const Failure(UnknownAuthFailure()));
         when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
       },
       build: () => authSessionCubit,
@@ -95,12 +95,11 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits unauthenticated without deleting token on non-unauthorized failure',
+      'restoreSession emits unauthenticated and deletes token on unexpected exception',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
-        when(
-          repository.getCurrentUser(),
-        ).thenAnswer((_) async => const Failure(UnknownAuthFailure()));
+        when(repository.getCurrentUser()).thenThrow(Exception('unexpected_error'));
+        when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
       },
       build: () => authSessionCubit,
       act: (cubit) => cubit.restoreSession(),
@@ -111,7 +110,7 @@ void main() {
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
-        verifyNever(tokenStorage.deleteAccessToken());
+        verify(tokenStorage.deleteAccessToken()).called(1);
         verifyNoMoreInteractions(tokenStorage);
       },
     );
