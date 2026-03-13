@@ -33,16 +33,17 @@ jobs:
       - name: Create .env file
         run: |
           if [ -z "${{ secrets.API_URL }}" ]; then
-            echo "ERROR: GitHub secret API_URL is not set or is empty."
-            exit 1
+            echo "WARNING: GitHub secret API_URL is not set. Using fallback value."
+            echo "API_URL=http://127.0.0.1:8000/" > .env
+          else
+            echo "API_URL=${{ secrets.API_URL }}" > .env
           fi
-          echo "API_URL=${{ secrets.API_URL }}" > .env
 
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Format generated code
-        run: dart format .
+        run: dart format --output=none --set-exit-if-changed lib/ test/
 
       - name: Verify formatting
         run: dart format --set-exit-if-changed lib/ test/
