@@ -22,8 +22,6 @@ Future<void> run() async {
       // Setup dependency injection
       await setupDI();
 
-      unawaited(di<AuthSessionCubit>().restoreSession());
-
       final logger = di<AppLogger>();
 
       // Catch errors from Flutter framework
@@ -36,6 +34,8 @@ Future<void> run() async {
         logger.f('PlatformDispatcherError', error, stack);
         return true;
       };
+
+      unawaited(di<AuthSessionCubit>().restoreSession());
 
       runApp(const MoveUpApp());
     },

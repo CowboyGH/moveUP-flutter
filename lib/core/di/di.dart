@@ -35,7 +35,7 @@ Future<void> setupDI() async {
   di.registerLazySingleton<Connectivity>(() => Connectivity());
   di.registerLazySingleton<NetworkService>(
     () => NetworkServiceImpl(di<Connectivity>()),
-    dispose: (param) => param.dispose(),
+    dispose: (service) => service.dispose(),
   );
 
   // Token Storage
@@ -63,7 +63,6 @@ Future<void> setupDI() async {
       di<AuthRepository>(),
       di<TokenStorage>(),
     ),
+    dispose: (cubit) => cubit.close(),
   );
-
-  await di.allReady();
 }
