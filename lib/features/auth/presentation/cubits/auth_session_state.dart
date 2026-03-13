@@ -12,6 +12,9 @@ class AuthSessionState with _$AuthSessionState {
   /// User is not authenticated.
   const factory AuthSessionState.unauthenticated() = _Unauthenticated;
 
+  /// Session restore failed but the persisted session was not invalidated.
+  const factory AuthSessionState.restoreFailed() = _RestoreFailed;
+
   /// User is in guest mode.
   const factory AuthSessionState.guest() = _Guest;
 

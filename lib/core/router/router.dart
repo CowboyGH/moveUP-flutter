@@ -33,6 +33,10 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
+    restoreFailed: () {
+      if (isAuthScreen) return null;
+      return AppRoutePaths.signInPath;
+    },
     guest: () {
       if (isAuthScreen) return AppRoutePaths.debugPath;
       return null;

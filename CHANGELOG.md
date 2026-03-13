@@ -67,7 +67,7 @@ _No unreleased changes yet._
 - Logout API contract through `AuthApiClient.logout`.
 - Auth domain/data logout flow through `AuthRepository.logout` and `AuthRepositoryImpl`.
 - Logout presentation flow through `LogoutCubit` and debug-screen logout wiring.
-- Unit tests for `AuthRepositoryImpl.logout`, `LogoutCubit`, and `AuthSessionCubit.logout`.
+- Unit tests for `AuthRepositoryImpl.logout`, `LogoutCubit`, and `AuthSessionCubit.clearSession`.
 - UIKit color and gradient tokens via `AppColorTheme`, `AppColors`, and `AppGradients`.
 - Montserrat font kit and shared text theming via `AppTextStyle` and `AppTextTheme`.
 - Shared UIKit theme foundation via `AppThemeData`.
@@ -147,8 +147,7 @@ _No unreleased changes yet._
 - Custom labeled auth inputs now expose semantic labels correctly.
 - The sign-up consent checkbox now exposes semantics to assistive technologies while preserving the custom visual style.
 - The password visibility toggle now uses explicit semantics instead of tooltip-only labeling.
-- Session restore now clears stale persisted tokens before emitting `unauthenticated` on any restore failure.
-- `AuthSessionCubit.restoreSession` now still exits `checking` even if persisted token cleanup fails.
+- Session restore now clears persisted tokens only for invalid-session failures, keeps retryable restore failures recoverable, and still exits `checking` even if token cleanup fails.
 - Repository test coverage now includes failure paths for password-recovery OTP resend.
 
 ### Removed
