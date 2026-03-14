@@ -33,6 +33,7 @@ abstract class AppThemeData {
     fontFamily: 'Montserrat',
     colorScheme: ColorScheme.light(
       primary: _lightColorTheme.primary,
+      secondary: _lightColorTheme.secondary,
       onPrimary: _lightColorTheme.onPrimary,
       surface: _lightColorTheme.surface,
       onSurface: _lightColorTheme.onSurface,

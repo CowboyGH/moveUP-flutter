@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_assets.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
-import '../../../../uikit/images/svg_picture_widget.dart';
+import '../../../../uikit/images/app_decorative_figure.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/colors/app_gradients.dart';
 
@@ -37,17 +36,9 @@ class AuthFlowShell extends StatelessWidget {
         child: Stack(
           children: [
             const Positioned(
-              right: -99,
+              right: -65,
               bottom: 10,
-              child: IgnorePointer(
-                child: SizedBox(
-                  width: 262,
-                  height: 288,
-                  child: ExcludeSemantics(
-                    child: SvgPictureWidget.frame(AppAssets.imageFigure),
-                  ),
-                ),
-              ),
+              child: AppDecorativeFigure(tone: FigureTone.secondary),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),

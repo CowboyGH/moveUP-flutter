@@ -71,7 +71,7 @@ _No unreleased changes yet._
 - UIKit color and gradient tokens via `AppColorTheme`, `AppColors`, and `AppGradients`.
 - Montserrat font kit and shared text theming via `AppTextStyle` and `AppTextTheme`.
 - Shared UIKit theme foundation via `AppThemeData`.
-- Shared UIKit widgets: `MainButton`, `SvgPictureWidget`, and `NetworkImageWidget`.
+- Shared UIKit widgets: `MainButton`, `SvgPictureWidget`, `NetworkImageWidget`, and `AppDecorativeFigure`.
 - Auth UI visual assets for the updated auth flow layout: `arrow_back`, password visibility icons, and the decorative auth figure.
 - Shared inline resend widget for OTP screens: `AuthResendCodeText`.
 - Shared UIKit `AppBackButton` for auth-style back navigation.

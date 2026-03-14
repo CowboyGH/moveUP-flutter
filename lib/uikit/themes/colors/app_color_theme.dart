@@ -11,6 +11,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
       Theme.of(context).extension<AppColorTheme>() ?? _throwThemeNotFound(context);
 
   final Color primary;
+  final Color secondary;
   final Color onPrimary;
   final Color background;
   final Color onBackground;
@@ -25,6 +26,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
 
   const AppColorTheme._({
     required this.primary,
+    required this.secondary,
     required this.onPrimary,
     required this.background,
     required this.onBackground,
@@ -40,6 +42,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
 
   const AppColorTheme.light()
     : primary = AppColors.primary900,
+      secondary = AppColors.secondary900,
       onPrimary = AppColors.white,
       background = AppColors.white,
       onBackground = AppColors.black,
@@ -55,6 +58,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
   @override
   ThemeExtension<AppColorTheme> copyWith({
     Color? primary,
+    Color? secondary,
     Color? onPrimary,
     Color? background,
     Color? onBackground,
@@ -69,6 +73,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
   }) {
     return AppColorTheme._(
       primary: primary ?? this.primary,
+      secondary: secondary ?? this.secondary,
       onPrimary: onPrimary ?? this.onPrimary,
       background: background ?? this.background,
       onBackground: onBackground ?? this.onBackground,
@@ -90,6 +95,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
     }
     return AppColorTheme._(
       primary: Color.lerp(primary, other.primary, t)!,
+      secondary: Color.lerp(secondary, other.secondary, t)!,
       onPrimary: Color.lerp(onPrimary, other.onPrimary, t)!,
       background: Color.lerp(background, other.background, t)!,
       onBackground: Color.lerp(onBackground, other.onBackground, t)!,
