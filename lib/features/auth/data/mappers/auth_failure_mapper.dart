@@ -47,10 +47,20 @@ extension AuthFailureMapper on NetworkFailure {
           stackTrace: stackTrace,
         );
       default:
-        return UnknownAuthFailure(
-          parentException: parentException,
-          stackTrace: stackTrace,
-        );
+        return switch (this) {
+          NoNetworkFailure() ||
+          ConnectionTimeoutFailure() ||
+          ServerErrorFailure() ||
+          UnknownNetworkFailure() => AuthRequestFailure(
+            message,
+            parentException: parentException,
+            stackTrace: stackTrace,
+          ),
+          _ => UnknownAuthFailure(
+            parentException: parentException,
+            stackTrace: stackTrace,
+          ),
+        };
     }
   }
 }

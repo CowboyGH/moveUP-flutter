@@ -35,6 +35,34 @@ void main() {
       expect(failure, isA<AuthRateLimitedFailure>());
     });
 
+    test('maps NoNetworkFailure to AuthRequestFailure with network message', () {
+      final failure = const NoNetworkFailure().toAuthFailure();
+
+      expect(failure, isA<AuthRequestFailure>());
+      expect(failure.message, const NoNetworkFailure().message);
+    });
+
+    test('maps ConnectionTimeoutFailure to AuthRequestFailure with network message', () {
+      final failure = const ConnectionTimeoutFailure().toAuthFailure();
+
+      expect(failure, isA<AuthRequestFailure>());
+      expect(failure.message, const ConnectionTimeoutFailure().message);
+    });
+
+    test('maps ServerErrorFailure to AuthRequestFailure with network message', () {
+      final failure = const ServerErrorFailure().toAuthFailure();
+
+      expect(failure, isA<AuthRequestFailure>());
+      expect(failure.message, const ServerErrorFailure().message);
+    });
+
+    test('maps UnknownNetworkFailure to AuthRequestFailure with network message', () {
+      final failure = const UnknownNetworkFailure().toAuthFailure();
+
+      expect(failure, isA<AuthRequestFailure>());
+      expect(failure.message, const UnknownNetworkFailure().message);
+    });
+
     test('maps auth-session and access codes to UnauthorizedAuthFailure', () {
       const unauthorizedCodes = <String>[
         'token_expired',

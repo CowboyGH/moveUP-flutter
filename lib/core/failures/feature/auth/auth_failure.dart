@@ -60,6 +60,16 @@ final class AuthRateLimitedFailure extends AuthFailure {
   }) : super(AppStrings.authRateLimited);
 }
 
+/// Auth request failed because of infrastructure or network conditions.
+final class AuthRequestFailure extends AuthFailure {
+  /// Creates an instance of [AuthRequestFailure].
+  const AuthRequestFailure(
+    super.message, {
+    super.parentException,
+    super.stackTrace,
+  });
+}
+
 /// Unauthorized error.
 final class UnauthorizedAuthFailure extends AuthFailure {
   /// Creates an instance of [UnauthorizedAuthFailure].

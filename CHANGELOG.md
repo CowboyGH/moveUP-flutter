@@ -130,6 +130,7 @@ _No unreleased changes yet._
 - Remaining auth response DTOs were trimmed to remove unused `success` and `message` transport fields where the client only consumes the payload.
 - Hardcoded auth UI copy, validator messages, auth/network failure texts, and legal-document titles were centralized in `AppStrings`.
 - Hardcoded auth asset names and legal document asset paths were centralized in `AppAssets`.
+- Auth flows now preserve normalized network error messages through `AuthRequestFailure` instead of collapsing them into a generic unknown auth error.
 - Auth/debug error and consent snackbars were replaced with shared feedback dialogs.
 - Redundant success feedback modals were removed from OTP resend and code-verification flows where UI state or navigation already confirms success.
 - The UIKit app background was set to white to match the finalized auth mockup.
