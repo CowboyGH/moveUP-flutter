@@ -34,33 +34,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late final TapGestureRecognizer _privacyPolicyTapRecognizer;
-  late final TapGestureRecognizer _dataProcessingConsentTapRecognizer;
 
   bool _isAgree = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _privacyPolicyTapRecognizer = TapGestureRecognizer()
-      ..onTap = () => context.push(
-        AppRoutePaths.legalDocumentPath,
-        extra: LegalDocumentType.privacyPolicy,
-      );
-    _dataProcessingConsentTapRecognizer = TapGestureRecognizer()
-      ..onTap = () => context.push(
-        AppRoutePaths.legalDocumentPath,
-        extra: LegalDocumentType.dataProcessingConsent,
-      );
-  }
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _privacyPolicyTapRecognizer.dispose();
-    _dataProcessingConsentTapRecognizer.dispose();
     super.dispose();
   }
 
@@ -177,10 +158,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   isAgree: _isAgree,
                   enabled: !isInProgress,
                   onTap: () => setState(() => _isAgree = !_isAgree),
-                  privacyPolicyTapRecognizer: isInProgress ? null : _privacyPolicyTapRecognizer,
-                  dataProcessingConsentTapRecognizer: isInProgress
-                      ? null
-                      : _dataProcessingConsentTapRecognizer,
                 ),
                 const SizedBox(height: 24),
                 MainButton(
@@ -204,20 +181,49 @@ class _SignUpPageState extends State<SignUpPage> {
 }
 
 /// Local sign-up widget for consent checkbox and legal text.
-final class _ConsentRow extends StatelessWidget {
+final class _ConsentRow extends StatefulWidget {
   final bool isAgree;
   final bool enabled;
   final VoidCallback onTap;
-  final TapGestureRecognizer? privacyPolicyTapRecognizer;
-  final TapGestureRecognizer? dataProcessingConsentTapRecognizer;
 
   const _ConsentRow({
     required this.isAgree,
     required this.enabled,
     required this.onTap,
-    required this.privacyPolicyTapRecognizer,
-    required this.dataProcessingConsentTapRecognizer,
   });
+
+  @override
+  State<_ConsentRow> createState() => _ConsentRowState();
+}
+
+class _ConsentRowState extends State<_ConsentRow> {
+  late final TapGestureRecognizer _privacyPolicyTapRecognizer;
+  late final TapGestureRecognizer _dataProcessingConsentTapRecognizer;
+  @override
+  void initState() {
+    super.initState();
+    _privacyPolicyTapRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          AppRoutePaths.legalDocumentPath,
+          extra: LegalDocumentType.privacyPolicy,
+        );
+      };
+    _dataProcessingConsentTapRecognizer = TapGestureRecognizer()
+      ..onTap = () {
+        context.push(
+          AppRoutePaths.legalDocumentPath,
+          extra: LegalDocumentType.dataProcessingConsent,
+        );
+      };
+  }
+
+  @override
+  void dispose() {
+    _privacyPolicyTapRecognizer.dispose();
+    _dataProcessingConsentTapRecognizer.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -227,24 +233,24 @@ final class _ConsentRow extends StatelessWidget {
       children: [
         Semantics(
           label: AppStrings.signUpConsentCheckboxLabel,
-          checked: isAgree,
-          enabled: enabled,
-          onTap: enabled ? onTap : null,
+          checked: widget.isAgree,
+          enabled: widget.enabled,
+          onTap: widget.enabled ? widget.onTap : null,
           child: InkWell(
-            onTap: enabled ? onTap : null,
+            onTap: widget.enabled ? widget.onTap : null,
             borderRadius: BorderRadius.circular(12),
             child: Container(
               height: 16,
               width: 16,
               margin: const EdgeInsets.only(left: 4, right: 6),
               decoration: BoxDecoration(
-                color: isAgree ? colorTheme.primary : Colors.transparent,
+                color: widget.isAgree ? colorTheme.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(3),
                 border: Border.all(
-                  color: isAgree ? colorTheme.primary : const Color(0xFF727272),
+                  color: widget.isAgree ? colorTheme.primary : const Color(0xFF727272),
                 ),
               ),
-              child: isAgree
+              child: widget.isAgree
                   ? Icon(
                       Icons.check_rounded,
                       size: 12,
@@ -269,7 +275,7 @@ final class _ConsentRow extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
-                  recognizer: privacyPolicyTapRecognizer,
+                  recognizer: widget.enabled ? _privacyPolicyTapRecognizer : null,
                 ),
                 TextSpan(
                   text: AppStrings.signUpConsentMiddle,
@@ -282,7 +288,7 @@ final class _ConsentRow extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
-                  recognizer: dataProcessingConsentTapRecognizer,
+                  recognizer: widget.enabled ? _dataProcessingConsentTapRecognizer : null,
                 ),
               ],
             ),
