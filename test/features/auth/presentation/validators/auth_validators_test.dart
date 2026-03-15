@@ -5,11 +5,17 @@ void main() {
   group('AuthValidators.name', () {
     const nameEmptyMessage = 'Введите имя';
     const nameMaxLengthMessage = 'Длина имени должна быть не более 20 символов';
+    const nameMinLengthMessage = 'Длина имени должна быть не менее 2 символов';
 
     test('returns required error when value is empty', () {
       expect(AuthValidators.name(null), nameEmptyMessage);
       expect(AuthValidators.name(''), nameEmptyMessage);
       expect(AuthValidators.name('   '), nameEmptyMessage);
+    });
+
+    test('returns min length error when value is too short', () {
+      const tooShortName = 'a';
+      expect(AuthValidators.name(tooShortName), nameMinLengthMessage);
     });
 
     test('returns max length error when value is too long', () {
@@ -36,6 +42,10 @@ void main() {
     test('returns format error when value is invalid', () {
       expect(AuthValidators.email('invalid_email'), wrongFormatMessage);
       expect(AuthValidators.email('name@domain'), wrongFormatMessage);
+      expect(AuthValidators.email('.user@example.com'), wrongFormatMessage);
+      expect(AuthValidators.email('{}user@example.com'), wrongFormatMessage);
+      expect(AuthValidators.email('user@example.a'), wrongFormatMessage);
+      expect(AuthValidators.email('user@example.{}'), wrongFormatMessage);
     });
 
     test('returns null when value is valid', () {

@@ -81,6 +81,7 @@ abstract final class AppStrings {
 
   /// Auth validators.
   static const authNameRequired = 'Введите имя';
+  static const authNameMinLength = 'Длина имени должна быть не менее 2 символов';
   static const authNameMaxLength = 'Длина имени должна быть не более 20 символов';
   static const authEmailRequired = 'Введите email';
   static const authEmailFormat = 'Неверный формат email';

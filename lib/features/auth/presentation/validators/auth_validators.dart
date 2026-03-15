@@ -3,7 +3,7 @@ import '../../../../core/constants/app_strings.dart';
 /// Shared validators for auth presentation forms.
 abstract final class AuthValidators {
   static final RegExp _emailPattern = RegExp(
-    r"^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~%-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$",
+    r"^[a-zA-Z0-9][a-zA-Z0-9.!#$%&'*+/=?^_`{|}~%-]*@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$",
   );
   static final RegExp _allowedPasswordCharsPattern = RegExp(r'^[A-Za-z0-9]+$');
   static final RegExp _passwordHasLetterPattern = RegExp(r'[A-Za-z]');
@@ -15,6 +15,9 @@ abstract final class AuthValidators {
     final normalizedValue = value?.trim() ?? '';
     if (normalizedValue.isEmpty) {
       return AppStrings.authNameRequired;
+    }
+    if (normalizedValue.length < 2) {
+      return AppStrings.authNameMinLength;
     }
     if (normalizedValue.length > 20) {
       return AppStrings.authNameMaxLength;
