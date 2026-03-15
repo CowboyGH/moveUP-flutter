@@ -1,12 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 
 /// Inline resend action with optional countdown timer.
-class AuthResendCodeText extends StatefulWidget {
+class AuthResendCodeText extends StatelessWidget {
   /// Whether resend action is currently available.
   final bool enabled;
 
@@ -24,26 +24,7 @@ class AuthResendCodeText extends StatefulWidget {
     super.key,
   });
 
-  @override
-  State<AuthResendCodeText> createState() => _AuthResendCodeTextState();
-}
-
-class _AuthResendCodeTextState extends State<AuthResendCodeText> {
-  late final TapGestureRecognizer _recognizer;
-
-  @override
-  void initState() {
-    super.initState();
-    _recognizer = TapGestureRecognizer();
-  }
-
-  @override
-  void dispose() {
-    _recognizer.dispose();
-    super.dispose();
-  }
-
-  String _formatTimer(int secondsLeft) {
+  String _formatTimer() {
     final minutes = (secondsLeft ~/ 60).toString().padLeft(2, '0');
     final seconds = (secondsLeft % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
@@ -53,32 +34,25 @@ class _AuthResendCodeTextState extends State<AuthResendCodeText> {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    final canResend = widget.enabled && widget.onPressed != null && widget.secondsLeft == 0;
-    _recognizer.onTap = canResend ? widget.onPressed : null;
-
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: AppStrings.authResendCodeAction,
-            style: textTheme.body.copyWith(
-              color: canResend ? colorTheme.onSurface : colorTheme.hint,
-              fontWeight: canResend ? FontWeight.w500 : FontWeight.normal,
-            ),
-            recognizer: _recognizer,
+    final canResend = enabled && onPressed != null && secondsLeft == 0;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        AppTextAction(
+          text: AppStrings.authResendCodeAction,
+          onPressed: canResend ? onPressed : null,
+          style: textTheme.body.copyWith(
+            fontWeight: canResend ? FontWeight.w500 : FontWeight.normal,
           ),
-          if (widget.secondsLeft != 0) ...[
-            const WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: SizedBox(width: 8),
-            ),
-            TextSpan(
-              text: _formatTimer(widget.secondsLeft),
-              style: textTheme.label.copyWith(color: colorTheme.onSurface),
-            ),
-          ],
-        ],
-      ),
+        ),
+        if (secondsLeft != 0)
+          Text(
+            ' ${_formatTimer()}',
+            style: textTheme.label.copyWith(color: colorTheme.onSurface),
+          ),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/dialogs/app_feedback_dialog.dart';
@@ -109,27 +110,21 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       builder: (context, state) {
         final textTheme = AppTextTheme.of(context);
-        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
         );
         return AuthFlowShell(
-          topRightAction: TextButton(
+          topRightAction: AppTextAction(
+            text: AppStrings.skipButton,
             onPressed: isInProgress
                 ? null
                 : () => context.read<AuthSessionCubit>().continueAsGuest(),
-            style: TextButton.styleFrom(
-              textStyle: textTheme.label.copyWith(
-                fontSize: 14,
-                height: 21 / 14,
-                fontWeight: FontWeight.w500,
-              ),
-              foregroundColor: colorTheme.onSurface,
-              overlayColor: Colors.transparent,
-              shadowColor: Colors.transparent,
+            style: textTheme.label.copyWith(
+              fontSize: 14,
+              height: 21 / 14,
+              fontWeight: FontWeight.w500,
             ),
-            child: const Text(AppStrings.skipButton),
           ),
           child: Form(
             key: _formKey,

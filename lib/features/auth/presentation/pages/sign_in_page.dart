@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
+import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/dialogs/app_feedback_dialog.dart';
-import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_in_cubit.dart';
@@ -71,21 +71,15 @@ class _SignInPageState extends State<SignInPage> {
       },
       builder: (context, state) {
         final textTheme = AppTextTheme.of(context);
-        final colorTheme = AppColorTheme.of(context);
         final isInProgress = state.maybeWhen(
           inProgress: () => true,
           orElse: () => false,
         );
         return AuthFlowShell(
-          topRightAction: TextButton(
+          topRightAction: AppTextAction(
+            text: AppStrings.skipButton,
             onPressed: isInProgress ? null : _continueAsGuest,
-            style: TextButton.styleFrom(
-              textStyle: textTheme.label.copyWith(fontSize: 14),
-              foregroundColor: colorTheme.onSurface,
-              overlayColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-            ),
-            child: const Text(AppStrings.skipButton),
+            style: textTheme.label.copyWith(fontSize: 14),
           ),
           child: Form(
             key: _formKey,
@@ -126,17 +120,12 @@ class _SignInPageState extends State<SignInPage> {
                 const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: TextButton(
+                  child: AppTextAction(
+                    text: AppStrings.signInForgotPasswordButton,
                     onPressed: isInProgress
                         ? null
                         : () => context.push(AppRoutePaths.forgotPasswordPath),
-                    style: TextButton.styleFrom(
-                      textStyle: textTheme.label,
-                      foregroundColor: colorTheme.onSurface,
-                      overlayColor: Colors.transparent,
-                      shadowColor: Colors.transparent,
-                    ),
-                    child: const Text(AppStrings.signInForgotPasswordButton),
+                    style: textTheme.label,
                   ),
                 ),
                 const SizedBox(height: 24),
