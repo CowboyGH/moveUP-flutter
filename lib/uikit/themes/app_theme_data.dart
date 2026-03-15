@@ -54,10 +54,8 @@ abstract class AppThemeData {
       errorStyle: _textTheme.bodySmall.copyWith(color: _lightColorTheme.error),
       suffixIconConstraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       suffixIconColor: WidgetStateColor.resolveWith((states) {
-        if (states.contains(WidgetState.error)) {
-          return AppColors.error;
-        }
-        return AppColors.primary700;
+        if (states.contains(WidgetState.error)) return _lightColorTheme.error;
+        return _lightColorTheme.primary;
       }),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
     ),
@@ -73,12 +71,16 @@ abstract class AppThemeData {
       ),
     ),
     iconButtonTheme: IconButtonThemeData(
-      style: IconButton.styleFrom(
-        foregroundColor: _lightColorTheme.onSurface,
-        overlayColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        padding: EdgeInsets.zero,
-        minimumSize: const Size.square(24),
+      style: ButtonStyle(
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) return _lightColorTheme.hint;
+          if (states.contains(WidgetState.pressed)) return _lightColorTheme.secondary;
+          return _lightColorTheme.onSurface;
+        }),
+        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero),
+        minimumSize: const WidgetStatePropertyAll(Size.square(24)),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
     ),
