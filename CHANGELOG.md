@@ -75,6 +75,7 @@ _No unreleased changes yet._
 - Auth UI visual assets for the updated auth flow layout: `arrow_back`, password visibility icons, and the decorative auth figure.
 - Shared inline resend widget for OTP screens: `AuthResendCodeText`.
 - Shared UIKit `AppBackButton` for auth-style back navigation.
+- Shared UIKit `AppTextAction` for lightweight auth text links.
 - Shared UIKit `AppFeedbackDialog` for auth-style alert feedback plus the bundled `exclamation_point` icon asset.
 - Bundled legal text assets for privacy policy, personal data processing consent, and public offer.
 - Shared legal-document flow through `LegalDocumentType`, `LegalDocumentPage`, and auth route wiring for document viewing.
@@ -102,7 +103,7 @@ _No unreleased changes yet._
 - `AuthSessionCubit` now has an explicit DI dispose callback, and startup session restore is triggered after global error handlers are configured.
 - `UserDto.emailVerifiedAt` is now nullable to match the `/register` payload.
 - Sign-in and sign-up pages were rebuilt on shared auth widgets and a unified auth layout.
-- Sign-up consent UX now uses a local `ConsentRow` widget and a clearer validation feedback message.
+- Sign-up consent UX now uses a local `_ConsentRow` widget with inline pressed-state handling for legal links and a clearer validation feedback message.
 - Sign-up success now navigates to verify-email and passes the email through route `extra`.
 - Forgot-password success now navigates to verify-reset-code and passes the email through route `extra`.
 - Verify-reset-code success now navigates to reset-password and passes typed recovery args through route `extra`.
@@ -123,9 +124,11 @@ _No unreleased changes yet._
 - Shared auth form widgets now use labeled inputs, themed icons, password hint dots, and UIKit-based typography/colors.
 - Sign-in, sign-up, verify-email, forgot-password, verify-reset-code, and reset-password screens were aligned to the new auth layout and `MainButton` usage.
 - OTP verification screens now share a unified resend/timer presentation widget.
+- Sign-in, sign-up, and OTP resend text actions now share the lightweight `AppTextAction` widget.
 - `AuthResendCodeText` now uses a unified resend-availability state for both interaction and styling.
 - App bootstrap now locks the app to portrait mode.
 - Sign-up consent text now opens the relevant legal documents through underlined inline links.
+- `AppBackButton` now resolves pressed and disabled icon colors through shared `IconButtonTheme` state styling.
 - Transport-only auth response DTOs were removed from `logout`, `forgot-password`, `resend-verification-code`, `verify-reset-code`, and `reset-password`.
 - Remaining auth response DTOs were trimmed to remove unused `success` and `message` transport fields where the client only consumes the payload.
 - Hardcoded auth UI copy, validator messages, auth/network failure texts, and legal-document titles were centralized in `AppStrings`.
@@ -148,8 +151,10 @@ _No unreleased changes yet._
 - Custom labeled auth inputs now expose semantic labels correctly.
 - The sign-up consent checkbox now exposes semantics to assistive technologies while preserving the custom visual style.
 - The password visibility toggle now uses explicit semantics instead of tooltip-only labeling.
+- Auth password validation now matches the finalized requirements, including the missing password rule copy and test coverage.
 - Session restore now clears persisted tokens only for invalid-session failures, keeps retryable restore failures recoverable, and still exits `checking` even if token cleanup fails.
 - Repository test coverage now includes failure paths for password-recovery OTP resend.
+- Validation failures now flatten backend field errors into multiline feedback dialog content instead of showing a generic auth error.
 
 ### Removed
 
