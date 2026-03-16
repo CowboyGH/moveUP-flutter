@@ -71,7 +71,7 @@ void main() {
       final failure = result.failure!;
       expect(failure.parentException, isA<DioException>());
       expect(failure, isA<ValidationFailedFailure>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+      expect(failure.message, 'The email field is required.');
 
       _verifyForgotPasswordRequest(apiClient, email);
       verifyNoMoreInteractions(apiClient);

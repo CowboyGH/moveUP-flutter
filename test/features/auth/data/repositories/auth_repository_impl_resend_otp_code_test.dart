@@ -74,7 +74,7 @@ void main() {
       final failure = result.failure!;
       expect(failure, isA<ValidationFailedFailure>());
       expect(failure.parentException, isA<DioException>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+      expect(failure.message, 'The email field is required.');
 
       _verifyResendVerificationCodeRequest(apiClient, email);
       verifyNoMoreInteractions(apiClient);
@@ -140,7 +140,7 @@ void main() {
         final failure = result.failure!;
         expect(failure, isA<ValidationFailedFailure>());
         expect(failure.parentException, isA<DioException>());
-        expect((failure as ValidationFailedFailure).fieldErrors, errors);
+        expect(failure.message, errors.values.expand((messages) => messages).join('\n'));
 
         _verifyResendResetCodeRequest(apiClient, email);
         verifyNoMoreInteractions(apiClient);

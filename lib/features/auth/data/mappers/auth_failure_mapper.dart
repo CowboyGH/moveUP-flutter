@@ -9,6 +9,7 @@ extension AuthFailureMapper on NetworkFailure {
       ValidationFailure(:final errors) => errors,
       _ => const <String, List<String>>{},
     };
+    final validationMessage = _buildValidationMessage(fieldErrors);
 
     switch (code) {
       case 'invalid_credentials':
@@ -18,7 +19,7 @@ extension AuthFailureMapper on NetworkFailure {
         );
       case 'validation_failed':
         return ValidationFailedFailure(
-          fieldErrors: fieldErrors,
+          message: validationMessage,
           parentException: parentException,
           stackTrace: stackTrace,
         );
@@ -63,4 +64,18 @@ extension AuthFailureMapper on NetworkFailure {
         };
     }
   }
+}
+
+String _buildValidationMessage(Map<String, List<String>> rawFieldErrors) {
+  final messages = rawFieldErrors.values
+      .expand((fieldMessages) => fieldMessages)
+      .map((message) => message.trim())
+      .where((message) => message.isNotEmpty)
+      .toList(growable: false);
+
+  if (messages.isEmpty) {
+    return const ValidationFailedFailure().message;
+  }
+
+  return messages.join('\n');
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moveup_flutter/core/constants/app_strings.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/failures/network/network_failure.dart';
 import 'package:moveup_flutter/features/auth/data/mappers/auth_failure_mapper.dart';
@@ -10,14 +11,23 @@ void main() {
       expect(failure, isA<InvalidCredentialsFailure>());
     });
 
-    test('maps validation_failed to ValidationFailedFailure with field errors', () {
+    test('maps validation_failed to ValidationFailedFailure with normalized message', () {
+      const errorMessage = 'error_message';
       const fieldErrors = <String, List<String>>{
-        'email': ['Invalid email'],
+        'email': ['  $errorMessage  ', ''],
+        'password': [errorMessage],
       };
       final failure = const ValidationFailure(errors: fieldErrors).toAuthFailure();
 
       expect(failure, isA<ValidationFailedFailure>());
-      expect((failure as ValidationFailedFailure).fieldErrors, fieldErrors);
+      expect(failure.message, '$errorMessage\n$errorMessage');
+    });
+
+    test('falls back to generic auth validation message when field errors are empty', () {
+      final failure = const ValidationFailure().toAuthFailure();
+
+      expect(failure, isA<ValidationFailedFailure>());
+      expect(failure.message, AppStrings.authValidationFailed);
     });
 
     test('maps email_already_verified to EmailAlreadyVerifiedFailure', () {

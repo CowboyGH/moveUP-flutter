@@ -90,7 +90,7 @@ void main() {
       final failure = result.failure!;
       expect(failure, isA<ValidationFailedFailure>());
       expect(failure.parentException, isA<DioException>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+      expect(failure.message, 'The password field is required.');
 
       _verifyResetPasswordRequest(
         apiClient,

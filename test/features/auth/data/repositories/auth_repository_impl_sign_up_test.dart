@@ -89,7 +89,7 @@ void main() {
       final failure = result.failure!;
       expect(failure.parentException, isA<DioException>());
       expect(failure, isA<ValidationFailedFailure>());
-      expect((failure as ValidationFailedFailure).fieldErrors, errors);
+      expect(failure.message, 'Email field is required');
 
       _verifyRegisterRequest(apiClient, name, email, password);
       verifyNoMoreInteractions(apiClient);

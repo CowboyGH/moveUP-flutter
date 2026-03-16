@@ -22,15 +22,12 @@ final class InvalidCredentialsFailure extends AuthFailure {
 
 /// Validation failed error.
 final class ValidationFailedFailure extends AuthFailure {
-  /// Field-specific validation errors.
-  final Map<String, List<String>> fieldErrors;
-
   /// Creates an instance of [ValidationFailedFailure].
   const ValidationFailedFailure({
+    String message = AppStrings.authValidationFailed,
     super.parentException,
     super.stackTrace,
-    this.fieldErrors = const {},
-  }) : super(AppStrings.authValidationFailed);
+  }) : super(message);
 }
 
 /// Email already verified error.
