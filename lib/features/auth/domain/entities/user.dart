@@ -2,18 +2,26 @@ import 'package:equatable/equatable.dart';
 
 /// Domain entity representing an authenticated user.
 class User extends Equatable {
-  /// Unique identifier of the user.
-  final String uid;
+  /// Unique identifier for the user.
+  final int id;
 
-  /// Email address.
+  /// Name of the user.
+  final String name;
+
+  /// Email address of the user.
   final String email;
+
+  /// Avatar of the user.
+  final String? avatar;
 
   /// Creates an instance of [User].
   const User({
-    required this.uid,
+    required this.id,
+    required this.name,
     required this.email,
+    this.avatar,
   });
 
   @override
-  List<Object?> get props => [uid, email];
+  List<Object?> get props => [id, name, email, avatar];
 }

@@ -8,4 +8,22 @@ abstract class AppRoutePaths {
 
   /// Route path for the sign-in page.
   static const signInPath = '$authPrefix/sign-in';
+
+  /// Route path for the sign-up page.
+  static const signUpPath = '$authPrefix/sign-up';
+
+  /// Route path for the legal-document page.
+  static const legalDocumentPath = '$authPrefix/legal-document';
+
+  /// Route path for the forgot-password page.
+  static const forgotPasswordPath = '$authPrefix/forgot-password';
+
+  /// Route path for the verify-reset-code page.
+  static const verifyResetCodePath = '$forgotPasswordPath/verify-code';
+
+  /// Route path for the reset-password page.
+  static const resetPasswordPath = '$forgotPasswordPath/reset';
+
+  /// Route path for the verify-email page.
+  static const verifyEmailPath = '$authPrefix/verify-email';
 }

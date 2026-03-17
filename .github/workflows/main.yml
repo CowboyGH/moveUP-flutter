@@ -1,8 +1,8 @@
-name: Flutter CI/CD Pipeline
+name: Main PR Release Workflow
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'docs/**'
@@ -34,15 +34,24 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Create .env file
+        run: |
+          if [ -z "${{ secrets.API_URL }}" ]; then
+            echo "WARNING: GitHub secret API_URL is not set. Using fallback value."
+            echo "API_URL=http://127.0.0.1:8000/" > .env
+          else
+            echo "API_URL=${{ secrets.API_URL }}" > .env
+          fi
+
+      - name: Verify formatting
+        run: git ls-files '*.dart' | xargs dart format --output=none --set-exit-if-changed
+
       - name: Run build_runner
         run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Format generated code
-        run: dart format .
+        run: dart format lib/ test/
 
-      - name: Verify formatting
-        run: dart format --set-exit-if-changed lib/ test/
-      
       - name: Analyze code
         run: flutter analyze --fatal-infos
       
@@ -95,6 +104,8 @@ jobs:
             VCS_REF=${{ github.sha }}
             FLUTTER_VERSION=${{ env.FLUTTER_VERSION }}
             ANDROID_SDK_VERSION=${{ env.ANDROID_SDK_VERSION }}
+          secrets: |
+            api_url=${{ secrets.API_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       

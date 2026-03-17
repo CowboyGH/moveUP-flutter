@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'core/di/di.dart';
 import 'core/utils/logger/app_logger.dart';
 import 'features/app/app.dart';
+import 'features/auth/presentation/cubits/auth_session_cubit.dart';
 
 /// The main entry point of the application.
 Future<void> run() async {
@@ -13,8 +15,13 @@ Future<void> run() async {
     () async {
       WidgetsFlutterBinding.ensureInitialized();
 
+      await SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+      ]);
+
       // Setup dependency injection
       await setupDI();
+
       final logger = di<AppLogger>();
 
       // Catch errors from Flutter framework
@@ -27,6 +34,8 @@ Future<void> run() async {
         logger.f('PlatformDispatcherError', error, stack);
         return true;
       };
+
+      unawaited(di<AuthSessionCubit>().restoreSession());
 
       runApp(const MoveUpApp());
     },
