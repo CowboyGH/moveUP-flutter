@@ -7,18 +7,17 @@ import 'package:moveup_flutter/features/fitness_start/data/mappers/fitness_start
 void main() {
   group('FitnessStartFailureMapper.toFitnessStartFailure', () {
     test('maps validation_failed to FitnessStartValidationFailure with multiline message', () {
-      const errorMessage = 'error_message';
       const failure = ValidationFailure(
         errors: {
-          'age': ['  $errorMessage  '],
-          'weight': [errorMessage, ''],
+          'age': ['  error_message_1  '],
+          'weight': ['error_message_2', ''],
         },
       );
 
       final result = failure.toFitnessStartFailure();
 
       expect(result, isA<FitnessStartValidationFailure>());
-      expect(result.message, '$errorMessage\n$errorMessage');
+      expect(result.message, 'error_message_1\nerror_message_2');
     });
 
     test('falls back to generic fitness-start validation message when field errors are empty', () {

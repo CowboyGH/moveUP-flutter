@@ -49,6 +49,7 @@ String _buildValidationMessage(Map<String, List<String>> rawFieldErrors) {
       .expand((fieldMessages) => fieldMessages)
       .map((message) => message.trim())
       .where((message) => message.isNotEmpty)
+      .toSet()
       .toList(growable: false);
 
   if (messages.isEmpty) {
