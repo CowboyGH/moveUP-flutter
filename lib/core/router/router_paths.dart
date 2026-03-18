@@ -26,4 +26,13 @@ abstract class AppRoutePaths {
 
   /// Route path for the verify-email page.
   static const verifyEmailPath = '$authPrefix/verify-email';
+
+  /// Prefix for the Fitness Start onboarding flow.
+  static const fitnessStartPrefix = '/fitness-start';
+
+  /// Route path for the Fitness Start quiz.
+  static const fitnessStartQuizPath = '$fitnessStartPrefix/quiz';
+
+  /// Route path for the next onboarding step that will show tests.
+  static const fitnessStartTestsPath = '$fitnessStartPrefix/tests';
 }

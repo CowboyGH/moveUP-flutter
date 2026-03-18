@@ -15,8 +15,14 @@ class AuthSessionState with _$AuthSessionState {
   /// Session restore failed but the persisted session was not invalidated.
   const factory AuthSessionState.restoreFailed() = _RestoreFailed;
 
-  /// User is in guest mode.
-  const factory AuthSessionState.guest() = _Guest;
+  /// User is in guest onboarding mode.
+  const factory AuthSessionState.guest(FitnessStartStage stage) = _Guest;
+
+  /// User is authenticated and currently inside onboarding.
+  const factory AuthSessionState.authenticatedOnboarding(
+    User user,
+    FitnessStartStage stage,
+  ) = _AuthenticatedOnboarding;
 
   /// User is authenticated.
   const factory AuthSessionState.authenticated(User user) = _Authenticated;

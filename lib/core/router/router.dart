@@ -14,6 +14,9 @@ import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
+import '../../features/fitness_start/domain/entities/fitness_start_stage.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -21,9 +24,15 @@ import 'router_paths.dart';
 
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
 
+String _fitnessStartPath(FitnessStartStage stage) => switch (stage) {
+  FitnessStartStage.quiz => AppRoutePaths.fitnessStartQuizPath,
+  FitnessStartStage.tests => AppRoutePaths.fitnessStartTestsPath,
+};
+
 /// Determines the redirect path based on the current [authState] and [state].
 String? _redirect(AuthSessionState authState, GoRouterState state) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
+  final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
     initial: () {
       if (isAuthScreen) return null;
@@ -37,12 +46,18 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
-    guest: () {
-      if (isAuthScreen) return AppRoutePaths.debugPath;
-      return null;
+    guest: (stage) {
+      final targetPath = _fitnessStartPath(stage);
+      if (state.matchedLocation == targetPath) return null;
+      return targetPath;
+    },
+    authenticatedOnboarding: (_, stage) {
+      final targetPath = _fitnessStartPath(stage);
+      if (state.matchedLocation == targetPath) return null;
+      return targetPath;
     },
     authenticated: (user) {
-      if (isAuthScreen) return AppRoutePaths.debugPath;
+      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
       return null;
     },
     unauthenticated: () {
@@ -133,6 +148,14 @@ final router = GoRouter(
       builder: (_, state) => VerifyEmailPageBuilder(
         email: (state.extra as String).trim(),
       ),
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartQuizPath,
+      builder: (_, _) => const FitnessStartQuizPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartTestsPath,
+      builder: (_, _) => const FitnessStartTestsPageBuilder(),
     ),
   ],
 );
