@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
 
 import '../../features/auth/data/remote/auth_api_client.dart';
@@ -11,6 +12,8 @@ import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../network/dio_setup.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
+import '../services/onboarding_flow_storage/hive_onboarding_flow_storage.dart';
+import '../services/onboarding_flow_storage/onboarding_flow_storage.dart';
 import '../services/token_storage/secure_token_storage.dart';
 import '../services/token_storage/token_storage.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -24,6 +27,8 @@ final di = GetIt.instance;
 
 /// Initializes application dependencies in the global [di] container.
 Future<void> setupDI() async {
+  final onboardingFlowBox = await Hive.openBox<dynamic>(HiveOnboardingFlowStorage.boxName);
+
   // Logger
   di.registerLazySingleton<Logger>(() => createLogger());
   di.registerLazySingleton<AppLogger>(() => AppLoggerImpl(di<Logger>()));
@@ -38,9 +43,13 @@ Future<void> setupDI() async {
     dispose: (service) => service.dispose(),
   );
 
-  // Token Storage
+  // Storages
   di.registerLazySingleton<TokenStorage>(
     () => SecureTokenStorage(const FlutterSecureStorage()),
+  );
+  di.registerLazySingleton<OnboardingFlowStorage>(
+    () => HiveOnboardingFlowStorage(onboardingFlowBox),
+    dispose: (_) => onboardingFlowBox.close(),
   );
 
   // Authentication
