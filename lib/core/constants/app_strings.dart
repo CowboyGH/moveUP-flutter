@@ -115,6 +115,39 @@ abstract final class AppStrings {
   static const networkUnknown = 'Неизвестная ошибка сети';
 
   /// Fitness Start.
+  static const fitnessStartTitle = 'Ваш фитнес-старт';
+  static const fitnessStartGoalStepTitle = 'Выберите Вашу цель тренировок';
+  static const fitnessStartAnthropometryStepTitle = 'Введите Ваши параметры';
+  static const fitnessStartLevelStepTitle = 'Выберите Ваш уровень подготовки';
+  static const fitnessStartGenderLabel = 'Пол';
+  static const fitnessStartEquipmentLabel = 'Оборудование';
+  static const fitnessStartAgeLabel = 'Возраст';
+  static const fitnessStartWeightLabel = 'Вес';
+  static const fitnessStartHeightLabel = 'Рост';
+  static const fitnessStartAgeHint = 'лет';
+  static const fitnessStartWeightHint = 'кг';
+  static const fitnessStartHeightHint = 'см';
+  static const fitnessStartMaleOption = 'Мужской';
+  static const fitnessStartFemaleOption = 'Женский';
+  static const fitnessStartContinueButton = 'Далее';
+  static const fitnessStartGoalRequired = 'Выберите цель тренировок';
+  static const fitnessStartGenderRequired = 'Выберите пол';
+  static const fitnessStartEquipmentRequired = 'Выберите оборудование';
+  static const fitnessStartLevelRequired = 'Выберите уровень подготовки';
+  static const fitnessStartAgeRequired = 'Введите возраст';
+  static const fitnessStartAgeInvalid = 'Введите корректный возраст';
+  static const fitnessStartAgeMin = '14–90 лет';
+  static const fitnessStartAgeMax = '14–90 лет';
+  static const fitnessStartWeightRequired = 'Введите вес';
+  static const fitnessStartWeightInvalid = 'Введите корректный вес';
+  static const fitnessStartWeightMin = '40–130 кг';
+  static const fitnessStartWeightMax = '40–130 кг';
+  static const fitnessStartHeightRequired = 'Введите рост';
+  static const fitnessStartHeightInvalid = 'Введите корректный рост';
+  static const fitnessStartHeightMin = '140–210 см';
+  static const fitnessStartHeightMax = '140–210 см';
+  static const fitnessStartReferencesLoadFailed =
+      'Не удалось загрузить данные стартового квиза. Попробуйте снова';
   static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 

@@ -9,6 +9,9 @@ import '../../features/auth/data/remote/auth_api_client.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
+import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
+import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
+import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
 import '../network/dio_setup.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
@@ -65,6 +68,15 @@ Future<void> setupDI() async {
       di<AppLogger>(),
       di<AuthApiClient>(),
       di<TokenStorage>(),
+    ),
+  );
+
+  // Fitness Start
+  di.registerLazySingleton<FitnessStartApiClient>(() => FitnessStartApiClient(di<Dio>()));
+  di.registerLazySingleton<FitnessStartRepository>(
+    () => FitnessStartRepositoryImpl(
+      di<AppLogger>(),
+      di<FitnessStartApiClient>(),
     ),
   );
   di.registerLazySingleton<AuthSessionCubit>(
