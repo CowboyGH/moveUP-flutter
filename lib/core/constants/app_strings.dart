@@ -114,6 +114,10 @@ abstract final class AppStrings {
   static const networkServerError = 'Ошибка сервера. Попробуйте позже';
   static const networkUnknown = 'Неизвестная ошибка сети';
 
+  /// Fitness Start.
+  static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';
 }
