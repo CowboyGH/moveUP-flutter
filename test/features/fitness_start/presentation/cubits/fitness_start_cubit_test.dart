@@ -71,6 +71,50 @@ void main() {
     );
 
     blocTest<FitnessStartCubit, FitnessStartState>(
+      'selectGoal does not emit while submit is in progress',
+      build: () => cubit,
+      seed: () => const FitnessStartState(
+        isSubmitting: true,
+        selectedGoalId: 1,
+      ),
+      act: (cubit) => cubit.selectGoal(2),
+      expect: () => const <FitnessStartState>[],
+    );
+
+    blocTest<FitnessStartCubit, FitnessStartState>(
+      'selectGender does not emit while submit is in progress',
+      build: () => cubit,
+      seed: () => const FitnessStartState(
+        isSubmitting: true,
+        selectedGender: FitnessStartGender.male,
+      ),
+      act: (cubit) => cubit.selectGender(FitnessStartGender.female),
+      expect: () => const <FitnessStartState>[],
+    );
+
+    blocTest<FitnessStartCubit, FitnessStartState>(
+      'selectEquipment does not emit while submit is in progress',
+      build: () => cubit,
+      seed: () => const FitnessStartState(
+        isSubmitting: true,
+        selectedEquipmentId: 5,
+      ),
+      act: (cubit) => cubit.selectEquipment(6),
+      expect: () => const <FitnessStartState>[],
+    );
+
+    blocTest<FitnessStartCubit, FitnessStartState>(
+      'selectLevel does not emit while submit is in progress',
+      build: () => cubit,
+      seed: () => const FitnessStartState(
+        isSubmitting: true,
+        selectedLevelId: 3,
+      ),
+      act: (cubit) => cubit.selectLevel(4),
+      expect: () => const <FitnessStartState>[],
+    );
+
+    blocTest<FitnessStartCubit, FitnessStartState>(
       'submitAnthropometry advances quiz to the third step on success',
       setUp: () => when(
         repository.saveAnthropometry(

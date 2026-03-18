@@ -51,36 +51,48 @@ final class FitnessStartCubit extends Cubit<FitnessStartState> {
   }
 
   /// Selects the goal option for the first step.
-  void selectGoal(int goalId) => emit(
-    state.copyWith(
-      selectedGoalId: goalId,
-      failure: null,
-    ),
-  );
+  void selectGoal(int goalId) {
+    if (state.isSubmitting) return;
+    emit(
+      state.copyWith(
+        selectedGoalId: goalId,
+        failure: null,
+      ),
+    );
+  }
 
   /// Selects the gender option for the second step.
-  void selectGender(FitnessStartGender gender) => emit(
-    state.copyWith(
-      selectedGender: gender,
-      failure: null,
-    ),
-  );
+  void selectGender(FitnessStartGender gender) {
+    if (state.isSubmitting) return;
+    emit(
+      state.copyWith(
+        selectedGender: gender,
+        failure: null,
+      ),
+    );
+  }
 
   /// Selects the equipment option for the second step.
-  void selectEquipment(int equipmentId) => emit(
-    state.copyWith(
-      selectedEquipmentId: equipmentId,
-      failure: null,
-    ),
-  );
+  void selectEquipment(int equipmentId) {
+    if (state.isSubmitting) return;
+    emit(
+      state.copyWith(
+        selectedEquipmentId: equipmentId,
+        failure: null,
+      ),
+    );
+  }
 
   /// Selects the level option for the third step.
-  void selectLevel(int levelId) => emit(
-    state.copyWith(
-      selectedLevelId: levelId,
-      failure: null,
-    ),
-  );
+  void selectLevel(int levelId) {
+    if (state.isSubmitting) return;
+    emit(
+      state.copyWith(
+        selectedLevelId: levelId,
+        failure: null,
+      ),
+    );
+  }
 
   /// Moves the quiz to the previous step.
   void previousStep() {
