@@ -146,8 +146,8 @@ abstract final class AppStrings {
   static const fitnessStartHeightInvalid = 'Введите корректный рост';
   static const fitnessStartHeightMin = '140–210 см';
   static const fitnessStartHeightMax = '140–210 см';
-  static const fitnessStartReferencesLoadFailed =
-      'Не удалось загрузить данные стартового квиза. Попробуйте снова';
+  static const fitnessStartReferencesLoadFailed = 'Не удалось загрузить данные';
+  static const fitnessStartRetryButton = 'Попробовать снова';
   static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 

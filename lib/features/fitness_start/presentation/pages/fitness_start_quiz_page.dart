@@ -130,7 +130,9 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
       listener: (context, state) {
         final failure = state.failure;
         if (failure != null && failure.message.isNotEmpty) {
-          _showFeedback(failure.message);
+          if (state.references != null) {
+            _showFeedback(failure.message);
+          }
           _fitnessStartCubit.clearFailure();
         }
         if (state.isCompleted) {
@@ -208,8 +210,11 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
 
   Widget _buildCardContent(FitnessStartState state) {
     final references = state.references;
-    if (state.isLoadingReferences || references == null) {
-      return const SizedBox.shrink();
+    if (state.isLoadingReferences) {
+      return _buildLoadingState();
+    }
+    if (references == null) {
+      return _buildReferencesLoadFailedState();
     }
     return KeyedSubtree(
       key: ValueKey(state.currentStep),
@@ -236,6 +241,41 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 32),
+      child: Center(
+        child: SizedBox.square(
+          dimension: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReferencesLoadFailedState() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          AppStrings.fitnessStartReferencesLoadFailed,
+          textAlign: TextAlign.center,
+          style: AppTextTheme.of(context).body.copyWith(
+            fontSize: 14,
+            height: 21 / 14,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const SizedBox(height: 24),
+        MainButton(
+          onPressed: _fitnessStartCubit.loadReferences,
+          child: const Text(AppStrings.fitnessStartRetryButton),
+        ),
+      ],
     );
   }
 
