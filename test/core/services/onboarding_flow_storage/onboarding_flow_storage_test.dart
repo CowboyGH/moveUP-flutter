@@ -30,6 +30,13 @@ void main() {
       expect(await storage.getPendingOnboardingStage(), isNull);
     });
 
+    test('returns false and null when saved stage is malformed', () async {
+      await box.put('pending_fitness_start_stage', 123);
+
+      expect(await storage.hasPendingOnboarding(), isFalse);
+      expect(await storage.getPendingOnboardingStage(), isNull);
+    });
+
     test('saves and returns pending onboarding stage', () async {
       await storage.savePendingOnboardingStage(FitnessStartStage.tests);
 

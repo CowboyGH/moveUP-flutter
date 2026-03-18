@@ -17,7 +17,7 @@ final class HiveOnboardingFlowStorage implements OnboardingFlowStorage {
   HiveOnboardingFlowStorage(this._box);
 
   @override
-  Future<bool> hasPendingOnboarding() async => _box.get(_pendingKey) as bool? ?? false;
+  Future<bool> hasPendingOnboarding() async => await getPendingOnboardingStage() != null;
 
   @override
   Future<FitnessStartStage?> getPendingOnboardingStage() async {
