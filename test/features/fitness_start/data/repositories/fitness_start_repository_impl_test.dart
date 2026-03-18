@@ -31,6 +31,7 @@ void main() {
     group('FitnessStartRepositoryImpl.getReferences', () {
       test('returns success(references) when api succeeds', () async {
         final responseDto = createFitnessStartReferencesResponseDto();
+        final expectedReferences = createFitnessStartReferences();
         when(apiClient.getReferences()).thenAnswer((_) async => responseDto);
 
         final result = await repository.getReferences();
@@ -39,6 +40,9 @@ void main() {
         expect(result.success!.goals, hasLength(2));
         expect(result.success!.levels, hasLength(2));
         expect(result.success!.equipment, hasLength(2));
+        expect(result.success!.goals.first, expectedReferences.goals.first);
+        expect(result.success!.levels.first, expectedReferences.levels.first);
+        expect(result.success!.equipment.first, expectedReferences.equipment.first);
 
         verify(apiClient.getReferences()).called(1);
         verifyNoMoreInteractions(apiClient);
