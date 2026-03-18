@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Staged `Fitness Start` onboarding flow with `quiz` and `tests` stages in auth session state and router redirects.
-- `OnboardingFlowStorage` abstraction with `SharedPreferences`-based persistence for authenticated onboarding resume.
+- `OnboardingFlowStorage` abstraction with `Hive`-based persistence for authenticated onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
 - Shared UIKit controls for the onboarding quiz: `TertiaryButton` and `TertiaryInputField`.
 - `FitnessStartCubit`, validators, 3-step quiz UI, and `/fitness-start/tests` placeholder handoff screen.
@@ -22,6 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Verify-email success now enters the staged `Fitness Start` onboarding flow instead of finishing directly into the authenticated app.
 - Dio clients now attach a shared `CookieManager` so guest/user-parameter onboarding requests can participate in backend session flow.
+- `OnboardingFlowStorage` now derives pending authenticated onboarding state from the saved stage value to avoid inconsistent local storage state.
+- `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
+- `Fitness Start` quiz selections are now locked while a submit request is in progress.
 
 ## [0.2.0] - 2026-03-13
 
