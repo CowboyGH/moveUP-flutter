@@ -8,7 +8,6 @@ final class HiveOnboardingFlowStorage implements OnboardingFlowStorage {
   /// The name of the box that stores onboarding flow state.
   static const boxName = 'onboarding_flow';
 
-  static const _pendingKey = 'pending_fitness_start_onboarding';
   static const _stageKey = 'pending_fitness_start_stage';
 
   final Box<dynamic> _box;
@@ -28,13 +27,11 @@ final class HiveOnboardingFlowStorage implements OnboardingFlowStorage {
 
   @override
   Future<void> savePendingOnboardingStage(FitnessStartStage stage) async {
-    await _box.put(_pendingKey, true);
     await _box.put(_stageKey, stage.name);
   }
 
   @override
   Future<void> clearPendingOnboarding() async {
-    await _box.delete(_pendingKey);
     await _box.delete(_stageKey);
   }
 }
