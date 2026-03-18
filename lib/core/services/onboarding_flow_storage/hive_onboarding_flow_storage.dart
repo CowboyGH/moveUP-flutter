@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../features/fitness_start/domain/entities/fitness_start_stage.dart';
+import '../../models/fitness_start_stage.dart';
 import 'onboarding_flow_storage.dart';
 
 /// Implementation of [OnboardingFlowStorage] using Hive.

@@ -1,4 +1,4 @@
-import '../../../features/fitness_start/domain/entities/fitness_start_stage.dart';
+import '../../models/fitness_start_stage.dart';
 
 /// Storage for the authenticated onboarding flow state.
 abstract interface class OnboardingFlowStorage {

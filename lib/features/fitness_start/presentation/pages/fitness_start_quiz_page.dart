@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/models/fitness_start_stage.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/buttons/option_button.dart';
@@ -19,7 +20,6 @@ import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../domain/entities/fitness_start_gender.dart';
 import '../../domain/entities/fitness_start_option.dart';
 import '../../domain/entities/fitness_start_references.dart';
-import '../../domain/entities/fitness_start_stage.dart';
 import '../cubits/fitness_start_cubit.dart';
 import '../validators/fitness_start_validators.dart';
 import '../widgets/fitness_start_flow_app_bar.dart';
@@ -70,14 +70,12 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
 
   Future<void> _submitCurrentStep(FitnessStartState state) async {
     FocusScope.of(context).unfocus();
-    switch (state.currentStep) {
-      case 0:
-        await _submitGoal(state);
-      case 1:
-        await _submitAnthropometry(state);
-      case 2:
-        await _submitLevel(state);
-    }
+    await switch (state.currentStep) {
+      0 => _submitGoal(state),
+      1 => _submitAnthropometry(state),
+      2 => _submitLevel(state),
+      _ => null,
+    };
   }
 
   Future<void> _submitGoal(FitnessStartState state) async {

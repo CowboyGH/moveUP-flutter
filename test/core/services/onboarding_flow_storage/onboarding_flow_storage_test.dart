@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:moveup_flutter/core/models/fitness_start_stage.dart';
 import 'package:moveup_flutter/core/services/onboarding_flow_storage/hive_onboarding_flow_storage.dart';
-import 'package:moveup_flutter/features/fitness_start/domain/entities/fitness_start_stage.dart';
 
 void main() {
   group('HiveOnboardingFlowStorage', () {

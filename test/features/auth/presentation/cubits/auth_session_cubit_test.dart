@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
+import 'package:moveup_flutter/core/models/fitness_start_stage.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/core/services/onboarding_flow_storage/onboarding_flow_storage.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
@@ -10,7 +11,6 @@ import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/auth/domain/repositories/auth_repository.dart';
 import 'package:moveup_flutter/features/auth/presentation/cubits/auth_session_cubit.dart';
-import 'package:moveup_flutter/features/fitness_start/domain/entities/fitness_start_stage.dart';
 
 import 'auth_session_cubit_test.mocks.dart';
 

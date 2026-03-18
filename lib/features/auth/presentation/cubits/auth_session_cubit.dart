@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/failures/feature/auth/auth_failure.dart';
+import '../../../../core/models/fitness_start_stage.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/services/onboarding_flow_storage/onboarding_flow_storage.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
 import '../../../../core/utils/logger/app_logger.dart';
-import '../../../fitness_start/domain/entities/fitness_start_stage.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 
