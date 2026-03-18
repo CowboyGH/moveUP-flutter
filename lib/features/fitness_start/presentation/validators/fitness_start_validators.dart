@@ -20,11 +20,8 @@ abstract final class FitnessStartValidators {
     if (parsedValue == null) {
       return AppStrings.fitnessStartAgeInvalid;
     }
-    if (parsedValue < _minAge) {
-      return AppStrings.fitnessStartAgeMin;
-    }
-    if (parsedValue > _maxAge) {
-      return AppStrings.fitnessStartAgeMax;
+    if (parsedValue < _minAge || parsedValue > _maxAge) {
+      return AppStrings.fitnessStartAgeRange;
     }
 
     return null;
@@ -41,11 +38,8 @@ abstract final class FitnessStartValidators {
     if (parsedValue == null) {
       return AppStrings.fitnessStartWeightInvalid;
     }
-    if (parsedValue < _minWeight) {
-      return AppStrings.fitnessStartWeightMin;
-    }
-    if (parsedValue > _maxWeight) {
-      return AppStrings.fitnessStartWeightMax;
+    if (parsedValue < _minWeight || parsedValue > _maxWeight) {
+      return AppStrings.fitnessStartWeightRange;
     }
 
     return null;
@@ -62,11 +56,8 @@ abstract final class FitnessStartValidators {
     if (parsedValue == null) {
       return AppStrings.fitnessStartHeightInvalid;
     }
-    if (parsedValue < _minHeight) {
-      return AppStrings.fitnessStartHeightMin;
-    }
-    if (parsedValue > _maxHeight) {
-      return AppStrings.fitnessStartHeightMax;
+    if (parsedValue < _minHeight || parsedValue > _maxHeight) {
+      return AppStrings.fitnessStartHeightRange;
     }
 
     return null;

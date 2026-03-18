@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
+- `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
 
 ## [0.2.0] - 2026-03-13
 
