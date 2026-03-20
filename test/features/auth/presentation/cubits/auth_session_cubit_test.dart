@@ -96,6 +96,28 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'restoreSession emits unauthenticated without clearing guest data when completed progress read fails',
+      setUp: () {
+        when(tokenStorage.getAccessToken()).thenAnswer((_) async => null);
+        when(progressStorage.hasCompletedProgress()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.restoreSession(),
+      expect: () => const [
+        AuthSessionState.checking(),
+        AuthSessionState.unauthenticated(),
+      ],
+      verify: (_) {
+        verify(tokenStorage.getAccessToken()).called(1);
+        verify(progressStorage.hasCompletedProgress()).called(1);
+        verify(logger.e(any, any, any)).called(1);
+        verifyNever(progressStorage.clear());
+        verifyNever(guestSessionStorage.clear());
+        verifyNever(repository.getCurrentUser());
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'restoreSession emits authenticated when token exists and /me succeeds',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
@@ -249,10 +271,7 @@ void main() {
     blocTest<AuthSessionCubit, AuthSessionState>(
       'clearSession emits unauthenticated and clears guest data',
       build: () => authSessionCubit,
-      act: (cubit) async {
-        cubit.clearSession();
-        await Future<void>.delayed(Duration.zero);
-      },
+      act: (cubit) => cubit.clearSession(),
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
