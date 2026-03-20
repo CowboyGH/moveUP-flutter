@@ -20,7 +20,7 @@ class FitnessStartTestsPage extends StatelessWidget {
       appBar: FitnessStartFlowAppBar(
         progress: 1,
         showBackButton: true,
-        onBackPressed: () => authSessionCubit.cancelGuestFlow(),
+        onBackPressed: () => unawaited(authSessionCubit.cancelGuestFlow()),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),

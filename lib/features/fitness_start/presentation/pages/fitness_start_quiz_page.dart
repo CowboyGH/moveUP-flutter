@@ -60,10 +60,10 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
 
   FitnessStartCubit get _fitnessStartCubit => context.read<FitnessStartCubit>();
 
-  void _handleGuestBack(FitnessStartState state) {
+  Future<void> _handleGuestBack(FitnessStartState state) async {
     FocusScope.of(context).unfocus();
     if (state.currentStep == 0) {
-      unawaited(_authSessionCubit.cancelGuestFlow());
+      await _authSessionCubit.cancelGuestFlow();
       return;
     }
     _fitnessStartCubit.previousStep();
@@ -148,7 +148,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           appBar: FitnessStartFlowAppBar(
             progress: (state.currentStep + 1) / 3,
             showBackButton: isGuestOnboarding,
-            onBackPressed: isGuestOnboarding ? () => _handleGuestBack(state) : null,
+            onBackPressed: isGuestOnboarding ? () => unawaited(_handleGuestBack(state)) : null,
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {

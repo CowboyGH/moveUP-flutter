@@ -41,69 +41,72 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     this._logger,
   ) : super(const AuthSessionState.initial());
 
+  bool get _isRestoreSessionActive =>
+      !isClosed && state.maybeWhen(checking: () => true, orElse: () => false);
+
   /// Restores current session from storage and backend.
   Future<void> restoreSession() async {
-    final isChecking = state.maybeWhen(
-      checking: () => true,
-      orElse: () => false,
-    );
-    if (isChecking) return;
+    if (_isRestoreSessionActive) return;
 
     emit(const AuthSessionState.checking());
 
     try {
       final accessToken = await _tokenStorage.getAccessToken();
+      if (!_isRestoreSessionActive) return;
+
       if (accessToken == null || accessToken.isEmpty) {
         final hasCompletedProgress = await _hasCompletedGuestProgressSafely();
-        if (!hasCompletedProgress) {
+        if (!_isRestoreSessionActive) return;
+
+        if (hasCompletedProgress == false) {
           await _clearGuestProgressSafely();
           await _clearGuestSessionSafely();
+          if (!_isRestoreSessionActive) return;
         }
-        if (!isClosed) {
-          emit(
-            hasCompletedProgress
-                ? const AuthSessionState.guestResumeAvailable()
-                : const AuthSessionState.unauthenticated(),
-          );
-        }
+
+        emit(
+          hasCompletedProgress == true
+              ? const AuthSessionState.guestResumeAvailable()
+              : const AuthSessionState.unauthenticated(),
+        );
         return;
       }
 
       final result = await _repository.getCurrentUser();
-      if (isClosed) return;
+      if (!_isRestoreSessionActive) return;
 
       switch (result) {
         case Success(data: final user):
           await _clearGuestProgressSafely();
           await _clearGuestSessionSafely();
-          if (isClosed) return;
+          if (!_isRestoreSessionActive) return;
           emit(AuthSessionState.authenticated(user));
         case Failure(:final error):
           if (error is UnauthorizedAuthFailure) {
             await _clearTokenSafely();
             await _clearGuestProgressSafely();
             await _clearGuestSessionSafely();
-            if (isClosed) return;
+            if (!_isRestoreSessionActive) return;
             emit(const AuthSessionState.unauthenticated());
             return;
           }
 
-          if (isClosed) return;
+          if (!_isRestoreSessionActive) return;
           emit(const AuthSessionState.restoreFailed());
       }
     } catch (e, s) {
       _logger.e('RestoreSession failed with unexpected error.', e, s);
-      if (isClosed) return;
+      if (!_isRestoreSessionActive) return;
       emit(const AuthSessionState.restoreFailed());
     }
   }
 
-  Future<bool> _hasCompletedGuestProgressSafely() async {
+  Future<bool?> _hasCompletedGuestProgressSafely() async {
     try {
       return await _fitnessStartProgressStorage.hasCompletedProgress();
     } catch (e, s) {
       _logger.e('Failed to read completed guest Fitness Start progress.', e, s);
-      return false;
+      return null;
     }
   }
 
@@ -196,9 +199,16 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   }
 
   /// Marks the current session as unauthenticated.
-  void clearSession() {
-    unawaited(_clearGuestProgressSafely());
-    unawaited(_clearGuestSessionSafely());
+  Future<void> clearSession() async {
+    try {
+      await Future.wait([
+        _clearGuestProgressSafely(),
+        _clearGuestSessionSafely(),
+      ]);
+    } catch (e, s) {
+      _logger.e('Failed to clear guest data during session clear.', e, s);
+    }
+
     if (!isClosed) {
       emit(const AuthSessionState.unauthenticated());
     }

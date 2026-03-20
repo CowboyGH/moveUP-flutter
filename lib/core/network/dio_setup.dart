@@ -22,7 +22,6 @@ Dio createDioClient({
   final refreshDio = Dio(_createDioBaseOptions());
 
   dio.interceptors.add(CookieManager(cookieJar));
-  refreshDio.interceptors.add(CookieManager(cookieJar));
 
   dio.interceptors.add(
     AuthInterceptor(

@@ -17,6 +17,7 @@ import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
 import '../network/dio_setup.dart';
+import '../network/api_paths.dart';
 import '../services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
 import '../services/fitness_start_progress_storage/hive_fitness_start_progress_storage.dart';
 import '../services/guest_session_storage/cookie_jar_guest_session_storage.dart';
@@ -71,7 +72,10 @@ Future<void> setupDI() async {
   );
   di.registerLazySingleton<CookieJar>(() => cookieJar);
   di.registerLazySingleton<GuestSessionStorage>(
-    () => CookieJarGuestSessionStorage(di<CookieJar>()),
+    () => CookieJarGuestSessionStorage(
+      di<CookieJar>(),
+      Uri.parse(ApiPaths.baseUrl),
+    ),
   );
 
   // Authentication
