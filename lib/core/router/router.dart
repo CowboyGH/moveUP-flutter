@@ -17,17 +17,11 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../di/di.dart';
-import '../models/fitness_start_stage.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
 import 'router_paths.dart';
 
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
-
-String _fitnessStartPath(FitnessStartStage stage) => switch (stage) {
-  FitnessStartStage.quiz => AppRoutePaths.fitnessStartQuizPath,
-  FitnessStartStage.tests => AppRoutePaths.fitnessStartTestsPath,
-};
 
 bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.signUpPath ||
@@ -61,14 +55,13 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
-    guestResumeAvailable: (_) {
+    guestResumeAvailable: () {
       if (state.matchedLocation == AppRoutePaths.signInPath) return null;
       return AppRoutePaths.signInPath;
     },
-    guest: (stage) {
-      final targetPath = _fitnessStartPath(stage);
-      if (state.matchedLocation == targetPath) return null;
-      return targetPath;
+    guest: () {
+      if (isFitnessStartScreen) return null;
+      return AppRoutePaths.fitnessStartQuizPath;
     },
     guestCompletedOnboarding: () {
       if (_isGuestCompletedAllowedPath(state.matchedLocation)) return null;

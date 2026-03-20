@@ -67,7 +67,7 @@ class _SignInPageState extends State<SignInPage> {
   void _maybeShowResumeDialog(AuthSessionState state) {
     if (_isResumeDialogVisible) return;
 
-    final shouldShowDialog = state.whenOrNull(guestResumeAvailable: (_) => true);
+    final shouldShowDialog = state.whenOrNull(guestResumeAvailable: () => true);
     if (shouldShowDialog != true) return;
 
     _isResumeDialogVisible = true;
@@ -99,8 +99,8 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return BlocListener<AuthSessionCubit, AuthSessionState>(
       listenWhen: (previous, current) =>
-          previous.maybeWhen(guestResumeAvailable: (_) => true, orElse: () => false) !=
-          current.maybeWhen(guestResumeAvailable: (_) => true, orElse: () => false),
+          previous.maybeWhen(guestResumeAvailable: () => true, orElse: () => false) !=
+          current.maybeWhen(guestResumeAvailable: () => true, orElse: () => false),
       listener: (context, state) {
         _maybeShowResumeDialog(state);
       },

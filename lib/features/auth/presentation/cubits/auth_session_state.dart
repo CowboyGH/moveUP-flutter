@@ -16,12 +16,10 @@ class AuthSessionState with _$AuthSessionState {
   const factory AuthSessionState.restoreFailed() = _RestoreFailed;
 
   /// Guest has completed onboarding and can reuse the saved data or restart.
-  const factory AuthSessionState.guestResumeAvailable(
-    FitnessStartGuestProgress progress,
-  ) = _GuestResumeAvailable;
+  const factory AuthSessionState.guestResumeAvailable() = _GuestResumeAvailable;
 
   /// User is in guest onboarding mode.
-  const factory AuthSessionState.guest(FitnessStartStage stage) = _Guest;
+  const factory AuthSessionState.guest() = _Guest;
 
   /// Guest has completed onboarding and should continue to registration.
   const factory AuthSessionState.guestCompletedOnboarding() = _GuestCompletedOnboarding;

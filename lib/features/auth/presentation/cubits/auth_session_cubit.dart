@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/failures/feature/auth/auth_failure.dart';
-import '../../../../core/models/fitness_start_guest_progress.dart';
-import '../../../../core/models/fitness_start_stage.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
 import '../../../../core/services/guest_session_storage/guest_session_storage.dart';
@@ -56,20 +54,16 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     try {
       final accessToken = await _tokenStorage.getAccessToken();
       if (accessToken == null || accessToken.isEmpty) {
-        final progress = await _getGuestProgressSafely();
-        final completedProgress = progress?.maybeWhen(
-          completed: FitnessStartGuestProgress.completed,
-          orElse: () => null,
-        );
-        if (progress != null && completedProgress == null) {
+        final hasCompletedProgress = await _hasCompletedGuestProgressSafely();
+        if (!hasCompletedProgress) {
           await _clearGuestProgressSafely();
           await _clearGuestSessionSafely();
         }
         if (!isClosed) {
           emit(
-            completedProgress == null
-                ? const AuthSessionState.unauthenticated()
-                : AuthSessionState.guestResumeAvailable(completedProgress),
+            hasCompletedProgress
+                ? const AuthSessionState.guestResumeAvailable()
+                : const AuthSessionState.unauthenticated(),
           );
         }
         return;
@@ -104,20 +98,12 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     }
   }
 
-  Future<FitnessStartGuestProgress?> _getGuestProgressSafely() async {
+  Future<bool> _hasCompletedGuestProgressSafely() async {
     try {
-      return await _fitnessStartProgressStorage.getProgress();
+      return await _fitnessStartProgressStorage.hasCompletedProgress();
     } catch (e, s) {
-      _logger.e('Failed to read guest Fitness Start progress.', e, s);
-      return null;
-    }
-  }
-
-  Future<void> _saveGuestInProgressSafely(FitnessStartStage stage) async {
-    try {
-      await _fitnessStartProgressStorage.saveInProgress(stage);
-    } catch (e, s) {
-      _logger.e('Failed to persist guest Fitness Start stage.', e, s);
+      _logger.e('Failed to read completed guest Fitness Start progress.', e, s);
+      return false;
     }
   }
 
@@ -155,25 +141,20 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Starts guest Fitness Start from the first quiz step.
   Future<void> startGuestFitnessStart() async {
-    await _saveGuestInProgressSafely(FitnessStartStage.quiz);
     if (!isClosed) {
-      emit(const AuthSessionState.guest(FitnessStartStage.quiz));
+      emit(const AuthSessionState.guest());
     }
   }
 
   /// Continues with saved completed guest data after user confirmation on sign-in.
   void resumeGuestProgress() {
-    final progress = state.whenOrNull(guestResumeAvailable: (progress) => progress);
-    if (progress == null) return;
-
-    progress.maybeWhen(
-      completed: () {
-        if (!isClosed) {
-          emit(const AuthSessionState.guestCompletedOnboarding());
-        }
-      },
-      orElse: () {},
+    final canResume = state.maybeWhen(
+      guestResumeAvailable: () => true,
+      orElse: () => false,
     );
+    if (!canResume || isClosed) return;
+
+    emit(const AuthSessionState.guestCompletedOnboarding());
   }
 
   /// Clears saved guest progress and restarts Fitness Start from the quiz stage.
@@ -181,17 +162,6 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     await _clearGuestProgressSafely();
     await _clearGuestSessionSafely();
     await startGuestFitnessStart();
-  }
-
-  /// Updates the current guest Fitness Start stage.
-  Future<void> updateGuestFitnessStartStage(FitnessStartStage stage) async {
-    final isGuest = state.maybeWhen(guest: (_) => true, orElse: () => false);
-    if (!isGuest) return;
-
-    await _saveGuestInProgressSafely(stage);
-    if (!isClosed) {
-      emit(AuthSessionState.guest(stage));
-    }
   }
 
   /// Marks guest Fitness Start as completed and redirects user to registration.
@@ -205,7 +175,7 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   /// Cancels the current guest onboarding flow.
   Future<void> cancelGuestFlow() async {
     final canCancel = state.maybeWhen(
-      guest: (_) => true,
+      guest: () => true,
       guestCompletedOnboarding: () => true,
       orElse: () => false,
     );
