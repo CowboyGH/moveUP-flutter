@@ -137,7 +137,10 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           _fitnessStartCubit.clearFailure();
         }
         if (state.isCompleted) {
-          context.go(AppRoutePaths.fitnessStartTestsPath);
+          context.go(
+            AppRoutePaths.fitnessStartTestsPath,
+            extra: AppRoutePaths.fitnessStartQuizPath,
+          );
         }
       },
       builder: (context, state) {

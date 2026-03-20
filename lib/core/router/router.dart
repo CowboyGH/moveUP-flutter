@@ -169,6 +169,12 @@ final router = GoRouter(
     ),
     GoRoute(
       path: AppRoutePaths.fitnessStartTestsPath,
+      redirect: (_, state) {
+        if (state.extra == AppRoutePaths.fitnessStartQuizPath) {
+          return null;
+        }
+        return AppRoutePaths.fitnessStartQuizPath;
+      },
       builder: (_, _) => const FitnessStartTestsPageBuilder(),
     ),
   ],

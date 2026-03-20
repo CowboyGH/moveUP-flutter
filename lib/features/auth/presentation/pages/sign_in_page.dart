@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -62,7 +64,13 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 
-  void _startFitnessStart() => context.read<AuthSessionCubit>().startGuestFitnessStart();
+  void _startFitnessStart() => unawaited(_startFitnessStartFlow());
+
+  Future<void> _startFitnessStartFlow() async {
+    await context.read<AuthSessionCubit>().startGuestFitnessStart();
+    if (!mounted) return;
+    context.go(AppRoutePaths.fitnessStartQuizPath);
+  }
 
   void _maybeShowResumeDialog(AuthSessionState state) {
     if (_isResumeDialogVisible) return;
@@ -79,9 +87,11 @@ class _SignInPageState extends State<SignInPage> {
     title: AppStrings.fitnessStartCompletedTitle,
     description: AppStrings.fitnessStartCompletedMessage,
     primaryAction: MainButton(
-      onPressed: () {
+      onPressed: () async {
         context.pop();
-        context.read<AuthSessionCubit>().restartGuestProgress();
+        await context.read<AuthSessionCubit>().restartGuestProgress();
+        if (!mounted) return;
+        context.go(AppRoutePaths.fitnessStartQuizPath);
       },
       child: const Text(AppStrings.fitnessStartRestartAction),
     ),
