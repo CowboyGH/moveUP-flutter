@@ -13,9 +13,8 @@ import 'interceptors/logging_interceptor.dart';
 Dio createDioClient({
   required AppLogger logger,
   required TokenStorage tokenStorage,
+  required CookieJar cookieJar,
 }) {
-  final cookieJar = CookieJar();
-
   /// Main Dio instance for all API calls.
   final dio = Dio(_createDioBaseOptions());
 

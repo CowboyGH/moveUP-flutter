@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:logger/logger.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../features/auth/data/remote/auth_api_client.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
@@ -30,7 +34,16 @@ final di = GetIt.instance;
 
 /// Initializes application dependencies in the global [di] container.
 Future<void> setupDI() async {
-  final onboardingFlowBox = await Hive.openBox<dynamic>(HiveOnboardingFlowStorage.boxName);
+  final fitnessStartProgressBox = await Hive.openBox<dynamic>(
+    HiveFitnessStartProgressStorage.boxName,
+  );
+  final supportDirectory = await getApplicationSupportDirectory();
+  final cookiesDirectory = Directory(
+    '${supportDirectory.path}/guest_cookies',
+  );
+  final cookieJar = PersistCookieJar(
+    storage: FileStorage(cookiesDirectory.path),
+  );
 
   // Logger
   di.registerLazySingleton<Logger>(() => createLogger());
@@ -54,12 +67,17 @@ Future<void> setupDI() async {
     () => HiveOnboardingFlowStorage(onboardingFlowBox),
     dispose: (_) => onboardingFlowBox.close(),
   );
+  di.registerLazySingleton<CookieJar>(() => cookieJar);
+  di.registerLazySingleton<GuestSessionStorage>(
+    () => CookieJarGuestSessionStorage(di<CookieJar>()),
+  );
 
   // Authentication
   di.registerLazySingleton<Dio>(
     () => createDioClient(
       logger: di<AppLogger>(),
       tokenStorage: di<TokenStorage>(),
+      cookieJar: di<CookieJar>(),
     ),
   );
   di.registerLazySingleton<AuthApiClient>(() => AuthApiClient(di<Dio>()));
