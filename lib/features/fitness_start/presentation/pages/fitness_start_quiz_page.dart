@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/models/fitness_start_stage.dart';
+import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/buttons/option_button.dart';
@@ -59,10 +60,10 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
 
   FitnessStartCubit get _fitnessStartCubit => context.read<FitnessStartCubit>();
 
-  void _handleGuestBack(FitnessStartState state) {
+  Future<void> _handleGuestBack(FitnessStartState state) async {
     FocusScope.of(context).unfocus();
     if (state.currentStep == 0) {
-      _authSessionCubit.cancelGuestFlow();
+      await _authSessionCubit.cancelGuestFlow();
       return;
     }
     _fitnessStartCubit.previousStep();
@@ -120,7 +121,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
     final colorTheme = AppColorTheme.of(context);
     final isGuestOnboarding = context.select<AuthSessionCubit, bool>(
       (cubit) => cubit.state.maybeWhen(
-        guest: (_) => true,
+        guest: () => true,
         orElse: () => false,
       ),
     );
@@ -136,7 +137,10 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           _fitnessStartCubit.clearFailure();
         }
         if (state.isCompleted) {
-          unawaited(_authSessionCubit.updateOnboardingStage(FitnessStartStage.tests));
+          context.go(
+            AppRoutePaths.fitnessStartTestsPath,
+            extra: AppRoutePaths.fitnessStartQuizPath,
+          );
         }
       },
       builder: (context, state) {
@@ -144,7 +148,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           appBar: FitnessStartFlowAppBar(
             progress: (state.currentStep + 1) / 3,
             showBackButton: isGuestOnboarding,
-            onBackPressed: isGuestOnboarding ? () => _handleGuestBack(state) : null,
+            onBackPressed: isGuestOnboarding ? () => unawaited(_handleGuestBack(state)) : null,
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {

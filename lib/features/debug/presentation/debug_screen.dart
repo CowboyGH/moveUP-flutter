@@ -7,6 +7,7 @@ import '../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../auth/domain/repositories/auth_repository.dart';
 import '../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../auth/presentation/cubits/logout_cubit.dart';
+import 'dart:async';
 
 /// A screen for debugging purposes.
 class DebugScreen extends StatelessWidget {
@@ -25,7 +26,7 @@ class DebugScreen extends StatelessWidget {
       child: BlocListener<LogoutCubit, LogoutState>(
         listener: (context, state) {
           state.whenOrNull(
-            succeed: () => context.read<AuthSessionCubit>().clearSession(),
+            succeed: () => unawaited(context.read<AuthSessionCubit>().clearSession()),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
                 showAppFeedbackDialog(

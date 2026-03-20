@@ -3,7 +3,6 @@
 /// Shared string constants used across the app UI.
 abstract final class AppStrings {
   /// Common.
-  static const skipButton = 'Пропустить';
   static const sendButton = 'Отправить';
   static const emailLabel = 'Email';
   static const emailHint = 'email@example.com';
@@ -145,6 +144,11 @@ abstract final class AppStrings {
   static const fitnessStartHeightRange = '140–210 см';
   static const fitnessStartReferencesLoadFailed = 'Не удалось загрузить данные';
   static const fitnessStartRetryButton = 'Попробовать снова';
+  static const fitnessStartCompletedTitle = 'Обнаружены данные';
+  static const fitnessStartCompletedMessage =
+      'Хотите пройти тест снова или использовать ранее введенную информацию?';
+  static const fitnessStartRestartAction = 'Пройти тест снова';
+  static const fitnessStartRegisterAction = 'Использовать введенную информацию';
   static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
