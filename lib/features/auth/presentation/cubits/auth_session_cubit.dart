@@ -59,8 +59,7 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
         if (!_isRestoreSessionActive) return;
 
         if (hasCompletedProgress == false) {
-          await _clearGuestProgressSafely();
-          await _clearGuestSessionSafely();
+          await _clearGuestDataSafely();
           if (!_isRestoreSessionActive) return;
         }
 
@@ -77,15 +76,13 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
       switch (result) {
         case Success(data: final user):
-          await _clearGuestProgressSafely();
-          await _clearGuestSessionSafely();
+          await _clearGuestDataSafely();
           if (!_isRestoreSessionActive) return;
           emit(AuthSessionState.authenticated(user));
         case Failure(:final error):
           if (error is UnauthorizedAuthFailure) {
             await _clearTokenSafely();
-            await _clearGuestProgressSafely();
-            await _clearGuestSessionSafely();
+            await _clearGuestDataSafely();
             if (!_isRestoreSessionActive) return;
             emit(const AuthSessionState.unauthenticated());
             return;
@@ -110,27 +107,48 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     }
   }
 
-  Future<void> _saveGuestCompletedSafely() async {
+  Future<bool> _saveGuestCompletedSafely() async {
     try {
       await _fitnessStartProgressStorage.saveCompleted();
+      return true;
     } catch (e, s) {
       _logger.e('Failed to persist completed guest Fitness Start progress.', e, s);
+      return false;
     }
   }
 
-  Future<void> _clearGuestProgressSafely() async {
+  Future<bool> _clearGuestProgressSafely() async {
     try {
       await _fitnessStartProgressStorage.clear();
+      return true;
     } catch (e, s) {
       _logger.e('Failed to clear guest Fitness Start progress.', e, s);
+      return false;
     }
   }
 
-  Future<void> _clearGuestSessionSafely() async {
+  Future<bool> _clearGuestSessionSafely() async {
     try {
       await _guestSessionStorage.clear();
+      return true;
     } catch (e, s) {
       _logger.e('Failed to clear guest session cookies.', e, s);
+      return false;
+    }
+  }
+
+  Future<bool> _clearGuestDataSafely() async {
+    final results = await Future.wait([
+      _clearGuestProgressSafely(),
+      _clearGuestSessionSafely(),
+    ]);
+    return results.every((isSuccess) => isSuccess);
+  }
+
+  Future<void> _clearGuestDataAfterAuthSuccess() async {
+    final isCleared = await _clearGuestDataSafely();
+    if (!isCleared) {
+      _logger.w('Guest data cleanup failed after successful authentication.');
     }
   }
 
@@ -162,17 +180,26 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Clears saved guest progress and restarts Fitness Start from the quiz stage.
   Future<void> restartGuestProgress() async {
-    await _clearGuestProgressSafely();
-    await _clearGuestSessionSafely();
+    final isCleared = await _clearGuestDataSafely();
+    if (!isCleared) {
+      _logger.w('Guest data cleanup failed during Fitness Start restart.');
+      return;
+    }
+
     await startGuestFitnessStart();
   }
 
   /// Marks guest Fitness Start as completed and redirects user to registration.
   Future<void> completeGuestFitnessStart() async {
-    await _saveGuestCompletedSafely();
-    if (!isClosed) {
-      emit(const AuthSessionState.guestCompletedOnboarding());
+    final isSaved = await _saveGuestCompletedSafely();
+    if (!isSaved || isClosed) {
+      if (!isSaved) {
+        _logger.w('Skipping completed guest onboarding transition because progress save failed.');
+      }
+      return;
     }
+
+    emit(const AuthSessionState.guestCompletedOnboarding());
   }
 
   /// Cancels the current guest onboarding flow.
@@ -184,29 +211,28 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     );
     if (!canCancel) return;
 
-    await _clearGuestProgressSafely();
-    await _clearGuestSessionSafely();
-    if (!isClosed) {
-      emit(const AuthSessionState.unauthenticated());
+    final isCleared = await _clearGuestDataSafely();
+    if (!isCleared || isClosed) {
+      if (!isCleared) {
+        _logger.w('Guest data cleanup failed during guest flow cancellation.');
+      }
+      return;
     }
+
+    emit(const AuthSessionState.unauthenticated());
   }
 
   /// Sets session mode to authenticated after a successful sign-in.
   void onSignInSuccess(User user) {
-    unawaited(_clearGuestProgressSafely());
-    unawaited(_clearGuestSessionSafely());
+    unawaited(_clearGuestDataAfterAuthSuccess());
     emit(AuthSessionState.authenticated(user));
   }
 
   /// Marks the current session as unauthenticated.
   Future<void> clearSession() async {
-    try {
-      await Future.wait([
-        _clearGuestProgressSafely(),
-        _clearGuestSessionSafely(),
-      ]);
-    } catch (e, s) {
-      _logger.e('Failed to clear guest data during session clear.', e, s);
+    final isCleared = await _clearGuestDataSafely();
+    if (!isCleared) {
+      _logger.w('Guest data cleanup failed during session clear; continuing logout.');
     }
 
     if (!isClosed) {
