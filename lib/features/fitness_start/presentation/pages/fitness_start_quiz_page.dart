@@ -62,7 +62,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
   void _handleGuestBack(FitnessStartState state) {
     FocusScope.of(context).unfocus();
     if (state.currentStep == 0) {
-      _authSessionCubit.cancelGuestFlow();
+      unawaited(_authSessionCubit.cancelGuestFlow());
       return;
     }
     _fitnessStartCubit.previousStep();
@@ -136,7 +136,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           _fitnessStartCubit.clearFailure();
         }
         if (state.isCompleted) {
-          unawaited(_authSessionCubit.updateOnboardingStage(FitnessStartStage.tests));
+          unawaited(_authSessionCubit.updateGuestFitnessStartStage(FitnessStartStage.tests));
         }
       },
       builder: (context, state) {

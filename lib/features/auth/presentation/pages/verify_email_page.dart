@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -82,9 +80,7 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
         BlocListener<VerifyEmailCubit, VerifyEmailState>(
           listener: (context, state) {
             state.whenOrNull(
-              succeed: (user) => unawaited(
-                context.read<AuthSessionCubit>().startAuthenticatedOnboarding(user),
-              ),
+              succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
               failed: (failure) {
                 if (failure.message.isNotEmpty) {
                   showAppFeedbackDialog(
