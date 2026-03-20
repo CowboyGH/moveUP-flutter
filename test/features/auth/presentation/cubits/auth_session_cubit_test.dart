@@ -232,6 +232,22 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'restartGuestProgress does not emit guest when guest progress clear fails',
+      setUp: () {
+        when(progressStorage.clear()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.guestResumeAvailable(),
+      act: (cubit) => cubit.restartGuestProgress(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verify(logger.e(any, any, any)).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'completeGuestFitnessStart emits guestCompletedOnboarding and saves completed progress',
       build: () => authSessionCubit,
       seed: () => const AuthSessionState.guest(),
@@ -239,6 +255,21 @@ void main() {
       expect: () => const [AuthSessionState.guestCompletedOnboarding()],
       verify: (_) {
         verify(progressStorage.saveCompleted()).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'completeGuestFitnessStart does not emit guestCompletedOnboarding when save fails',
+      setUp: () {
+        when(progressStorage.saveCompleted()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.guest(),
+      act: (cubit) => cubit.completeGuestFitnessStart(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verify(progressStorage.saveCompleted()).called(1);
+        verify(logger.e(any, any, any)).called(1);
       },
     );
 
@@ -251,6 +282,22 @@ void main() {
       verify: (_) {
         verify(progressStorage.clear()).called(1);
         verify(guestSessionStorage.clear()).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'cancelGuestFlow does not emit unauthenticated when guest session clear fails',
+      setUp: () {
+        when(guestSessionStorage.clear()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.guest(),
+      act: (cubit) => cubit.cancelGuestFlow(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verify(logger.e(any, any, any)).called(1);
       },
     );
 
