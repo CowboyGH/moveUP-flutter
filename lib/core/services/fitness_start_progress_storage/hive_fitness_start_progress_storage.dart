@@ -17,7 +17,7 @@ final class HiveFitnessStartProgressStorage implements FitnessStartProgressStora
   @override
   Future<bool> hasCompletedProgress() async {
     final rawValue = _box.get(_completedKey);
-    return rawValue is bool ? rawValue : false;
+    return rawValue is bool && rawValue;
   }
 
   @override
