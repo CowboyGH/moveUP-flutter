@@ -3,8 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
-import 'package:moveup_flutter/core/models/fitness_start_guest_progress.dart';
-import 'package:moveup_flutter/core/models/fitness_start_stage.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
 import 'package:moveup_flutter/core/services/guest_session_storage/guest_session_storage.dart';
@@ -51,8 +49,7 @@ void main() {
       logger,
     );
     provideDummy<Result<User, AuthFailure>>(const Success(user));
-    when(progressStorage.getProgress()).thenAnswer((_) async => null);
-    when(progressStorage.saveInProgress(any)).thenAnswer((_) async {});
+    when(progressStorage.hasCompletedProgress()).thenAnswer((_) async => false);
     when(progressStorage.saveCompleted()).thenAnswer((_) async {});
     when(progressStorage.clear()).thenAnswer((_) async {});
     when(guestSessionStorage.clear()).thenAnswer((_) async {});
@@ -70,30 +67,7 @@ void main() {
       ],
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
-        verify(progressStorage.getProgress()).called(1);
-        verifyNever(repository.getCurrentUser());
-      },
-    );
-
-    blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits unauthenticated and clears guest data when token is missing and guest progress is in progress',
-      setUp: () {
-        when(tokenStorage.getAccessToken()).thenAnswer((_) async => null);
-        when(
-          progressStorage.getProgress(),
-        ).thenAnswer(
-          (_) async => const FitnessStartGuestProgress.inProgress(FitnessStartStage.tests),
-        );
-      },
-      build: () => authSessionCubit,
-      act: (cubit) => cubit.restoreSession(),
-      expect: () => const [
-        AuthSessionState.checking(),
-        AuthSessionState.unauthenticated(),
-      ],
-      verify: (_) {
-        verify(tokenStorage.getAccessToken()).called(1);
-        verify(progressStorage.getProgress()).called(1);
+        verify(progressStorage.hasCompletedProgress()).called(1);
         verify(progressStorage.clear()).called(1);
         verify(guestSessionStorage.clear()).called(1);
         verifyNever(repository.getCurrentUser());
@@ -101,22 +75,20 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits guestResumeAvailable when token is missing and guest progress is completed',
+      'restoreSession emits guestResumeAvailable when token is missing and completed guest progress exists',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => null);
-        when(progressStorage.getProgress()).thenAnswer(
-          (_) async => const FitnessStartGuestProgress.completed(),
-        );
+        when(progressStorage.hasCompletedProgress()).thenAnswer((_) async => true);
       },
       build: () => authSessionCubit,
       act: (cubit) => cubit.restoreSession(),
       expect: () => const [
         AuthSessionState.checking(),
-        AuthSessionState.guestResumeAvailable(FitnessStartGuestProgress.completed()),
+        AuthSessionState.guestResumeAvailable(),
       ],
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
-        verify(progressStorage.getProgress()).called(1);
+        verify(progressStorage.hasCompletedProgress()).called(1);
         verifyNever(progressStorage.clear());
         verifyNever(guestSessionStorage.clear());
         verifyNever(repository.getCurrentUser());
@@ -140,7 +112,7 @@ void main() {
         verify(repository.getCurrentUser()).called(1);
         verify(progressStorage.clear()).called(1);
         verify(guestSessionStorage.clear()).called(1);
-        verifyNever(progressStorage.getProgress());
+        verifyNever(progressStorage.hasCompletedProgress());
         verifyNever(tokenStorage.deleteAccessToken());
       },
     );
@@ -187,7 +159,7 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verifyNever(tokenStorage.deleteAccessToken());
-        verifyNever(progressStorage.getProgress());
+        verifyNever(progressStorage.hasCompletedProgress());
       },
     );
 
@@ -211,55 +183,36 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'startGuestFitnessStart emits guest(quiz) and saves progress',
+      'startGuestFitnessStart emits guest',
       build: () => authSessionCubit,
       act: (cubit) => cubit.startGuestFitnessStart(),
-      expect: () => const [AuthSessionState.guest(FitnessStartStage.quiz)],
-      verify: (_) {
-        verify(progressStorage.saveInProgress(FitnessStartStage.quiz)).called(1);
-      },
+      expect: () => const [AuthSessionState.guest()],
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
       'resumeGuestProgress emits guestCompletedOnboarding for completed guest state',
       build: () => authSessionCubit,
-      seed: () => const AuthSessionState.guestResumeAvailable(
-        FitnessStartGuestProgress.completed(),
-      ),
+      seed: () => const AuthSessionState.guestResumeAvailable(),
       act: (cubit) => cubit.resumeGuestProgress(),
       expect: () => const [AuthSessionState.guestCompletedOnboarding()],
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restartGuestProgress clears progress and guest session before restarting at quiz',
+      'restartGuestProgress clears progress and guest session before restarting guest flow',
       build: () => authSessionCubit,
-      seed: () => const AuthSessionState.guestResumeAvailable(
-        FitnessStartGuestProgress.completed(),
-      ),
+      seed: () => const AuthSessionState.guestResumeAvailable(),
       act: (cubit) => cubit.restartGuestProgress(),
-      expect: () => const [AuthSessionState.guest(FitnessStartStage.quiz)],
+      expect: () => const [AuthSessionState.guest()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
         verify(guestSessionStorage.clear()).called(1);
-        verify(progressStorage.saveInProgress(FitnessStartStage.quiz)).called(1);
-      },
-    );
-
-    blocTest<AuthSessionCubit, AuthSessionState>(
-      'updateGuestFitnessStartStage transitions guest quiz to guest tests',
-      build: () => authSessionCubit,
-      seed: () => const AuthSessionState.guest(FitnessStartStage.quiz),
-      act: (cubit) => cubit.updateGuestFitnessStartStage(FitnessStartStage.tests),
-      expect: () => const [AuthSessionState.guest(FitnessStartStage.tests)],
-      verify: (_) {
-        verify(progressStorage.saveInProgress(FitnessStartStage.tests)).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
       'completeGuestFitnessStart emits guestCompletedOnboarding and saves completed progress',
       build: () => authSessionCubit,
-      seed: () => const AuthSessionState.guest(FitnessStartStage.tests),
+      seed: () => const AuthSessionState.guest(),
       act: (cubit) => cubit.completeGuestFitnessStart(),
       expect: () => const [AuthSessionState.guestCompletedOnboarding()],
       verify: (_) {
@@ -270,7 +223,7 @@ void main() {
     blocTest<AuthSessionCubit, AuthSessionState>(
       'cancelGuestFlow clears guest data and emits unauthenticated',
       build: () => authSessionCubit,
-      seed: () => const AuthSessionState.guest(FitnessStartStage.quiz),
+      seed: () => const AuthSessionState.guest(),
       act: (cubit) => cubit.cancelGuestFlow(),
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
