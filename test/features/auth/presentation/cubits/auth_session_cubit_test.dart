@@ -329,6 +329,22 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'clearSession emits unauthenticated even when guest data cleanup fails',
+      setUp: () {
+        when(progressStorage.clear()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.clearSession(),
+      expect: () => const [AuthSessionState.unauthenticated()],
+      verify: (_) {
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verify(logger.e(any, any, any)).called(1);
+        verify(logger.w(any, any, any)).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'restoreSession works only once when called twice',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
