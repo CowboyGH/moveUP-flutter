@@ -11,18 +11,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Staged `Fitness Start` onboarding flow with `quiz` and `tests` stages in auth session state and router redirects.
-- `OnboardingFlowStorage` abstraction with `Hive`-based persistence for authenticated onboarding resume.
+- `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
+- Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
-- Shared UIKit controls for the onboarding quiz: `TertiaryButton` and `TertiaryInputField`.
-- `FitnessStartCubit`, validators, 3-step quiz UI, and `/fitness-start/tests` placeholder handoff screen.
-- Unit tests for onboarding flow storage, `FitnessStart` repository methods, failure mapper, quiz cubit, and updated auth session onboarding behavior.
+- Shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
+- Shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
+- `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` placeholder handoff screen, and sign-in resume dialog for the onboarding-first auth entry flow.
 
 ### Changed
 
-- Verify-email success now enters the staged `Fitness Start` onboarding flow instead of finishing directly into the authenticated app.
-- Dio clients now attach a shared `CookieManager` so guest/user-parameter onboarding requests can participate in backend session flow.
-- `OnboardingFlowStorage` now derives pending authenticated onboarding state from the saved stage value to avoid inconsistent local storage state.
+- Registration is now onboarding-first: `Нет аккаунта? Зарегистрироваться` starts `Fitness Start`, while `sign-up` becomes a post-onboarding screen only.
+- Auth `Skip` actions were removed from `sign-in` and `sign-up`.
+- Guest onboarding resume is now completed-only: unfinished `Fitness Start` progress is cleared on app restart, while completed guest data shows a resume dialog on `sign-in`.
+- `FitnessStartStage` was removed from auth/session routing, and `quiz -> tests` now uses direct page navigation instead of session-driven stage switching.
+- Verify-email success now completes authentication directly instead of entering a staged authenticated onboarding flow.
+- Dio clients now attach a shared persistent `CookieManager` so guest onboarding progress and backend session can survive app restarts.
+- `/fitness-start/tests` now temporarily acts as the completion boundary that hands guest onboarding off to registration, and its back action exits guest flow to `sign-in`.
 - `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
