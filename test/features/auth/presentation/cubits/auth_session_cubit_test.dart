@@ -3,9 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
+import 'package:moveup_flutter/core/models/fitness_start_guest_progress.dart';
 import 'package:moveup_flutter/core/models/fitness_start_stage.dart';
 import 'package:moveup_flutter/core/result/result.dart';
-import 'package:moveup_flutter/core/services/onboarding_flow_storage/onboarding_flow_storage.dart';
+import 'package:moveup_flutter/core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
+import 'package:moveup_flutter/core/services/guest_session_storage/guest_session_storage.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
@@ -17,13 +19,15 @@ import 'auth_session_cubit_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<AuthRepository>(),
   MockSpec<TokenStorage>(),
-  MockSpec<OnboardingFlowStorage>(),
+  MockSpec<FitnessStartProgressStorage>(),
+  MockSpec<GuestSessionStorage>(),
   MockSpec<AppLogger>(),
 ])
 void main() {
   late MockAuthRepository repository;
   late MockTokenStorage tokenStorage;
-  late MockOnboardingFlowStorage onboardingFlowStorage;
+  late MockFitnessStartProgressStorage progressStorage;
+  late MockGuestSessionStorage guestSessionStorage;
   late MockAppLogger logger;
   late AuthSessionCubit authSessionCubit;
 
@@ -36,24 +40,27 @@ void main() {
   setUp(() {
     repository = MockAuthRepository();
     tokenStorage = MockTokenStorage();
-    onboardingFlowStorage = MockOnboardingFlowStorage();
+    progressStorage = MockFitnessStartProgressStorage();
+    guestSessionStorage = MockGuestSessionStorage();
     logger = MockAppLogger();
     authSessionCubit = AuthSessionCubit(
       repository,
       tokenStorage,
-      onboardingFlowStorage,
+      progressStorage,
+      guestSessionStorage,
       logger,
     );
     provideDummy<Result<User, AuthFailure>>(const Success(user));
-    when(onboardingFlowStorage.hasPendingOnboarding()).thenAnswer((_) async => false);
-    when(onboardingFlowStorage.getPendingOnboardingStage()).thenAnswer((_) async => null);
-    when(onboardingFlowStorage.savePendingOnboardingStage(any)).thenAnswer((_) async {});
-    when(onboardingFlowStorage.clearPendingOnboarding()).thenAnswer((_) async {});
+    when(progressStorage.getProgress()).thenAnswer((_) async => null);
+    when(progressStorage.saveInProgress(any)).thenAnswer((_) async {});
+    when(progressStorage.saveCompleted()).thenAnswer((_) async {});
+    when(progressStorage.clear()).thenAnswer((_) async {});
+    when(guestSessionStorage.clear()).thenAnswer((_) async {});
   });
 
   group('AuthSessionCubit', () {
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits unauthenticated when token is missing',
+      'restoreSession emits unauthenticated when token is missing and no guest progress exists',
       setUp: () => when(tokenStorage.getAccessToken()).thenAnswer((_) async => null),
       build: () => authSessionCubit,
       act: (cubit) => cubit.restoreSession(),
@@ -63,10 +70,56 @@ void main() {
       ],
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
+        verify(progressStorage.getProgress()).called(1);
         verifyNever(repository.getCurrentUser());
-        verify(onboardingFlowStorage.clearPendingOnboarding()).called(1);
-        verifyNever(tokenStorage.deleteAccessToken());
-        verifyNoMoreInteractions(tokenStorage);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'restoreSession emits unauthenticated and clears guest data when token is missing and guest progress is in progress',
+      setUp: () {
+        when(tokenStorage.getAccessToken()).thenAnswer((_) async => null);
+        when(
+          progressStorage.getProgress(),
+        ).thenAnswer(
+          (_) async => const FitnessStartGuestProgress.inProgress(FitnessStartStage.tests),
+        );
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.restoreSession(),
+      expect: () => const [
+        AuthSessionState.checking(),
+        AuthSessionState.unauthenticated(),
+      ],
+      verify: (_) {
+        verify(tokenStorage.getAccessToken()).called(1);
+        verify(progressStorage.getProgress()).called(1);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verifyNever(repository.getCurrentUser());
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'restoreSession emits guestResumeAvailable when token is missing and guest progress is completed',
+      setUp: () {
+        when(tokenStorage.getAccessToken()).thenAnswer((_) async => null);
+        when(progressStorage.getProgress()).thenAnswer(
+          (_) async => const FitnessStartGuestProgress.completed(),
+        );
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.restoreSession(),
+      expect: () => const [
+        AuthSessionState.checking(),
+        AuthSessionState.guestResumeAvailable(FitnessStartGuestProgress.completed()),
+      ],
+      verify: (_) {
+        verify(tokenStorage.getAccessToken()).called(1);
+        verify(progressStorage.getProgress()).called(1);
+        verifyNever(progressStorage.clear());
+        verifyNever(guestSessionStorage.clear());
+        verifyNever(repository.getCurrentUser());
       },
     );
 
@@ -85,34 +138,10 @@ void main() {
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
-        verify(onboardingFlowStorage.hasPendingOnboarding()).called(1);
-        verifyNever(onboardingFlowStorage.getPendingOnboardingStage());
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verifyNever(progressStorage.getProgress());
         verifyNever(tokenStorage.deleteAccessToken());
-        verifyNoMoreInteractions(tokenStorage);
-      },
-    );
-
-    blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits authenticatedOnboarding when pending onboarding exists',
-      setUp: () {
-        when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
-        when(repository.getCurrentUser()).thenAnswer((_) async => const Success(user));
-        when(onboardingFlowStorage.hasPendingOnboarding()).thenAnswer((_) async => true);
-        when(
-          onboardingFlowStorage.getPendingOnboardingStage(),
-        ).thenAnswer((_) async => FitnessStartStage.tests);
-      },
-      build: () => authSessionCubit,
-      act: (cubit) => cubit.restoreSession(),
-      expect: () => const [
-        AuthSessionState.checking(),
-        AuthSessionState.authenticatedOnboarding(user, FitnessStartStage.tests),
-      ],
-      verify: (_) {
-        verify(tokenStorage.getAccessToken()).called(1);
-        verify(repository.getCurrentUser()).called(1);
-        verify(onboardingFlowStorage.hasPendingOnboarding()).called(1);
-        verify(onboardingFlowStorage.getPendingOnboardingStage()).called(1);
       },
     );
 
@@ -135,13 +164,13 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verify(tokenStorage.deleteAccessToken()).called(1);
-        verify(onboardingFlowStorage.clearPendingOnboarding()).called(1);
-        verifyNoMoreInteractions(tokenStorage);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits restoreFailed without deleting token on transient auth failure',
+      'restoreSession emits restoreFailed on transient auth failure',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
         when(
@@ -158,12 +187,12 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verifyNever(tokenStorage.deleteAccessToken());
-        verifyNoMoreInteractions(tokenStorage);
+        verifyNever(progressStorage.getProgress());
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits restoreFailed without deleting token on unexpected exception',
+      'restoreSession emits restoreFailed on unexpected exception',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
         when(repository.getCurrentUser()).thenThrow(Exception('unexpected_error'));
@@ -177,108 +206,81 @@ void main() {
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
-        verifyNever(tokenStorage.deleteAccessToken());
-        verifyNoMoreInteractions(tokenStorage);
-      },
-    );
-
-    blocTest<AuthSessionCubit, AuthSessionState>(
-      'restoreSession emits unauthenticated when token cleanup throws for unauthorized failure',
-      setUp: () {
-        when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
-        when(
-          repository.getCurrentUser(),
-        ).thenAnswer((_) async => const Failure(UnauthorizedAuthFailure()));
-        when(tokenStorage.deleteAccessToken()).thenThrow(Exception('storage_error'));
-      },
-      build: () => authSessionCubit,
-      act: (cubit) => cubit.restoreSession(),
-      expect: () => const [
-        AuthSessionState.checking(),
-        AuthSessionState.unauthenticated(),
-      ],
-      verify: (_) {
-        verify(tokenStorage.getAccessToken()).called(1);
-        verify(repository.getCurrentUser()).called(1);
-        verify(tokenStorage.deleteAccessToken()).called(1);
         verify(logger.e(any, any, any)).called(1);
-        verifyNoMoreInteractions(tokenStorage);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'continueAsGuest emits guest(quiz)',
+      'startGuestFitnessStart emits guest(quiz) and saves progress',
       build: () => authSessionCubit,
-      act: (cubit) => cubit.continueAsGuest(),
+      act: (cubit) => cubit.startGuestFitnessStart(),
       expect: () => const [AuthSessionState.guest(FitnessStartStage.quiz)],
-    );
-
-    blocTest<AuthSessionCubit, AuthSessionState>(
-      'startAuthenticatedOnboarding emits authenticatedOnboarding(user, quiz)',
-      build: () => authSessionCubit,
-      act: (cubit) => cubit.startAuthenticatedOnboarding(user),
-      expect: () => const [
-        AuthSessionState.authenticatedOnboarding(user, FitnessStartStage.quiz),
-      ],
       verify: (_) {
-        verify(
-          onboardingFlowStorage.savePendingOnboardingStage(FitnessStartStage.quiz),
-        ).called(1);
+        verify(progressStorage.saveInProgress(FitnessStartStage.quiz)).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'updateOnboardingStage transitions guest quiz to guest tests',
+      'resumeGuestProgress emits guestCompletedOnboarding for completed guest state',
       build: () => authSessionCubit,
-      act: (cubit) {
-        cubit.continueAsGuest();
-        cubit.updateOnboardingStage(FitnessStartStage.tests);
-      },
-      expect: () => const [
-        AuthSessionState.guest(FitnessStartStage.quiz),
-        AuthSessionState.guest(FitnessStartStage.tests),
-      ],
+      seed: () => const AuthSessionState.guestResumeAvailable(
+        FitnessStartGuestProgress.completed(),
+      ),
+      act: (cubit) => cubit.resumeGuestProgress(),
+      expect: () => const [AuthSessionState.guestCompletedOnboarding()],
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'restartGuestProgress clears progress and guest session before restarting at quiz',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.guestResumeAvailable(
+        FitnessStartGuestProgress.completed(),
+      ),
+      act: (cubit) => cubit.restartGuestProgress(),
+      expect: () => const [AuthSessionState.guest(FitnessStartStage.quiz)],
       verify: (_) {
-        verifyNever(onboardingFlowStorage.savePendingOnboardingStage(any));
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verify(progressStorage.saveInProgress(FitnessStartStage.quiz)).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'updateOnboardingStage transitions authenticated onboarding and persists stage',
+      'updateGuestFitnessStartStage transitions guest quiz to guest tests',
       build: () => authSessionCubit,
-      act: (cubit) async {
-        await cubit.startAuthenticatedOnboarding(user);
-        await cubit.updateOnboardingStage(FitnessStartStage.tests);
-      },
-      expect: () => const [
-        AuthSessionState.authenticatedOnboarding(user, FitnessStartStage.quiz),
-        AuthSessionState.authenticatedOnboarding(user, FitnessStartStage.tests),
-      ],
+      seed: () => const AuthSessionState.guest(FitnessStartStage.quiz),
+      act: (cubit) => cubit.updateGuestFitnessStartStage(FitnessStartStage.tests),
+      expect: () => const [AuthSessionState.guest(FitnessStartStage.tests)],
       verify: (_) {
-        verify(
-          onboardingFlowStorage.savePendingOnboardingStage(FitnessStartStage.quiz),
-        ).called(1);
-        verify(
-          onboardingFlowStorage.savePendingOnboardingStage(FitnessStartStage.tests),
-        ).called(1);
+        verify(progressStorage.saveInProgress(FitnessStartStage.tests)).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'cancelGuestFlow emits unauthenticated',
+      'completeGuestFitnessStart emits guestCompletedOnboarding and saves completed progress',
       build: () => authSessionCubit,
-      act: (cubit) {
-        cubit.continueAsGuest();
-        cubit.cancelGuestFlow();
+      seed: () => const AuthSessionState.guest(FitnessStartStage.tests),
+      act: (cubit) => cubit.completeGuestFitnessStart(),
+      expect: () => const [AuthSessionState.guestCompletedOnboarding()],
+      verify: (_) {
+        verify(progressStorage.saveCompleted()).called(1);
       },
-      expect: () => const [
-        AuthSessionState.guest(FitnessStartStage.quiz),
-        AuthSessionState.unauthenticated(),
-      ],
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'onSignInSuccess emits authenticated(user)',
+      'cancelGuestFlow clears guest data and emits unauthenticated',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.guest(FitnessStartStage.quiz),
+      act: (cubit) => cubit.cancelGuestFlow(),
+      expect: () => const [AuthSessionState.unauthenticated()],
+      verify: (_) {
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'onSignInSuccess emits authenticated(user) and clears guest data',
       build: () => authSessionCubit,
       act: (cubit) async {
         cubit.onSignInSuccess(user);
@@ -286,12 +288,13 @@ void main() {
       },
       expect: () => const [AuthSessionState.authenticated(user)],
       verify: (_) {
-        verify(onboardingFlowStorage.clearPendingOnboarding()).called(1);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'clearSession emits unauthenticated without touching token storage directly',
+      'clearSession emits unauthenticated and clears guest data',
       build: () => authSessionCubit,
       act: (cubit) async {
         cubit.clearSession();
@@ -299,9 +302,10 @@ void main() {
       },
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
-        verifyNoMoreInteractions(repository);
-        verifyNoMoreInteractions(tokenStorage);
-        verify(onboardingFlowStorage.clearPendingOnboarding()).called(1);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verifyNever(repository.getCurrentUser());
+        verifyNever(tokenStorage.deleteAccessToken());
       },
     );
 
@@ -323,7 +327,6 @@ void main() {
       verify: (_) {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
-        verifyNoMoreInteractions(tokenStorage);
       },
     );
   });

@@ -17,10 +17,12 @@ import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
 import '../network/dio_setup.dart';
+import '../services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
+import '../services/fitness_start_progress_storage/hive_fitness_start_progress_storage.dart';
+import '../services/guest_session_storage/cookie_jar_guest_session_storage.dart';
+import '../services/guest_session_storage/guest_session_storage.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
-import '../services/onboarding_flow_storage/hive_onboarding_flow_storage.dart';
-import '../services/onboarding_flow_storage/onboarding_flow_storage.dart';
 import '../services/token_storage/secure_token_storage.dart';
 import '../services/token_storage/token_storage.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -63,9 +65,9 @@ Future<void> setupDI() async {
   di.registerLazySingleton<TokenStorage>(
     () => SecureTokenStorage(const FlutterSecureStorage()),
   );
-  di.registerLazySingleton<OnboardingFlowStorage>(
-    () => HiveOnboardingFlowStorage(onboardingFlowBox),
-    dispose: (_) => onboardingFlowBox.close(),
+  di.registerLazySingleton<FitnessStartProgressStorage>(
+    () => HiveFitnessStartProgressStorage(fitnessStartProgressBox),
+    dispose: (_) => fitnessStartProgressBox.close(),
   );
   di.registerLazySingleton<CookieJar>(() => cookieJar);
   di.registerLazySingleton<GuestSessionStorage>(
@@ -101,7 +103,8 @@ Future<void> setupDI() async {
     () => AuthSessionCubit(
       di<AuthRepository>(),
       di<TokenStorage>(),
-      di<OnboardingFlowStorage>(),
+      di<FitnessStartProgressStorage>(),
+      di<GuestSessionStorage>(),
       di<AppLogger>(),
     ),
     dispose: (cubit) => cubit.close(),

@@ -29,21 +29,40 @@ String _fitnessStartPath(FitnessStartStage stage) => switch (stage) {
   FitnessStartStage.tests => AppRoutePaths.fitnessStartTestsPath,
 };
 
+bool _isGuestCompletedAllowedPath(String path) =>
+    path == AppRoutePaths.signUpPath ||
+    path == AppRoutePaths.signInPath ||
+    path == AppRoutePaths.verifyEmailPath ||
+    path == AppRoutePaths.legalDocumentPath;
+
 /// Determines the redirect path based on the current [authState] and [state].
 String? _redirect(AuthSessionState authState, GoRouterState state) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
     initial: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
     checking: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
     restoreFailed: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
+      return AppRoutePaths.signInPath;
+    },
+    guestResumeAvailable: (_) {
+      if (state.matchedLocation == AppRoutePaths.signInPath) return null;
       return AppRoutePaths.signInPath;
     },
     guest: (stage) {
@@ -51,16 +70,18 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       if (state.matchedLocation == targetPath) return null;
       return targetPath;
     },
-    authenticatedOnboarding: (_, stage) {
-      final targetPath = _fitnessStartPath(stage);
-      if (state.matchedLocation == targetPath) return null;
-      return targetPath;
+    guestCompletedOnboarding: () {
+      if (_isGuestCompletedAllowedPath(state.matchedLocation)) return null;
+      return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
       if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
       return null;
     },
     unauthenticated: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },

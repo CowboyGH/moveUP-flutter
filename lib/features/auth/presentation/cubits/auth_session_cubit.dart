@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../core/failures/feature/auth/auth_failure.dart';
+import '../../../../core/models/fitness_start_guest_progress.dart';
 import '../../../../core/models/fitness_start_stage.dart';
 import '../../../../core/result/result.dart';
-import '../../../../core/services/onboarding_flow_storage/onboarding_flow_storage.dart';
+import '../../../../core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
+import '../../../../core/services/guest_session_storage/guest_session_storage.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/user.dart';
@@ -23,8 +25,11 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   /// Secure storage for access token management.
   final TokenStorage _tokenStorage;
 
-  /// Storage for the authenticated onboarding flow state.
-  final OnboardingFlowStorage _onboardingFlowStorage;
+  /// Storage for persisted guest Fitness Start progress.
+  final FitnessStartProgressStorage _fitnessStartProgressStorage;
+
+  /// Storage for persisted guest backend session cookies.
+  final GuestSessionStorage _guestSessionStorage;
 
   /// Logger for non-fatal session cleanup errors.
   final AppLogger _logger;
@@ -33,7 +38,8 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   AuthSessionCubit(
     this._repository,
     this._tokenStorage,
-    this._onboardingFlowStorage,
+    this._fitnessStartProgressStorage,
+    this._guestSessionStorage,
     this._logger,
   ) : super(const AuthSessionState.initial());
 
@@ -50,9 +56,21 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     try {
       final accessToken = await _tokenStorage.getAccessToken();
       if (accessToken == null || accessToken.isEmpty) {
-        await _clearAuthenticatedOnboardingStateSafely();
+        final progress = await _getGuestProgressSafely();
+        final completedProgress = progress?.maybeWhen(
+          completed: FitnessStartGuestProgress.completed,
+          orElse: () => null,
+        );
+        if (progress != null && completedProgress == null) {
+          await _clearGuestProgressSafely();
+          await _clearGuestSessionSafely();
+        }
         if (!isClosed) {
-          emit(const AuthSessionState.unauthenticated());
+          emit(
+            completedProgress == null
+                ? const AuthSessionState.unauthenticated()
+                : AuthSessionState.guestResumeAvailable(completedProgress),
+          );
         }
         return;
       }
@@ -62,25 +80,15 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
       switch (result) {
         case Success(data: final user):
-          final hasPendingOnboarding = await _hasPendingOnboardingSafely();
+          await _clearGuestProgressSafely();
+          await _clearGuestSessionSafely();
           if (isClosed) return;
-          if (!hasPendingOnboarding) {
-            emit(AuthSessionState.authenticated(user));
-            return;
-          }
-
-          final savedStage = await _getPendingOnboardingStageSafely();
-          if (isClosed) return;
-          emit(
-            AuthSessionState.authenticatedOnboarding(
-              user,
-              savedStage ?? FitnessStartStage.quiz,
-            ),
-          );
+          emit(AuthSessionState.authenticated(user));
         case Failure(:final error):
           if (error is UnauthorizedAuthFailure) {
             await _clearTokenSafely();
-            await _clearAuthenticatedOnboardingStateSafely();
+            await _clearGuestProgressSafely();
+            await _clearGuestSessionSafely();
             if (isClosed) return;
             emit(const AuthSessionState.unauthenticated());
             return;
@@ -96,37 +104,44 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     }
   }
 
-  Future<bool> _hasPendingOnboardingSafely() async {
+  Future<FitnessStartGuestProgress?> _getGuestProgressSafely() async {
     try {
-      return await _onboardingFlowStorage.hasPendingOnboarding();
+      return await _fitnessStartProgressStorage.getProgress();
     } catch (e, s) {
-      _logger.e('Failed to read pending onboarding state.', e, s);
-      return false;
-    }
-  }
-
-  Future<FitnessStartStage?> _getPendingOnboardingStageSafely() async {
-    try {
-      return await _onboardingFlowStorage.getPendingOnboardingStage();
-    } catch (e, s) {
-      _logger.e('Failed to read onboarding stage.', e, s);
+      _logger.e('Failed to read guest Fitness Start progress.', e, s);
       return null;
     }
   }
 
-  Future<void> _savePendingOnboardingStageSafely(FitnessStartStage stage) async {
+  Future<void> _saveGuestInProgressSafely(FitnessStartStage stage) async {
     try {
-      await _onboardingFlowStorage.savePendingOnboardingStage(stage);
+      await _fitnessStartProgressStorage.saveInProgress(stage);
     } catch (e, s) {
-      _logger.e('Failed to persist onboarding stage.', e, s);
+      _logger.e('Failed to persist guest Fitness Start stage.', e, s);
     }
   }
 
-  Future<void> _clearAuthenticatedOnboardingStateSafely() async {
+  Future<void> _saveGuestCompletedSafely() async {
     try {
-      await _onboardingFlowStorage.clearPendingOnboarding();
+      await _fitnessStartProgressStorage.saveCompleted();
     } catch (e, s) {
-      _logger.e('Failed to clear authenticated onboarding state.', e, s);
+      _logger.e('Failed to persist completed guest Fitness Start progress.', e, s);
+    }
+  }
+
+  Future<void> _clearGuestProgressSafely() async {
+    try {
+      await _fitnessStartProgressStorage.clear();
+    } catch (e, s) {
+      _logger.e('Failed to clear guest Fitness Start progress.', e, s);
+    }
+  }
+
+  Future<void> _clearGuestSessionSafely() async {
+    try {
+      await _guestSessionStorage.clear();
+    } catch (e, s) {
+      _logger.e('Failed to clear guest session cookies.', e, s);
     }
   }
 
@@ -138,60 +153,82 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     }
   }
 
-  /// Sets session mode to guest and starts onboarding from the quiz stage.
-  void continueAsGuest() {
-    emit(const AuthSessionState.guest(FitnessStartStage.quiz));
-  }
-
-  /// Starts authenticated onboarding after successful email verification.
-  Future<void> startAuthenticatedOnboarding(User user) async {
-    await _savePendingOnboardingStageSafely(FitnessStartStage.quiz);
+  /// Starts guest Fitness Start from the first quiz step.
+  Future<void> startGuestFitnessStart() async {
+    await _saveGuestInProgressSafely(FitnessStartStage.quiz);
     if (!isClosed) {
-      emit(AuthSessionState.authenticatedOnboarding(user, FitnessStartStage.quiz));
+      emit(const AuthSessionState.guest(FitnessStartStage.quiz));
     }
   }
 
-  /// Updates the current onboarding stage.
-  Future<void> updateOnboardingStage(FitnessStartStage stage) async {
-    final isGuest = state.maybeWhen(guest: (_) => true, orElse: () => false);
-    if (isGuest) {
-      if (!isClosed) {
-        emit(AuthSessionState.guest(stage));
-      }
-      return;
-    }
+  /// Continues with saved completed guest data after user confirmation on sign-in.
+  void resumeGuestProgress() {
+    final progress = state.whenOrNull(guestResumeAvailable: (progress) => progress);
+    if (progress == null) return;
 
-    final user = state.whenOrNull(
-      authenticatedOnboarding: (user, _) => user,
+    progress.maybeWhen(
+      completed: () {
+        if (!isClosed) {
+          emit(const AuthSessionState.guestCompletedOnboarding());
+        }
+      },
+      orElse: () {},
     );
-    if (user == null) return;
+  }
 
-    await _savePendingOnboardingStageSafely(stage);
+  /// Clears saved guest progress and restarts Fitness Start from the quiz stage.
+  Future<void> restartGuestProgress() async {
+    await _clearGuestProgressSafely();
+    await _clearGuestSessionSafely();
+    await startGuestFitnessStart();
+  }
+
+  /// Updates the current guest Fitness Start stage.
+  Future<void> updateGuestFitnessStartStage(FitnessStartStage stage) async {
+    final isGuest = state.maybeWhen(guest: (_) => true, orElse: () => false);
+    if (!isGuest) return;
+
+    await _saveGuestInProgressSafely(stage);
     if (!isClosed) {
-      emit(AuthSessionState.authenticatedOnboarding(user, stage));
+      emit(AuthSessionState.guest(stage));
+    }
+  }
+
+  /// Marks guest Fitness Start as completed and redirects user to registration.
+  Future<void> completeGuestFitnessStart() async {
+    await _saveGuestCompletedSafely();
+    if (!isClosed) {
+      emit(const AuthSessionState.guestCompletedOnboarding());
     }
   }
 
   /// Cancels the current guest onboarding flow.
-  void cancelGuestFlow() {
-    state.whenOrNull(
-      guest: (_) {
-        if (!isClosed) {
-          emit(const AuthSessionState.unauthenticated());
-        }
-      },
+  Future<void> cancelGuestFlow() async {
+    final canCancel = state.maybeWhen(
+      guest: (_) => true,
+      guestCompletedOnboarding: () => true,
+      orElse: () => false,
     );
+    if (!canCancel) return;
+
+    await _clearGuestProgressSafely();
+    await _clearGuestSessionSafely();
+    if (!isClosed) {
+      emit(const AuthSessionState.unauthenticated());
+    }
   }
 
   /// Sets session mode to authenticated after a successful sign-in.
   void onSignInSuccess(User user) {
-    unawaited(_clearAuthenticatedOnboardingStateSafely());
+    unawaited(_clearGuestProgressSafely());
+    unawaited(_clearGuestSessionSafely());
     emit(AuthSessionState.authenticated(user));
   }
 
   /// Marks the current session as unauthenticated.
   void clearSession() {
-    unawaited(_clearAuthenticatedOnboardingStateSafely());
+    unawaited(_clearGuestProgressSafely());
+    unawaited(_clearGuestSessionSafely());
     if (!isClosed) {
       emit(const AuthSessionState.unauthenticated());
     }
