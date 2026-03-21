@@ -158,8 +158,18 @@ abstract final class AppStrings {
   // Tests catalog.
   static const testsMinutesPattern = 'минут';
   static const testsLoadFailed = 'Не удалось загрузить тесты';
+  static const testsStartFailed = 'Не удалось начать тест. Попробуйте снова';
   static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
-  static const testsUnknown = 'Не удалось загрузить тесты. Попробуйте снова';
+  static const testsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const testsAttemptTitle = 'Быстрый тест';
+  static const testsAttemptDescription = 'Оцените выполнение упражнения по шкале от 1 до 4';
+  static const testsAttemptPulseTitle = 'Введите пульс после завершения теста';
+  static const testsAttemptPulseLabel = 'Пульс';
+  static const testsAttemptPulseHint = '150';
+  static const testsAttemptPulseRequired = 'Введите пульс';
+  static const testsAttemptPulseInvalid = 'Введите корректный пульс';
+  static const testsAttemptPulseRange = 'Пульс должен быть от 30 до 220';
+  static const testsAttemptCompleteButton = 'Завершить тест';
 
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';

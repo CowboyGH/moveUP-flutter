@@ -13,9 +13,13 @@ class TestingCatalogCard extends StatelessWidget {
   /// Catalog item displayed inside the card.
   final TestingCatalogItem item;
 
+  /// Callback fired when the card is tapped.
+  final VoidCallback? onPressed;
+
   /// Creates an instance of [TestingCatalogCard].
   const TestingCatalogCard({
     required this.item,
+    this.onPressed,
     super.key,
   });
 
@@ -23,58 +27,65 @@ class TestingCatalogCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: NetworkImageWidget(
-                  imageUrl: item.imageUrl,
-                  height: constraints.maxWidth,
+    return Semantics(
+      button: onPressed != null,
+      child: GestureDetector(
+        onTap: onPressed,
+        behavior: HitTestBehavior.opaque,
+        child: AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: NetworkImageWidget(
+                      imageUrl: item.imageUrl,
+                      height: constraints.maxWidth,
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              Text(
+                item.title,
+                textAlign: TextAlign.end,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyMedium.copyWith(
+                  fontSize: 16,
+                  height: 24 / 16,
+                  fontWeight: FontWeight.w500,
+                  color: colorTheme.onSurface,
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '(${item.durationMinutes} ${AppStrings.testsMinutesPattern})',
+                textAlign: TextAlign.end,
+                style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+              ),
+              const SizedBox(height: 20),
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: 6,
+                runSpacing: 8,
+                children: item.categories
+                    .map((category) => TestingCategoryChip(label: category.name))
+                    .toList(growable: false),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                item.description,
+                textAlign: TextAlign.end,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.body.copyWith(color: colorTheme.hint),
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
-          Text(
-            item.title,
-            textAlign: TextAlign.end,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme.bodyMedium.copyWith(
-              fontSize: 16,
-              height: 24 / 16,
-              fontWeight: FontWeight.w500,
-              color: colorTheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '(${item.durationMinutes} ${AppStrings.testsMinutesPattern})',
-            textAlign: TextAlign.end,
-            style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
-          ),
-          const SizedBox(height: 20),
-          Wrap(
-            alignment: WrapAlignment.end,
-            spacing: 6,
-            runSpacing: 8,
-            children: item.categories
-                .map((category) => TestingCategoryChip(label: category.name))
-                .toList(growable: false),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            item.description,
-            textAlign: TextAlign.end,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme.body.copyWith(color: colorTheme.hint),
-          ),
-        ],
+        ),
       ),
     );
   }

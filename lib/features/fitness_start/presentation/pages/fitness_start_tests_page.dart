@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
@@ -66,7 +68,12 @@ class FitnessStartTestsPage extends StatelessWidget {
                       inProgress: _buildLoadingState,
                       loaded: (items) {
                         if (items.isEmpty) return _buildRetryState(context);
-                        return TestingCatalogCarousel(items: items);
+                        return TestingCatalogCarousel(
+                          items: items,
+                          onTestingSelected: (item) => context.push(
+                            AppRoutePaths.fitnessStartTestAttemptDetailsPath(item.id),
+                          ),
+                        );
                       },
                       failed: (_) => _buildRetryState(context),
                     );
