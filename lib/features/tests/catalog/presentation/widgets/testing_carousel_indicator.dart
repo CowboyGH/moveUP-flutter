@@ -28,7 +28,7 @@ class TestingCarouselIndicator extends StatelessWidget {
           duration: const Duration(milliseconds: 180),
           width: 10,
           height: 10,
-          margin: EdgeInsets.only(right: index == itemCount - 1 ? 0 : 10),
+          margin: EdgeInsetsDirectional.only(end: index == itemCount - 1 ? 0 : 10),
           decoration: BoxDecoration(
             color: isSelected ? colorTheme.primary : colorTheme.disabled.withValues(alpha: 0.3),
             shape: BoxShape.circle,

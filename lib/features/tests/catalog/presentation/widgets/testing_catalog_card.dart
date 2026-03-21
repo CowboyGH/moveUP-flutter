@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/constants/app_strings.dart';
 import '../../../../../uikit/cards/app_card.dart';
 import '../../../../../uikit/images/network_image_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
@@ -52,7 +53,7 @@ class TestingCatalogCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '(${item.durationMinutes} минут)',
+            '(${item.durationMinutes} ${AppStrings.testsMinutesPattern})',
             textAlign: TextAlign.end,
             style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
           ),
@@ -68,7 +69,7 @@ class TestingCatalogCard extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             item.description,
-            textAlign: TextAlign.right,
+            textAlign: TextAlign.end,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
             style: textTheme.body.copyWith(color: colorTheme.hint),
