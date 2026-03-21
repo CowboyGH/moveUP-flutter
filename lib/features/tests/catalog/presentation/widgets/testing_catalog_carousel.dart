@@ -24,7 +24,20 @@ class _TestingCatalogCarouselState extends State<TestingCatalogCarousel> {
   int _currentPage = 0;
 
   @override
+  void didUpdateWidget(covariant TestingCatalogCarousel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.items.isEmpty) {
+      _currentPage = 0;
+      return;
+    }
+    if (_currentPage >= widget.items.length) {
+      _currentPage = widget.items.length - 1;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (widget.items.isEmpty) return const SizedBox.shrink();
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(

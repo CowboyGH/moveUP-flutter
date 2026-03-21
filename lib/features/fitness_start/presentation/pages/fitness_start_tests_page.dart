@@ -65,7 +65,7 @@ class FitnessStartTestsPage extends StatelessWidget {
                       initial: SizedBox.shrink,
                       inProgress: _buildLoadingState,
                       loaded: (items) {
-                        if (items.isEmpty) _buildRetryState(context);
+                        if (items.isEmpty) return _buildRetryState(context);
                         return TestingCatalogCarousel(items: items);
                       },
                       failed: (_) => _buildRetryState(context),
