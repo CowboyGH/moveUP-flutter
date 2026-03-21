@@ -41,11 +41,7 @@ class OptionButton extends StatelessWidget {
               fixedSize: const Size.fromHeight(53),
               padding: const EdgeInsets.all(16),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              textStyle: textTheme.body.copyWith(
-                fontSize: 14,
-                height: 21 / 14,
-                fontWeight: FontWeight.w400,
-              ),
+              textStyle: textTheme.bodyMedium,
               foregroundColor: colorTheme.onSurface,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),

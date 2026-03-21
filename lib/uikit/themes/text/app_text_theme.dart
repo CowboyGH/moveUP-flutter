@@ -13,6 +13,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
   final TextStyle display;
   final TextStyle title;
   final TextStyle body;
+  final TextStyle bodyMedium;
   final TextStyle bodySmall;
   final TextStyle label;
   final TextStyle button;
@@ -21,6 +22,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     required this.display,
     required this.title,
     required this.body,
+    required this.bodyMedium,
     required this.bodySmall,
     required this.label,
     required this.button,
@@ -30,6 +32,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     : display = AppTextStyle.display,
       title = AppTextStyle.title,
       body = AppTextStyle.body,
+      bodyMedium = AppTextStyle.bodyMedium,
       bodySmall = AppTextStyle.bodySmall,
       label = AppTextStyle.label,
       button = AppTextStyle.button;
@@ -39,6 +42,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     TextStyle? display,
     TextStyle? title,
     TextStyle? body,
+    TextStyle? bodyMedium,
     TextStyle? bodySmall,
     TextStyle? label,
     TextStyle? button,
@@ -47,6 +51,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
       display: display ?? this.display,
       title: title ?? this.title,
       body: body ?? this.body,
+      bodyMedium: bodyMedium ?? this.bodyMedium,
       bodySmall: bodySmall ?? this.bodySmall,
       label: label ?? this.label,
       button: button ?? this.button,
@@ -62,6 +67,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
       display: TextStyle.lerp(display, other.display, t)!,
       title: TextStyle.lerp(title, other.title, t)!,
       body: TextStyle.lerp(body, other.body, t)!,
+      bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t)!,
       bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t)!,
       label: TextStyle.lerp(label, other.label, t)!,
       button: TextStyle.lerp(button, other.button, t)!,

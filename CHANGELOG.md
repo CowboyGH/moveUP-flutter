@@ -14,9 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
 - Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
+- Shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
 - Shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
 - Shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
-- `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` placeholder handoff screen, and sign-in resume dialog for the onboarding-first auth entry flow.
+- `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
 
 ### Changed
 
@@ -26,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FitnessStartStage` was removed from auth/session routing, and `quiz -> tests` now uses direct page navigation instead of session-driven stage switching.
 - Verify-email success now completes authentication directly instead of entering a staged authenticated onboarding flow.
 - Dio clients now attach a shared persistent `CookieManager` so guest onboarding progress and backend session can survive app restarts.
-- `/fitness-start/tests` now temporarily acts as the completion boundary that hands guest onboarding off to registration, and its back action exits guest flow to `sign-in`.
+- `/fitness-start/tests` now shows the onboarding tests catalog carousel instead of the previous placeholder CTA, remains part of the `fitness_start` shell flow, and its back action exits guest flow to `sign-in`.
 - `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.

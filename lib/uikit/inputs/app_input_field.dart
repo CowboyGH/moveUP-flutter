@@ -102,21 +102,11 @@ class _AppInputFieldState extends State<AppInputField> {
             inputFormatters: widget.inputFormatters,
             textInputAction: widget.textInputAction,
             textAlign: widget.textAlign,
-            style: textTheme.body.copyWith(
-              fontSize: 14,
-              height: 21 / 14,
-              fontWeight: FontWeight.w400,
-              color: colorTheme.onSurface,
-            ),
+            style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
             cursorColor: colorTheme.primary,
             decoration: InputDecoration(
               hintText: _focusNode.hasFocus ? null : widget.hintText,
-              hintStyle: textTheme.body.copyWith(
-                fontSize: 14,
-                height: 21 / 14,
-                fontWeight: FontWeight.w400,
-                color: colorTheme.onSurface,
-              ),
+              hintStyle: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
               isDense: true,
               contentPadding: const EdgeInsets.all(16),
               border: baseBorder,

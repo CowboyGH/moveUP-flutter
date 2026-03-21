@@ -26,21 +26,24 @@ class NetworkImageWidget extends StatelessWidget {
         imageUrl: imageUrl,
         fit: BoxFit.cover,
         placeholder: (_, _) => const _ImagePlaceholder(),
-        errorWidget: (_, _, _) => const _ImagePlaceholder(),
+        errorWidget: (_, _, _) => const _ImagePlaceholder(
+          icon: Icons.image_not_supported_outlined,
+        ),
       ),
     );
   }
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  const _ImagePlaceholder();
+  final IconData icon;
+  const _ImagePlaceholder({this.icon = Icons.image_outlined});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       child: Center(
         child: Icon(
-          Icons.image_outlined,
+          icon,
           size: 64,
           color: AppColorTheme.of(context).disabled,
         ),

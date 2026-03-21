@@ -52,4 +52,7 @@ abstract class ApiPaths {
 
   /// The endpoint for saving user fitness level.
   static const String userParameterLevel = '${apiPrefix}user-parameters/level';
+
+  /// The endpoint for all active testings.
+  static const String testings = '${apiPrefix}testings';
 }

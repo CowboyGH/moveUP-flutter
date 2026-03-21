@@ -82,11 +82,7 @@ class AppActionDialog extends StatelessWidget {
               Text(
                 description!,
                 textAlign: TextAlign.center,
-                style: textTheme.body.copyWith(
-                  fontSize: 14,
-                  height: 21 / 14,
-                  color: colorTheme.onSurface,
-                ),
+                style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
               ),
               const SizedBox(height: 36),
             ],
