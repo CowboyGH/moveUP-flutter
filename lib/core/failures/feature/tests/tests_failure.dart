@@ -21,6 +21,15 @@ final class TestsRequestFailure extends TestsFailure {
   });
 }
 
+/// Tests validation failed because the provided input is invalid.
+final class TestsValidationFailure extends TestsFailure {
+  /// Creates an instance of [TestsValidationFailure].
+  const TestsValidationFailure({
+    super.parentException,
+    super.stackTrace,
+  }) : super(AppStrings.testsValidationFailed);
+}
+
 /// Unknown tests failure.
 final class UnknownTestsFailure extends TestsFailure {
   /// Creates an instance of [UnknownTestsFailure].

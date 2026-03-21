@@ -5,6 +5,13 @@ import '../../../../../core/failures/network/network_failure.dart';
 extension TestsFailureMapper on NetworkFailure {
   /// Maps a [NetworkFailure] into a tests-specific failure.
   TestsFailure toTestsFailure() {
+    if (code == 'validation_failed') {
+      return TestsValidationFailure(
+        parentException: parentException,
+        stackTrace: stackTrace,
+      );
+    }
+
     return switch (this) {
       NoNetworkFailure() ||
       ConnectionTimeoutFailure() ||
