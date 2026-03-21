@@ -16,7 +16,7 @@ import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
-import '../../features/tests/catalog/data/remote/tests_api_client.dart';
+import '../../features/tests/data/remote/tests_api_client.dart';
 import '../../features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
 import '../../features/tests/catalog/domain/repositories/tests_catalog_repository.dart';
 import '../network/api_paths.dart';
