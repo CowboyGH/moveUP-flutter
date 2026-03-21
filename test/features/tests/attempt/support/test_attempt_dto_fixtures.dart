@@ -98,7 +98,6 @@ TestAttemptResult createTestAttemptNextExerciseResult() =>
 /// Test fixture for completed-exercises result entity.
 TestAttemptResult createTestAttemptAwaitingPulseResult() =>
     createSaveGuestTestResultResponseDto(
-      nextExercise: null,
       allExercisesCompleted: true,
       message: 'Все упражнения выполнены. Введите пульс для завершения теста.',
     ).data.toEntity();
