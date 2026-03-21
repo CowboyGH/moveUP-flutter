@@ -151,6 +151,14 @@ abstract final class AppStrings {
   static const fitnessStartRegisterAction = 'Использовать введенную информацию';
   static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const fitnessStartTestsTitle = 'Персональная программа';
+  static const fitnessStartTestsDescription =
+      'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
+
+  // Tests catalog.
+  static const testsLoadFailed = 'Не удалось загрузить тесты';
+  static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const testsUnknown = 'Не удалось загрузить тесты. Попробуйте снова';
 
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';

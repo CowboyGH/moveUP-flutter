@@ -146,7 +146,8 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: FitnessStartFlowAppBar(
-            progress: (state.currentStep + 1) / 3,
+            title: AppStrings.fitnessStartTitle,
+            progress: (state.currentStep + 1) / 10,
             showBackButton: isGuestOnboarding,
             onBackPressed: isGuestOnboarding ? () => unawaited(_handleGuestBack(state)) : null,
           ),
@@ -229,11 +230,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           Text(
             _titleForStep(state.currentStep),
             textAlign: TextAlign.center,
-            style: AppTextTheme.of(context).body.copyWith(
-              fontSize: 14,
-              height: 21 / 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: AppTextTheme.of(context).bodyMedium,
           ),
           const SizedBox(height: 24),
           _buildStepContent(state, references),
@@ -268,11 +265,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
         Text(
           AppStrings.fitnessStartReferencesLoadFailed,
           textAlign: TextAlign.center,
-          style: AppTextTheme.of(context).body.copyWith(
-            fontSize: 14,
-            height: 21 / 14,
-            fontWeight: FontWeight.w400,
-          ),
+          style: AppTextTheme.of(context).bodyMedium,
         ),
         const SizedBox(height: 24),
         MainButton(
