@@ -18,6 +18,7 @@ class FitnessStartTestsPage extends StatelessWidget {
     final authSessionCubit = context.read<AuthSessionCubit>();
     return Scaffold(
       appBar: FitnessStartFlowAppBar(
+        title: AppStrings.fitnessStartTestsTitle,
         progress: 1,
         showBackButton: true,
         onBackPressed: () => unawaited(authSessionCubit.cancelGuestFlow()),

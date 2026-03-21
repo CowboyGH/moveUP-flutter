@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_strings.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
@@ -9,6 +8,9 @@ import '../../../../uikit/themes/text/app_text_theme.dart';
 class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Current progress in the flow, from `0` to `1`.
   final double progress;
+
+  /// Title displayed in the app bar.
+  final String title;
 
   /// Whether the back button should be shown.
   final bool showBackButton;
@@ -19,6 +21,7 @@ class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWid
   /// Creates an instance of [FitnessStartFlowAppBar].
   const FitnessStartFlowAppBar({
     required this.progress,
+    required this.title,
     this.showBackButton = false,
     this.onBackPressed,
     super.key,
@@ -38,7 +41,7 @@ class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWid
       backgroundColor: colorTheme.surface,
       surfaceTintColor: Colors.transparent,
       title: Text(
-        AppStrings.fitnessStartTitle,
+        title,
         style: textTheme.title.copyWith(
           fontSize: 20,
           height: 24 / 20,
