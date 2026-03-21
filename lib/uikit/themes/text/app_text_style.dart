@@ -26,6 +26,13 @@ abstract class AppTextStyle {
     fontWeight: FontWeight.w400,
   );
 
+  static const bodyMedium = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 14,
+    height: 21 / 14,
+    fontWeight: FontWeight.w400,
+  );
+
   static const bodySmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 10,

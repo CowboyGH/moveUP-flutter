@@ -83,11 +83,7 @@ class AppFeedbackDialog extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: textTheme.body.copyWith(
-                fontSize: 14,
-                height: 21 / 14,
-                color: colorTheme.hint,
-              ),
+              style: textTheme.bodyMedium.copyWith(color: colorTheme.hint),
             ),
           ],
         ),
