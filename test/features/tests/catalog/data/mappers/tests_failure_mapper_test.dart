@@ -26,11 +26,11 @@ void main() {
       expect(failure.message, const UnknownNetworkFailure().message);
     });
 
-    test('maps ValidationFailure to UnknownTestsFailure', () {
+    test('maps ValidationFailure to TestsValidationFailure', () {
       final failure = const ValidationFailure().toTestsFailure();
 
-      expect(failure, isA<UnknownTestsFailure>());
-      expect(failure.message, const UnknownTestsFailure().message);
+      expect(failure, isA<TestsValidationFailure>());
+      expect(failure.message, const TestsValidationFailure().message);
     });
   });
 }
