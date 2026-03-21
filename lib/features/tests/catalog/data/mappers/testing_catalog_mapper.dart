@@ -11,7 +11,7 @@ extension TestingCatalogItemMapper on TestingCatalogItemDto {
     id: id,
     title: title,
     description: description,
-    durationMinutes: int.parse(durationMinutes),
+    durationMinutes: int.tryParse(durationMinutes.trim()) ?? 0,
     imageUrl: _normalizeImageUrl(image),
     categories: categories.map((category) => category.toEntity()).toList(growable: false),
     exercisesCount: exercisesCount,
@@ -28,11 +28,12 @@ extension TestingCategoryMapper on TestingCategoryDto {
 }
 
 String _normalizeImageUrl(String rawImage) {
-  if (rawImage.trim().isEmpty) return rawImage;
-  if (rawImage.startsWith('http://') || rawImage.startsWith('https://')) {
-    return rawImage;
+  final image = rawImage.trim();
+  if (image.isEmpty) return '';
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    return image;
   }
-  final normalizedPath = rawImage.replaceFirst(RegExp(r'^/+'), '');
+  final normalizedPath = image.replaceFirst(RegExp(r'^/+'), '');
   final storagePath = normalizedPath.startsWith('storage/')
       ? normalizedPath
       : 'storage/$normalizedPath';
