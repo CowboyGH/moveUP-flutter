@@ -148,8 +148,7 @@ void main() {
 
     group('GuestTestAttemptRepositoryImpl.completeTest', () {
       test('returns success(void) when api succeeds', () async {
-        final responseDto = createCompleteGuestTestResponseDto();
-        when(apiClient.completeGuestTest(any, any)).thenAnswer((_) async => responseDto);
+        when(apiClient.completeGuestTest(any, any)).thenAnswer((_) async {});
 
         final result = await repository.completeTest(
           attemptId: 'guest_attempt_1',

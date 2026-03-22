@@ -1,5 +1,3 @@
-import 'package:moveup_flutter/features/tests/attempt/data/dto/complete_guest_test_data_dto.dart';
-import 'package:moveup_flutter/features/tests/attempt/data/dto/complete_guest_test_response_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/save_guest_test_result_data_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/save_guest_test_result_response_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/start_guest_test_data_dto.dart';
@@ -68,19 +66,6 @@ SaveGuestTestResultResponseDto createSaveGuestTestResultResponseDto({
     nextExercise: nextExercise,
     allExercisesCompleted: allExercisesCompleted,
     message: message,
-  ),
-);
-
-/// Test fixture for complete response DTO.
-CompleteGuestTestResponseDto createCompleteGuestTestResponseDto({
-  String attemptId = 'guest_attempt_1',
-  String completedAt = '2026-03-13 14:30:11',
-  int pulse = 151,
-}) => CompleteGuestTestResponseDto(
-  data: CompleteGuestTestDataDto(
-    attemptId: attemptId,
-    completedAt: completedAt,
-    pulse: pulse,
   ),
 );
 

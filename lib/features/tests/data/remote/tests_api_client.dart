@@ -3,7 +3,6 @@ import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/network/api_paths.dart';
 import '../../attempt/data/dto/complete_guest_test_request_dto.dart';
-import '../../attempt/data/dto/complete_guest_test_response_dto.dart';
 import '../../attempt/data/dto/save_guest_test_result_request_dto.dart';
 import '../../attempt/data/dto/save_guest_test_result_response_dto.dart';
 import '../../attempt/data/dto/start_guest_test_response_dto.dart';
@@ -34,7 +33,7 @@ abstract class TestsApiClient {
 
   /// Completes a guest test attempt with pulse value.
   @POST('${ApiPaths.guestTestAttempts}/{attempt}/complete')
-  Future<CompleteGuestTestResponseDto> completeGuestTest(
+  Future<void> completeGuestTest(
     @Path('attempt') String attemptId,
     @Body() CompleteGuestTestRequestDto request,
   );
