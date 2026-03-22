@@ -23,18 +23,10 @@ TestingExerciseDto createTestingExerciseDto({
 
 /// Test fixture for attempt testing DTO.
 TestAttemptTestingDto createTestAttemptTestingDto({
-  int id = 8,
   String title = 'Расширенная диагностика',
-  String description = 'Описание теста',
-  String durationMinutes = '31',
-  String image = 'tests/balance.jpg',
   int totalExercises = 4,
 }) => TestAttemptTestingDto(
-  id: id,
   title: title,
-  description: description,
-  durationMinutes: durationMinutes,
-  image: image,
   totalExercises: totalExercises,
 );
 
