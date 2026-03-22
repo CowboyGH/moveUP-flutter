@@ -31,7 +31,6 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
         attemptId: null,
         testing: null,
         currentExercise: null,
-        currentExerciseOrderNumber: 0,
         failure: null,
         isAwaitingPulse: false,
         isCompleted: false,
@@ -49,7 +48,6 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
             attemptId: data.attemptId,
             testing: data.testing,
             currentExercise: data.currentExercise,
-            currentExerciseOrderNumber: data.currentExercise.orderNumber,
             failure: null,
             isAwaitingPulse: false,
             isCompleted: false,
@@ -88,13 +86,11 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
     switch (result) {
       case Success(:final data):
         final nextExercise = data.nextExercise;
-        final testing = state.testing;
         final exerciseForState = data.isAwaitingPulse ? currentExercise : nextExercise;
         emit(
           state.copyWith(
             isSubmittingResult: false,
             currentExercise: exerciseForState,
-            currentExerciseOrderNumber: nextExercise?.orderNumber ?? testing?.totalExercises ?? 0,
             failure: null,
             isAwaitingPulse: data.isAwaitingPulse,
           ),

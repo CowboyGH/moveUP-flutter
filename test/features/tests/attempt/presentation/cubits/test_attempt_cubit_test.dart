@@ -49,7 +49,6 @@ void main() {
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
         ),
       ],
       verify: (_) => verify(repository.startTest(8)).called(1),
@@ -82,7 +81,6 @@ void main() {
         attemptId: startedAttempt.attemptId,
         testing: startedAttempt.testing,
         currentExercise: startedAttempt.currentExercise,
-        currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
       ),
       act: (cubit) => cubit.submitResult(2),
       expect: () => [
@@ -90,14 +88,12 @@ void main() {
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
           isSubmittingResult: true,
         ),
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: nextExerciseResult.nextExercise,
-          currentExerciseOrderNumber: nextExerciseResult.nextExercise!.orderNumber,
         ),
       ],
       verify: (_) => verify(
@@ -123,7 +119,6 @@ void main() {
         attemptId: startedAttempt.attemptId,
         testing: startedAttempt.testing,
         currentExercise: startedAttempt.currentExercise,
-        currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
       ),
       act: (cubit) => cubit.submitResult(4),
       expect: () => [
@@ -131,14 +126,12 @@ void main() {
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
           isSubmittingResult: true,
         ),
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isAwaitingPulse: true,
         ),
       ],
@@ -165,7 +158,6 @@ void main() {
         attemptId: startedAttempt.attemptId,
         testing: startedAttempt.testing,
         currentExercise: startedAttempt.currentExercise,
-        currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
       ),
       act: (cubit) => cubit.submitResult(3),
       expect: () => [
@@ -173,14 +165,12 @@ void main() {
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
           isSubmittingResult: true,
         ),
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
           currentExercise: startedAttempt.currentExercise,
-          currentExerciseOrderNumber: startedAttempt.currentExercise.orderNumber,
           failure: requestFailure,
         ),
       ],
@@ -205,7 +195,6 @@ void main() {
       seed: () => TestAttemptState(
         attemptId: startedAttempt.attemptId,
         testing: startedAttempt.testing,
-        currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
         isAwaitingPulse: true,
       ),
       act: (cubit) => cubit.submitPulse(151),
@@ -213,14 +202,12 @@ void main() {
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
-          currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isAwaitingPulse: true,
           isCompleting: true,
         ),
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
-          currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isCompleted: true,
         ),
       ],
@@ -244,7 +231,6 @@ void main() {
       seed: () => TestAttemptState(
         attemptId: startedAttempt.attemptId,
         testing: startedAttempt.testing,
-        currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
         isAwaitingPulse: true,
       ),
       act: (cubit) => cubit.submitPulse(151),
@@ -252,14 +238,12 @@ void main() {
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
-          currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isAwaitingPulse: true,
           isCompleting: true,
         ),
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
-          currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isAwaitingPulse: true,
           failure: requestFailure,
         ),

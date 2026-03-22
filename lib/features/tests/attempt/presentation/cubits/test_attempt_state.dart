@@ -11,7 +11,6 @@ abstract class TestAttemptState with _$TestAttemptState {
     String? attemptId,
     TestAttemptTesting? testing,
     TestingExercise? currentExercise,
-    @Default(0) int currentExerciseOrderNumber,
     TestsFailure? failure,
     @Default(false) bool isAwaitingPulse,
     @Default(false) bool isCompleted,
