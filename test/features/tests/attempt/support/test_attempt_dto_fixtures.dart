@@ -60,14 +60,12 @@ SaveGuestTestResultResponseDto createSaveGuestTestResultResponseDto({
 TestAttemptStart createTestAttemptStart() => createStartGuestTestResponseDto().data.toEntity();
 
 /// Test fixture for next-exercise result entity.
-TestAttemptResult createTestAttemptNextExerciseResult() =>
-    createSaveGuestTestResultResponseDto(
-      nextExercise: createTestingExerciseDto(id: 17, orderNumber: 2),
-      allExercisesCompleted: false,
-    ).data.toEntity();
+TestAttemptResult createTestAttemptNextExerciseResult() => createSaveGuestTestResultResponseDto(
+  nextExercise: createTestingExerciseDto(id: 17, orderNumber: 2),
+  allExercisesCompleted: false,
+).data.toEntity();
 
 /// Test fixture for completed-exercises result entity.
-TestAttemptResult createTestAttemptAwaitingPulseResult() =>
-    createSaveGuestTestResultResponseDto(
-      allExercisesCompleted: true,
-    ).data.toEntity();
+TestAttemptResult createTestAttemptAwaitingPulseResult() => createSaveGuestTestResultResponseDto(
+  allExercisesCompleted: true,
+).data.toEntity();
