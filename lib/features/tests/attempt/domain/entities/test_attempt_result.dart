@@ -4,15 +4,6 @@ import 'testing_exercise.dart';
 
 /// Payload returned after saving a single exercise result.
 final class TestAttemptResult extends Equatable {
-  /// Whether the backend stored the result.
-  final bool saved;
-
-  /// Exercise identifier for the saved result.
-  final int testingExerciseId;
-
-  /// Stored result value.
-  final int resultValue;
-
   /// Next exercise, if the testing should continue.
   final TestingExercise? nextExercise;
 
@@ -21,13 +12,10 @@ final class TestAttemptResult extends Equatable {
 
   /// Creates an instance of [TestAttemptResult].
   const TestAttemptResult({
-    required this.saved,
-    required this.testingExerciseId,
-    required this.resultValue,
     required this.nextExercise,
     required this.isAwaitingPulse,
   });
 
   @override
-  List<Object?> get props => [saved, testingExerciseId, resultValue, nextExercise, isAwaitingPulse];
+  List<Object?> get props => [nextExercise, isAwaitingPulse];
 }

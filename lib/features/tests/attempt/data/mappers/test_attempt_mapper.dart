@@ -46,9 +46,6 @@ extension StartGuestTestMapper on StartGuestTestDataDto {
 extension SaveGuestTestResultMapper on SaveGuestTestResultDataDto {
   /// Converts DTO to a domain entity.
   TestAttemptResult toEntity() => TestAttemptResult(
-    saved: saved,
-    testingExerciseId: result.testingExerciseId,
-    resultValue: result.resultValue,
     nextExercise: nextExercise?.toEntity(),
     isAwaitingPulse: allExercisesCompleted == true,
   );
