@@ -3,7 +3,6 @@ import 'package:moveup_flutter/features/tests/attempt/data/dto/save_guest_test_r
 import 'package:moveup_flutter/features/tests/attempt/data/dto/start_guest_test_data_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/start_guest_test_response_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/test_attempt_testing_dto.dart';
-import 'package:moveup_flutter/features/tests/attempt/data/dto/test_exercise_result_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/testing_exercise_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/mappers/test_attempt_mapper.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/entities/test_attempt_result.dart';
@@ -55,17 +54,13 @@ StartGuestTestResponseDto createStartGuestTestResponseDto({
 /// Test fixture for save-result response DTO.
 SaveGuestTestResultResponseDto createSaveGuestTestResultResponseDto({
   bool saved = true,
-  TestExerciseResultDto? result,
   TestingExerciseDto? nextExercise,
   bool? allExercisesCompleted,
-  String? message,
 }) => SaveGuestTestResultResponseDto(
   data: SaveGuestTestResultDataDto(
     saved: saved,
-    result: result ?? TestExerciseResultDto(testingExerciseId: 16, resultValue: 2),
     nextExercise: nextExercise,
     allExercisesCompleted: allExercisesCompleted,
-    message: message,
   ),
 );
 
@@ -83,5 +78,4 @@ TestAttemptResult createTestAttemptNextExerciseResult() =>
 TestAttemptResult createTestAttemptAwaitingPulseResult() =>
     createSaveGuestTestResultResponseDto(
       allExercisesCompleted: true,
-      message: 'Все упражнения выполнены. Введите пульс для завершения теста.',
     ).data.toEntity();

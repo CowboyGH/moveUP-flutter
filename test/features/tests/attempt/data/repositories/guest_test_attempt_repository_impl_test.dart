@@ -107,10 +107,7 @@ void main() {
       });
 
       test('returns success(result) when all exercises are completed', () async {
-        final responseDto = createSaveGuestTestResultResponseDto(
-          allExercisesCompleted: true,
-          message: 'Все упражнения выполнены. Введите пульс для завершения теста.',
-        );
+        final responseDto = createSaveGuestTestResultResponseDto(allExercisesCompleted: true);
         final expectedResult = createTestAttemptAwaitingPulseResult();
         when(apiClient.saveGuestTestResult(any, any)).thenAnswer((_) async => responseDto);
 
