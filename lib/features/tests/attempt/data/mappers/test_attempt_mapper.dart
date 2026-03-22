@@ -23,11 +23,7 @@ extension TestingExerciseMapper on TestingExerciseDto {
 extension TestAttemptTestingMapper on TestAttemptTestingDto {
   /// Converts DTO to a domain entity.
   TestAttemptTesting toEntity() => TestAttemptTesting(
-    id: id,
     title: title,
-    description: description,
-    durationMinutes: int.tryParse(durationMinutes.trim()) ?? 0,
-    imageUrl: normalizeTestingImageUrl(image),
     totalExercises: totalExercises,
   );
 }
