@@ -6,17 +6,16 @@ import '../../../../../core/failures/network/network_failure.dart';
 extension TestsFailureMapper on NetworkFailure {
   /// Maps a [NetworkFailure] into a tests-specific failure.
   TestsFailure toTestsFailure() {
-    final fieldErrors = switch (this) {
-      ValidationFailure(:final errors) => errors,
-      _ => const <String, List<String>>{},
-    };
-    final validationMessage = buildValidationMessage(
-      fieldErrors,
-      fallbackMessage: const TestsValidationFailure().message,
-    );
-
     switch (code) {
       case 'validation_failed':
+        final fieldErrors = switch (this) {
+          ValidationFailure(:final errors) => errors,
+          _ => const <String, List<String>>{},
+        };
+        final validationMessage = buildValidationMessage(
+          fieldErrors,
+          fallbackMessage: const TestsValidationFailure().message,
+        );
         return TestsValidationFailure(
           message: validationMessage,
           parentException: parentException,
