@@ -1,4 +1,5 @@
 import '../../../../core/failures/feature/fitness_start/fitness_start_failure.dart';
+import '../../../../core/failures/helpers/validation_message_builder.dart';
 import '../../../../core/failures/network/network_failure.dart';
 
 /// Extension to map [NetworkFailure] into [FitnessStartFailure].
@@ -9,7 +10,10 @@ extension FitnessStartFailureMapper on NetworkFailure {
       ValidationFailure(:final errors) => errors,
       _ => const <String, List<String>>{},
     };
-    final validationMessage = _buildValidationMessage(fieldErrors);
+    final validationMessage = buildValidationMessage(
+      fieldErrors,
+      fallbackMessage: const FitnessStartValidationFailure().message,
+    );
 
     switch (code) {
       case 'validation_failed':
@@ -41,20 +45,4 @@ extension FitnessStartFailureMapper on NetworkFailure {
       ),
     };
   }
-}
-
-// TODO: move to core helpers next time
-String _buildValidationMessage(Map<String, List<String>> rawFieldErrors) {
-  final messages = rawFieldErrors.values
-      .expand((fieldMessages) => fieldMessages)
-      .map((message) => message.trim())
-      .where((message) => message.isNotEmpty)
-      .toSet()
-      .toList(growable: false);
-
-  if (messages.isEmpty) {
-    return const FitnessStartValidationFailure().message;
-  }
-
-  return messages.join('\n');
 }

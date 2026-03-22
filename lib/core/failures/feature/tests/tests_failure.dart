@@ -25,9 +25,10 @@ final class TestsRequestFailure extends TestsFailure {
 final class TestsValidationFailure extends TestsFailure {
   /// Creates an instance of [TestsValidationFailure].
   const TestsValidationFailure({
+    String message = AppStrings.testsValidationFailed,
     super.parentException,
     super.stackTrace,
-  }) : super(AppStrings.testsValidationFailed);
+  }) : super(message);
 }
 
 /// Unknown tests failure.
