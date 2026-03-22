@@ -18,7 +18,6 @@ import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../../tests/attempt/presentation/cubits/test_attempt_cubit.dart';
-import '../../../tests/attempt/presentation/validators/test_attempt_validators.dart';
 import '../widgets/fitness_start_flow_app_bar.dart';
 
 /// Fitness Start page for a single guest test attempt.
@@ -52,6 +51,17 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
   void dispose() {
     _pulseController.dispose();
     super.dispose();
+  }
+
+  String? _validatePulse(String? value) {
+    final trimmedValue = value?.trim() ?? '';
+    if (trimmedValue.isEmpty) return AppStrings.testsAttemptPulseRequired;
+
+    final pulse = int.tryParse(trimmedValue);
+    if (pulse == null) return AppStrings.testsAttemptPulseInvalid;
+    if (pulse < 30 || pulse > 220) return AppStrings.testsAttemptPulseRange;
+
+    return null;
   }
 
   Future<void> _submitPulse() async {
@@ -156,8 +166,8 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
 
   Widget _buildLoadedState(BuildContext context, TestAttemptState state) {
     if (state.isCompleted) return _buildLoadingState();
-    final isPulseStep = state.isAwaitingPulse || state.currentExercise == null;
-    if (isPulseStep) return _buildPulseStepLayout(context, state);
+    if (state.isAwaitingPulse) return _buildPulseStepLayout(context, state);
+    if (state.currentExercise == null) return _buildLoadingState();
 
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
@@ -303,7 +313,7 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
               controller: _pulseController,
               enabled: !state.isCompleting,
               keyboardType: TextInputType.number,
-              validator: TestAttemptValidators.pulse,
+              validator: _validatePulse,
               textInputAction: TextInputAction.done,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: const InputDecoration(
