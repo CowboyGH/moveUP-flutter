@@ -14,7 +14,6 @@ import '../../../../uikit/cards/app_card.dart';
 import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/images/network_image_widget.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
-import '../../../../uikit/inputs/app_input_field.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
@@ -90,21 +89,21 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
       builder: (context, state) {
         return Scaffold(
           appBar: FitnessStartFlowAppBar(
-            title: AppStrings.fitnessStartTestsTitle,
-            progress: 0.5,
+            title: AppStrings.testsAttemptTitle,
+            progress: 0.9,
             showBackButton: true,
             onBackPressed: context.pop,
           ),
           body: Stack(
             children: [
               Positioned(
-                right: -120,
-                bottom: -180,
+                right: -85,
+                bottom: -110,
                 child: IgnorePointer(
                   child: ExcludeSemantics(
                     child: SvgPictureWidget.frame(
                       AppAssets.imageFigure,
-                      color: colorTheme.primary.withValues(alpha: 0.3),
+                      color: colorTheme.secondary.withValues(alpha: 0.3),
                     ),
                   ),
                 ),
@@ -120,15 +119,20 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
     );
   }
 
-  Widget _buildStartState(BuildContext context, TestAttemptState state) {
-    if (state.isStarting) {
-      return const Center(
+  Widget _buildLoadingState() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 32),
+      child: Center(
         child: SizedBox.square(
           dimension: 24,
           child: CircularProgressIndicator.adaptive(strokeWidth: 2),
         ),
-      );
-    }
+      ),
+    );
+  }
+
+  Widget _buildStartState(BuildContext context, TestAttemptState state) {
+    if (state.isStarting) return _buildLoadingState();
 
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
@@ -155,57 +159,66 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
   }
 
   Widget _buildLoadedState(BuildContext context, TestAttemptState state) {
-    if (state.isCompleted) {
-      return const Center(
-        child: SizedBox.square(
-          dimension: 24,
-          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-        ),
-      );
-    }
+    if (state.isCompleted) return _buildLoadingState();
+    final isPulseStep = state.isAwaitingPulse || state.currentExercise == null;
+    if (isPulseStep) return _buildPulseStepLayout(context, state);
 
-    final testing = state.testing!;
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    final isPulseStep = state.isAwaitingPulse || state.currentExercise == null;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            AppStrings.testsAttemptTitle,
+            AppStrings.testsAttemptDescription,
             textAlign: TextAlign.center,
-            style: textTheme.title.copyWith(color: colorTheme.onSurface),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            isPulseStep ? AppStrings.testsAttemptPulseTitle : AppStrings.testsAttemptDescription,
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
-          ),
-          const SizedBox(height: 20),
-          Align(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              decoration: BoxDecoration(
-                color: colorTheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: colorTheme.disabled.withValues(alpha: 0.6)),
-              ),
-              child: Text(
-                '${state.currentExerciseOrderNumber}/${testing.totalExercises}',
-                style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
-              ),
+            style: textTheme.bodyMedium.copyWith(
+              fontWeight: FontWeight.w500,
+              color: colorTheme.onSurface,
             ),
           ),
-          const SizedBox(height: 16),
-          AppCard(
-            child: isPulseStep
-                ? _buildPulseContent(context, state)
-                : _buildExerciseContent(context, state),
-          ),
+          const SizedBox(height: 20),
+          _buildExerciseContent(context, state),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPulseStepLayout(BuildContext context, TestAttemptState state) {
+    final textTheme = AppTextTheme.of(context);
+    final colorTheme = AppColorTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 64),
+      child: SizedBox.expand(
+        child: Form(
+          key: _pulseFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                AppStrings.testsAttemptPulseTitle,
+                textAlign: TextAlign.center,
+                style: textTheme.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: colorTheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _buildPulseContent(context, state),
+                ),
+              ),
+              const SizedBox(height: 24),
+              MainButton(
+                state: state.isCompleting ? ButtonState.loading : ButtonState.enabled,
+                onPressed: _submitPulse,
+                child: const Text(AppStrings.testsAttemptCompleteButton),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -216,10 +229,69 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
     final buttonState = state.isSubmittingResult ? ButtonState.disabled : ButtonState.enabled;
+    return AppCard(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final itemWidth = (constraints.maxWidth - 8) / 2;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: NetworkImageWidget(
+                  imageUrl: exercise.imageUrl,
+                  height: constraints.maxWidth,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                testing.title,
+                textAlign: TextAlign.end,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodyMedium.copyWith(
+                  fontSize: 16,
+                  height: 24 / 16,
+                  fontWeight: FontWeight.w500,
+                  color: colorTheme.onSurface,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                exercise.description,
+                textAlign: TextAlign.end,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.body.copyWith(color: colorTheme.hint),
+              ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: List.generate(4, (index) {
+                  final value = index + 1;
+                  final label = _resultLabels[index];
+                  return SizedBox(
+                    width: itemWidth,
+                    child: OptionButton(
+                      state: buttonState,
+                      onPressed: () => _cubit.submitResult(value),
+                      child: Text(label),
+                    ),
+                  );
+                }),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 
+  Widget _buildPulseContent(BuildContext context, TestAttemptState state) {
+    final exercise = state.currentExercise!;
     return LayoutBuilder(
       builder: (context, constraints) {
-        final itemWidth = (constraints.maxWidth - 8) / 2;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -231,88 +303,20 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              testing.title,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium.copyWith(
-                fontSize: 16,
-                height: 24 / 16,
-                fontWeight: FontWeight.w500,
-                color: colorTheme.onSurface,
+            TextFormField(
+              controller: _pulseController,
+              enabled: !state.isCompleting,
+              keyboardType: TextInputType.number,
+              validator: TestAttemptValidators.pulse,
+              textInputAction: TextInputAction.done,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration: const InputDecoration(
+                hintText: AppStrings.testsAttemptPulseHint,
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              exercise.description,
-              textAlign: TextAlign.center,
-              style: textTheme.body.copyWith(color: colorTheme.hint),
-            ),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: List.generate(4, (index) {
-                final value = index + 1;
-                final label = _resultLabels[index];
-                return SizedBox(
-                  width: itemWidth,
-                  child: OptionButton(
-                    state: buttonState,
-                    onPressed: () => _cubit.submitResult(value),
-                    child: Text(label),
-                  ),
-                );
-              }),
             ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildPulseContent(BuildContext context, TestAttemptState state) {
-    final textTheme = AppTextTheme.of(context);
-    final colorTheme = AppColorTheme.of(context);
-    return Form(
-      key: _pulseFormKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            state.testing!.title,
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium.copyWith(
-              fontSize: 16,
-              height: 24 / 16,
-              fontWeight: FontWeight.w500,
-              color: colorTheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            AppStrings.testsAttemptPulseTitle,
-            textAlign: TextAlign.center,
-            style: textTheme.body.copyWith(color: colorTheme.hint),
-          ),
-          const SizedBox(height: 20),
-          AppInputField(
-            controller: _pulseController,
-            labelText: AppStrings.testsAttemptPulseLabel,
-            hintText: AppStrings.testsAttemptPulseHint,
-            enabled: !state.isCompleting,
-            keyboardType: TextInputType.number,
-            validator: TestAttemptValidators.pulse,
-            textInputAction: TextInputAction.done,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-          ),
-          const SizedBox(height: 24),
-          MainButton(
-            state: state.isCompleting ? ButtonState.loading : ButtonState.enabled,
-            onPressed: _submitPulse,
-            child: const Text(AppStrings.testsAttemptCompleteButton),
-          ),
-        ],
-      ),
     );
   }
 }

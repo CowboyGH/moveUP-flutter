@@ -140,6 +140,7 @@ void main() {
         TestAttemptState(
           attemptId: startedAttempt.attemptId,
           testing: startedAttempt.testing,
+          currentExercise: startedAttempt.currentExercise,
           currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isAwaitingPulse: true,
         ),
