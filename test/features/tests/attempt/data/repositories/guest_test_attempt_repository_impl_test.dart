@@ -147,9 +147,8 @@ void main() {
     });
 
     group('GuestTestAttemptRepositoryImpl.completeTest', () {
-      test('returns success(completedAttempt) when api succeeds', () async {
+      test('returns success(void) when api succeeds', () async {
         final responseDto = createCompleteGuestTestResponseDto();
-        final expectedResult = createCompletedTestAttempt();
         when(apiClient.completeGuestTest(any, any)).thenAnswer((_) async => responseDto);
 
         final result = await repository.completeTest(
@@ -158,7 +157,6 @@ void main() {
         );
 
         expect(result.isSuccess, isTrue);
-        expect(result.success, expectedResult);
 
         final captured = verify(apiClient.completeGuestTest(captureAny, captureAny)).captured;
         expect(captured.first, 'guest_attempt_1');

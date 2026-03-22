@@ -15,6 +15,5 @@ abstract class TestAttemptState with _$TestAttemptState {
     TestsFailure? failure,
     @Default(false) bool isAwaitingPulse,
     @Default(false) bool isCompleted,
-    CompletedTestAttempt? completedAttempt,
   }) = _TestAttemptState;
 }

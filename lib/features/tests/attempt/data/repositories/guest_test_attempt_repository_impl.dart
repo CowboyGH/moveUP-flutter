@@ -5,7 +5,6 @@ import '../../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../../core/result/result.dart';
 import '../../../../../core/utils/logger/app_logger.dart';
 import '../../../data/remote/tests_api_client.dart';
-import '../../domain/entities/completed_test_attempt.dart';
 import '../../domain/entities/test_attempt_result.dart';
 import '../../domain/entities/test_attempt_start.dart';
 import '../../domain/repositories/test_attempt_repository.dart';
@@ -69,14 +68,14 @@ final class GuestTestAttemptRepositoryImpl implements TestAttemptRepository {
   }
 
   @override
-  Future<Result<CompletedTestAttempt, TestsFailure>> completeTest({
+  Future<Result<void, TestsFailure>> completeTest({
     required String attemptId,
     required int pulse,
   }) async {
     try {
       final request = CompleteGuestTestRequestDto(pulse: pulse);
-      final response = await _apiClient.completeGuestTest(attemptId, request);
-      return Result.success(response.data.toEntity());
+      await _apiClient.completeGuestTest(attemptId, request);
+      return const Result.success(null);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toTestsFailure());

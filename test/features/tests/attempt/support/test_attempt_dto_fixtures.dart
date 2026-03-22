@@ -8,7 +8,6 @@ import 'package:moveup_flutter/features/tests/attempt/data/dto/test_attempt_test
 import 'package:moveup_flutter/features/tests/attempt/data/dto/test_exercise_result_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/testing_exercise_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/mappers/test_attempt_mapper.dart';
-import 'package:moveup_flutter/features/tests/attempt/domain/entities/completed_test_attempt.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/entities/test_attempt_result.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/entities/test_attempt_start.dart';
 
@@ -101,7 +100,3 @@ TestAttemptResult createTestAttemptAwaitingPulseResult() =>
       allExercisesCompleted: true,
       message: 'Все упражнения выполнены. Введите пульс для завершения теста.',
     ).data.toEntity();
-
-/// Test fixture for completed attempt entity.
-CompletedTestAttempt createCompletedTestAttempt() =>
-    createCompleteGuestTestResponseDto().data.toEntity();

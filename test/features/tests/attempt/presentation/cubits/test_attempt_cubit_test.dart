@@ -4,7 +4,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/tests/tests_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
-import 'package:moveup_flutter/features/tests/attempt/domain/entities/completed_test_attempt.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/entities/test_attempt_result.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/entities/test_attempt_start.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/repositories/test_attempt_repository.dart';
@@ -20,7 +19,6 @@ void main() {
   late TestAttemptStart startedAttempt;
   late TestAttemptResult nextExerciseResult;
   late TestAttemptResult awaitingPulseResult;
-  late CompletedTestAttempt completedAttempt;
 
   setUp(() {
     repository = MockTestAttemptRepository();
@@ -28,11 +26,10 @@ void main() {
     startedAttempt = createTestAttemptStart();
     nextExerciseResult = createTestAttemptNextExerciseResult();
     awaitingPulseResult = createTestAttemptAwaitingPulseResult();
-    completedAttempt = createCompletedTestAttempt();
 
     provideDummy<Result<TestAttemptStart, TestsFailure>>(Success(startedAttempt));
     provideDummy<Result<TestAttemptResult, TestsFailure>>(Success(nextExerciseResult));
-    provideDummy<Result<CompletedTestAttempt, TestsFailure>>(Success(completedAttempt));
+    provideDummy<Result<void, TestsFailure>>(const Success(null));
   });
 
   group('TestAttemptCubit', () {
@@ -203,7 +200,7 @@ void main() {
           attemptId: startedAttempt.attemptId,
           pulse: 151,
         ),
-      ).thenAnswer((_) async => Success(completedAttempt)),
+      ).thenAnswer((_) async => const Success(null)),
       build: () => cubit,
       seed: () => TestAttemptState(
         attemptId: startedAttempt.attemptId,
@@ -225,7 +222,6 @@ void main() {
           testing: startedAttempt.testing,
           currentExerciseOrderNumber: startedAttempt.testing.totalExercises,
           isCompleted: true,
-          completedAttempt: completedAttempt,
         ),
       ],
       verify: (_) => verify(

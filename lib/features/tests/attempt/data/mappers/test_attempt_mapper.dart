@@ -1,10 +1,8 @@
 import '../../../data/mappers/testing_image_url_mapper.dart';
-import '../../domain/entities/completed_test_attempt.dart';
 import '../../domain/entities/test_attempt_result.dart';
 import '../../domain/entities/test_attempt_start.dart';
 import '../../domain/entities/test_attempt_testing.dart';
 import '../../domain/entities/testing_exercise.dart';
-import '../dto/complete_guest_test_data_dto.dart';
 import '../dto/save_guest_test_result_data_dto.dart';
 import '../dto/start_guest_test_data_dto.dart';
 import '../dto/test_attempt_testing_dto.dart';
@@ -53,15 +51,5 @@ extension SaveGuestTestResultMapper on SaveGuestTestResultDataDto {
     resultValue: result.resultValue,
     nextExercise: nextExercise?.toEntity(),
     isAwaitingPulse: allExercisesCompleted == true,
-  );
-}
-
-/// Extension that maps [CompleteGuestTestDataDto] to [CompletedTestAttempt].
-extension CompleteGuestTestMapper on CompleteGuestTestDataDto {
-  /// Converts DTO to a domain entity.
-  CompletedTestAttempt toEntity() => CompletedTestAttempt(
-    attemptId: attemptId,
-    completedAt: completedAt,
-    pulse: pulse,
   );
 }

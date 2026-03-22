@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../core/failures/feature/tests/tests_failure.dart';
 import '../../../../../core/result/result.dart';
-import '../../domain/entities/completed_test_attempt.dart';
 import '../../domain/entities/test_attempt_testing.dart';
 import '../../domain/entities/testing_exercise.dart';
 import '../../domain/repositories/test_attempt_repository.dart';
@@ -36,7 +35,6 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
         failure: null,
         isAwaitingPulse: false,
         isCompleted: false,
-        completedAttempt: null,
       ),
     );
 
@@ -55,7 +53,6 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
             failure: null,
             isAwaitingPulse: false,
             isCompleted: false,
-            completedAttempt: null,
           ),
         );
       case Failure(:final error):
@@ -131,14 +128,13 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
     if (isClosed) return;
 
     switch (result) {
-      case Success(:final data):
+      case Success():
         emit(
           state.copyWith(
             isCompleting: false,
             failure: null,
             isAwaitingPulse: false,
             isCompleted: true,
-            completedAttempt: data,
           ),
         );
       case Failure(:final error):

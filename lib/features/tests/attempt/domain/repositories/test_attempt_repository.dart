@@ -1,6 +1,5 @@
 import '../../../../../core/failures/feature/tests/tests_failure.dart';
 import '../../../../../core/result/result.dart';
-import '../entities/completed_test_attempt.dart';
 import '../entities/test_attempt_result.dart';
 import '../entities/test_attempt_start.dart';
 
@@ -17,7 +16,7 @@ abstract interface class TestAttemptRepository {
   });
 
   /// Completes the current [attemptId] with [pulse] value.
-  Future<Result<CompletedTestAttempt, TestsFailure>> completeTest({
+  Future<Result<void, TestsFailure>> completeTest({
     required String attemptId,
     required int pulse,
   });
