@@ -40,6 +40,12 @@ class FitnessStartTestAttemptPage extends StatefulWidget {
 class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPage> {
   final _pulseFormKey = GlobalKey<FormState>();
   final _pulseController = TextEditingController();
+  final _resultLabels = const [
+    AppStrings.testsAttemptResultVeryPoor,
+    AppStrings.testsAttemptResultPoor,
+    AppStrings.testsAttemptResultNormal,
+    AppStrings.testsAttemptResultGood,
+  ];
 
   TestAttemptCubit get _cubit => context.read<TestAttemptCubit>();
 
@@ -174,9 +180,7 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
           ),
           const SizedBox(height: 8),
           Text(
-            isPulseStep
-                ? AppStrings.testsAttemptPulseTitle
-                : AppStrings.testsAttemptDescription,
+            isPulseStep ? AppStrings.testsAttemptPulseTitle : AppStrings.testsAttemptDescription,
             textAlign: TextAlign.center,
             style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
           ),
@@ -249,12 +253,13 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
               runSpacing: 8,
               children: List.generate(4, (index) {
                 final value = index + 1;
+                final label = _resultLabels[index];
                 return SizedBox(
                   width: itemWidth,
                   child: OptionButton(
                     state: buttonState,
                     onPressed: () => _cubit.submitResult(value),
-                    child: Text('$value'),
+                    child: Text(label),
                   ),
                 );
               }),

@@ -162,7 +162,7 @@ abstract final class AppStrings {
   static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const testsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
   static const testsAttemptTitle = 'Быстрый тест';
-  static const testsAttemptDescription = 'Оцените выполнение упражнения по шкале от 1 до 4';
+  static const testsAttemptDescription = 'Оцените, насколько тяжело было выполнять упражнение';
   static const testsAttemptPulseTitle = 'Введите пульс после завершения теста';
   static const testsAttemptPulseLabel = 'Пульс';
   static const testsAttemptPulseHint = '150';
@@ -170,6 +170,10 @@ abstract final class AppStrings {
   static const testsAttemptPulseInvalid = 'Введите корректный пульс';
   static const testsAttemptPulseRange = 'Пульс должен быть от 30 до 220';
   static const testsAttemptCompleteButton = 'Завершить тест';
+  static const testsAttemptResultVeryPoor = 'Очень плохо';
+  static const testsAttemptResultPoor = 'Плохо';
+  static const testsAttemptResultNormal = 'Нормально';
+  static const testsAttemptResultGood = 'Хорошо';
 
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';
