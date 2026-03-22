@@ -54,14 +54,6 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
     super.dispose();
   }
 
-  void _showFeedback(String message) {
-    showAppFeedbackDialog(
-      context,
-      title: AppStrings.feedbackErrorTitle,
-      message: message,
-    );
-  }
-
   Future<void> _submitPulse() async {
     FocusScope.of(context).unfocus();
     final form = _pulseFormKey.currentState;
@@ -79,7 +71,11 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
       listener: (context, state) {
         final failure = state.failure;
         if (failure != null && state.testing != null) {
-          _showFeedback(failure.message);
+          showAppFeedbackDialog(
+            context,
+            title: AppStrings.feedbackErrorTitle,
+            message: failure.message,
+          );
           _cubit.clearFailure();
         }
         if (state.isCompleted) {
