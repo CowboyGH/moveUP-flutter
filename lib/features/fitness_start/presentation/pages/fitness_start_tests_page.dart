@@ -29,7 +29,7 @@ class FitnessStartTestsPage extends StatelessWidget {
     return Scaffold(
       appBar: FitnessStartFlowAppBar(
         title: AppStrings.fitnessStartTestsTitle,
-        progress: 0.4,
+        progress: 0.75,
         showBackButton: true,
         onBackPressed: () => unawaited(authSessionCubit.cancelGuestFlow()),
       ),
