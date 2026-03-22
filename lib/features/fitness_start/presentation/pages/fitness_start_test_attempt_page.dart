@@ -149,9 +149,19 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
   }
 
   Widget _buildLoadedState(BuildContext context, TestAttemptState state) {
+    if (state.isCompleted) {
+      return const Center(
+        child: SizedBox.square(
+          dimension: 24,
+          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+        ),
+      );
+    }
+
     final testing = state.testing!;
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
+    final isPulseStep = state.isAwaitingPulse || state.currentExercise == null;
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
       child: Column(
@@ -164,7 +174,7 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
           ),
           const SizedBox(height: 8),
           Text(
-            state.isAwaitingPulse
+            isPulseStep
                 ? AppStrings.testsAttemptPulseTitle
                 : AppStrings.testsAttemptDescription,
             textAlign: TextAlign.center,
@@ -187,7 +197,7 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
           ),
           const SizedBox(height: 16),
           AppCard(
-            child: state.isAwaitingPulse
+            child: isPulseStep
                 ? _buildPulseContent(context, state)
                 : _buildExerciseContent(context, state),
           ),
