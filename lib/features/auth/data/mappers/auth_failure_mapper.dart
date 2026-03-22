@@ -1,4 +1,5 @@
 import '../../../../core/failures/feature/auth/auth_failure.dart';
+import '../../../../core/failures/helpers/validation_message_builder.dart';
 import '../../../../core/failures/network/network_failure.dart';
 
 /// Extension to map [NetworkFailure] into [AuthFailure].
@@ -9,7 +10,10 @@ extension AuthFailureMapper on NetworkFailure {
       ValidationFailure(:final errors) => errors,
       _ => const <String, List<String>>{},
     };
-    final validationMessage = _buildValidationMessage(fieldErrors);
+    final validationMessage = buildValidationMessage(
+      fieldErrors,
+      fallbackMessage: const ValidationFailedFailure().message,
+    );
 
     switch (code) {
       case 'invalid_credentials':
@@ -64,18 +68,4 @@ extension AuthFailureMapper on NetworkFailure {
         };
     }
   }
-}
-
-String _buildValidationMessage(Map<String, List<String>> rawFieldErrors) {
-  final messages = rawFieldErrors.values
-      .expand((fieldMessages) => fieldMessages)
-      .map((message) => message.trim())
-      .where((message) => message.isNotEmpty)
-      .toList(growable: false);
-
-  if (messages.isEmpty) {
-    return const ValidationFailedFailure().message;
-  }
-
-  return messages.join('\n');
 }

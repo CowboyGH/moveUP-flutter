@@ -1,4 +1,4 @@
-import '../../../../../core/network/api_paths.dart';
+import '../../../data/mappers/testing_image_url_mapper.dart';
 import '../../domain/entities/testing_catalog_item.dart';
 import '../../domain/entities/testing_category.dart';
 import '../dto/testing_catalog_item_dto.dart';
@@ -12,7 +12,7 @@ extension TestingCatalogItemMapper on TestingCatalogItemDto {
     title: title,
     description: description,
     durationMinutes: int.tryParse(durationMinutes.trim()) ?? 0,
-    imageUrl: _normalizeImageUrl(image),
+    imageUrl: normalizeTestingImageUrl(image),
     categories: categories.map((category) => category.toEntity()).toList(growable: false),
     exercisesCount: exercisesCount,
   );
@@ -25,17 +25,4 @@ extension TestingCategoryMapper on TestingCategoryDto {
     id: id,
     name: name,
   );
-}
-
-String _normalizeImageUrl(String rawImage) {
-  final image = rawImage.trim();
-  if (image.isEmpty) return '';
-  if (image.startsWith('http://') || image.startsWith('https://')) {
-    return image;
-  }
-  final normalizedPath = image.replaceFirst(RegExp(r'^/+'), '');
-  final storagePath = normalizedPath.startsWith('storage/')
-      ? normalizedPath
-      : 'storage/$normalizedPath';
-  return Uri.parse(ApiPaths.baseUrl).resolve(storagePath).toString();
 }

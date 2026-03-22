@@ -147,7 +147,7 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
         return Scaffold(
           appBar: FitnessStartFlowAppBar(
             title: AppStrings.fitnessStartTitle,
-            progress: (state.currentStep + 1) / 10,
+            progress: (state.currentStep + 1) / 4,
             showBackButton: isGuestOnboarding,
             onBackPressed: isGuestOnboarding ? () => unawaited(_handleGuestBack(state)) : null,
           ),

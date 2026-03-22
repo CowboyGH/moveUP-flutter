@@ -8,7 +8,7 @@ import '../../domain/entities/testing_catalog_item.dart';
 import '../../domain/repositories/tests_catalog_repository.dart';
 import '../mappers/testing_catalog_mapper.dart';
 import '../mappers/tests_failure_mapper.dart';
-import '../remote/tests_api_client.dart';
+import '../../../data/remote/tests_api_client.dart';
 
 /// Implementation of [TestsCatalogRepository].
 final class TestsCatalogRepositoryImpl implements TestsCatalogRepository {

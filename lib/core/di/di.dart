@@ -16,9 +16,11 @@ import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
-import '../../features/tests/catalog/data/remote/tests_api_client.dart';
+import '../../features/tests/data/remote/tests_api_client.dart';
 import '../../features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
 import '../../features/tests/catalog/domain/repositories/tests_catalog_repository.dart';
+import '../../features/tests/attempt/data/repositories/guest_test_attempt_repository_impl.dart';
+import '../../features/tests/attempt/domain/repositories/test_attempt_repository.dart';
 import '../network/api_paths.dart';
 import '../network/dio_setup.dart';
 import '../services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
@@ -121,6 +123,12 @@ Future<void> setupDI() async {
   di.registerLazySingleton<TestsApiClient>(() => TestsApiClient(di<Dio>()));
   di.registerLazySingleton<TestsCatalogRepository>(
     () => TestsCatalogRepositoryImpl(
+      di<AppLogger>(),
+      di<TestsApiClient>(),
+    ),
+  );
+  di.registerLazySingleton<TestAttemptRepository>(
+    () => GuestTestAttemptRepositoryImpl(
       di<AppLogger>(),
       di<TestsApiClient>(),
     ),

@@ -35,4 +35,14 @@ abstract class AppRoutePaths {
 
   /// Route path for the next onboarding step that will show tests.
   static const fitnessStartTestsPath = '$fitnessStartPrefix/tests';
+
+  /// Base route path for a concrete test attempt inside Fitness Start.
+  static const fitnessStartTestAttemptBasePath = '$fitnessStartTestsPath/attempt';
+
+  /// Route path pattern for a concrete test attempt inside Fitness Start.
+  static const fitnessStartTestAttemptPath = '$fitnessStartTestAttemptBasePath/:testingId';
+
+  /// Builds the concrete route path for a test attempt by [testingId].
+  static String fitnessStartTestAttemptDetailsPath(int testingId) =>
+      '$fitnessStartTestAttemptBasePath/$testingId';
 }

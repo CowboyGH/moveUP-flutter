@@ -10,9 +10,13 @@ class TestingCatalogCarousel extends StatefulWidget {
   /// Catalog items displayed in the carousel.
   final List<TestingCatalogItem> items;
 
+  /// Callback fired when a catalog item is selected.
+  final ValueChanged<TestingCatalogItem> onTestingSelected;
+
   /// Creates an instance of [TestingCatalogCarousel].
   const TestingCatalogCarousel({
     required this.items,
+    required this.onTestingSelected,
     super.key,
   });
 
@@ -48,7 +52,10 @@ class _TestingCatalogCarouselState extends State<TestingCatalogCarousel> {
               itemBuilder: (context, index, _) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                  child: TestingCatalogCard(item: widget.items[index]),
+                  child: TestingCatalogCard(
+                    item: widget.items[index],
+                    onPressed: () => widget.onTestingSelected(widget.items[index]),
+                  ),
                 );
               },
               options: CarouselOptions(

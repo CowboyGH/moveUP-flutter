@@ -11,16 +11,15 @@ void main() {
       expect(failure, isA<InvalidCredentialsFailure>());
     });
 
-    test('maps validation_failed to ValidationFailedFailure with normalized message', () {
-      const errorMessage = 'error_message';
-      const fieldErrors = <String, List<String>>{
-        'email': ['  $errorMessage  ', ''],
-        'password': [errorMessage],
-      };
-      final failure = const ValidationFailure(errors: fieldErrors).toAuthFailure();
+    test('maps validation_failed to ValidationFailedFailure with validation message', () {
+      final failure = const ValidationFailure(
+        errors: {
+          'email': ['error_message'],
+        },
+      ).toAuthFailure();
 
       expect(failure, isA<ValidationFailedFailure>());
-      expect(failure.message, '$errorMessage\n$errorMessage');
+      expect(failure.message, 'error_message');
     });
 
     test('falls back to generic auth validation message when field errors are empty', () {

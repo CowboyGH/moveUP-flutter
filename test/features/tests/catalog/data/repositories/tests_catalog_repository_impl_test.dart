@@ -3,7 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/tests/tests_failure.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
-import 'package:moveup_flutter/features/tests/catalog/data/remote/tests_api_client.dart';
+import 'package:moveup_flutter/features/tests/data/remote/tests_api_client.dart';
 import 'package:moveup_flutter/features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
 import 'package:moveup_flutter/features/tests/catalog/domain/repositories/tests_catalog_repository.dart';
 
