@@ -9,6 +9,11 @@ abstract final class AppStrings {
   static const codeLabel = 'Код';
   static const codeHint = '******';
 
+  // No-connection screen.
+  static const noConnectionTitle = 'Нет подключения';
+  static const noConnectionSubtitle =
+      'Проверьте подключение к интернету. Мы продолжим автоматически, когда соединение появится';
+
   /// Sign-in screen.
   static const signInTitle = 'Авторизация';
   static const signInSubtitle = 'Введите email и пароль, чтобы войти в аккаунт';

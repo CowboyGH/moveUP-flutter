@@ -94,6 +94,10 @@ final router = GoRouter(
       builder: (context, state) => const DebugScreen(),
     ),
     GoRoute(
+      path: AppRoutePaths.offlinePath,
+      builder: (context, state) => const OfflinePage(),
+    ),
+    GoRoute(
       path: AppRoutePaths.signInPath,
       builder: (_, _) => const SignInPageBuilder(),
     ),
