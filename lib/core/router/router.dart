@@ -17,11 +17,14 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
+import '../../features/offline/presentation/cubit/network_cubit.dart';
+import '../../features/offline/presentation/pages/offline_page.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
 import 'router_paths.dart';
 
+final NetworkCubit _networkCubit = di<NetworkCubit>();
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
 
 bool _isGuestCompletedAllowedPath(String path) =>
@@ -30,8 +33,43 @@ bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.verifyEmailPath ||
     path == AppRoutePaths.legalDocumentPath;
 
-/// Determines the redirect path based on the current [authState] and [state].
-String? _redirect(AuthSessionState authState, GoRouterState state) {
+/// Determines the redirect path based on the current [networkState], [authState] and [state].
+String? _redirect(
+  NetworkState networkState,
+  AuthSessionState authState,
+  GoRouterState state,
+) {
+  final isOfflineScreen = state.matchedLocation.startsWith(AppRoutePaths.offlinePath);
+  return networkState.when(
+    initial: () => null,
+    disconnected: () {
+      if (isOfflineScreen) return null;
+      return AppRoutePaths.offlinePath;
+    },
+    connected: () {
+      if (isOfflineScreen) return _redirectFromOffline(authState);
+      return _redirectByAuth(authState, state);
+    },
+  );
+}
+
+String? _redirectFromOffline(AuthSessionState authState) {
+  return authState.when(
+    initial: () => AppRoutePaths.signInPath,
+    checking: () => AppRoutePaths.signInPath,
+    restoreFailed: () => AppRoutePaths.signInPath,
+    guestResumeAvailable: () => AppRoutePaths.signInPath,
+    guest: () => AppRoutePaths.fitnessStartQuizPath,
+    guestCompletedOnboarding: () => AppRoutePaths.signUpPath,
+    authenticated: (_) => AppRoutePaths.debugPath,
+    unauthenticated: () => AppRoutePaths.signInPath,
+  );
+}
+
+String? _redirectByAuth(
+  AuthSessionState authState,
+  GoRouterState state,
+) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
@@ -69,6 +107,7 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
+      if (state.matchedLocation == AppRoutePaths.debugPath) return null;
       if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
       return null;
     },
@@ -86,8 +125,11 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
 final router = GoRouter(
   initialLocation: AppRoutePaths.signInPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
-  redirect: (_, state) => _redirect(_sessionCubit.state, state),
-  refreshListenable: GoRouterCubitRefreshStream(_sessionCubit.stream),
+  redirect: (_, state) => _redirect(_networkCubit.state, _sessionCubit.state, state),
+  refreshListenable: CombinedRouterRefreshListenable(
+    _sessionCubit.stream,
+    _networkCubit.stream,
+  ),
   routes: [
     GoRoute(
       path: AppRoutePaths.debugPath,
@@ -199,17 +241,20 @@ final router = GoRouter(
 );
 
 /// A [ChangeNotifier] that notifies listeners when [stream] emits.
-class GoRouterCubitRefreshStream<T> extends ChangeNotifier {
-  late final StreamSubscription<T> _subscription;
+class CombinedRouterRefreshListenable<T, S> extends ChangeNotifier {
+  late final StreamSubscription<T> _firstSubscription;
+  late final StreamSubscription<S> _secondSubscription;
 
-  /// Creates a [GoRouterCubitRefreshStream] for [stream].
-  GoRouterCubitRefreshStream(Stream<T> stream) {
-    _subscription = stream.listen((_) => notifyListeners());
+  /// Creates a [CombinedRouterRefreshListenable] for the provided streams.
+  CombinedRouterRefreshListenable(Stream<T> firstStream, Stream<S> secondStream) {
+    _firstSubscription = firstStream.listen((_) => notifyListeners());
+    _secondSubscription = secondStream.listen((_) => notifyListeners());
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _firstSubscription.cancel();
+    _secondSubscription.cancel();
     super.dispose();
   }
 }
