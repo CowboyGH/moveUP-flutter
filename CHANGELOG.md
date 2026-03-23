@@ -14,11 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
 - Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
+- `PhasesApiClient`, `PhasesRepository`, `PhasesFailure` mapping, and `WeeklyGoalCubit` for the final weekly-goal onboarding step.
 - Shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
 - Shared guest `tests attempt` slice for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
 - Shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
 - Shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
+- `/fitness-start/weekly-goal` final guest onboarding screen for adjusting weekly training goal before handoff to registration.
 
 ### Changed
 
@@ -29,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Verify-email success now completes authentication directly instead of entering a staged authenticated onboarding flow.
 - Dio clients now attach a shared persistent `CookieManager` so guest onboarding progress and backend session can survive app restarts.
 - `/fitness-start/tests` now shows the onboarding tests catalog carousel instead of the previous placeholder CTA, remains part of the `fitness_start` shell flow, and its back action exits guest flow to `sign-in`.
-- Selecting a testing in the onboarding catalog now pushes a guest test attempt route, saves per-exercise results through guest endpoints, collects pulse after the last exercise, and completes guest onboarding before redirecting to `sign-up`.
+- Selecting a testing in the onboarding catalog now pushes a guest test attempt route, saves per-exercise results through guest endpoints, collects pulse after the last exercise, and advances to a final weekly-goal step before completing guest onboarding and redirecting to `sign-up`.
 - `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
