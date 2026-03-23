@@ -157,7 +157,7 @@ abstract final class AppStrings {
   static const fitnessStartWeeklyGoalHeading = 'Программа тренировок составлена';
   static const fitnessStartWeeklyGoalSubtitle =
       'С учетом заполненной информации и тестирования рекомендуется заниматься 4 раза в неделю';
-  static const fitnessStartWeeklyGoalPrompt = 'Введите пранируемое количество тренировок в неделю';
+  static const fitnessStartWeeklyGoalPrompt = 'Введите планируемое количество тренировок в неделю';
   static const fitnessStartWeeklyGoalDescription =
       'Вы можете указать такое же количество, либо другое, после чего программа тренировок сгенерируется заново';
   static const fitnessStartWeeklyGoalHint = 'Введите количество тренировок';
