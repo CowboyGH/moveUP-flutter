@@ -10,7 +10,7 @@ class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWid
   final double progress;
 
   /// Title displayed in the app bar.
-  final String title;
+  final String? title;
 
   /// Whether the back button should be shown.
   final bool showBackButton;
@@ -21,7 +21,7 @@ class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWid
   /// Creates an instance of [FitnessStartFlowAppBar].
   const FitnessStartFlowAppBar({
     required this.progress,
-    required this.title,
+    this.title,
     this.showBackButton = false,
     this.onBackPressed,
     super.key,
@@ -41,7 +41,7 @@ class FitnessStartFlowAppBar extends StatelessWidget implements PreferredSizeWid
       backgroundColor: colorTheme.surface,
       surfaceTintColor: Colors.transparent,
       title: Text(
-        title,
+        title ?? '',
         style: textTheme.title.copyWith(
           fontSize: 20,
           height: 24 / 20,

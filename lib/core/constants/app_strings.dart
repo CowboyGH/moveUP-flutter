@@ -154,6 +154,17 @@ abstract final class AppStrings {
   static const fitnessStartTestsTitle = 'Персональная программа';
   static const fitnessStartTestsDescription =
       'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
+  static const fitnessStartWeeklyGoalHeading = 'Программа тренировок составлена';
+  static const fitnessStartWeeklyGoalSubtitle =
+      'С учетом заполненной информации и тестирования рекомендуется заниматься 4 раза в неделю';
+  static const fitnessStartWeeklyGoalPrompt = 'Введите пранируемое количество тренировок в неделю';
+  static const fitnessStartWeeklyGoalDescription =
+      'Вы можете указать такое же количество, либо другое, после чего программа тренировок сгенерируется заново';
+  static const fitnessStartWeeklyGoalHint = 'Введите количество тренировок';
+  static const fitnessStartWeeklyGoalButton = 'Приступить';
+  static const fitnessStartWeeklyGoalRequired = 'Введите количество тренировок';
+  static const fitnessStartWeeklyGoalInvalid = 'Введите корректное количество тренировок';
+  static const fitnessStartWeeklyGoalRange = 'Количество тренировок должно быть от 1 до 7';
 
   // Tests catalog.
   static const testsMinutesPattern = 'минут';
@@ -173,6 +184,10 @@ abstract final class AppStrings {
   static const testsAttemptResultPoor = 'Плохо';
   static const testsAttemptResultNormal = 'Нормально';
   static const testsAttemptResultGood = 'Хорошо';
+
+  /// Phases failures.
+  static const phasesValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const phasesUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';

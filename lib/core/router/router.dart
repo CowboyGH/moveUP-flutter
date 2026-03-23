@@ -17,6 +17,7 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_weekly_goal_page_builder.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -190,6 +191,16 @@ final router = GoRouter(
       builder: (_, state) => FitnessStartTestAttemptPageBuilder(
         testingId: int.parse(state.pathParameters['testingId']!),
       ),
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartWeeklyGoalPath,
+      redirect: (_, state) {
+        if (state.extra == AppRoutePaths.fitnessStartTestAttemptBasePath) {
+          return null;
+        }
+        return AppRoutePaths.fitnessStartTestsPath;
+      },
+      builder: (_, _) => const FitnessStartWeeklyGoalPageBuilder(),
     ),
   ],
 );

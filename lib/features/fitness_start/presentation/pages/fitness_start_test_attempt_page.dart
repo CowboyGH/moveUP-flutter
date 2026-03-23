@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/buttons/option_button.dart';
@@ -16,7 +17,6 @@ import '../../../../uikit/images/network_image_widget.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
-import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../../tests/attempt/presentation/cubits/test_attempt_cubit.dart';
 import '../widgets/fitness_start_flow_app_bar.dart';
 
@@ -89,7 +89,10 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
           _cubit.clearFailure();
         }
         if (state.isCompleted) {
-          unawaited(context.read<AuthSessionCubit>().completeGuestFitnessStart());
+          context.go(
+            AppRoutePaths.fitnessStartWeeklyGoalPath,
+            extra: AppRoutePaths.fitnessStartTestAttemptBasePath,
+          );
         }
       },
       builder: (context, state) {
