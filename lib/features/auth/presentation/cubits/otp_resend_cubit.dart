@@ -60,6 +60,18 @@ final class OtpResendCubit extends Cubit<OtpResendState> {
     }
   }
 
+  /// Initializes verify-email resend state according to the entry scenario.
+  Future<void> initializeEmailVerification({
+    required String email,
+    required bool resendOnOpen,
+  }) async {
+    if (resendOnOpen) {
+      await resendOtpCode(email, OtpResendFlow.emailVerification);
+      return;
+    }
+    startCooldown();
+  }
+
   /// Starts or restarts the cooldown timer.
   void startCooldown() {
     emit(state.copyWith(secondsLeft: _cooldownSeconds));
