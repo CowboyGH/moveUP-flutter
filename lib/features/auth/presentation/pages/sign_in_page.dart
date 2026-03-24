@@ -21,6 +21,7 @@ import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
+import 'verify_email_route_args.dart';
 
 /// Sign-in page.
 class SignInPage extends StatefulWidget {
@@ -117,7 +118,13 @@ class _SignInPageState extends State<SignInPage> {
       const Duration(seconds: 2),
       () => context
         ..pop()
-        ..push(AppRoutePaths.verifyEmailPath, extra: _emailController.text.trim()),
+        ..push(
+          AppRoutePaths.verifyEmailPath,
+          extra: VerifyEmailRouteArgs(
+            email: _emailController.text.trim(),
+            resendOnOpen: true,
+          ),
+        ),
     );
   }
 

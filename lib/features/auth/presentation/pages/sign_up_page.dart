@@ -17,6 +17,7 @@ import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
 import 'legal_document_type.dart';
+import 'verify_email_route_args.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -73,7 +74,10 @@ class _SignUpPageState extends State<SignUpPage> {
           succeed: (_) {
             context.go(
               AppRoutePaths.verifyEmailPath,
-              extra: _emailController.text.trim(),
+              extra: VerifyEmailRouteArgs(
+                email: _emailController.text.trim(),
+                resendOnOpen: false,
+              ),
             );
           },
           failed: (failure) {
