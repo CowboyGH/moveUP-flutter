@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_strings.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/forgot_password_page_builder.dart';
 import '../../features/auth/presentation/pages/legal_document_page.dart';
@@ -17,6 +18,9 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
+import '../../features/root/presentation/pages/root_screen.dart';
+import '../../uikit/themes/colors/app_color_theme.dart';
+import '../../uikit/themes/text/app_text_theme.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -69,7 +73,7 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
-      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
+      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.trainingsPath;
       return null;
     },
     unauthenticated: () {
@@ -82,13 +86,51 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
   );
 }
 
+final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
+
 /// The application's router using GoRouter.
 final router = GoRouter(
+  navigatorKey: _rootKey,
   initialLocation: AppRoutePaths.signInPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
   redirect: (_, state) => _redirect(_sessionCubit.state, state),
   refreshListenable: GoRouterCubitRefreshStream(_sessionCubit.stream),
   routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => RootScreen(navigationShell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.testsPath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.testsTab,
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.trainingsPath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.trainingsTab,
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.profilePath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.profileTab,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
     GoRoute(
       path: AppRoutePaths.debugPath,
       builder: (context, state) => const DebugScreen(),
@@ -207,5 +249,25 @@ class GoRouterCubitRefreshStream<T> extends ChangeNotifier {
   void dispose() {
     _subscription.cancel();
     super.dispose();
+  }
+}
+
+final class _RootPlaceholderScreen extends StatelessWidget {
+  final String screenName;
+
+  const _RootPlaceholderScreen({required this.screenName});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
+    final colorTheme = AppColorTheme.of(context);
+    return Scaffold(
+      body: Center(
+        child: Text(
+          screenName,
+          style: textTheme.title.copyWith(color: colorTheme.onSurface),
+        ),
+      ),
+    );
   }
 }

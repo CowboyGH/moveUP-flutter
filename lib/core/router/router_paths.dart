@@ -3,6 +3,18 @@ abstract class AppRoutePaths {
   /// Route path for the debug screen.
   static const debugPath = '/debug';
 
+  /// Route path for the glass-navbar prototype screen.
+  static const debugGlassNavbarPath = '$debugPath/glass-navbar';
+
+  /// Route path for the tests root tab.
+  static const testsPath = '/tests';
+
+  /// Route path for the trainings root tab.
+  static const trainingsPath = '/trainings';
+
+  /// Route path for the profile root tab.
+  static const profilePath = '/profile';
+
   /// Prefix for all authentication-related routes.
   static const authPrefix = '/auth';
 
