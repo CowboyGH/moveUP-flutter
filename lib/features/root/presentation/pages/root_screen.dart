@@ -137,8 +137,6 @@ final class _RootNavBarItem extends StatelessWidget {
         onTap: onTap,
         child: SvgPictureWidget.icon(
           iconAsset,
-          width: 28,
-          height: 28,
           color: color,
         ),
       ),
