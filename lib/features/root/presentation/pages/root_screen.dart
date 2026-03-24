@@ -135,9 +135,13 @@ final class _RootNavBarItem extends StatelessWidget {
       label: label,
       child: InkWell(
         onTap: onTap,
-        child: SvgPictureWidget.icon(
-          iconAsset,
-          color: color,
+        child: SizedBox.expand(
+          child: Center(
+            child: SvgPictureWidget.icon(
+              iconAsset,
+              color: color,
+            ),
+          ),
         ),
       ),
     );
