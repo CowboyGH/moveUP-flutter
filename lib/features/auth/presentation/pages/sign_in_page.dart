@@ -111,13 +111,13 @@ class _SignInPageState extends State<SignInPage> {
   );
 
   void _redirectUnverifiedUser({required String dialogMessage}) {
+    if (_redirectTimer != null) return;
     showAppFeedbackDialog(
       context,
       title: AppStrings.feedbackErrorTitle,
       message: dialogMessage,
       isBarrierDismissible: false,
     );
-    _redirectTimer?.cancel();
     _redirectTimer = Timer(
       const Duration(seconds: 2),
       () {
