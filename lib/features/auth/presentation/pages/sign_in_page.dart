@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/buttons/button_state.dart';
@@ -105,6 +106,21 @@ class _SignInPageState extends State<SignInPage> {
     ),
   );
 
+  void _redirectUnverifiedUser({required String dialogMessage}) {
+    showAppFeedbackDialog(
+      context,
+      title: AppStrings.feedbackErrorTitle,
+      message: dialogMessage,
+      isBarrierDismissible: false,
+    );
+    Future.delayed(
+      const Duration(seconds: 2),
+      () => context
+        ..pop()
+        ..push(AppRoutePaths.verifyEmailPath, extra: _emailController.text.trim()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthSessionCubit, AuthSessionState>(
@@ -120,11 +136,13 @@ class _SignInPageState extends State<SignInPage> {
             succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
-                showAppFeedbackDialog(
-                  context,
-                  title: AppStrings.feedbackErrorTitle,
-                  message: failure.message,
-                );
+                failure is EmailNotVerifiedFailure
+                    ? _redirectUnverifiedUser(dialogMessage: failure.message)
+                    : showAppFeedbackDialog(
+                        context,
+                        title: AppStrings.feedbackErrorTitle,
+                        message: failure.message,
+                      );
               }
             },
           );
