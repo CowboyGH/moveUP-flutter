@@ -29,6 +29,9 @@ bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.signUpPath ||
     path == AppRoutePaths.signInPath ||
     path == AppRoutePaths.verifyEmailPath ||
+    path == AppRoutePaths.forgotPasswordPath ||
+    path == AppRoutePaths.verifyResetCodePath ||
+    path == AppRoutePaths.resetPasswordPath ||
     path == AppRoutePaths.legalDocumentPath;
 
 /// Determines the redirect path based on the current [authState] and [state].
