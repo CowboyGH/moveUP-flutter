@@ -37,6 +37,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isResumeDialogVisible = false;
+  Timer? _redirectTimer;
 
   @override
   void initState() {
@@ -49,6 +50,8 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
+    _redirectTimer?.cancel();
+    _redirectTimer = null;
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -114,17 +117,21 @@ class _SignInPageState extends State<SignInPage> {
       message: dialogMessage,
       isBarrierDismissible: false,
     );
-    Future.delayed(
+    _redirectTimer?.cancel();
+    _redirectTimer = Timer(
       const Duration(seconds: 2),
-      () => context
-        ..pop()
-        ..push(
+      () {
+        _redirectTimer = null;
+        if (!mounted) return;
+        context.pop();
+        context.push(
           AppRoutePaths.verifyEmailPath,
           extra: VerifyEmailRouteArgs(
             email: _emailController.text.trim(),
             resendOnOpen: true,
           ),
-        ),
+        );
+      },
     );
   }
 
