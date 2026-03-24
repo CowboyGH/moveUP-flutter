@@ -259,17 +259,18 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'completeGuestFitnessStart does not emit guestCompletedOnboarding when save fails',
+      'completeGuestFitnessStart still emits guestCompletedOnboarding when save fails',
       setUp: () {
         when(progressStorage.saveCompleted()).thenThrow(Exception('storage_error'));
       },
       build: () => authSessionCubit,
       seed: () => const AuthSessionState.guest(),
       act: (cubit) => cubit.completeGuestFitnessStart(),
-      expect: () => const <AuthSessionState>[],
+      expect: () => const [AuthSessionState.guestCompletedOnboarding()],
       verify: (_) {
         verify(progressStorage.saveCompleted()).called(1);
         verify(logger.e(any, any, any)).called(1);
+        verify(logger.w(any)).called(1);
       },
     );
 

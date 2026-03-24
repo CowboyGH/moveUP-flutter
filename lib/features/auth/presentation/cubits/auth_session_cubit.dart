@@ -192,12 +192,13 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   /// Marks guest Fitness Start as completed and redirects user to registration.
   Future<void> completeGuestFitnessStart() async {
     final isSaved = await _saveGuestCompletedSafely();
-    if (!isSaved || isClosed) {
-      if (!isSaved) {
-        _logger.w('Skipping completed guest onboarding transition because progress save failed.');
-      }
-      return;
+    if (!isSaved) {
+      _logger.w(
+        'Completed guest onboarding progress could not be persisted; continuing current session anyway.',
+      );
     }
+
+    if (isClosed) return;
 
     emit(const AuthSessionState.guestCompletedOnboarding());
   }
