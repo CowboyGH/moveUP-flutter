@@ -34,6 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
+- Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
+
+### Fixed
+
+- Guest completed-onboarding auth routing now keeps forgot-password, verify-reset-code, and reset-password screens reachable instead of forcing a redirect back to `sign-up`.
+- Verify-email now initializes by entry source: sign-up keeps the already-sent code flow with local cooldown, while unverified sign-in requests a fresh code on open and starts cooldown only after a successful resend.
+- Sign-in now intercepts `EmailNotVerifiedFailure`, shows feedback briefly, and then routes the user to verify-email with the typed email.
 
 ## [0.2.0] - 2026-03-13
 
