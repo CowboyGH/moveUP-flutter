@@ -3,9 +3,6 @@ abstract class AppRoutePaths {
   /// Route path for the debug screen.
   static const debugPath = '/debug';
 
-  /// Route path for the glass-navbar prototype screen.
-  static const debugGlassNavbarPath = '$debugPath/glass-navbar';
-
   /// Route path for the tests root tab.
   static const testsPath = '/tests';
 
