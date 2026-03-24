@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/di/di.dart';
 import 'core/utils/logger/app_logger.dart';
 import 'features/app/app.dart';
-import 'features/auth/presentation/cubits/auth_session_cubit.dart';
 
 /// The main entry point of the application.
 Future<void> run() async {
@@ -37,8 +36,6 @@ Future<void> run() async {
         logger.f('PlatformDispatcherError', error, stack);
         return true;
       };
-
-      unawaited(di<AuthSessionCubit>().restoreSession());
 
       runApp(const MoveUpApp());
     },

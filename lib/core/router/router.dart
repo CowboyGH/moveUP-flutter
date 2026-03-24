@@ -17,6 +17,7 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -32,24 +33,20 @@ bool _isGuestCompletedAllowedPath(String path) =>
 
 /// Determines the redirect path based on the current [authState] and [state].
 String? _redirect(AuthSessionState authState, GoRouterState state) {
+  final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
     initial: () {
-      if (state.matchedLocation == AppRoutePaths.signUpPath) {
-        return AppRoutePaths.fitnessStartQuizPath;
-      }
-      if (isAuthScreen) return null;
-      return AppRoutePaths.signInPath;
+      if (isSplashScreen) return null;
+      return AppRoutePaths.splashPath;
     },
     checking: () {
-      if (state.matchedLocation == AppRoutePaths.signUpPath) {
-        return AppRoutePaths.fitnessStartQuizPath;
-      }
-      if (isAuthScreen) return null;
-      return AppRoutePaths.signInPath;
+      if (isSplashScreen) return null;
+      return AppRoutePaths.splashPath;
     },
     restoreFailed: () {
+      if (isSplashScreen) return AppRoutePaths.signInPath;
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
@@ -57,22 +54,28 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       return AppRoutePaths.signInPath;
     },
     guestResumeAvailable: () {
+      if (isSplashScreen) return AppRoutePaths.signInPath;
       if (state.matchedLocation == AppRoutePaths.signInPath) return null;
       return AppRoutePaths.signInPath;
     },
     guest: () {
+      if (isSplashScreen) return AppRoutePaths.fitnessStartQuizPath;
       if (isFitnessStartScreen) return null;
       return AppRoutePaths.fitnessStartQuizPath;
     },
     guestCompletedOnboarding: () {
+      if (isSplashScreen) return AppRoutePaths.signUpPath;
       if (_isGuestCompletedAllowedPath(state.matchedLocation)) return null;
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
-      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
+      if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
+        return AppRoutePaths.debugPath;
+      }
       return null;
     },
     unauthenticated: () {
+      if (isSplashScreen) return AppRoutePaths.signInPath;
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
@@ -84,11 +87,15 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
 
 /// The application's router using GoRouter.
 final router = GoRouter(
-  initialLocation: AppRoutePaths.signInPath,
+  initialLocation: AppRoutePaths.splashPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
   redirect: (_, state) => _redirect(_sessionCubit.state, state),
   refreshListenable: GoRouterCubitRefreshStream(_sessionCubit.stream),
   routes: [
+    GoRoute(
+      path: AppRoutePaths.splashPath,
+      builder: (_, _) => const SplashPage(),
+    ),
     GoRoute(
       path: AppRoutePaths.debugPath,
       builder: (context, state) => const DebugScreen(),
