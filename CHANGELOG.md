@@ -22,10 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
 - Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
-- Shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
-- Shared guest `tests attempt` slice for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
-- Shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
-- Shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
+- Added a shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
+- Introduced the guest `tests attempt` flow for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
+- Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
+- Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
 
 ### Changed
