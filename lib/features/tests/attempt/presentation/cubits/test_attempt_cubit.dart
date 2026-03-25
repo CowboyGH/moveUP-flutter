@@ -67,7 +67,8 @@ final class TestAttemptCubit extends Cubit<TestAttemptState> {
   Future<void> submitResult(int resultValue) async {
     final attemptId = state.attemptId;
     final currentExercise = state.currentExercise;
-    if (_isBusy || attemptId == null || currentExercise == null || state.isAwaitingPulse) return;
+    if (_isBusy || state.isCompleted || attemptId == null || currentExercise == null) return;
+    if (state.isAwaitingPulse) return;
 
     emit(
       state.copyWith(

@@ -17,7 +17,10 @@ class SaveGuestTestResultRequestDto {
   SaveGuestTestResultRequestDto({
     required this.testingExerciseId,
     required this.resultValue,
-  });
+  }) : assert(
+         resultValue >= 1 && resultValue <= 4,
+         'resultValue must be between 1 and 4',
+       );
 
   /// Converts this request to JSON.
   Map<String, dynamic> toJson() => _$SaveGuestTestResultRequestDtoToJson(this);

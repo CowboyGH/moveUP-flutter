@@ -14,7 +14,10 @@ final class TestAttemptResult extends Equatable {
   const TestAttemptResult({
     required this.nextExercise,
     required this.isAwaitingPulse,
-  });
+  }) : assert(
+         nextExercise == null || !isAwaitingPulse,
+         'nextExercise and isAwaitingPulse cannot both be set',
+       );
 
   @override
   List<Object?> get props => [nextExercise, isAwaitingPulse];

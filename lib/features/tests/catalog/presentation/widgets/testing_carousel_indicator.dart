@@ -15,7 +15,9 @@ class TestingCarouselIndicator extends StatelessWidget {
     required this.itemCount,
     required this.currentIndex,
     super.key,
-  });
+  }) : assert(itemCount > 0, 'itemCount must be greater than zero'),
+       assert(currentIndex >= 0, 'currentIndex cannot be negative'),
+       assert(currentIndex < itemCount, 'currentIndex must be less than itemCount');
 
   @override
   Widget build(BuildContext context) {

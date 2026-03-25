@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/constants/app_strings.dart';
 import '../../../../../uikit/cards/app_card.dart';
 import '../../../../../uikit/images/network_image_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
@@ -22,6 +21,20 @@ class TestingCatalogCard extends StatelessWidget {
     this.onPressed,
     super.key,
   });
+
+  /// Returns the localized plural form for test duration in minutes.
+  static String testsMinutes(int count) {
+    final mod10 = count % 10;
+    final mod100 = count % 100;
+
+    if (mod10 == 1 && mod100 != 11) {
+      return 'минута';
+    }
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
+      return 'минуты';
+    }
+    return 'минут';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +75,7 @@ class TestingCatalogCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '(${item.durationMinutes} ${AppStrings.testsMinutesPattern})',
+                '(${item.durationMinutes} ${testsMinutes(item.durationMinutes)})',
                 textAlign: TextAlign.end,
                 style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
               ),
