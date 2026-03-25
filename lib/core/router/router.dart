@@ -28,6 +28,18 @@ import 'router_paths.dart';
 
 final NetworkCubit _networkCubit = di<NetworkCubit>();
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
+bool _isStartupSplashCompleted = false;
+
+/// Minimum time the startup splash route should remain visible.
+const startupSplashDuration = Duration(milliseconds: 1500);
+
+/// Marks the startup splash as completed and re-runs redirects.
+void completeStartupSplash() {
+  if (_isStartupSplashCompleted) return;
+
+  _isStartupSplashCompleted = true;
+  router.refresh();
+}
 
 bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.signUpPath ||
@@ -45,6 +57,11 @@ String? _redirect(
   GoRouterState state,
 ) {
   final isOfflineScreen = state.matchedLocation.startsWith(AppRoutePaths.offlinePath);
+  final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
+  final isStartupSplashLocked = isSplashScreen && !_isStartupSplashCompleted;
+
+  if (isStartupSplashLocked) return null;
+
   return networkState.when(
     initial: () => null,
     disconnected: () {
@@ -60,8 +77,8 @@ String? _redirect(
 
 String? _redirectFromOffline(AuthSessionState authState) {
   return authState.when(
-    initial: () => AppRoutePaths.signInPath,
-    checking: () => AppRoutePaths.signInPath,
+    initial: () => AppRoutePaths.splashPath,
+    checking: () => AppRoutePaths.splashPath,
     restoreFailed: () => AppRoutePaths.signInPath,
     guestResumeAvailable: () => AppRoutePaths.signInPath,
     guest: () => AppRoutePaths.fitnessStartQuizPath,

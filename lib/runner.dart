@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 
 import 'core/di/di.dart';
+import 'core/router/router.dart';
 import 'core/utils/logger/app_logger.dart';
 import 'features/app/app.dart';
 import 'features/auth/presentation/cubits/auth_session_cubit.dart';
@@ -42,6 +43,9 @@ Future<void> run() async {
       final networkCubit = di<NetworkCubit>();
       final authSessionCubit = di<AuthSessionCubit>();
 
+      // Initialize router after DI is ready so splash timing starts from app bootstrap.
+      router;
+
       await networkCubit.init();
       networkCubit.state.whenOrNull(
         connected: () => _restoreSessionIfNeeded(authSessionCubit),
@@ -55,6 +59,10 @@ Future<void> run() async {
       });
 
       runApp(const MoveUpApp());
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        unawaited(Future<void>.delayed(startupSplashDuration, completeStartupSplash));
+      });
     },
     (error, stackTrace) {
       // Fallback handler (without DI)
