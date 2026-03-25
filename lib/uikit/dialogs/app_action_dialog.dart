@@ -17,13 +17,16 @@ Future<void> showAppActionDialog(
     context: context,
     barrierDismissible: false,
     barrierColor: AppColorTheme.of(context).onSurface.withValues(alpha: 0.16),
-    builder: (dialogContext) => BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-      child: AppActionDialog(
-        title: title,
-        description: description,
-        primaryAction: primaryAction,
-        secondaryAction: secondaryAction,
+    builder: (dialogContext) => PopScope(
+      canPop: false,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+        child: AppActionDialog(
+          title: title,
+          description: description,
+          primaryAction: primaryAction,
+          secondaryAction: secondaryAction,
+        ),
       ),
     ),
   );

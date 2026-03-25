@@ -161,7 +161,6 @@ abstract final class AppStrings {
       'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
 
   // Tests catalog.
-  static const testsMinutesPattern = 'минут';
   static const testsLoadFailed = 'Не удалось загрузить тесты';
   static const testsStartFailed = 'Не удалось начать тест. Попробуйте снова';
   static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';

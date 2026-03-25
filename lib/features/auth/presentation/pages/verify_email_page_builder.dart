@@ -12,8 +12,15 @@ class VerifyEmailPageBuilder extends StatelessWidget {
   /// User email used for OTP verification.
   final String email;
 
+  /// Whether the screen should request a fresh code when it opens.
+  final bool resendOnOpen;
+
   /// Creates an instance of [VerifyEmailPageBuilder].
-  const VerifyEmailPageBuilder({required this.email, super.key});
+  const VerifyEmailPageBuilder({
+    required this.email,
+    required this.resendOnOpen,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,10 @@ class VerifyEmailPageBuilder extends StatelessWidget {
           create: (context) => OtpResendCubit(di<AuthRepository>()),
         ),
       ],
-      child: VerifyEmailPage(email: email),
+      child: VerifyEmailPage(
+        email: email,
+        resendOnOpen: resendOnOpen,
+      ),
     );
   }
 }

@@ -162,9 +162,14 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Starts guest Fitness Start from the first quiz step.
   Future<void> startGuestFitnessStart() async {
-    if (!isClosed) {
-      emit(const AuthSessionState.guest());
-    }
+    final canStart = state.maybeWhen(
+      unauthenticated: () => true,
+      restoreFailed: () => true,
+      orElse: () => false,
+    );
+    if (!canStart || isClosed) return;
+
+    emit(const AuthSessionState.guest());
   }
 
   /// Continues with saved completed guest data after user confirmation on sign-in.
@@ -180,24 +185,39 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Clears saved guest progress and restarts Fitness Start from the quiz stage.
   Future<void> restartGuestProgress() async {
+    final canRestart = state.maybeWhen(
+      guestResumeAvailable: () => true,
+      orElse: () => false,
+    );
+    if (!canRestart) return;
+
     final isCleared = await _clearGuestDataSafely();
     if (!isCleared) {
       _logger.w('Guest data cleanup failed during Fitness Start restart.');
       return;
     }
 
-    await startGuestFitnessStart();
+    if (isClosed) return;
+
+    emit(const AuthSessionState.guest());
   }
 
   /// Marks guest Fitness Start as completed and redirects user to registration.
   Future<void> completeGuestFitnessStart() async {
+    final canComplete = state.maybeWhen(
+      guest: () => true,
+      orElse: () => false,
+    );
+    if (!canComplete) return;
+
     final isSaved = await _saveGuestCompletedSafely();
-    if (!isSaved || isClosed) {
-      if (!isSaved) {
-        _logger.w('Skipping completed guest onboarding transition because progress save failed.');
-      }
-      return;
+    if (!isSaved) {
+      _logger.w(
+        'Completed guest onboarding progress could not be persisted; continuing current session anyway.',
+      );
     }
+
+    if (isClosed) return;
 
     emit(const AuthSessionState.guestCompletedOnboarding());
   }

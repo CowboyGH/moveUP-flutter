@@ -23,6 +23,7 @@ Mobile client for the moveUP fitness platform.
 
 ## 🚀 Highlights
 
+- 🏃 **Fitness Start Onboarding**: guest quiz, onboarding test catalog, guest test attempts, and completed-progress resume support before sign-up
 - 🔐 **End-to-end Auth Flow**: sign in, sign up, email verification, password recovery, OTP verification, password reset, and logout
 - 🏛️ **Clean Architecture** in feature modules (Data → Domain → Presentation)
 - 🌐 **Network Layer** built on Dio + Retrofit
@@ -95,6 +96,8 @@ lib/
 │   │   ├── data/          # DTOs, API client, repository implementation
 │   │   ├── domain/        # Entities and repository contracts
 │   │   └── presentation/  # Pages, widgets, cubits, validators
+│   ├── fitness_start/     # Guest onboarding quiz, tests shell, and onboarding flow UI
+│   ├── tests/             # Shared tests catalog and guest test attempt flow
 │   └── debug/             # Internal debug screen
 ├── uikit/
 │   ├── buttons/           # Shared buttons
@@ -159,6 +162,8 @@ flutter test test/features/*/presentation/
 flutter test --coverage
 genhtml coverage/lcov.info -o coverage/html
 ```
+
+End-to-end auth and `Fitness Start` validation still requires a local `.env` with a reachable `API_URL`.
 
 ---
 
