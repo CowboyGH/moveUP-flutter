@@ -6,6 +6,9 @@ abstract class AppRoutePaths {
   /// Route path for the debug screen.
   static const debugPath = '/debug';
 
+  /// Route path for the offline page.
+  static const offlinePath = '/offline';
+
   /// Prefix for all authentication-related routes.
   static const authPrefix = '/auth';
 
