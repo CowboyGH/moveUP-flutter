@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
 - Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
+- Dedicated startup `/splash` route and branded `SplashPage`.
 
 ### Changed
 
@@ -42,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
+- App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
+- Session restore now starts from `SplashPage` after the first frame with a minimum visible splash duration instead of being kicked off directly from `runner.dart`.
 - Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
 
 ### Fixed
