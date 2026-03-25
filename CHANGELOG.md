@@ -13,7 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Startup splash flow was simplified: `runner.dart` keeps session restore bootstrap, `SplashPage` is now a presentational screen only, and the router holds `/splash` for a fixed startup interval before applying the usual auth/offline redirects.
+- Reconnect and offline-exit routing during startup now returns `AuthSessionState.initial/checking` through `/splash` instead of bypassing the branded entry flow.
+- `assets/images/splash_bg.jpg` was compressed to reduce splash image payload and speed up branded startup rendering.
+
 ### Fixed
+
+- Startup splash completion is now triggered after the first Flutter frame and forces a router refresh, preventing users from getting stuck on `/splash` because the timing finished too early.
 
 ## [0.3.0] - 2026-03-24
 
