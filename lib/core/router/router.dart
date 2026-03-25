@@ -75,8 +75,6 @@ String? _redirectByAuth(
   AuthSessionState authState,
   GoRouterState state,
 ) {
-/// Determines the redirect path based on the current [authState] and [state].
-String? _redirect(AuthSessionState authState, GoRouterState state) {
   final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
