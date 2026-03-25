@@ -11,11 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- App-level OS connectivity slice through `NetworkCubit` and `NetworkState`, covered by unit tests.
+- Offline fallback screen, route, icon asset, and centralized copy/constants for no-connection UX.
+- Dedicated startup `/splash` route and branded `SplashPage`.
+
 ### Changed
 
+- App bootstrap now initializes `NetworkCubit` before session restore and retries session restoration only when connectivity becomes available again.
+- Router refresh now reacts to both auth and connectivity state, redirects to `/offline` when the OS reports no available network, and resumes normal auth flow after reconnect.
 - Startup splash flow was simplified: `runner.dart` keeps session restore bootstrap, `SplashPage` is now a presentational screen only, and the router holds `/splash` for a fixed startup interval before applying the usual auth/offline redirects.
 - Reconnect and offline-exit routing during startup now returns `AuthSessionState.initial/checking` through `/splash` instead of bypassing the branded entry flow.
 - `assets/images/splash_bg.jpg` was compressed to reduce splash image payload and speed up branded startup rendering.
+
+### Breaking
+
+- App startup flow now depends on connectivity bootstrap: `NetworkCubit` is initialized before auth session restore, and session restoration is no longer started unconditionally on app launch.
+- Global routing behavior changed: `GoRouter` now refreshes from both auth and connectivity state, and `/offline` acts as a top-level blocking route when the OS reports no available network interface.
+- App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
+- Session restore now starts from `SplashPage` after the first frame with a minimum visible splash duration instead of being kicked off directly from `runner.dart`.
 
 ### Fixed
 
@@ -33,9 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
 - Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
-- App-level OS connectivity slice through `NetworkCubit` and `NetworkState`, covered by unit tests.
-- Offline fallback screen, route, icon asset, and centralized copy/constants for no-connection UX.
-- Dedicated startup `/splash` route and branded `SplashPage`.
 
 ### Changed
 
@@ -51,15 +61,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
-- App bootstrap now initializes `NetworkCubit` before session restore and retries session restoration only when connectivity becomes available again.
-- Router refresh now reacts to both auth and connectivity state, redirects to `/offline` when the OS reports no available network, and resumes normal auth flow after reconnect.
 
 ### Breaking
 
-- App startup flow now depends on connectivity bootstrap: `NetworkCubit` is initialized before auth session restore, and session restoration is no longer started unconditionally on app launch.
-- Global routing behavior changed: `GoRouter` now refreshes from both auth and connectivity state, and `/offline` acts as a top-level blocking route when the OS reports no available network interface.
-- App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
-- Session restore now starts from `SplashPage` after the first frame with a minimum visible splash duration instead of being kicked off directly from `runner.dart`.
 - Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
 
 ### Fixed
