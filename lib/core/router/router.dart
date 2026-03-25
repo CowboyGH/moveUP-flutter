@@ -60,10 +60,8 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
-    guestResumeAvailable: () {
-      if (state.matchedLocation == AppRoutePaths.signInPath) return null;
-      return AppRoutePaths.signInPath;
-    },
+    guestResumeAvailable: () =>
+        state.matchedLocation == AppRoutePaths.signInPath ? null : AppRoutePaths.signInPath,
     guest: () {
       if (isFitnessStartScreen) return null;
       return AppRoutePaths.fitnessStartQuizPath;

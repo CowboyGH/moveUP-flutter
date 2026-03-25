@@ -206,9 +206,23 @@ void main() {
 
     blocTest<AuthSessionCubit, AuthSessionState>(
       'startGuestFitnessStart emits guest',
+      setUp: () => when(tokenStorage.getAccessToken()).thenAnswer((_) async => null),
       build: () => authSessionCubit,
+      seed: () => const AuthSessionState.unauthenticated(),
       act: (cubit) => cubit.startGuestFitnessStart(),
       expect: () => const [AuthSessionState.guest()],
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'startGuestFitnessStart is no-op when session is authenticated',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.authenticated(user),
+      act: (cubit) => cubit.startGuestFitnessStart(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verifyNever(progressStorage.clear());
+        verifyNever(progressStorage.saveCompleted());
+      },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
@@ -248,6 +262,18 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'restartGuestProgress is no-op when session cannot resume guest progress',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.authenticated(user),
+      act: (cubit) => cubit.restartGuestProgress(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verifyNever(progressStorage.clear());
+        verifyNever(guestSessionStorage.clear());
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'completeGuestFitnessStart emits guestCompletedOnboarding and saves completed progress',
       build: () => authSessionCubit,
       seed: () => const AuthSessionState.guest(),
@@ -271,6 +297,17 @@ void main() {
         verify(progressStorage.saveCompleted()).called(1);
         verify(logger.e(any, any, any)).called(1);
         verify(logger.w(any)).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'completeGuestFitnessStart is no-op when session is not in guest flow',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.checking(),
+      act: (cubit) => cubit.completeGuestFitnessStart(),
+      expect: () => const <AuthSessionState>[],
+      verify: (_) {
+        verifyNever(progressStorage.saveCompleted());
       },
     );
 

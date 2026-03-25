@@ -18,11 +18,14 @@ void showAppFeedbackDialog(
     context: context,
     barrierDismissible: isBarrierDismissible,
     barrierColor: AppColorTheme.of(context).onSurface.withValues(alpha: 0.16),
-    builder: (context) => BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-      child: AppFeedbackDialog(
-        title: title,
-        message: message,
+    builder: (context) => PopScope(
+      canPop: isBarrierDismissible,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+        child: AppFeedbackDialog(
+          title: title,
+          message: message,
+        ),
       ),
     ),
   );
