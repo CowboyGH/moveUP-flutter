@@ -47,6 +47,7 @@ Future<void> run() async {
         connected: () => _restoreSessionIfNeeded(authSessionCubit),
       );
 
+      // This listener intentionally lives for the whole app lifetime.
       networkCubit.stream.listen((networkState) {
         networkState.whenOrNull(
           connected: () => _restoreSessionIfNeeded(authSessionCubit),

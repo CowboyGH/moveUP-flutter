@@ -25,7 +25,9 @@ final class NetworkCubit extends Cubit<NetworkState> {
     _subscription = _networkService.connectionStream.listen(_onConnectionChanged);
 
     final hasNetwork = await _networkService.hasNetwork();
-    _onConnectionChanged(hasNetwork);
+    if (state == const NetworkState.initial()) {
+      _onConnectionChanged(hasNetwork);
+    }
   }
 
   void _onConnectionChanged(bool hasNetwork) {
