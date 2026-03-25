@@ -23,16 +23,16 @@ class OfflinePage extends StatelessWidget {
             child: Transform.scale(
               scaleX: -1,
               scaleY: -1,
-              child: const AppDecorativeFigure(tone: FigureTone.primary),
+              child: const AppDecorativeFigure(tone: .primary),
             ),
           ),
           const Positioned(
             right: -97,
             bottom: -65,
-            child: AppDecorativeFigure(tone: FigureTone.secondary),
+            child: AppDecorativeFigure(tone: .secondary),
           ),
           Padding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 24),
+            padding: const .symmetric(horizontal: 24),
             child: Column(
               children: [
                 Expanded(
@@ -45,13 +45,13 @@ class OfflinePage extends StatelessWidget {
                         const SizedBox(height: 44),
                         Text(
                           AppStrings.noConnectionTitle,
-                          textAlign: TextAlign.center,
+                          textAlign: .center,
                           style: textTheme.title,
                         ),
                         const SizedBox(height: 24),
                         Text(
                           AppStrings.noConnectionSubtitle,
-                          textAlign: TextAlign.center,
+                          textAlign: .center,
                           style: textTheme.body.copyWith(
                             fontSize: 16,
                             height: 24 / 16,
