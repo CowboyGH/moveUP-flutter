@@ -41,7 +41,7 @@ class OfflinePage extends StatelessWidget {
                       mainAxisAlignment: .center,
                       mainAxisSize: .min,
                       children: [
-                        const SvgPictureWidget.icon(AppAssets.noConnection),
+                        const SvgPictureWidget.icon(AppAssets.iconNoConnection),
                         const SizedBox(height: 44),
                         Text(
                           AppStrings.noConnectionTitle,
