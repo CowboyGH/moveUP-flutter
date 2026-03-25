@@ -77,6 +77,21 @@ void main() {
       });
     });
 
+    test(
+      'initializeEmailVerification starts cooldown without resend when code is already sent',
+      () {
+        fakeAsync((_) {
+          otpResendCubit.initializeEmailVerification(
+            email: email,
+            resendOnOpen: false,
+          );
+
+          expect(otpResendCubit.state.secondsLeft, 60);
+          verifyNever(repository.resendOtpCode(any, any));
+        });
+      },
+    );
+
     blocTest<OtpResendCubit, OtpResendState>(
       'emits inProgress and success state, then restarts cooldown on success',
       setUp: () => when(repository.resendOtpCode(email, resetPasswordFlow)).thenAnswer(
@@ -103,6 +118,23 @@ void main() {
         OtpResendState(failure: authFailure),
       ],
       verify: (_) => verify(repository.resendOtpCode(email, resetPasswordFlow)).called(1),
+    );
+
+    blocTest<OtpResendCubit, OtpResendState>(
+      'initializeEmailVerification resends code on open when requested',
+      setUp: () => when(repository.resendOtpCode(email, emailVerificationFlow)).thenAnswer(
+        (_) async => const Success<void, AuthFailure>(null),
+      ),
+      build: () => otpResendCubit,
+      act: (cubit) => cubit.initializeEmailVerification(
+        email: email,
+        resendOnOpen: true,
+      ),
+      expect: () => const [
+        OtpResendState(isInProgress: true),
+        OtpResendState(secondsLeft: 60, isSucceeded: true),
+      ],
+      verify: (_) => verify(repository.resendOtpCode(email, emailVerificationFlow)).called(1),
     );
   });
 }

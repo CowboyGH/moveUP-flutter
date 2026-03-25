@@ -101,10 +101,28 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
       return;
     }
 
+    final age = int.tryParse(_ageController.text.trim());
+    if (age == null) {
+      _showFeedback(AppStrings.fitnessStartAgeInvalid);
+      return;
+    }
+
+    final weight = double.tryParse(_weightController.text.trim().replaceAll(',', '.'));
+    if (weight == null) {
+      _showFeedback(AppStrings.fitnessStartWeightInvalid);
+      return;
+    }
+
+    final height = int.tryParse(_heightController.text.trim());
+    if (height == null) {
+      _showFeedback(AppStrings.fitnessStartHeightInvalid);
+      return;
+    }
+
     await _fitnessStartCubit.submitAnthropometry(
-      age: int.parse(_ageController.text.trim()),
-      weight: double.parse(_weightController.text.trim().replaceAll(',', '.')),
-      height: int.parse(_heightController.text.trim()),
+      age: age,
+      weight: weight,
+      height: height,
     );
   }
 

@@ -1,7 +1,7 @@
 name: moveup_flutter
 description: Mobile client for the moveUP fitness platform.
 publish_to: 'none'
-version: 0.2.0
+version: 0.3.0
 
 environment:
   sdk: '>=3.10.0 <4.0.0'

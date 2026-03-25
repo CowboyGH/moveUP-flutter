@@ -12,6 +12,7 @@ import '../../features/auth/presentation/pages/reset_password_route_args.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
+import '../../features/auth/presentation/pages/verify_email_route_args.dart';
 import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
@@ -29,6 +30,9 @@ bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.signUpPath ||
     path == AppRoutePaths.signInPath ||
     path == AppRoutePaths.verifyEmailPath ||
+    path == AppRoutePaths.forgotPasswordPath ||
+    path == AppRoutePaths.verifyResetCodePath ||
+    path == AppRoutePaths.resetPasswordPath ||
     path == AppRoutePaths.legalDocumentPath;
 
 /// Determines the redirect path based on the current [authState] and [state].
@@ -54,9 +58,9 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       return AppRoutePaths.signInPath;
     },
     guestResumeAvailable: () {
-      if (isSplashScreen) return AppRoutePaths.signInPath;
-      if (state.matchedLocation == AppRoutePaths.signInPath) return null;
-      return AppRoutePaths.signInPath;
+      final shouldRedirectToSignIn =
+          isSplashScreen || state.matchedLocation != AppRoutePaths.signInPath;
+      return shouldRedirectToSignIn ? AppRoutePaths.signInPath : null;
     },
     guest: () {
       if (isSplashScreen) return AppRoutePaths.fitnessStartQuizPath;
@@ -162,14 +166,18 @@ final router = GoRouter(
       path: AppRoutePaths.verifyEmailPath,
       redirect: (_, state) {
         final extra = state.extra;
-        if (extra is! String || extra.trim().isEmpty) {
+        if (extra is! VerifyEmailRouteArgs || extra.email.trim().isEmpty) {
           return AppRoutePaths.signUpPath;
         }
         return null;
       },
-      builder: (_, state) => VerifyEmailPageBuilder(
-        email: (state.extra as String).trim(),
-      ),
+      builder: (_, state) {
+        final args = state.extra as VerifyEmailRouteArgs;
+        return VerifyEmailPageBuilder(
+          email: args.email.trim(),
+          resendOnOpen: args.resendOnOpen,
+        );
+      },
     ),
     GoRoute(
       path: AppRoutePaths.fitnessStartQuizPath,

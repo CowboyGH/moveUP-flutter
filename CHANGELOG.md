@@ -11,13 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.3.0] - 2026-03-24
+
+### Added
+
 - `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
 - Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
 - `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
-- Shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
-- Shared guest `tests attempt` slice for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
-- Shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
-- Shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
+- Added a shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
+- Introduced the guest `tests attempt` flow for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
+- Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
+- Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
 - Dedicated startup `/splash` route and branded `SplashPage`.
 
@@ -37,6 +45,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
 - App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
 - Session restore now starts from `SplashPage` after the first frame with a minimum visible splash duration instead of being kicked off directly from `runner.dart`.
+- Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
+
+### Fixed
+
+- Completing guest `Fitness Start` now still transitions the current session to post-onboarding sign-up even if the completed-progress marker cannot be persisted locally; resume persistence remains best-effort support.
+- Guest completed-onboarding auth routing now keeps forgot-password, verify-reset-code, and reset-password screens reachable instead of forcing a redirect back to `sign-up`.
+- Verify-email now initializes by entry source: sign-up keeps the already-sent code flow with local cooldown, while unverified sign-in requests a fresh code on open and starts cooldown only after a successful resend.
+- Sign-in now intercepts `EmailNotVerifiedFailure`, shows feedback briefly, and then routes the user to verify-email with the typed email.
 
 ## [0.2.0] - 2026-03-13
 
