@@ -50,6 +50,8 @@ _No unreleased changes yet._
 - Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
 - Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
 - `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
+- Authenticated root shell with a glass-style bottom navigation bar and placeholder `Tests`, `Trainings`, and `Profile` tabs.
+- Bottom navigation icon assets for the root shell plus `AppColorTheme.darkHint` for darker muted icon rendering.
 
 ### Changed
 
@@ -65,6 +67,7 @@ _No unreleased changes yet._
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
+- Authenticated routing now opens the root tab shell instead of the previous debug entrypoint, using `Trainings` as the default tab.
 
 ### Breaking
 

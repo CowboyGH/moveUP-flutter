@@ -1,0 +1,11 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="tests_cutouts" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+<rect width="24" height="24" rx="4" fill="white"/>
+<path d="M1 6L23 6" stroke="black" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M4 11L12 11" stroke="black" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M15 10.6364L16.431 11.8852C16.5063 11.951 16.6187 11.951 16.694 11.8852L20 9" stroke="black" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M15 16.6364L16.431 17.8852C16.5063 17.951 16.6187 17.951 16.694 17.8852L20 15" stroke="black" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M4 17L12 17" stroke="black" stroke-width="1.3" stroke-linecap="round"/>
+</mask>
+<rect width="24" height="24" rx="4" fill="#4C5050" mask="url(#tests_cutouts)"/>
+</svg>

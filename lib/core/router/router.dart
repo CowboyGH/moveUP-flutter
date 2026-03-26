@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/constants/app_strings.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/forgot_password_page_builder.dart';
 import '../../features/auth/presentation/pages/legal_document_page.dart';
@@ -20,7 +21,10 @@ import '../../features/fitness_start/presentation/pages/fitness_start_test_attem
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
+import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../uikit/themes/colors/app_color_theme.dart';
+import '../../uikit/themes/text/app_text_theme.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -83,7 +87,7 @@ String? _redirectFromOffline(AuthSessionState authState) {
     guestResumeAvailable: () => AppRoutePaths.signInPath,
     guest: () => AppRoutePaths.fitnessStartQuizPath,
     guestCompletedOnboarding: () => AppRoutePaths.signUpPath,
-    authenticated: (_) => AppRoutePaths.debugPath,
+    authenticated: (_) => AppRoutePaths.trainingsPath,
     unauthenticated: () => AppRoutePaths.signInPath,
   );
 }
@@ -128,9 +132,8 @@ String? _redirectByAuth(
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
-      if (state.matchedLocation == AppRoutePaths.debugPath) return null;
       if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
-        return AppRoutePaths.debugPath;
+        return AppRoutePaths.trainingsPath;
       }
       return null;
     },
@@ -145,8 +148,11 @@ String? _redirectByAuth(
   );
 }
 
+final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
+
 /// The application's router using GoRouter.
 final router = GoRouter(
+  navigatorKey: _rootKey,
   initialLocation: AppRoutePaths.splashPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
   redirect: (_, state) => _redirect(_networkCubit.state, _sessionCubit.state, state),
@@ -155,6 +161,41 @@ final router = GoRouter(
     _networkCubit.stream,
   ),
   routes: [
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) => RootScreen(navigationShell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.testsPath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.testsTab,
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.trainingsPath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.trainingsTab,
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppRoutePaths.profilePath,
+              builder: (_, _) => const _RootPlaceholderScreen(
+                screenName: AppStrings.profileTab,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
     GoRoute(
       path: AppRoutePaths.splashPath,
       builder: (_, _) => const SplashPage(),
@@ -288,5 +329,25 @@ class CombinedRouterRefreshListenable<T, S> extends ChangeNotifier {
     _firstSubscription.cancel();
     _secondSubscription.cancel();
     super.dispose();
+  }
+}
+
+final class _RootPlaceholderScreen extends StatelessWidget {
+  final String screenName;
+
+  const _RootPlaceholderScreen({required this.screenName});
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = AppTextTheme.of(context);
+    final colorTheme = AppColorTheme.of(context);
+    return Scaffold(
+      body: Center(
+        child: Text(
+          screenName,
+          style: textTheme.title.copyWith(color: colorTheme.onSurface),
+        ),
+      ),
+    );
   }
 }

@@ -18,6 +18,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
   final Color surface;
   final Color onSurface;
   final Color hint;
+  final Color darkHint;
   final Color error;
   final Color onError;
   final Color border;
@@ -33,6 +34,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
     required this.surface,
     required this.onSurface,
     required this.hint,
+    required this.darkHint,
     required this.error,
     required this.onError,
     required this.border,
@@ -49,6 +51,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
       surface = AppColors.white,
       onSurface = AppColors.black,
       hint = AppColors.grey700,
+      darkHint = AppColors.grey800,
       error = AppColors.error,
       onError = AppColors.white,
       border = AppColors.primary700,
@@ -65,6 +68,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
     Color? surface,
     Color? onSurface,
     Color? hint,
+    Color? darkHint,
     Color? error,
     Color? onError,
     Color? border,
@@ -80,6 +84,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
       surface: surface ?? this.surface,
       onSurface: onSurface ?? this.onSurface,
       hint: hint ?? this.hint,
+      darkHint: darkHint ?? this.darkHint,
       error: error ?? this.error,
       onError: onError ?? this.onError,
       border: border ?? this.border,
@@ -102,6 +107,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
       surface: Color.lerp(surface, other.surface, t)!,
       onSurface: Color.lerp(onSurface, other.onSurface, t)!,
       hint: Color.lerp(hint, other.hint, t)!,
+      darkHint: Color.lerp(darkHint, other.darkHint, t)!,
       error: Color.lerp(error, other.error, t)!,
       onError: Color.lerp(onError, other.onError, t)!,
       border: Color.lerp(border, other.border, t)!,

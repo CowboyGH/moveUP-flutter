@@ -7,6 +7,9 @@ abstract final class AppAssets {
   static const iconExclamationPoint = 'exclamation_point';
   static const iconEyeClose = 'eye_close';
   static const iconEyeOpen = 'eye_open';
+  static const iconTests = 'tests';
+  static const iconTrainings = 'workouts';
+  static const iconProfile = 'profile';
   static const iconNoConnection = 'offline';
 
   // Images.

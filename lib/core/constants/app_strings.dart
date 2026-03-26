@@ -180,4 +180,9 @@ abstract final class AppStrings {
 
   // Debug screen.
   static const debugLogoutButton = 'Выйти';
+
+  /// Root tabs.
+  static const testsTab = 'Тесты';
+  static const trainingsTab = 'Тренировки';
+  static const profileTab = 'Профиль';
 }
