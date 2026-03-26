@@ -31,11 +31,11 @@ class OptionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
-    final isDisabled = state == ButtonState.disabled;
+    final isEnabled = state == ButtonState.enabled;
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
-        onPressed: isDisabled ? null : onPressed,
+        onPressed: isEnabled ? onPressed : null,
         style:
             OutlinedButton.styleFrom(
               fixedSize: const Size.fromHeight(53),
@@ -51,7 +51,7 @@ class OptionButton extends StatelessWidget {
               overlayColor: Colors.transparent,
             ).copyWith(
               side: WidgetStateProperty.resolveWith((states) {
-                if (isDisabled) return BorderSide(color: colorTheme.disabled);
+                if (!isEnabled) return BorderSide(color: colorTheme.disabled);
 
                 if (isSelected || states.contains(WidgetState.pressed)) {
                   return BorderSide(color: colorTheme.primary.withValues(alpha: 0.8));
@@ -59,7 +59,7 @@ class OptionButton extends StatelessWidget {
                 return BorderSide(color: colorTheme.disabled.withValues(alpha: 0.6));
               }),
               foregroundColor: WidgetStateProperty.resolveWith((states) {
-                if (isDisabled) return colorTheme.disabled;
+                if (!isEnabled) return colorTheme.disabled;
                 return colorTheme.onSurface;
               }),
             ),

@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _No unreleased changes yet._
 
-## [0.3.1] - 2026-03-25
+## [0.3.1] - 2026-03-26
 
 ### Added
 
@@ -38,7 +38,7 @@ _No unreleased changes yet._
 
 - Startup splash completion is now triggered after the first Flutter frame and forces a router refresh, preventing users from getting stuck on `/splash` because the timing finished too early.
 
-## [0.3.0] - 2026-03-24
+## [0.3.0] - 2026-03-26
 
 ### Added
 
@@ -76,6 +76,7 @@ _No unreleased changes yet._
 - Guest completed-onboarding auth routing now keeps forgot-password, verify-reset-code, and reset-password screens reachable instead of forcing a redirect back to `sign-up`.
 - Verify-email now initializes by entry source: sign-up keeps the already-sent code flow with local cooldown, while unverified sign-in requests a fresh code on open and starts cooldown only after a successful resend.
 - Sign-in now intercepts `EmailNotVerifiedFailure`, shows feedback briefly, and then routes the user to verify-email with the typed email.
+- `OptionButton` now treats every non-`enabled` state as non-interactive, so loading option buttons no longer remain tappable with active styling.
 
 ## [0.2.0] - 2026-03-13
 
