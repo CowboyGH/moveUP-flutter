@@ -12,9 +12,6 @@ abstract class AppRoutePaths {
   /// Route path for the tests root tab.
   static const testsPath = '/tests';
 
-  /// Route path for the trainings root tab.
-  static const trainingsPath = '/trainings';
-
   /// Route path for the profile root tab.
   static const profilePath = '/profile';
 
@@ -60,4 +57,7 @@ abstract class AppRoutePaths {
   /// Builds the concrete route path for a test attempt by [testingId].
   static String fitnessStartTestAttemptDetailsPath(int testingId) =>
       '$fitnessStartTestAttemptBasePath/$testingId';
+
+  /// Route path for workouts overview.
+  static const workoutsPath = '/workouts';
 }

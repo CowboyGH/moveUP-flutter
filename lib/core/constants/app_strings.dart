@@ -178,6 +178,19 @@ abstract final class AppStrings {
   static const testsAttemptResultNormal = 'Нормально';
   static const testsAttemptResultGood = 'Хорошо';
 
+  // Workouts overview.
+  static const workoutsOverviewTitle = 'Тренировки';
+  static const workoutsOverviewDescriptionPrimary =
+      'Тренировки, которые были подобраны специально под Вас.';
+  static const workoutsOverviewDescriptionSecondary =
+      'Больше упражнений для ваших тренировок можно найти в нашей подписке';
+  static const workoutsOverviewSearchHint = 'Поиск';
+  static const workoutsOverviewOpenButton = 'Перейти';
+  static const workoutsEmpty = 'Тренировки не найдены';
+  static const workoutsSearchEmpty = 'По вашему запросу тренировки не найдены';
+  static const workoutsLoadFailed = 'Не удалось загрузить тренировки';
+  static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   // Debug screen.
   static const debugLogoutButton = 'Выйти';
 

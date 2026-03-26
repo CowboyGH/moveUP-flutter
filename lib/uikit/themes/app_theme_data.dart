@@ -41,6 +41,12 @@ abstract class AppThemeData {
       onError: _lightColorTheme.onError,
     ),
     scaffoldBackgroundColor: _lightColorTheme.background,
+    appBarTheme: AppBarTheme(
+      centerTitle: true,
+      scrolledUnderElevation: 0,
+      backgroundColor: _lightColorTheme.surface,
+      surfaceTintColor: Colors.transparent,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       isDense: true,
       border: _enabledFieldBorder,

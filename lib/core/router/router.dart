@@ -23,6 +23,7 @@ import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/workouts/overview/presentation/pages/workouts_overview_page_builder.dart';
 import '../../uikit/themes/colors/app_color_theme.dart';
 import '../../uikit/themes/text/app_text_theme.dart';
 import '../di/di.dart';
@@ -87,7 +88,7 @@ String? _redirectFromOffline(AuthSessionState authState) {
     guestResumeAvailable: () => AppRoutePaths.signInPath,
     guest: () => AppRoutePaths.fitnessStartQuizPath,
     guestCompletedOnboarding: () => AppRoutePaths.signUpPath,
-    authenticated: (_) => AppRoutePaths.trainingsPath,
+    authenticated: (_) => AppRoutePaths.workoutsPath,
     unauthenticated: () => AppRoutePaths.signInPath,
   );
 }
@@ -132,8 +133,12 @@ String? _redirectByAuth(
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
+      if (state.matchedLocation == AppRoutePaths.workoutsPath ||
+          state.matchedLocation == AppRoutePaths.debugPath) {
+        return null;
+      }
       if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
-        return AppRoutePaths.trainingsPath;
+        return AppRoutePaths.workoutsPath;
       }
       return null;
     },
@@ -177,10 +182,8 @@ final router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: AppRoutePaths.trainingsPath,
-              builder: (_, _) => const _RootPlaceholderScreen(
-                screenName: AppStrings.trainingsTab,
-              ),
+              path: AppRoutePaths.workoutsPath,
+              builder: (_, _) => const WorkoutsOverviewPageBuilder(),
             ),
           ],
         ),
