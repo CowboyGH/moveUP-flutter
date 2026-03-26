@@ -159,7 +159,9 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
           padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
           child: WorkoutOverviewCard(
             item: item,
-            onPressed: () => context.push(AppRoutePaths.debugPath),
+            onPressed: () => context.push(
+              AppRoutePaths.workoutDetailsConcretePath(item.userWorkoutId),
+            ),
           ),
         );
       }),
