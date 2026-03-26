@@ -141,6 +141,28 @@ void main() {
         verify(apiClient.saveGuestTestResult(any, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });
+
+      test('returns TestsRequestFailure when api throws DioException', () async {
+        final exception = createTestsDioBadResponseException(
+          path: '/guest/test-attempts/guest_attempt_1/result',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.saveGuestTestResult(any, any)).thenThrow(exception);
+
+        final result = await repository.saveResult(
+          attemptId: 'guest_attempt_1',
+          testingExerciseId: 16,
+          resultValue: 2,
+        );
+
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<TestsRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.saveGuestTestResult(any, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
     group('GuestTestAttemptRepositoryImpl.completeTest', () {

@@ -13,6 +13,7 @@ import '../../features/auth/presentation/pages/reset_password_route_args.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
+import '../../features/auth/presentation/pages/verify_email_route_args.dart';
 import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
@@ -21,39 +22,94 @@ import '../../features/fitness_start/presentation/pages/fitness_start_tests_page
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../uikit/themes/colors/app_color_theme.dart';
 import '../../uikit/themes/text/app_text_theme.dart';
+import '../../features/offline/presentation/cubit/network_cubit.dart';
+import '../../features/offline/presentation/pages/offline_page.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
 import 'router_paths.dart';
 
+final NetworkCubit _networkCubit = di<NetworkCubit>();
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
+bool _isStartupSplashCompleted = false;
+
+/// Minimum time the startup splash route should remain visible.
+const startupSplashDuration = Duration(milliseconds: 1500);
+
+/// Marks the startup splash as completed and re-runs redirects.
+void completeStartupSplash() {
+  if (_isStartupSplashCompleted) return;
+
+  _isStartupSplashCompleted = true;
+  router.refresh();
+}
 
 bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.signUpPath ||
     path == AppRoutePaths.signInPath ||
     path == AppRoutePaths.verifyEmailPath ||
+    path == AppRoutePaths.forgotPasswordPath ||
+    path == AppRoutePaths.verifyResetCodePath ||
+    path == AppRoutePaths.resetPasswordPath ||
     path == AppRoutePaths.legalDocumentPath;
 
-/// Determines the redirect path based on the current [authState] and [state].
-String? _redirect(AuthSessionState authState, GoRouterState state) {
+/// Determines the redirect path based on the current [networkState], [authState] and [state].
+String? _redirect(
+  NetworkState networkState,
+  AuthSessionState authState,
+  GoRouterState state,
+) {
+  final isOfflineScreen = state.matchedLocation.startsWith(AppRoutePaths.offlinePath);
+  final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
+  final isStartupSplashLocked = isSplashScreen && !_isStartupSplashCompleted;
+
+  if (isStartupSplashLocked) return null;
+
+  return networkState.when(
+    initial: () => null,
+    disconnected: () {
+      if (isOfflineScreen) return null;
+      return AppRoutePaths.offlinePath;
+    },
+    connected: () {
+      if (isOfflineScreen) return _redirectFromOffline(authState);
+      return _redirectByAuth(authState, state);
+    },
+  );
+}
+
+String? _redirectFromOffline(AuthSessionState authState) {
+  return authState.when(
+    initial: () => AppRoutePaths.splashPath,
+    checking: () => AppRoutePaths.splashPath,
+    restoreFailed: () => AppRoutePaths.signInPath,
+    guestResumeAvailable: () => AppRoutePaths.signInPath,
+    guest: () => AppRoutePaths.fitnessStartQuizPath,
+    guestCompletedOnboarding: () => AppRoutePaths.signUpPath,
+    authenticated: (_) => AppRoutePaths.debugPath,
+    unauthenticated: () => AppRoutePaths.signInPath,
+  );
+}
+
+String? _redirectByAuth(
+  AuthSessionState authState,
+  GoRouterState state,
+) {
+  final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
     initial: () {
-      if (state.matchedLocation == AppRoutePaths.signUpPath) {
-        return AppRoutePaths.fitnessStartQuizPath;
-      }
-      if (isAuthScreen) return null;
-      return AppRoutePaths.signInPath;
+      if (isSplashScreen) return null;
+      return AppRoutePaths.splashPath;
     },
     checking: () {
-      if (state.matchedLocation == AppRoutePaths.signUpPath) {
-        return AppRoutePaths.fitnessStartQuizPath;
-      }
-      if (isAuthScreen) return null;
-      return AppRoutePaths.signInPath;
+      if (isSplashScreen) return null;
+      return AppRoutePaths.splashPath;
     },
     restoreFailed: () {
+      if (isSplashScreen) return AppRoutePaths.signInPath;
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
@@ -61,22 +117,28 @@ String? _redirect(AuthSessionState authState, GoRouterState state) {
       return AppRoutePaths.signInPath;
     },
     guestResumeAvailable: () {
-      if (state.matchedLocation == AppRoutePaths.signInPath) return null;
-      return AppRoutePaths.signInPath;
+      final shouldRedirectToSignIn =
+          isSplashScreen || state.matchedLocation != AppRoutePaths.signInPath;
+      return shouldRedirectToSignIn ? AppRoutePaths.signInPath : null;
     },
     guest: () {
+      if (isSplashScreen) return AppRoutePaths.fitnessStartQuizPath;
       if (isFitnessStartScreen) return null;
       return AppRoutePaths.fitnessStartQuizPath;
     },
     guestCompletedOnboarding: () {
+      if (isSplashScreen) return AppRoutePaths.signUpPath;
       if (_isGuestCompletedAllowedPath(state.matchedLocation)) return null;
       return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
-      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.trainingsPath;
+      if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
+        return AppRoutePaths.trainingsPath;
+      }
       return null;
     },
     unauthenticated: () {
+      if (isSplashScreen) return AppRoutePaths.signInPath;
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
@@ -90,11 +152,13 @@ final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
 
 /// The application's router using GoRouter.
 final router = GoRouter(
-  navigatorKey: _rootKey,
-  initialLocation: AppRoutePaths.signInPath,
+  initialLocation: AppRoutePaths.splashPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
-  redirect: (_, state) => _redirect(_sessionCubit.state, state),
-  refreshListenable: GoRouterCubitRefreshStream(_sessionCubit.stream),
+  redirect: (_, state) => _redirect(_networkCubit.state, _sessionCubit.state, state),
+  refreshListenable: CombinedRouterRefreshListenable(
+    _sessionCubit.stream,
+    _networkCubit.stream,
+  ),
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) => RootScreen(navigationShell: navigationShell),
@@ -132,8 +196,16 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
+      path: AppRoutePaths.splashPath,
+      builder: (_, _) => const SplashPage(),
+    ),
+    GoRoute(
       path: AppRoutePaths.debugPath,
       builder: (context, state) => const DebugScreen(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.offlinePath,
+      builder: (context, state) => const OfflinePage(),
     ),
     GoRoute(
       path: AppRoutePaths.signInPath,
@@ -197,14 +269,18 @@ final router = GoRouter(
       path: AppRoutePaths.verifyEmailPath,
       redirect: (_, state) {
         final extra = state.extra;
-        if (extra is! String || extra.trim().isEmpty) {
+        if (extra is! VerifyEmailRouteArgs || extra.email.trim().isEmpty) {
           return AppRoutePaths.signUpPath;
         }
         return null;
       },
-      builder: (_, state) => VerifyEmailPageBuilder(
-        email: (state.extra as String).trim(),
-      ),
+      builder: (_, state) {
+        final args = state.extra as VerifyEmailRouteArgs;
+        return VerifyEmailPageBuilder(
+          email: args.email.trim(),
+          resendOnOpen: args.resendOnOpen,
+        );
+      },
     ),
     GoRoute(
       path: AppRoutePaths.fitnessStartQuizPath,
@@ -237,17 +313,20 @@ final router = GoRouter(
 );
 
 /// A [ChangeNotifier] that notifies listeners when [stream] emits.
-class GoRouterCubitRefreshStream<T> extends ChangeNotifier {
-  late final StreamSubscription<T> _subscription;
+class CombinedRouterRefreshListenable<T, S> extends ChangeNotifier {
+  late final StreamSubscription<T> _firstSubscription;
+  late final StreamSubscription<S> _secondSubscription;
 
-  /// Creates a [GoRouterCubitRefreshStream] for [stream].
-  GoRouterCubitRefreshStream(Stream<T> stream) {
-    _subscription = stream.listen((_) => notifyListeners());
+  /// Creates a [CombinedRouterRefreshListenable] for the provided streams.
+  CombinedRouterRefreshListenable(Stream<T> firstStream, Stream<S> secondStream) {
+    _firstSubscription = firstStream.listen((_) => notifyListeners());
+    _secondSubscription = secondStream.listen((_) => notifyListeners());
   }
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _firstSubscription.cancel();
+    _secondSubscription.cancel();
     super.dispose();
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/buttons/button_state.dart';
@@ -20,6 +21,7 @@ import '../widgets/auth_flow_shell.dart';
 import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
+import 'verify_email_route_args.dart';
 
 /// Sign-in page.
 class SignInPage extends StatefulWidget {
@@ -34,7 +36,9 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isResumeDialogVisible = false;
+  bool _isDialogVisible = false;
+  NavigatorState? _rootNavigator;
+  Timer? _redirectTimer;
 
   @override
   void initState() {
@@ -46,7 +50,18 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _rootNavigator ??= Navigator.of(context, rootNavigator: true);
+  }
+
+  @override
   void dispose() {
+    _redirectTimer?.cancel();
+    _redirectTimer = null;
+    if (_isDialogVisible && _rootNavigator?.canPop() == true) {
+      _rootNavigator?.pop();
+    }
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -73,13 +88,13 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _maybeShowResumeDialog(AuthSessionState state) {
-    if (_isResumeDialogVisible) return;
+    if (_isDialogVisible) return;
 
     final shouldShowDialog = state.whenOrNull(guestResumeAvailable: () => true);
     if (shouldShowDialog != true) return;
 
-    _isResumeDialogVisible = true;
-    _showResumeDialog().whenComplete(() => _isResumeDialogVisible = false);
+    _isDialogVisible = true;
+    _showResumeDialog().whenComplete(() => _isDialogVisible = false);
   }
 
   Future<void> _showResumeDialog() => showAppActionDialog(
@@ -105,6 +120,36 @@ class _SignInPageState extends State<SignInPage> {
     ),
   );
 
+  void _redirectUnverifiedUser({required String dialogMessage}) {
+    if (_redirectTimer != null) return;
+
+    _isDialogVisible = true;
+    showAppFeedbackDialog<void>(
+      context,
+      title: AppStrings.feedbackErrorTitle,
+      message: dialogMessage,
+      isBarrierDismissible: false,
+    ).whenComplete(() => _isDialogVisible = false);
+    _redirectTimer = Timer(
+      const Duration(seconds: 2),
+      () {
+        _redirectTimer = null;
+        if (!mounted) return;
+        if (_isDialogVisible) {
+          _rootNavigator?.pop();
+          _isDialogVisible = false;
+        }
+        context.push(
+          AppRoutePaths.verifyEmailPath,
+          extra: VerifyEmailRouteArgs(
+            email: _emailController.text.trim(),
+            resendOnOpen: true,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthSessionCubit, AuthSessionState>(
@@ -120,11 +165,13 @@ class _SignInPageState extends State<SignInPage> {
             succeed: (user) => context.read<AuthSessionCubit>().onSignInSuccess(user),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
-                showAppFeedbackDialog(
-                  context,
-                  title: AppStrings.feedbackErrorTitle,
-                  message: failure.message,
-                );
+                failure is EmailNotVerifiedFailure
+                    ? _redirectUnverifiedUser(dialogMessage: failure.message)
+                    : showAppFeedbackDialog(
+                        context,
+                        title: AppStrings.feedbackErrorTitle,
+                        message: failure.message,
+                      );
               }
             },
           );

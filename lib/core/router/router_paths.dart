@@ -3,6 +3,12 @@ abstract class AppRoutePaths {
   /// Route path for the debug screen.
   static const debugPath = '/debug';
 
+  /// Route path for the splash screen.
+  static const splashPath = '/splash';
+  
+  /// Route path for the offline page.
+  static const offlinePath = '/offline';
+
   /// Route path for the tests root tab.
   static const testsPath = '/tests';
 

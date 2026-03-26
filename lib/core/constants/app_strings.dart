@@ -2,14 +2,19 @@
 
 /// Shared string constants used across the app UI.
 abstract final class AppStrings {
-  /// Common.
+  // Common.
   static const sendButton = 'Отправить';
   static const emailLabel = 'Email';
   static const emailHint = 'email@example.com';
   static const codeLabel = 'Код';
   static const codeHint = '******';
 
-  /// Sign-in screen.
+  // No-connection screen.
+  static const noConnectionTitle = 'Нет подключения';
+  static const noConnectionSubtitle =
+      'Проверьте подключение к интернету. Мы продолжим автоматически, когда соединение появится';
+
+  // Sign-in screen.
   static const signInTitle = 'Авторизация';
   static const signInSubtitle = 'Введите email и пароль, чтобы войти в аккаунт';
   static const signInPasswordLabel = 'Пароль';
@@ -18,7 +23,7 @@ abstract final class AppStrings {
   static const signInSwitchTitle = 'Еще нет аккаунта?';
   static const signInSwitchAction = 'Зарегистрироваться';
 
-  /// Sign-up screen.
+  // Sign-up screen.
   static const signUpTitle = 'Регистрация';
   static const signUpSubtitle =
       'Создайте аккаунт, чтобы сохранить прогресс и получить персональную программу';
@@ -36,25 +41,25 @@ abstract final class AppStrings {
   static const signUpConsentMiddle = ' и даю ';
   static const signUpConsentDataProcessing = 'Согласие на обработку персональных данных';
 
-  /// Forgot-password screen.
+  // Forgot-password screen.
   static const forgotPasswordTitle = 'Забыли пароль?';
   static const forgotPasswordSubtitle =
       'Введите email, который вы использовали при регистрации, и мы отправим код для сброса пароля';
 
-  /// Verify-email screen.
+  // Verify-email screen.
   static const verifyEmailTitle = 'Регистрация';
   static const verifyEmailSubtitle =
       'Введите код из письма, чтобы подтвердить почту и завершить регистрацию';
   static const verifyEmailResendSuccess = 'Новый код подтверждения отправлен на вашу почту';
 
-  /// Verify-reset-code screen.
+  // Verify-reset-code screen.
   static const verifyResetCodeTitle = 'Восстановление\nпароля';
   static const verifyResetCodeSubtitle =
       'Введите код, отправленный на почту, чтобы продолжить восстановление доступа';
   static const verifyResetCodeResendSuccess =
       'Код для сброса пароля повторно отправлен на вашу почту.';
 
-  /// Reset-password screen.
+  // Reset-password screen.
   static const resetPasswordTitle = 'Восстановление\nпароля';
   static const resetPasswordSubtitle =
       'Введите новый пароль, чтобы завершить восстановление доступа';
@@ -63,22 +68,22 @@ abstract final class AppStrings {
   static const resetPasswordPasswordConfirmationRequired = 'Подтвердите пароль';
   static const resetPasswordPasswordMismatch = 'Пароли не совпадают';
 
-  /// Legal documents.
+  // Legal documents.
   static const legalPrivacyPolicyTitle = 'Политика конфиденциальности';
   static const legalDataProcessingConsentTitle = 'Согласие на обработку персональных данных';
   static const legalPublicOfferTitle = 'Публичная оферта';
   static const legalDocumentLoadError = 'Не удалось загрузить документ.';
 
-  /// Feedback dialogs.
+  // Feedback dialogs.
   static const feedbackErrorTitle = 'Что-то пошло не так';
   static const feedbackConsentRequiredTitle = 'Необходимо Ваше согласие';
 
-  /// Auth widgets.
+  // Auth widgets.
   static const authResendCodeAction = 'Отправить повторно';
   static const authShowPassword = 'Показать пароль';
   static const authHidePassword = 'Скрыть пароль';
 
-  /// Auth validators.
+  // Auth validators.
   static const authNameRequired = 'Введите имя';
   static const authNameMinLength = 'Длина имени должна быть не менее 2 символов';
   static const authNameMaxLength = 'Длина имени должна быть не более 20 символов';
@@ -92,7 +97,7 @@ abstract final class AppStrings {
   static const authOtpCodeRequired = 'Введите код';
   static const authOtpCodeFormat = 'Код должен состоять из 6 цифр';
 
-  /// Auth failures.
+  // Auth failures.
   static const authInvalidCredentials = 'Неверные учетные данные';
   static const authValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const authEmailAlreadyVerified = 'Email уже подтвержден. Войдите в аккаунт';
@@ -100,7 +105,7 @@ abstract final class AppStrings {
   static const authRateLimited = 'Слишком много попыток. Попробуйте позже';
   static const authUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
-  /// Network failures.
+  // Network failures.
   static const networkNoConnection = 'Отсутствует интернет-соединение';
   static const networkTimeout = 'Сервер не отвечает. Попробуйте позже';
   static const networkBadRequest = 'Некорректный запрос';
@@ -113,7 +118,7 @@ abstract final class AppStrings {
   static const networkServerError = 'Ошибка сервера. Попробуйте позже';
   static const networkUnknown = 'Неизвестная ошибка сети';
 
-  /// Fitness Start.
+  // Fitness Start.
   static const fitnessStartTitle = 'Ваш фитнес-старт';
   static const fitnessStartGoalStepTitle = 'Выберите Вашу цель тренировок';
   static const fitnessStartAnthropometryStepTitle = 'Введите Ваши параметры';
@@ -156,7 +161,6 @@ abstract final class AppStrings {
       'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
 
   // Tests catalog.
-  static const testsMinutesPattern = 'минут';
   static const testsLoadFailed = 'Не удалось загрузить тесты';
   static const testsStartFailed = 'Не удалось начать тест. Попробуйте снова';
   static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
@@ -174,7 +178,7 @@ abstract final class AppStrings {
   static const testsAttemptResultNormal = 'Нормально';
   static const testsAttemptResultGood = 'Хорошо';
 
-  /// Debug screen.
+  // Debug screen.
   static const debugLogoutButton = 'Выйти';
 
   /// Root tabs.

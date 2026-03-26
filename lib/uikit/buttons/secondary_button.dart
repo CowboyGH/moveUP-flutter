@@ -4,6 +4,8 @@ import '../themes/colors/app_color_theme.dart';
 import '../themes/text/app_text_theme.dart';
 import 'button_state.dart';
 
+const _kSecondaryButtonBorderRadius = BorderRadius.all(Radius.circular(8));
+
 /// A customizable secondary button widget.
 class SecondaryButton extends StatelessWidget {
   /// The state of the button.
@@ -41,9 +43,7 @@ class SecondaryButton extends StatelessWidget {
             fixedSize: const Size.fromHeight(38),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
+            shape: const RoundedRectangleBorder(borderRadius: _kSecondaryButtonBorderRadius),
           ).copyWith(
             backgroundColor: WidgetStateProperty.resolveWith((states) {
               if (isDisabled) return colorTheme.disabled.withValues(alpha: 0.1);
@@ -62,18 +62,18 @@ class SecondaryButton extends StatelessWidget {
             shape: WidgetStateProperty.resolveWith((states) {
               if (isDisabled) {
                 return RoundedRectangleBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  borderRadius: _kSecondaryButtonBorderRadius,
                   side: BorderSide(color: colorTheme.disabled),
                 );
               }
               if (states.contains(WidgetState.pressed)) {
                 return RoundedRectangleBorder(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  borderRadius: _kSecondaryButtonBorderRadius,
                   side: BorderSide(color: colorTheme.primary.withValues(alpha: 0.6)),
                 );
               }
               return RoundedRectangleBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                borderRadius: _kSecondaryButtonBorderRadius,
                 side: BorderSide(color: colorTheme.primary.withValues(alpha: 0.8)),
               );
             }),

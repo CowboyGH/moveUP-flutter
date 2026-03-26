@@ -255,5 +255,25 @@ void main() {
         ),
       ).called(1),
     );
+
+    blocTest<TestAttemptCubit, TestAttemptState>(
+      'submitResult is no-op when attempt is already completed',
+      build: () => cubit,
+      seed: () => TestAttemptState(
+        attemptId: startedAttempt.attemptId,
+        testing: startedAttempt.testing,
+        currentExercise: startedAttempt.currentExercise,
+        isCompleted: true,
+      ),
+      act: (cubit) => cubit.submitResult(2),
+      expect: () => const <TestAttemptState>[],
+      verify: (_) => verifyNever(
+        repository.saveResult(
+          attemptId: anyNamed('attemptId'),
+          testingExerciseId: anyNamed('testingExerciseId'),
+          resultValue: anyNamed('resultValue'),
+        ),
+      ),
+    );
   });
 }

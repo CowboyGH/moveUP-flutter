@@ -295,7 +295,11 @@ class _FitnessStartTestAttemptPageState extends State<FitnessStartTestAttemptPag
   }
 
   Widget _buildPulseContent(BuildContext context, TestAttemptState state) {
-    final exercise = state.currentExercise!;
+    final exercise = state.currentExercise;
+    if (exercise == null) {
+      return const SizedBox.shrink();
+    }
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return Column(

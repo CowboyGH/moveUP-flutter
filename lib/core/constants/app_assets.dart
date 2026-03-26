@@ -2,7 +2,7 @@
 
 /// Shared asset constants used across the app UI.
 abstract final class AppAssets {
-  /// Icons.
+  // Icons.
   static const iconArrowBack = 'arrow_back';
   static const iconExclamationPoint = 'exclamation_point';
   static const iconEyeClose = 'eye_close';
@@ -10,12 +10,13 @@ abstract final class AppAssets {
   static const iconTests = 'tests';
   static const iconTrainings = 'workouts';
   static const iconProfile = 'profile';
+  static const iconNoConnection = 'offline';
 
-  /// Images.
+  // Images.
   static const imageFigure = 'figure';
   static const imageLine = 'line';
 
-  /// Legal documents.
+  // Legal documents.
   static const legalPrivacyPolicy = 'assets/legal/privacy_policy.txt';
   static const legalDataProcessingConsent = 'assets/legal/data_processing_consent.txt';
   static const legalPublicOffer = 'assets/legal/public_offer.txt';
