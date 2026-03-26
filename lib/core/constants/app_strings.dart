@@ -177,6 +177,7 @@ abstract final class AppStrings {
   static const testsAttemptResultPoor = 'Плохо';
   static const testsAttemptResultNormal = 'Нормально';
   static const testsAttemptResultGood = 'Хорошо';
+  static const workoutsOverviewOpenButton = 'Перейти';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
   // Debug screen.
