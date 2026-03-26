@@ -34,10 +34,7 @@ class WorkoutDetailsPage extends StatelessWidget {
         leading: AppBackButton(onPressed: () => _handleBack(context)),
         title: Text(
           AppStrings.workoutDetailsTitle,
-          style: textTheme.title.copyWith(
-            fontSize: 20,
-            height: 24 / 20,
-          ),
+          style: textTheme.appBarTitle,
         ),
       ),
       body: Stack(
