@@ -87,7 +87,7 @@ String? _redirectFromOffline(AuthSessionState authState) {
     guestResumeAvailable: () => AppRoutePaths.signInPath,
     guest: () => AppRoutePaths.fitnessStartQuizPath,
     guestCompletedOnboarding: () => AppRoutePaths.signUpPath,
-    authenticated: (_) => AppRoutePaths.debugPath,
+    authenticated: (_) => AppRoutePaths.trainingsPath,
     unauthenticated: () => AppRoutePaths.signInPath,
   );
 }
