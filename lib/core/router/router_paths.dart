@@ -5,7 +5,7 @@ abstract class AppRoutePaths {
 
   /// Route path for the splash screen.
   static const splashPath = '/splash';
-  
+
   /// Route path for the offline page.
   static const offlinePath = '/offline';
 
