@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-## [0.3.0] - 2026-03-24
+## [0.3.0] - 2026-03-26
 
 ### Added
 
@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Guest completed-onboarding auth routing now keeps forgot-password, verify-reset-code, and reset-password screens reachable instead of forcing a redirect back to `sign-up`.
 - Verify-email now initializes by entry source: sign-up keeps the already-sent code flow with local cooldown, while unverified sign-in requests a fresh code on open and starts cooldown only after a successful resend.
 - Sign-in now intercepts `EmailNotVerifiedFailure`, shows feedback briefly, and then routes the user to verify-email with the typed email.
+- `OptionButton` now treats every non-`enabled` state as non-interactive, so loading option buttons no longer remain tappable with active styling.
 
 ## [0.2.0] - 2026-03-13
 
