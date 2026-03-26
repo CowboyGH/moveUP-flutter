@@ -1,36 +1,47 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../core/constants/app_strings.dart';
-import '../../../../../uikit/buttons/main_button.dart';
-import '../../../../../uikit/cards/app_card.dart';
-import '../../../../../uikit/images/network_image_widget.dart';
-import '../../../../../uikit/themes/colors/app_color_theme.dart';
-import '../../../../../uikit/themes/text/app_text_theme.dart';
-import '../../domain/entities/workout_overview_item.dart';
+import '../../../../uikit/buttons/main_button.dart';
+import '../../../../uikit/cards/app_card.dart';
+import '../../../../uikit/images/network_image_widget.dart';
+import '../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../uikit/themes/text/app_text_theme.dart';
 
-/// Card widget for a workouts overview item.
-class WorkoutOverviewCard extends StatelessWidget {
-  /// Workout item displayed inside the card.
-  final WorkoutOverviewItem item;
+/// Shared card widget for workouts overview and details items.
+class WorkoutCard extends StatelessWidget {
+  /// Workout title displayed inside the card.
+  final String title;
+
+  /// Workout description displayed inside the card.
+  final String description;
+
+  /// Workout duration in minutes.
+  final int durationMinutes;
+
+  /// Normalized workout image URL.
+  final String imageUrl;
+
+  /// CTA label.
+  final String buttonLabel;
 
   /// Callback fired when the action button is pressed.
   final VoidCallback onPressed;
 
-  /// Creates an instance of [WorkoutOverviewCard].
-  const WorkoutOverviewCard({
-    required this.item,
+  /// Creates an instance of [WorkoutCard].
+  const WorkoutCard({
+    required this.title,
+    required this.description,
+    required this.durationMinutes,
+    required this.imageUrl,
+    required this.buttonLabel,
     required this.onPressed,
     super.key,
   });
 
-  /// Returns the localized plural form for workout duration in minutes.
   static String _workoutsMinutes(int count) {
     final mod10 = count % 10;
     final mod100 = count % 100;
 
-    if (mod10 == 1 && mod100 != 11) {
-      return 'минута';
-    }
+    if (mod10 == 1 && mod100 != 11) return 'минута';
     if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
       return 'минуты';
     }
@@ -50,7 +61,7 @@ class WorkoutOverviewCard extends StatelessWidget {
               return ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: NetworkImageWidget(
-                  imageUrl: item.imageUrl,
+                  imageUrl: imageUrl,
                   height: constraints.maxWidth,
                 ),
               );
@@ -58,7 +69,7 @@ class WorkoutOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            item.title,
+            title,
             textAlign: TextAlign.end,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -71,7 +82,7 @@ class WorkoutOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '(${item.durationMinutes} ${_workoutsMinutes(item.durationMinutes)})',
+            '($durationMinutes ${_workoutsMinutes(durationMinutes)})',
             textAlign: TextAlign.end,
             style: textTheme.bodyMedium.copyWith(
               height: 21 / 14,
@@ -80,7 +91,7 @@ class WorkoutOverviewCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            item.description,
+            description,
             textAlign: TextAlign.end,
             maxLines: 4,
             overflow: TextOverflow.ellipsis,
@@ -92,7 +103,7 @@ class WorkoutOverviewCard extends StatelessWidget {
           const SizedBox(height: 24),
           MainButton(
             onPressed: onPressed,
-            child: const Text(AppStrings.workoutsOverviewOpenButton),
+            child: Text(buttonLabel),
           ),
         ],
       ),

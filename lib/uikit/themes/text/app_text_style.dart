@@ -19,6 +19,13 @@ abstract class AppTextStyle {
     fontWeight: FontWeight.w600,
   );
 
+  static const appBarTitle = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 20,
+    height: 24 / 20,
+    fontWeight: FontWeight.w600,
+  );
+
   static const body = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,

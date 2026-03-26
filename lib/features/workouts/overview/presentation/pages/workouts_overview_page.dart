@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
+import '../../../presentation/widgets/workout_card.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/inputs/app_search_field.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../domain/entities/workout_overview_item.dart';
 import '../cubits/workouts_overview_cubit.dart';
-import '../widgets/workout_overview_card.dart';
 
 /// Authenticated workouts overview page.
 class WorkoutsOverviewPage extends StatefulWidget {
@@ -61,10 +61,7 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
       appBar: AppBar(
         title: Text(
           AppStrings.workoutsOverviewTitle,
-          style: textTheme.title.copyWith(
-            fontSize: 20,
-            height: 24 / 20,
-          ),
+          style: textTheme.appBarTitle,
         ),
       ),
       body: BlocBuilder<WorkoutsOverviewCubit, WorkoutsOverviewState>(
@@ -157,9 +154,15 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
         final item = filteredItems[index];
         return Padding(
           padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
-          child: WorkoutOverviewCard(
-            item: item,
-            onPressed: () => context.push(AppRoutePaths.debugPath),
+          child: WorkoutCard(
+            title: item.title,
+            description: item.description,
+            durationMinutes: item.durationMinutes,
+            imageUrl: item.imageUrl,
+            buttonLabel: AppStrings.workoutsOverviewOpenButton,
+            onPressed: () => context.push(
+              AppRoutePaths.workoutDetailsConcretePath(item.userWorkoutId),
+            ),
           ),
         );
       }),

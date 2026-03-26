@@ -60,4 +60,14 @@ abstract class AppRoutePaths {
 
   /// Route path for workouts overview.
   static const workoutsPath = '/workouts';
+
+  /// Base route path for a concrete workout details screen.
+  static const workoutDetailsBasePath = '$workoutsPath/details';
+
+  /// Route path pattern for a concrete workout details screen.
+  static const workoutDetailsPath = '$workoutDetailsBasePath/:userWorkoutId';
+
+  /// Builds the concrete route path for workout details by [userWorkoutId].
+  static String workoutDetailsConcretePath(int userWorkoutId) =>
+      '$workoutDetailsBasePath/$userWorkoutId';
 }

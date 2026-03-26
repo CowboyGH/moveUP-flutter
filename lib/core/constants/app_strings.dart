@@ -191,6 +191,12 @@ abstract final class AppStrings {
   static const workoutsLoadFailed = 'Не удалось загрузить тренировки';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Workout details.
+  static const workoutDetailsTitle = 'Тренировка';
+  static const workoutDetailsStartWarmupButton = 'Начать разминку';
+  static const workoutDetailsStartWorkoutButton = 'Начать тренировку';
+  static const workoutDetailsLoadFailed = 'Не удалось загрузить тренировку';
+
   // Debug screen.
   static const debugLogoutButton = 'Выйти';
 
