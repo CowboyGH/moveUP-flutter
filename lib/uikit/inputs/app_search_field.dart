@@ -45,7 +45,7 @@ class AppSearchField extends StatelessWidget {
           minHeight: 20,
           minWidth: 20,
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+        contentPadding: const EdgeInsets.symmetric(vertical: 5.5, horizontal: 8),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: BorderSide(color: colorTheme.outline),
