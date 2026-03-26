@@ -22,6 +22,9 @@ import '../../features/tests/attempt/domain/repositories/test_attempt_repository
 import '../../features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
 import '../../features/tests/catalog/domain/repositories/tests_catalog_repository.dart';
 import '../../features/tests/data/remote/tests_api_client.dart';
+import '../../features/workouts/overview/data/repositories/workouts_overview_repository_impl.dart';
+import '../../features/workouts/overview/domain/repositories/workouts_overview_repository.dart';
+import '../../features/workouts/data/remote/workouts_api_client.dart';
 import '../network/api_paths.dart';
 import '../network/dio_setup.dart';
 import '../services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
@@ -136,6 +139,15 @@ Future<void> setupDI() async {
     () => GuestTestAttemptRepositoryImpl(
       di<AppLogger>(),
       di<TestsApiClient>(),
+    ),
+  );
+
+  // Workouts
+  di.registerLazySingleton<WorkoutsApiClient>(() => WorkoutsApiClient(di<Dio>()));
+  di.registerLazySingleton<WorkoutsOverviewRepository>(
+    () => WorkoutsOverviewRepositoryImpl(
+      di<AppLogger>(),
+      di<WorkoutsApiClient>(),
     ),
   );
 }
