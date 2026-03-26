@@ -1,7 +1,7 @@
 import '../../../constants/app_strings.dart';
 import '../../app_failure.dart';
 
-/// Workouts overview application error.
+/// Workouts application error.
 sealed class WorkoutsFailure extends AppFailure {
   /// Creates an instance of [WorkoutsFailure].
   const WorkoutsFailure(

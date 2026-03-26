@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'workout_summary_dto.g.dart';
 
-/// DTO with workout summary fields used on the overview screen.
+/// DTO with workout summary fields used across workouts screens.
 @JsonSerializable(createToJson: false)
 class WorkoutSummaryDto {
   /// Workout identifier.
