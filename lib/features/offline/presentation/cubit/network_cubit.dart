@@ -23,10 +23,15 @@ final class NetworkCubit extends Cubit<NetworkState> {
     if (isClosed || _subscription != null) return;
 
     _subscription = _networkService.connectionStream.listen(_onConnectionChanged);
-
-    final hasNetwork = await _networkService.hasNetwork();
-    if (state == const NetworkState.initial()) {
-      _onConnectionChanged(hasNetwork);
+    try {
+      final hasNetwork = await _networkService.hasNetwork();
+      if (state == const NetworkState.initial()) {
+        _onConnectionChanged(hasNetwork);
+      }
+    } catch (_) {
+      await _subscription?.cancel();
+      _subscription = null;
+      rethrow;
     }
   }
 

@@ -105,16 +105,36 @@ void main() {
     );
 
     test('initialize does not create duplicate subscriptions', () async {
-      // Arrange
+      var listenCount = 0;
+      final countingController = StreamController<bool>.broadcast(
+        onListen: () => listenCount++,
+      );
+      when(networkService.connectionStream).thenAnswer((_) => countingController.stream);
       when(networkService.hasNetwork()).thenAnswer((_) async => true);
 
-      // Act
       await networkCubit.init();
       await networkCubit.init();
 
-      // Assert
-      verify(networkService.connectionStream).called(1);
       verify(networkService.hasNetwork()).called(1);
+      expect(listenCount, 1);
+
+      await countingController.close();
+    });
+
+    test('initialize cleans up the subscription when hasNetwork throws', () async {
+      var listenCount = 0;
+      final countingController = StreamController<bool>.broadcast(
+        onListen: () => listenCount++,
+      );
+      when(networkService.connectionStream).thenAnswer((_) => countingController.stream);
+      when(networkService.hasNetwork()).thenThrow(Exception(''));
+
+      await expectLater(networkCubit.init(), throwsException);
+      await expectLater(networkCubit.init(), throwsException);
+
+      expect(listenCount, 2);
+
+      await countingController.close();
     });
 
     test('close stops reacting to further connectivity changes', () async {
