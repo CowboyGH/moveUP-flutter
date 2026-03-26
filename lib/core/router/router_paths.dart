@@ -1,7 +1,13 @@
 /// Contains all the route paths used for app navigation.
 abstract class AppRoutePaths {
+  /// Route path for the splash screen.
+  static const splashPath = '/splash';
+
   /// Route path for the debug screen.
   static const debugPath = '/debug';
+
+  /// Route path for the offline page.
+  static const offlinePath = '/offline';
 
   /// Prefix for all authentication-related routes.
   static const authPrefix = '/auth';

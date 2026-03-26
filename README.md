@@ -25,9 +25,11 @@ Mobile client for the moveUP fitness platform.
 
 - 🏃 **Fitness Start Onboarding**: guest quiz, onboarding test catalog, guest test attempts, and completed-progress resume support before sign-up
 - 🔐 **End-to-end Auth Flow**: sign in, sign up, email verification, password recovery, OTP verification, password reset, and logout
+- 📶 **Offline Flow**: app-level connectivity tracking, blocking offline route, and automatic return to the auth flow after reconnect
+- ✨ **Startup Splash Flow**: branded startup entry route with router-driven splash timing before auth or offline redirects
 - 🏛️ **Clean Architecture** in feature modules (Data → Domain → Presentation)
 - 🌐 **Network Layer** built on Dio + Retrofit
-- 🧭 **Navigation** with GoRouter and session-aware redirects
+- 🧭 **Navigation** with GoRouter, session-aware redirects, and startup/offline gating
 - 🎨 **UIKit + Theming** with shared buttons, dialogs, images, colors, gradients, and text styles
 - ⚠️ **Error Handling** via `Result` and typed `Failure` hierarchies
 - 💉 **Dependency Injection** with GetIt + Provider
@@ -97,6 +99,8 @@ lib/
 │   │   ├── domain/        # Entities and repository contracts
 │   │   └── presentation/  # Pages, widgets, cubits, validators
 │   ├── fitness_start/     # Guest onboarding quiz, tests shell, and onboarding flow UI
+│   ├── offline/           # Connectivity state and blocking offline flow
+│   ├── splash/            # Branded startup splash screen
 │   ├── tests/             # Shared tests catalog and guest test attempt flow
 │   └── debug/             # Internal debug screen
 ├── uikit/

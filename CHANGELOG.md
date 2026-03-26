@@ -9,11 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_No unreleased changes yet._
+
+## [0.3.1] - 2026-03-26
+
 ### Added
+
+- App-level OS connectivity slice through `NetworkCubit` and `NetworkState`, covered by unit tests.
+- Offline fallback screen, route, icon asset, and centralized copy/constants for no-connection UX.
+- Dedicated startup `/splash` route and branded `SplashPage`.
 
 ### Changed
 
+- App bootstrap now initializes `NetworkCubit` before session restore and retries session restoration only when connectivity becomes available again.
+- Router refresh now reacts to both auth and connectivity state, redirects to `/offline` when the OS reports no available network, and resumes normal auth flow after reconnect.
+- Startup splash flow was simplified: `runner.dart` keeps session restore bootstrap, `SplashPage` is now a presentational screen only, and the router holds `/splash` for a fixed startup interval before applying the usual auth/offline redirects.
+- Reconnect and offline-exit routing during startup now returns `AuthSessionState.initial/checking` through `/splash` instead of bypassing the branded entry flow.
+- `assets/images/splash_bg.jpg` was compressed to reduce splash image payload and speed up branded startup rendering.
+
+### Breaking
+
+- App startup flow now depends on connectivity bootstrap: `NetworkCubit` is initialized before auth session restore, and session restoration is no longer started unconditionally on app launch.
+- Global routing behavior changed: `GoRouter` now refreshes from both auth and connectivity state, and `/offline` acts as a top-level blocking route when the OS reports no available network interface.
+- App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
+- Session restoration is now bootstrapped from `runner.dart` after connectivity initialization, while `GoRouter` keeps `/splash` visible for a fixed startup interval after the first Flutter frame before routing onward.
+
 ### Fixed
+
+- Startup splash completion is now triggered after the first Flutter frame and forces a router refresh, preventing users from getting stuck on `/splash` because the timing finished too early.
 
 ## [0.3.0] - 2026-03-26
 
@@ -42,6 +65,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Fitness Start` quiz selections are now locked while a submit request is in progress.
 - `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
 - `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
+
+### Breaking
+
 - Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
 
 ### Fixed
