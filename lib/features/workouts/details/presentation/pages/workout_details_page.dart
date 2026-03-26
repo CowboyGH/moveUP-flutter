@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
+import '../../../presentation/widgets/workout_card.dart';
 import '../../../../../uikit/buttons/app_back_button.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/images/app_decorative_figure.dart';
@@ -13,7 +14,6 @@ import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../domain/entities/workout_details_item.dart';
 import '../cubits/workout_details_cubit.dart';
-import '../widgets/workout_details_card.dart';
 
 /// Workout details page shown after selecting a workout from overview.
 class WorkoutDetailsPage extends StatelessWidget {
@@ -108,8 +108,15 @@ class WorkoutDetailsPage extends StatelessWidget {
         final item = items[index];
         return Padding(
           padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 24),
-          child: WorkoutDetailsCard(
-            item: item,
+          child: WorkoutCard(
+            title: item.title,
+            description: item.description,
+            durationMinutes: item.durationMinutes,
+            imageUrl: item.imageUrl,
+            buttonLabel: switch (item.type) {
+              WorkoutDetailsItemType.warmup => AppStrings.workoutDetailsStartWarmupButton,
+              WorkoutDetailsItemType.workout => AppStrings.workoutDetailsStartWorkoutButton,
+            },
             onPressed: () => context.push(AppRoutePaths.debugPath),
           ),
         );
