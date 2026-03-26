@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No unreleased changes yet._
+### Added
+
+- Workouts overview feature for authenticated users, including `WorkoutsApiClient`, shared DTO/mappers, `WorkoutsFailure`, catalog repository, Cubit, route, and the `/api/workouts` UI based on the provided mockup.
+
+### Changed
+
+- Authenticated routing now lands on `/workouts` instead of the previous debug placeholder screen.
 
 ## [0.3.1] - 2026-03-25
 
