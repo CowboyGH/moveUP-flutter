@@ -61,4 +61,7 @@ abstract class ApiPaths {
 
   /// The endpoint prefix for guest test attempts.
   static const String guestTestAttempts = '${apiPrefix}guest/test-attempts';
+
+  /// The endpoint for the current user workouts overview.
+  static const String workouts = '${apiPrefix}workouts';
 }
