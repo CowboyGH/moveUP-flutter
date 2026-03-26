@@ -187,6 +187,7 @@ abstract final class AppStrings {
   static const workoutsOverviewSearchHint = 'Поиск';
   static const workoutsOverviewOpenButton = 'Перейти';
   static const workoutsEmpty = 'Тренировки не найдены';
+  static const workoutsSearchEmpty = 'По вашему запросу тренировки не найдены';
   static const workoutsLoadFailed = 'Не удалось загрузить тренировки';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 

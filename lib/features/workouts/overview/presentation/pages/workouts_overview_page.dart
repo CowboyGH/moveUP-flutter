@@ -109,7 +109,10 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
     return state.when(
       initial: () => const SizedBox.shrink(),
       inProgress: _buildLoadingState,
-      loaded: (items) => _buildLoadedState(_filterItems(items)),
+      loaded: (items) => _buildLoadedState(
+        fullItems: items,
+        filteredItems: _filterItems(items),
+      ),
       failed: (_) => _buildRetryState(context),
     );
   }
@@ -126,18 +129,34 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
     );
   }
 
-  Widget _buildLoadedState(List<WorkoutOverviewItem> items) {
-    if (items.isEmpty) {
+  Widget _buildLoadedState({
+    required List<WorkoutOverviewItem> fullItems,
+    required List<WorkoutOverviewItem> filteredItems,
+  }) {
+    if (fullItems.isEmpty) {
       return const Center(
-        child: Text(AppStrings.workoutsEmpty),
+        child: Text(
+          AppStrings.workoutsEmpty,
+          textAlign: TextAlign.center,
+        ),
       );
     }
+
+    if (filteredItems.isEmpty) {
+      return const Center(
+        child: Text(
+          AppStrings.workoutsSearchEmpty,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: List.generate(items.length, (index) {
-        final item = items[index];
+      children: List.generate(filteredItems.length, (index) {
+        final item = filteredItems[index];
         return Padding(
-          padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 20),
+          padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
           child: WorkoutOverviewCard(
             item: item,
             onPressed: () => context.push(AppRoutePaths.debugPath),
