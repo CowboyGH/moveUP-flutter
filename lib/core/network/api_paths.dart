@@ -40,4 +40,25 @@ abstract class ApiPaths {
 
   /// The endpoint for the current user profile.
   static const String me = '${apiPrefix}me';
+
+  /// The endpoint for all user-parameters references.
+  static const String userParameterReferences = '${apiPrefix}user-parameters/references';
+
+  /// The endpoint for saving user training goal.
+  static const String userParameterGoal = '${apiPrefix}user-parameters/goal';
+
+  /// The endpoint for saving user anthropometry.
+  static const String userParameterAnthropometry = '${apiPrefix}user-parameters/anthropometry';
+
+  /// The endpoint for saving user fitness level.
+  static const String userParameterLevel = '${apiPrefix}user-parameters/level';
+
+  /// The endpoint for all active testings.
+  static const String testings = '${apiPrefix}testings';
+
+  /// The endpoint prefix for guest tests.
+  static const String guestTests = '${apiPrefix}guest/tests';
+
+  /// The endpoint prefix for guest test attempts.
+  static const String guestTestAttempts = '${apiPrefix}guest/test-attempts';
 }

@@ -10,6 +10,7 @@ abstract final class AppAssets {
 
   /// Images.
   static const imageFigure = 'figure';
+  static const imageLine = 'line';
 
   /// Legal documents.
   static const legalPrivacyPolicy = 'assets/legal/privacy_policy.txt';

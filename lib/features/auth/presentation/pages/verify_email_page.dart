@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -22,8 +24,15 @@ class VerifyEmailPage extends StatefulWidget {
   /// User email used for OTP verification.
   final String email;
 
+  /// Whether the screen should request a fresh code when it opens.
+  final bool resendOnOpen;
+
   /// Creates an instance of [VerifyEmailPage].
-  const VerifyEmailPage({required this.email, super.key});
+  const VerifyEmailPage({
+    required this.email,
+    required this.resendOnOpen,
+    super.key,
+  });
 
   @override
   State<VerifyEmailPage> createState() => _VerifyEmailPageState();
@@ -36,7 +45,12 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<OtpResendCubit>().startCooldown();
+    unawaited(
+      context.read<OtpResendCubit>().initializeEmailVerification(
+        email: widget.email,
+        resendOnOpen: widget.resendOnOpen,
+      ),
+    );
   }
 
   @override
@@ -60,8 +74,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
   void _onResendPressed() =>
       context.read<OtpResendCubit>().resendOtpCode(widget.email, OtpResendFlow.emailVerification);
 
-  void _handleBack() =>
-      Navigator.of(context).canPop() ? context.pop() : context.go(AppRoutePaths.signUpPath);
+  void _handleBack() => Navigator.of(context).canPop()
+      ? context.pop()
+      : context.go(
+          widget.resendOnOpen ? AppRoutePaths.signInPath : AppRoutePaths.signUpPath,
+        );
 
   @override
   Widget build(BuildContext context) {

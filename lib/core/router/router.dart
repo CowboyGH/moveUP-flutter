@@ -12,8 +12,12 @@ import '../../features/auth/presentation/pages/reset_password_route_args.dart';
 import '../../features/auth/presentation/pages/sign_in_page_builder.dart';
 import '../../features/auth/presentation/pages/sign_up_page_builder.dart';
 import '../../features/auth/presentation/pages/verify_email_page_builder.dart';
+import '../../features/auth/presentation/pages/verify_email_route_args.dart';
 import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
+import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -21,31 +25,59 @@ import 'router_paths.dart';
 
 final AuthSessionCubit _sessionCubit = di<AuthSessionCubit>();
 
+bool _isGuestCompletedAllowedPath(String path) =>
+    path == AppRoutePaths.signUpPath ||
+    path == AppRoutePaths.signInPath ||
+    path == AppRoutePaths.verifyEmailPath ||
+    path == AppRoutePaths.forgotPasswordPath ||
+    path == AppRoutePaths.verifyResetCodePath ||
+    path == AppRoutePaths.resetPasswordPath ||
+    path == AppRoutePaths.legalDocumentPath;
+
 /// Determines the redirect path based on the current [authState] and [state].
 String? _redirect(AuthSessionState authState, GoRouterState state) {
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
+  final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
   return authState.when(
     initial: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
     checking: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
     restoreFailed: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
+    guestResumeAvailable: () =>
+        state.matchedLocation == AppRoutePaths.signInPath ? null : AppRoutePaths.signInPath,
     guest: () {
-      if (isAuthScreen) return AppRoutePaths.debugPath;
-      return null;
+      if (isFitnessStartScreen) return null;
+      return AppRoutePaths.fitnessStartQuizPath;
+    },
+    guestCompletedOnboarding: () {
+      if (_isGuestCompletedAllowedPath(state.matchedLocation)) return null;
+      return AppRoutePaths.signUpPath;
     },
     authenticated: (user) {
-      if (isAuthScreen) return AppRoutePaths.debugPath;
+      if (isAuthScreen || isFitnessStartScreen) return AppRoutePaths.debugPath;
       return null;
     },
     unauthenticated: () {
+      if (state.matchedLocation == AppRoutePaths.signUpPath) {
+        return AppRoutePaths.fitnessStartQuizPath;
+      }
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
@@ -125,13 +157,44 @@ final router = GoRouter(
       path: AppRoutePaths.verifyEmailPath,
       redirect: (_, state) {
         final extra = state.extra;
-        if (extra is! String || extra.trim().isEmpty) {
+        if (extra is! VerifyEmailRouteArgs || extra.email.trim().isEmpty) {
           return AppRoutePaths.signUpPath;
         }
         return null;
       },
-      builder: (_, state) => VerifyEmailPageBuilder(
-        email: (state.extra as String).trim(),
+      builder: (_, state) {
+        final args = state.extra as VerifyEmailRouteArgs;
+        return VerifyEmailPageBuilder(
+          email: args.email.trim(),
+          resendOnOpen: args.resendOnOpen,
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartQuizPath,
+      builder: (_, _) => const FitnessStartQuizPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartTestsPath,
+      redirect: (_, state) {
+        if (state.extra == AppRoutePaths.fitnessStartQuizPath) {
+          return null;
+        }
+        return AppRoutePaths.fitnessStartQuizPath;
+      },
+      builder: (_, _) => const FitnessStartTestsPageBuilder(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.fitnessStartTestAttemptPath,
+      redirect: (_, state) {
+        final testingId = int.tryParse(state.pathParameters['testingId'] ?? '');
+        if (testingId == null || testingId <= 0) {
+          return AppRoutePaths.fitnessStartTestsPath;
+        }
+        return null;
+      },
+      builder: (_, state) => FitnessStartTestAttemptPageBuilder(
+        testingId: int.parse(state.pathParameters['testingId']!),
       ),
     ),
   ],

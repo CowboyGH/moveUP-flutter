@@ -9,7 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-_No unreleased changes yet._
+### Added
+
+### Changed
+
+### Fixed
+
+## [0.3.0] - 2026-03-26
+
+### Added
+
+- `FitnessStartProgressStorage` with `Hive`-based persistence for completed guest onboarding resume after app restart.
+- Persistent guest session cookie storage and cleanup wiring for backend-backed onboarding resume.
+- `FitnessStartApiClient`, DTOs, repository contract/implementation, and dedicated `FitnessStartFailure` mapping for `user-parameters` endpoints.
+- Added a shared `tests catalog` slice for `GET /api/testings`, including `TestsApiClient`, DTOs, failure mapping, repository, Cubit, and onboarding carousel widgets.
+- Introduced the guest `tests attempt` flow for `/api/guest/tests/{testing}/start`, `/api/guest/test-attempts/{attempt}/result`, and `/api/guest/test-attempts/{attempt}/complete`, including DTOs, repository, Cubit, validators, and onboarding attempt UI.
+- Included shared UIKit controls for the onboarding quiz: `AppCard`, `OptionButton`, and `AppInputField`.
+- Added shared UIKit `SecondaryButton` and `AppActionDialog` for onboarding/auth action modals.
+- `FitnessStartCubit`, validators, 3-step quiz UI, `/fitness-start/tests` onboarding shell screen, and sign-in resume dialog for the onboarding-first auth entry flow.
+
+### Changed
+
+- Registration is now onboarding-first: `Нет аккаунта? Зарегистрироваться` starts `Fitness Start`, while `sign-up` becomes a post-onboarding screen only.
+- Auth `Skip` actions were removed from `sign-in` and `sign-up`.
+- Guest onboarding resume is now completed-only: unfinished `Fitness Start` progress is cleared on app restart, while completed guest data shows a resume dialog on `sign-in`.
+- `FitnessStartStage` was removed from auth/session routing, and `quiz -> tests` now uses direct page navigation instead of session-driven stage switching.
+- Verify-email success now completes authentication directly instead of entering a staged authenticated onboarding flow.
+- Dio clients now attach a shared persistent `CookieManager` so guest onboarding progress and backend session can survive app restarts.
+- `/fitness-start/tests` now shows the onboarding tests catalog carousel instead of the previous placeholder CTA, remains part of the `fitness_start` shell flow, and its back action exits guest flow to `sign-in`.
+- Selecting a testing in the onboarding catalog now pushes a guest test attempt route, saves per-exercise results through guest endpoints, collects pulse after the last exercise, and completes guest onboarding before redirecting to `sign-up`.
+- `Fitness Start` validation feedback now removes duplicate backend field messages before showing them to the user.
+- `Fitness Start` quiz selections are now locked while a submit request is in progress.
+- `Fitness Start` quiz now keeps initial references loading and retry states inline in the card instead of collapsing to a blank screen.
+- `Fitness Start` anthropometry validators now use unified range messages for age, weight, and height instead of duplicated min/max strings.
+- Auth feedback dialogs now support an optional non-dismissible mode for flows that must hold the user before continuing.
+
+### Fixed
+
+- Completing guest `Fitness Start` now still transitions the current session to post-onboarding sign-up even if the completed-progress marker cannot be persisted locally; resume persistence remains best-effort support.
+- Guest completed-onboarding auth routing now keeps forgot-password, verify-reset-code, and reset-password screens reachable instead of forcing a redirect back to `sign-up`.
+- Verify-email now initializes by entry source: sign-up keeps the already-sent code flow with local cooldown, while unverified sign-in requests a fresh code on open and starts cooldown only after a successful resend.
+- Sign-in now intercepts `EmailNotVerifiedFailure`, shows feedback briefly, and then routes the user to verify-email with the typed email.
+- `OptionButton` now treats every non-`enabled` state as non-interactive, so loading option buttons no longer remain tappable with active styling.
 
 ## [0.2.0] - 2026-03-13
 

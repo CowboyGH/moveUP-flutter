@@ -5,13 +5,11 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
-import '../../../../uikit/buttons/app_text_action.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
-import '../cubits/auth_session_cubit.dart';
 import '../cubits/sign_up_cubit.dart';
 import '../validators/auth_validators.dart';
 import '../widgets/auth_flow_shell.dart';
@@ -19,6 +17,7 @@ import '../widgets/auth_password_field.dart';
 import '../widgets/auth_switch_section.dart';
 import '../widgets/auth_text_field.dart';
 import 'legal_document_type.dart';
+import 'verify_email_route_args.dart';
 
 /// Sign-up page.
 class SignUpPage extends StatefulWidget {
@@ -75,7 +74,10 @@ class _SignUpPageState extends State<SignUpPage> {
           succeed: (_) {
             context.go(
               AppRoutePaths.verifyEmailPath,
-              extra: _emailController.text.trim(),
+              extra: VerifyEmailRouteArgs(
+                email: _emailController.text.trim(),
+                resendOnOpen: false,
+              ),
             );
           },
           failed: (failure) {
@@ -96,17 +98,6 @@ class _SignUpPageState extends State<SignUpPage> {
           orElse: () => false,
         );
         return AuthFlowShell(
-          topRightAction: AppTextAction(
-            text: AppStrings.skipButton,
-            onPressed: isInProgress
-                ? null
-                : () => context.read<AuthSessionCubit>().continueAsGuest(),
-            style: textTheme.label.copyWith(
-              fontSize: 14,
-              height: 21 / 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
           child: Form(
             key: _formKey,
             child: Column(

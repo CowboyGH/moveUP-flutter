@@ -3,7 +3,6 @@
 /// Shared string constants used across the app UI.
 abstract final class AppStrings {
   /// Common.
-  static const skipButton = 'Пропустить';
   static const sendButton = 'Отправить';
   static const emailLabel = 'Email';
   static const emailHint = 'email@example.com';
@@ -113,6 +112,66 @@ abstract final class AppStrings {
   static const networkRateLimited = 'Слишком много запросов';
   static const networkServerError = 'Ошибка сервера. Попробуйте позже';
   static const networkUnknown = 'Неизвестная ошибка сети';
+
+  /// Fitness Start.
+  static const fitnessStartTitle = 'Ваш фитнес-старт';
+  static const fitnessStartGoalStepTitle = 'Выберите Вашу цель тренировок';
+  static const fitnessStartAnthropometryStepTitle = 'Введите Ваши параметры';
+  static const fitnessStartLevelStepTitle = 'Выберите Ваш уровень подготовки';
+  static const fitnessStartGenderLabel = 'Пол';
+  static const fitnessStartEquipmentLabel = 'Оборудование';
+  static const fitnessStartAgeLabel = 'Возраст';
+  static const fitnessStartWeightLabel = 'Вес';
+  static const fitnessStartHeightLabel = 'Рост';
+  static const fitnessStartAgeHint = 'лет';
+  static const fitnessStartWeightHint = 'кг';
+  static const fitnessStartHeightHint = 'см';
+  static const fitnessStartMaleOption = 'Мужской';
+  static const fitnessStartFemaleOption = 'Женский';
+  static const fitnessStartContinueButton = 'Далее';
+  static const fitnessStartGoalRequired = 'Выберите цель тренировок';
+  static const fitnessStartGenderRequired = 'Выберите пол';
+  static const fitnessStartEquipmentRequired = 'Выберите оборудование';
+  static const fitnessStartLevelRequired = 'Выберите уровень подготовки';
+  static const fitnessStartAgeRequired = 'Введите возраст';
+  static const fitnessStartAgeInvalid = 'Введите корректный возраст';
+  static const fitnessStartAgeRange = '14–90 лет';
+  static const fitnessStartWeightRequired = 'Введите вес';
+  static const fitnessStartWeightInvalid = 'Введите корректный вес';
+  static const fitnessStartWeightRange = '40–130 кг';
+  static const fitnessStartHeightRequired = 'Введите рост';
+  static const fitnessStartHeightInvalid = 'Введите корректный рост';
+  static const fitnessStartHeightRange = '140–210 см';
+  static const fitnessStartReferencesLoadFailed = 'Не удалось загрузить данные';
+  static const fitnessStartRetryButton = 'Попробовать снова';
+  static const fitnessStartCompletedTitle = 'Обнаружены данные';
+  static const fitnessStartCompletedMessage =
+      'Хотите пройти тест снова или использовать ранее введенную информацию?';
+  static const fitnessStartRestartAction = 'Пройти тест снова';
+  static const fitnessStartRegisterAction = 'Использовать введенную информацию';
+  static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const fitnessStartTestsTitle = 'Персональная программа';
+  static const fitnessStartTestsDescription =
+      'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
+
+  // Tests catalog.
+  static const testsLoadFailed = 'Не удалось загрузить тесты';
+  static const testsStartFailed = 'Не удалось начать тест. Попробуйте снова';
+  static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const testsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const testsAttemptTitle = 'Тестирование';
+  static const testsAttemptDescription = 'Оцените, насколько тяжело было выполнять упражнение';
+  static const testsAttemptPulseTitle = 'Введите пульс после завершения теста';
+  static const testsAttemptPulseHint = 'Введите получившийся результат';
+  static const testsAttemptPulseRequired = 'Введите пульс';
+  static const testsAttemptPulseInvalid = 'Введите корректный пульс';
+  static const testsAttemptPulseRange = 'Пульс должен быть от 30 до 220';
+  static const testsAttemptCompleteButton = 'Сохранить';
+  static const testsAttemptResultVeryPoor = 'Очень плохо';
+  static const testsAttemptResultPoor = 'Плохо';
+  static const testsAttemptResultNormal = 'Нормально';
+  static const testsAttemptResultGood = 'Хорошо';
 
   /// Debug screen.
   static const debugLogoutButton = 'Выйти';
