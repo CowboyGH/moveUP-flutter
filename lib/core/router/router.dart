@@ -19,12 +19,12 @@ import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
-import '../../features/root/presentation/pages/root_screen.dart';
-import '../../uikit/themes/colors/app_color_theme.dart';
-import '../../uikit/themes/text/app_text_theme.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
+import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../uikit/themes/colors/app_color_theme.dart';
+import '../../uikit/themes/text/app_text_theme.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -152,6 +152,7 @@ final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
 
 /// The application's router using GoRouter.
 final router = GoRouter(
+  navigatorKey: _rootKey,
   initialLocation: AppRoutePaths.splashPath,
   observers: [AnalyticsRouteObserver(di<AppAnalytics>())],
   redirect: (_, state) => _redirect(_networkCubit.state, _sessionCubit.state, state),
