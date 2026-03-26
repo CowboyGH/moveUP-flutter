@@ -36,7 +36,8 @@ class _SignInPageState extends State<SignInPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isResumeDialogVisible = false;
+  bool _isDialogVisible = false;
+  NavigatorState? _rootNavigator;
   Timer? _redirectTimer;
 
   @override
@@ -49,9 +50,18 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _rootNavigator ??= Navigator.of(context, rootNavigator: true);
+  }
+
+  @override
   void dispose() {
     _redirectTimer?.cancel();
     _redirectTimer = null;
+    if (_isDialogVisible && _rootNavigator?.canPop() == true) {
+      _rootNavigator?.pop();
+    }
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -78,13 +88,13 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _maybeShowResumeDialog(AuthSessionState state) {
-    if (_isResumeDialogVisible) return;
+    if (_isDialogVisible) return;
 
     final shouldShowDialog = state.whenOrNull(guestResumeAvailable: () => true);
     if (shouldShowDialog != true) return;
 
-    _isResumeDialogVisible = true;
-    _showResumeDialog().whenComplete(() => _isResumeDialogVisible = false);
+    _isDialogVisible = true;
+    _showResumeDialog().whenComplete(() => _isDialogVisible = false);
   }
 
   Future<void> _showResumeDialog() => showAppActionDialog(
@@ -112,18 +122,23 @@ class _SignInPageState extends State<SignInPage> {
 
   void _redirectUnverifiedUser({required String dialogMessage}) {
     if (_redirectTimer != null) return;
-    showAppFeedbackDialog(
+
+    _isDialogVisible = true;
+    showAppFeedbackDialog<void>(
       context,
       title: AppStrings.feedbackErrorTitle,
       message: dialogMessage,
       isBarrierDismissible: false,
-    );
+    ).whenComplete(() => _isDialogVisible = false);
     _redirectTimer = Timer(
       const Duration(seconds: 2),
       () {
         _redirectTimer = null;
         if (!mounted) return;
-        context.pop();
+        if (_isDialogVisible) {
+          _rootNavigator?.pop();
+          _isDialogVisible = false;
+        }
         context.push(
           AppRoutePaths.verifyEmailPath,
           extra: VerifyEmailRouteArgs(

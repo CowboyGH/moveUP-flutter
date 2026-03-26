@@ -8,13 +8,13 @@ import '../themes/colors/app_color_theme.dart';
 import '../themes/text/app_text_theme.dart';
 
 /// Shows a shared feedback dialog with blur backdrop.
-void showAppFeedbackDialog(
+Future<T?> showAppFeedbackDialog<T>(
   BuildContext context, {
   required String title,
   required String message,
   bool isBarrierDismissible = true,
 }) {
-  showDialog(
+  return showDialog<T>(
     context: context,
     barrierDismissible: isBarrierDismissible,
     barrierColor: AppColorTheme.of(context).onSurface.withValues(alpha: 0.16),
