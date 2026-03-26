@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+_No unreleased changes yet._
+
+## [0.3.1] - 2026-03-25
+
 ### Added
 
 - App-level OS connectivity slice through `NetworkCubit` and `NetworkState`, covered by unit tests.
@@ -28,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App startup flow now depends on connectivity bootstrap: `NetworkCubit` is initialized before auth session restore, and session restoration is no longer started unconditionally on app launch.
 - Global routing behavior changed: `GoRouter` now refreshes from both auth and connectivity state, and `/offline` acts as a top-level blocking route when the OS reports no available network interface.
 - App startup now enters `/splash` first, keeps `AuthSessionState.initial/checking` on the splash route, and resolves splash exits through the existing auth routing rules.
-- Session restore now starts from `SplashPage` after the first frame with a minimum visible splash duration instead of being kicked off directly from `runner.dart`.
+- Session restoration is now bootstrapped from `runner.dart` after connectivity initialization, while `GoRouter` keeps `/splash` visible for a fixed startup interval after the first Flutter frame before routing onward.
 
 ### Fixed
 
