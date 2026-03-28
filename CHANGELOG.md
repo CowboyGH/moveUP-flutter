@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Workouts overview feature for authenticated users, including `WorkoutsApiClient`, shared DTO/mappers, `WorkoutsFailure`, catalog repository, Cubit, route, and the `/api/workouts` UI based on the provided mockup.
 - Workout details feature for authenticated users, including `GET /api/workout-execution/{userWorkout}`, details repository, Cubit, route, and the details UI based on the provided mockup.
+- Authenticated tests catalog screen for the `/tests` root tab, reusing the existing tests catalog slice and adding local search plus multi-select category filtering UI before navigating to the debug screen.
 
 ### Changed
 
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workouts overview cards now open a dedicated workout details screen inside the authenticated shell, preserving the bottom navigation bar until the future execution flow starts.
 - Workouts overview and details screens now reuse a shared `WorkoutCard` widget instead of maintaining duplicated card implementations.
 - Workouts overview and details app bars now reuse a dedicated `appBarTitle` text token instead of local per-page style overrides.
+- `TestingCatalogCard` now skips the extra spacing above category chips when a test has no categories.
 
 ## [0.3.1] - 2026-03-25
 
