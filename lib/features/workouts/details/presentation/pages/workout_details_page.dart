@@ -166,9 +166,8 @@ class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
           ),
           const SizedBox(height: 24),
           MainButton(
-            onPressed: () => context
-                .read<WorkoutDetailsCubit>()
-                .loadWorkoutDetails(widget.userWorkoutId),
+            onPressed: () =>
+                context.read<WorkoutDetailsCubit>().loadWorkoutDetails(widget.userWorkoutId),
             child: const Text(AppStrings.fitnessStartRetryButton),
           ),
         ],
