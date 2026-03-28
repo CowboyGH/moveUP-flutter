@@ -186,10 +186,10 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
 
   Future<void> _openWorkoutDetails(BuildContext context, int userWorkoutId) async {
     final cubit = context.read<WorkoutsOverviewCubit>();
-    final isCompleted = await context.push<bool>(
+    final didChange = await context.push<bool>(
       AppRoutePaths.workoutDetailsConcretePath(userWorkoutId),
     );
-    if (!mounted || isCompleted != true) return;
+    if (!mounted || didChange == null) return;
     await cubit.loadWorkouts();
   }
 

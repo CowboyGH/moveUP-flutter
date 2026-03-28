@@ -316,7 +316,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
       cubit.clearPopToDetails();
       if (!mounted) return;
       if (Navigator.canPop(context)) {
-        context.pop();
+        context.pop(false);
       } else {
         context.go(AppRoutePaths.workoutDetailsConcretePath(widget.userWorkoutId));
       }
