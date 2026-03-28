@@ -12,6 +12,7 @@ abstract final class AppAssets {
   static const iconProfile = 'profile';
   static const iconNoConnection = 'offline';
   static const iconSearch = 'search';
+  static const iconFilter = 'filter';
 
   // Images.
   static const imageFigure = 'figure';
