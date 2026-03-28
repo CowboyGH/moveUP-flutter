@@ -65,6 +65,9 @@ abstract class ApiPaths {
   /// The endpoint for the current user workouts overview.
   static const String workouts = '${apiPrefix}workouts';
 
+  /// The endpoint for starting a workout.
+  static const String workoutsStart = '$workouts/start';
+
   /// The endpoint prefix for workout execution and details.
   static const String workoutExecution = '${apiPrefix}workout-execution';
 }
