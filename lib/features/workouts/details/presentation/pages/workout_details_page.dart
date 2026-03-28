@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
+import '../../../execution/domain/entities/workout_execution_entry_mode.dart';
 import '../../../presentation/widgets/workout_card.dart';
 import '../../../../../uikit/buttons/app_back_button.dart';
 import '../../../../../uikit/buttons/main_button.dart';
@@ -114,7 +115,17 @@ class WorkoutDetailsPage extends StatelessWidget {
               WorkoutDetailsItemType.warmup => AppStrings.workoutDetailsStartWarmupButton,
               WorkoutDetailsItemType.workout => AppStrings.workoutDetailsStartWorkoutButton,
             },
-            onPressed: () => context.push(AppRoutePaths.debugPath),
+            onPressed: () async {
+              final isCompleted = await context.push<bool>(
+                AppRoutePaths.workoutExecutionConcretePath(userWorkoutId),
+                extra: switch (item.type) {
+                  WorkoutDetailsItemType.warmup => WorkoutExecutionEntryMode.warmup,
+                  WorkoutDetailsItemType.workout => WorkoutExecutionEntryMode.workout,
+                },
+              );
+              if (!context.mounted || isCompleted != true) return;
+              context.pop(true);
+            },
           ),
         );
       }),

@@ -186,6 +186,12 @@ abstract final class AppStrings {
       'Больше упражнений для ваших тренировок можно найти в нашей подписке';
   static const workoutsOverviewSearchHint = 'Поиск';
   static const workoutsOverviewOpenButton = 'Перейти';
+  static const workoutsOverviewContinueButton = 'Продолжить';
+  static const workoutsOverviewActiveWorkoutTitle = 'У вас уже есть начатая тренировка';
+  static const workoutsOverviewActiveWorkoutDescription =
+      'Сначала завершите текущую тренировку, чтобы начать новую';
+  static const workoutsOverviewOpenActiveButton = 'Перейти к тренировке';
+  static const workoutsOverviewDismissButton = 'Понятно';
   static const workoutsEmpty = 'Тренировки не найдены';
   static const workoutsSearchEmpty = 'По вашему запросу тренировки не найдены';
   static const workoutsLoadFailed = 'Не удалось загрузить тренировки';
@@ -198,6 +204,51 @@ abstract final class AppStrings {
   static const workoutDetailsStartWarmupButton = 'Начать разминку';
   static const workoutDetailsStartWorkoutButton = 'Начать тренировку';
   static const workoutDetailsLoadFailed = 'Не удалось загрузить тренировку';
+
+  // Workout execution.
+  static const workoutExecutionWarmupTitle = 'Разминка';
+  static const workoutExecutionTitle = 'Тренировка';
+  static const workoutExecutionLoadFailed = 'Не удалось запустить тренировку';
+  static const workoutExecutionRestPrefix = 'Отдохните перед подходом';
+  static const workoutExecutionReactionPrompt = 'Как ощущался данный подход?';
+  static const workoutExecutionNextWarmupButton = 'Далее';
+  static const workoutExecutionFinishWarmupButton = 'Завершить разминку';
+  static const workoutExecutionExitTitle = 'Завершить тренировку';
+  static const workoutExecutionExitDescription =
+      'Вы действительно хотите завершить тренировку? Если Вы захотите ее продолжить, придется начать сначала';
+  static const workoutExecutionExitPrimary = 'Завершить';
+  static const workoutExecutionExitSecondary = 'Отменить';
+  static const workoutExecutionCompletedTitle = 'Тренировка завершена';
+  static const workoutExecutionCompletedDescription =
+      'Поздравляем!\nВы завершили тренировку!\n\nВаша статистика тренировок обновлена';
+  static const workoutExecutionCompletedPrimary = 'Завершить';
+  static const workoutExecutionAdjustmentTitle = 'Рекомендация по нагрузке';
+  static const workoutExecutionAdjustmentFallback =
+      'Скорректируйте рабочий вес в следующем подходе';
+  static const workoutExecutionWeightTitle = 'Укажите использованный вес';
+  static const workoutExecutionWeightDescription =
+      'Если Вы выполняли упражнение с нагрузкой, введите вес в килограммах. Если вес не использовался, можно пропустить этот шаг';
+  static const workoutExecutionWeightLabel = 'Вес';
+  static const workoutExecutionWeightHint = 'кг';
+  static const workoutExecutionWeightPrimary = 'Сохранить';
+  static const workoutExecutionWeightSecondary = 'Пропустить';
+  static const workoutExecutionWeightInvalid = 'Введите корректный вес в килограммах';
+
+  /// Builds the increase-adjustment message for an absolute weight value.
+  static String workoutExecutionAdjustmentIncreaseTo(String weight) =>
+      'На следующем подходе увеличьте вес до $weight $workoutExecutionWeightHint';
+
+  /// Builds the decrease-adjustment message for an absolute weight value.
+  static String workoutExecutionAdjustmentDecreaseTo(String weight) =>
+      'На следующем подходе уменьшите вес до $weight $workoutExecutionWeightHint';
+
+  /// Builds the increase-adjustment message for a percentage value.
+  static String workoutExecutionAdjustmentIncreaseByPercent(int percent) =>
+      'На следующем подходе увеличьте вес на $percent%';
+
+  /// Builds the decrease-adjustment message for a percentage value.
+  static String workoutExecutionAdjustmentDecreaseByPercent(int percent) =>
+      'На следующем подходе уменьшите вес на $percent%';
 
   // Debug screen.
   static const debugLogoutButton = 'Выйти';
