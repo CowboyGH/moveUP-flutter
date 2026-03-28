@@ -21,6 +21,15 @@ final class WorkoutsRequestFailure extends WorkoutsFailure {
   });
 }
 
+/// Workouts failure emitted when user tries to start a new workout while another one is active.
+final class ActiveWorkoutExistsFailure extends WorkoutsFailure {
+  /// Creates an instance of [ActiveWorkoutExistsFailure].
+  const ActiveWorkoutExistsFailure({
+    super.parentException,
+    super.stackTrace,
+  }) : super(AppStrings.workoutsActiveWorkoutExists);
+}
+
 /// Unknown workouts failure.
 final class UnknownWorkoutsFailure extends WorkoutsFailure {
   /// Creates an instance of [UnknownWorkoutsFailure].
