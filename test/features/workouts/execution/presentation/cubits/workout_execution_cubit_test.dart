@@ -26,7 +26,7 @@ void main() {
   late WorkoutExecutionResult awaitingCompletionResult;
 
   const userWorkoutId = 1;
-  const exerciseId = 1;
+  const exerciseId = 21;
   const double weightUsed = 1;
 
   setUp(() {
