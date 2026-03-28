@@ -171,8 +171,6 @@ WorkoutLoadAdjustment? _mapLoadAdjustment(SaveExerciseResultAdjustmentDto? adjus
   }
   return WorkoutLoadAdjustment(
     type: adjustment.type!,
-    percent: adjustment.percent,
-    oldWeight: adjustment.oldWeight,
     newWeight: adjustment.newWeight,
   );
 }

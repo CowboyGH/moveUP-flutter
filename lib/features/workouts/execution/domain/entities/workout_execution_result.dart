@@ -7,25 +7,17 @@ final class WorkoutLoadAdjustment extends Equatable {
   /// Adjustment type, for example `increase` or `decrease`.
   final String type;
 
-  /// Adjustment percent when backend provides it.
-  final int? percent;
-
-  /// Previous suggested weight.
-  final double? oldWeight;
-
   /// Next suggested weight.
   final double? newWeight;
 
   /// Creates an instance of [WorkoutLoadAdjustment].
   const WorkoutLoadAdjustment({
     required this.type,
-    required this.percent,
-    required this.oldWeight,
     required this.newWeight,
   });
 
   @override
-  List<Object?> get props => [type, percent, oldWeight, newWeight];
+  List<Object?> get props => [type, newWeight];
 }
 
 /// Payload returned after saving a workout exercise result.

@@ -311,13 +311,9 @@ WorkoutExecutionResult createWorkoutExecutionAwaitingCompletionResult({
 /// Test fixture for workout load adjustment.
 WorkoutLoadAdjustment createWorkoutLoadAdjustment({
   String type = 'increase',
-  int? percent = 10,
-  double? oldWeight = 60.5,
   double? newWeight = 66.5,
 }) => WorkoutLoadAdjustment(
   type: type,
-  percent: percent,
-  oldWeight: oldWeight,
   newWeight: newWeight,
 );
 
