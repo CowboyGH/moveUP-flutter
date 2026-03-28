@@ -234,21 +234,25 @@ abstract final class AppStrings {
   static const workoutExecutionWeightSecondary = 'Пропустить';
   static const workoutExecutionWeightInvalid = 'Введите корректный вес в килограммах';
 
-  /// Builds the increase-adjustment message for an absolute weight value.
-  static String workoutExecutionAdjustmentIncreaseTo(String weight) =>
+  /// Builds the increase-adjustment message for a new absolute weight value.
+  static String workoutExecutionAdjustmentIncrease(String weight) =>
       'На следующем подходе увеличьте вес до $weight $workoutExecutionWeightHint';
 
-  /// Builds the decrease-adjustment message for an absolute weight value.
-  static String workoutExecutionAdjustmentDecreaseTo(String weight) =>
+  /// Builds the decrease-adjustment message for a new absolute weight value.
+  static String workoutExecutionAdjustmentDecrease(String weight) =>
       'На следующем подходе уменьшите вес до $weight $workoutExecutionWeightHint';
 
-  /// Builds the increase-adjustment message for a percentage value.
-  static String workoutExecutionAdjustmentIncreaseByPercent(int percent) =>
-      'На следующем подходе увеличьте вес на $percent%';
-
-  /// Builds the decrease-adjustment message for a percentage value.
-  static String workoutExecutionAdjustmentDecreaseByPercent(int percent) =>
-      'На следующем подходе уменьшите вес на $percent%';
+  /// Builds the exercise instruction with optional weight information.
+  static String workoutExecutionInstruction({
+    required int sets,
+    required String setsLabel,
+    required int reps,
+    String? weight,
+  }) {
+    final instruction = 'Выполняйте данное упражнение $sets $setsLabel по $reps раз';
+    if (weight == null) return instruction;
+    return '$instruction с весом $weight $workoutExecutionWeightHint';
+  }
 
   // Debug screen.
   static const debugLogoutButton = 'Выйти';

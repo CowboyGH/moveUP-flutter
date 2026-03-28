@@ -421,12 +421,13 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
   }
 
   String _buildExerciseInstruction(WorkoutExerciseStep step) {
-    final repetitionsPart =
-        'Выполняйте данное упражнение ${step.sets} ${_buildSetsLabel(step.sets)} по ${step.reps} раз';
-    final weight = step.currentWeight;
-    if (weight == null) return repetitionsPart;
-
-    return '$repetitionsPart с весом ${_formatWorkoutWeight(weight)} кг';
+    final setsLabel = _buildSetsLabel(step.sets);
+    return AppStrings.workoutExecutionInstruction(
+      sets: step.sets,
+      setsLabel: setsLabel,
+      reps: step.reps,
+      weight: step.currentWeight == null ? null : _formatWorkoutWeight(step.currentWeight!),
+    );
   }
 
   Future<double?> _showWeightInputDialog(
@@ -484,28 +485,15 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
 }
 
 String _buildAdjustmentMessage(WorkoutLoadAdjustment adjustment) {
-  if (adjustment.newWeight != null) {
-    final formattedWeight = _formatAdjustmentWeight(adjustment.newWeight!);
-    return switch (adjustment.type) {
-      'increase' => AppStrings.workoutExecutionAdjustmentIncreaseTo(formattedWeight),
-      'decrease' => AppStrings.workoutExecutionAdjustmentDecreaseTo(formattedWeight),
-      _ => AppStrings.workoutExecutionAdjustmentFallback,
-    };
-  }
+  final newWeight = adjustment.newWeight;
+  if (newWeight == null) return AppStrings.workoutExecutionAdjustmentFallback;
 
-  if (adjustment.percent != null) {
-    return switch (adjustment.type) {
-      'increase' => AppStrings.workoutExecutionAdjustmentIncreaseByPercent(
-        adjustment.percent!,
-      ),
-      'decrease' => AppStrings.workoutExecutionAdjustmentDecreaseByPercent(
-        adjustment.percent!,
-      ),
-      _ => AppStrings.workoutExecutionAdjustmentFallback,
-    };
-  }
-
-  return AppStrings.workoutExecutionAdjustmentFallback;
+  final formattedWeight = _formatAdjustmentWeight(newWeight);
+  return switch (adjustment.type) {
+    'increase' => AppStrings.workoutExecutionAdjustmentIncrease(formattedWeight),
+    'decrease' => AppStrings.workoutExecutionAdjustmentDecrease(formattedWeight),
+    _ => AppStrings.workoutExecutionAdjustmentFallback,
+  };
 }
 
 String _formatAdjustmentWeight(double value) {
