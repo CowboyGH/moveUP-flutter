@@ -75,12 +75,12 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
       appBar: AppBar(
         leading: isWarmupScreen
             ? AppBackButton(
-                onPressed: _canHandleWarmupBack(state)
+                onPressed: _canHandleUserAction(state)
                     ? () => context.read<WorkoutExecutionCubit>().exitWarmupToDetails()
                     : null,
               )
             : WorkoutCloseButton(
-                onPressed: _canHandleWorkoutClose(state) ? () => _showExitDialog(context) : null,
+                onPressed: _canHandleUserAction(state) ? () => _showExitDialog(context) : null,
               ),
         title: Text(
           isWarmupScreen
@@ -129,14 +129,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
     );
   }
 
-  bool _canHandleWarmupBack(WorkoutExecutionState state) {
-    return !state.isStarting &&
-        !state.isAdvancingWarmup &&
-        !state.isSubmittingResult &&
-        !state.isCompleting;
-  }
-
-  bool _canHandleWorkoutClose(WorkoutExecutionState state) {
+  bool _canHandleUserAction(WorkoutExecutionState state) {
     return !state.isStarting &&
         !state.isAdvancingWarmup &&
         !state.isSubmittingResult &&
