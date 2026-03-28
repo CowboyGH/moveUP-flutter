@@ -12,6 +12,10 @@ abstract final class AppAssets {
   static const iconProfile = 'profile';
   static const iconNoConnection = 'offline';
   static const iconSearch = 'search';
+  static const iconClose = 'close';
+  static const iconBadFace = 'bad_face';
+  static const iconNormalFace = 'normal_face';
+  static const iconGoodFace = 'good_face';
 
   // Images.
   static const imageFigure = 'figure';
