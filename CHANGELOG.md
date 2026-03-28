@@ -13,11 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Workouts overview feature for authenticated users, including `WorkoutsApiClient`, shared DTO/mappers, `WorkoutsFailure`, catalog repository, Cubit, route, and the `/api/workouts` UI based on the provided mockup.
 - Workout details feature for authenticated users, including `GET /api/workout-execution/{userWorkout}`, details repository, Cubit, route, and the details UI based on the provided mockup.
+- Workout execution feature for authenticated users, including execution DTOs/mappers, repository, Cubit, fullscreen route, local rest countdown, dialogs, and the warmup/training UI backed by workout start/progression/complete endpoints.
 
 ### Changed
 
 - Authenticated routing now lands on `/workouts` instead of the previous debug placeholder screen.
 - Workouts overview cards now open a dedicated workout details screen inside the authenticated shell, preserving the bottom navigation bar until the future execution flow starts.
+- Workouts overview now reflects active workout state: started workouts open as a continue flow, while starting a different assigned workout is blocked with a dedicated dialog when another workout is already active.
+- Workout details CTAs now open a fullscreen workout execution flow above the shell, hiding the bottom navigation bar while the user completes warmups and training steps.
+- Workout execution now captures used weight before saving exercise results, shows load-adjustment feedback from backend, and displays exercise instructions with sets, reps, and current weight.
 - Workouts overview and details screens now reuse a shared `WorkoutCard` widget instead of maintaining duplicated card implementations.
 - Workouts overview and details app bars now reuse a dedicated `appBarTitle` text token instead of local per-page style overrides.
 
