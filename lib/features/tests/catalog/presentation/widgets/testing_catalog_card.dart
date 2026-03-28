@@ -79,7 +79,7 @@ class TestingCatalogCard extends StatelessWidget {
                 textAlign: TextAlign.end,
                 style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
               ),
-              const SizedBox(height: 20),
+              if (item.categories.isNotEmpty) const SizedBox(height: 20),
               Wrap(
                 alignment: WrapAlignment.end,
                 spacing: 6,
