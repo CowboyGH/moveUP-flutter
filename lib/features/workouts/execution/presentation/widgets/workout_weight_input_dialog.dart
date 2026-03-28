@@ -48,13 +48,20 @@ class _WorkoutWeightInputDialogState extends State<WorkoutWeightInputDialog> {
     super.initState();
     _controller = TextEditingController(
       text: widget.initialWeight == null ? '' : _formatWorkoutWeight(widget.initialWeight!),
-    );
+    )..addListener(_handleTextChanged);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller
+      ..removeListener(_handleTextChanged)
+      ..dispose();
     super.dispose();
+  }
+
+  void _handleTextChanged() {
+    if (_validationMessage == null) return;
+    setState(() => _validationMessage = null);
   }
 
   void _submit() {
