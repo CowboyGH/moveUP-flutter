@@ -48,17 +48,22 @@ WorkoutsResponseDto createWorkoutsResponseDto() => WorkoutsResponseDto(
 List<WorkoutOverviewItem> createWorkoutOverviewItems() => [
   ...createWorkoutsResponseDto().data.started,
   ...createWorkoutsResponseDto().data.assigned,
-].map((item) => item.toEntity()).toList(growable: false);
+].map((item) => item.toEntity(hasActive: true)).toList(growable: false);
 
 /// Test fixture for workout details response DTO.
-WorkoutDetailsResponseDto createWorkoutDetailsResponseDto() => WorkoutDetailsResponseDto(
+WorkoutDetailsResponseDto createWorkoutDetailsResponseDto({
+  String status = 'started',
+}) => WorkoutDetailsResponseDto(
   data: WorkoutDetailsDataDto(
+    status: status,
     warmups: [
       WarmupItemDto(
+        id: 1,
         name: 'name',
         description: 'description',
         image: 'test.png',
         durationSeconds: 270,
+        isLast: true,
       ),
     ],
     workout: WorkoutSummaryDto(

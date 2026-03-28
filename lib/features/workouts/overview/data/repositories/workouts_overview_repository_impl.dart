@@ -25,10 +25,11 @@ final class WorkoutsOverviewRepositoryImpl implements WorkoutsOverviewRepository
   Future<Result<List<WorkoutOverviewItem>, WorkoutsFailure>> getWorkouts() async {
     try {
       final response = await _apiClient.getWorkouts();
+      final hasActive = response.data.hasActive;
       final items = [
         ...response.data.started,
         ...response.data.assigned,
-      ].map((item) => item.toEntity()).toList(growable: false);
+      ].map((item) => item.toEntity(hasActive: hasActive)).toList(growable: false);
       return Result.success(items);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
