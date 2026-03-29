@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
-import '../../../presentation/widgets/workout_card.dart';
 import '../../../../../uikit/buttons/main_button.dart';
+import '../../../../../uikit/buttons/secondary_button.dart';
+import '../../../../../uikit/dialogs/app_action_dialog.dart';
 import '../../../../../uikit/inputs/app_search_field.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
+import '../../../presentation/widgets/workout_card.dart';
 import '../../domain/entities/workout_overview_item.dart';
 import '../cubits/workouts_overview_cubit.dart';
 
@@ -159,14 +161,84 @@ class _WorkoutsOverviewPageState extends State<WorkoutsOverviewPage> {
             description: item.description,
             durationMinutes: item.durationMinutes,
             imageUrl: item.imageUrl,
-            buttonLabel: AppStrings.workoutsOverviewOpenButton,
-            onPressed: () => context.push(
-              AppRoutePaths.workoutDetailsConcretePath(item.userWorkoutId),
-            ),
+            buttonLabel: item.isStarted
+                ? AppStrings.workoutsOverviewContinueButton
+                : AppStrings.workoutsOverviewOpenButton,
+            onPressed: () => _handleWorkoutPressed(context, fullItems, item),
           ),
         );
       }),
     );
+  }
+
+  Future<void> _handleWorkoutPressed(
+    BuildContext context,
+    List<WorkoutOverviewItem> items,
+    WorkoutOverviewItem item,
+  ) async {
+    if (!item.isStarted && item.isBlockedByActiveWorkout) {
+      await _showActiveWorkoutDialog(context, items);
+      return;
+    }
+
+    await _openWorkoutDetails(context, item.userWorkoutId);
+  }
+
+  Future<void> _openWorkoutDetails(BuildContext context, int userWorkoutId) async {
+    final cubit = context.read<WorkoutsOverviewCubit>();
+    final didChange = await context.push<bool>(
+      AppRoutePaths.workoutDetailsConcretePath(userWorkoutId),
+    );
+    if (!mounted || didChange == null) return;
+    await cubit.loadWorkouts();
+  }
+
+  Future<void> _showActiveWorkoutDialog(
+    BuildContext context,
+    List<WorkoutOverviewItem> items,
+  ) {
+    final activeWorkout = _findActiveWorkout(items);
+    final cubit = context.read<WorkoutsOverviewCubit>();
+    return showAppActionDialog(
+      context,
+      title: AppStrings.workoutsOverviewActiveWorkoutTitle,
+      description: AppStrings.workoutsOverviewActiveWorkoutDescription,
+      primaryAction: MainButton(
+        onPressed: activeWorkout == null
+            ? () async {
+                context.pop();
+                await cubit.loadWorkouts();
+                if (!context.mounted) return;
+
+                final refreshedActiveWorkout = cubit.state.maybeWhen(
+                  loaded: _findActiveWorkout,
+                  orElse: () => null,
+                );
+                if (refreshedActiveWorkout == null) return;
+                await _openWorkoutDetails(context, refreshedActiveWorkout.userWorkoutId);
+              }
+            : () async {
+                context.pop();
+                await _openWorkoutDetails(context, activeWorkout.userWorkoutId);
+              },
+        child: Text(
+          activeWorkout == null
+              ? AppStrings.fitnessStartRetryButton
+              : AppStrings.workoutsOverviewOpenActiveButton,
+        ),
+      ),
+      secondaryAction: SecondaryButton(
+        onPressed: () => context.pop(),
+        child: const Text(AppStrings.workoutsOverviewDismissButton),
+      ),
+    );
+  }
+
+  WorkoutOverviewItem? _findActiveWorkout(List<WorkoutOverviewItem> items) {
+    for (final item in items) {
+      if (item.isStarted) return item;
+    }
+    return null;
   }
 
   Widget _buildRetryState(BuildContext context) {

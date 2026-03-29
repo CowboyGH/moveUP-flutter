@@ -36,8 +36,8 @@ void main() {
 
         expect(result.isSuccess, isTrue);
         expect(result.success, expectedItems);
-        expect(result.success!.first.status, 'started');
-        expect(result.success!.last.status, 'assigned');
+        expect(result.success!.first.isStarted, isTrue);
+        expect(result.success!.last.isBlockedByActiveWorkout, isTrue);
 
         verify(apiClient.getWorkouts()).called(1);
         verifyNoMoreInteractions(apiClient);

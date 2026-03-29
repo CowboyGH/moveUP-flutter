@@ -70,4 +70,14 @@ abstract class AppRoutePaths {
   /// Builds the concrete route path for workout details by [userWorkoutId].
   static String workoutDetailsConcretePath(int userWorkoutId) =>
       '$workoutDetailsBasePath/$userWorkoutId';
+
+  /// Base route path for a concrete workout execution screen.
+  static const workoutExecutionBasePath = '$workoutsPath/execution';
+
+  /// Route path pattern for a concrete workout execution screen.
+  static const workoutExecutionPath = '$workoutExecutionBasePath/:userWorkoutId';
+
+  /// Builds the concrete route path for workout execution by [userWorkoutId].
+  static String workoutExecutionConcretePath(int userWorkoutId) =>
+      '$workoutExecutionBasePath/$userWorkoutId';
 }

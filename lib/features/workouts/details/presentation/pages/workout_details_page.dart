@@ -6,17 +6,18 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
-import '../../../presentation/widgets/workout_card.dart';
 import '../../../../../uikit/buttons/app_back_button.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/images/app_decorative_figure.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
+import '../../../execution/domain/entities/workout_execution_entry_mode.dart';
+import '../../../presentation/widgets/workout_card.dart';
 import '../../domain/entities/workout_details_item.dart';
 import '../cubits/workout_details_cubit.dart';
 
 /// Workout details page shown after selecting a workout from overview.
-class WorkoutDetailsPage extends StatelessWidget {
+class WorkoutDetailsPage extends StatefulWidget {
   /// User workout identifier for retry actions.
   final int userWorkoutId;
 
@@ -25,6 +26,13 @@ class WorkoutDetailsPage extends StatelessWidget {
     required this.userWorkoutId,
     super.key,
   });
+
+  @override
+  State<WorkoutDetailsPage> createState() => _WorkoutDetailsPageState();
+}
+
+class _WorkoutDetailsPageState extends State<WorkoutDetailsPage> {
+  bool _shouldRefreshOverviewOnExit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +70,10 @@ class WorkoutDetailsPage extends StatelessWidget {
 
   void _handleBack(BuildContext context) {
     if (Navigator.canPop(context)) {
+      if (_shouldRefreshOverviewOnExit) {
+        context.pop(false);
+        return;
+      }
       context.pop();
       return;
     }
@@ -114,11 +126,30 @@ class WorkoutDetailsPage extends StatelessWidget {
               WorkoutDetailsItemType.warmup => AppStrings.workoutDetailsStartWarmupButton,
               WorkoutDetailsItemType.workout => AppStrings.workoutDetailsStartWorkoutButton,
             },
-            onPressed: () => context.push(AppRoutePaths.debugPath),
+            onPressed: () => _openExecution(context, item.type),
           ),
         );
       }),
     );
+  }
+
+  Future<void> _openExecution(
+    BuildContext context,
+    WorkoutDetailsItemType itemType,
+  ) async {
+    final didChange = await context.push<bool>(
+      AppRoutePaths.workoutExecutionConcretePath(widget.userWorkoutId),
+      extra: switch (itemType) {
+        WorkoutDetailsItemType.warmup => WorkoutExecutionEntryMode.warmup,
+        WorkoutDetailsItemType.workout => WorkoutExecutionEntryMode.workout,
+      },
+    );
+    if (!context.mounted || didChange == null) return;
+    if (didChange) {
+      context.pop(true);
+      return;
+    }
+    setState(() => _shouldRefreshOverviewOnExit = true);
   }
 
   Widget _buildRetryState(BuildContext context) {
@@ -135,7 +166,8 @@ class WorkoutDetailsPage extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           MainButton(
-            onPressed: () => context.read<WorkoutDetailsCubit>().loadWorkoutDetails(userWorkoutId),
+            onPressed: () =>
+                context.read<WorkoutDetailsCubit>().loadWorkoutDetails(widget.userWorkoutId),
             child: const Text(AppStrings.fitnessStartRetryButton),
           ),
         ],

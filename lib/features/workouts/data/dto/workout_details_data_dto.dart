@@ -8,6 +8,9 @@ part 'workout_details_data_dto.g.dart';
 /// DTO payload returned by `GET /api/workout-execution/{userWorkout}`.
 @JsonSerializable(createToJson: false)
 class WorkoutDetailsDataDto {
+  /// Current backend workout status.
+  final String status;
+
   /// Main workout payload.
   final WorkoutSummaryDto workout;
 
@@ -17,6 +20,7 @@ class WorkoutDetailsDataDto {
 
   /// Creates an instance of [WorkoutDetailsDataDto].
   WorkoutDetailsDataDto({
+    required this.status,
     required this.workout,
     required this.warmups,
   });
