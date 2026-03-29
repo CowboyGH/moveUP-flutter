@@ -31,6 +31,8 @@ extension ProfileFailureMapper on NetworkFailure {
           NoNetworkFailure() ||
           ConnectionTimeoutFailure() ||
           BadRequestFailure() ||
+          UnauthorizedFailure() ||
+          ForbiddenFailure() ||
           NotFoundFailure() ||
           ConflictFailure() ||
           RateLimitedFailure() ||
