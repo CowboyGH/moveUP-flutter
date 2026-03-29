@@ -27,9 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workouts overview and details screens now reuse a shared `WorkoutCard` widget instead of maintaining duplicated card implementations.
 - Workouts overview and details app bars now reuse a dedicated `appBarTitle` text token instead of local per-page style overrides.
 - Authenticated tests catalog cards now open the real test attempt flow instead of the debug screen.
+- `TestingCatalogCard` now skips the extra spacing above category chips when a test has no categories.
+
+### Breaking
+
 - Shared test-attempt transport DTOs were renamed from guest-prefixed names to neutral request/response models because the same payload shapes are now reused by both guest and authenticated flows.
 - Test-attempt DI wiring now resolves separate guest and authenticated repository bindings while keeping the shared `TestAttemptCubit` and domain contract unchanged.
-- `TestingCatalogCard` now skips the extra spacing above category chips when a test has no categories.
 
 ## [0.3.1] - 2026-03-25
 
