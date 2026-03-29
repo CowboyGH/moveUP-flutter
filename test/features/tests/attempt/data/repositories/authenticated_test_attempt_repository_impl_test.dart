@@ -222,6 +222,7 @@ void main() {
         expect(result.failure!.parentException, exception);
 
         verify(apiClient.completeTest(any, any)).called(1);
+        verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });
     });
