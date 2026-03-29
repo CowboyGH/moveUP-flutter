@@ -5,14 +5,14 @@ import 'workout_image_url_mapper.dart';
 /// Extension that maps [UserWorkoutOverviewItemDto] to [WorkoutOverviewItem].
 extension WorkoutOverviewMapper on UserWorkoutOverviewItemDto {
   /// Converts DTO to a domain entity.
-  WorkoutOverviewItem toEntity() => WorkoutOverviewItem(
+  WorkoutOverviewItem toEntity({required bool hasActive}) => WorkoutOverviewItem(
     userWorkoutId: userWorkoutId,
-    workoutId: workout.id,
+    isStarted: status == 'started',
+    isBlockedByActiveWorkout: hasActive && status != 'started',
     title: workout.title,
     description: workout.description,
     durationMinutes: _parseDurationMinutes(workout.durationMinutes),
     imageUrl: normalizeWorkoutImageUrl(workout.image ?? ''),
-    status: status,
   );
 }
 

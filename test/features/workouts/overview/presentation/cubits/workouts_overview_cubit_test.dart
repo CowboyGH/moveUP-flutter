@@ -18,12 +18,12 @@ void main() {
   const items = [
     WorkoutOverviewItem(
       userWorkoutId: 1,
-      workoutId: 1,
+      isStarted: true,
+      isBlockedByActiveWorkout: false,
       title: 'title',
       description: 'description',
       durationMinutes: 1,
       imageUrl: 'test.png',
-      status: 'started',
     ),
   ];
 

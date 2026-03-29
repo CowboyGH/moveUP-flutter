@@ -25,6 +25,8 @@ import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/tests/catalog/presentation/pages/tests_catalog_page_builder.dart';
 import '../../features/workouts/details/presentation/pages/workout_details_page_builder.dart';
+import '../../features/workouts/execution/domain/entities/workout_execution_entry_mode.dart';
+import '../../features/workouts/execution/presentation/pages/workout_execution_page_builder.dart';
 import '../../features/workouts/overview/presentation/pages/workouts_overview_page_builder.dart';
 import '../../uikit/themes/colors/app_color_theme.dart';
 import '../../uikit/themes/text/app_text_theme.dart';
@@ -197,6 +199,25 @@ final router = GoRouter(
                   },
                   builder: (_, state) => WorkoutDetailsPageBuilder(
                     userWorkoutId: int.parse(state.pathParameters['userWorkoutId']!),
+                  ),
+                ),
+                GoRoute(
+                  path: 'execution/:userWorkoutId',
+                  parentNavigatorKey: _rootKey,
+                  redirect: (_, state) {
+                    final rawUserWorkoutId = state.pathParameters['userWorkoutId'];
+                    final userWorkoutId = int.tryParse(rawUserWorkoutId ?? '');
+                    if (userWorkoutId == null || userWorkoutId <= 0) {
+                      return AppRoutePaths.workoutsPath;
+                    }
+                    if (state.extra is! WorkoutExecutionEntryMode) {
+                      return AppRoutePaths.workoutDetailsConcretePath(userWorkoutId);
+                    }
+                    return null;
+                  },
+                  builder: (_, state) => WorkoutExecutionPageBuilder(
+                    userWorkoutId: int.parse(state.pathParameters['userWorkoutId']!),
+                    entryMode: state.extra as WorkoutExecutionEntryMode,
                   ),
                 ),
               ],
