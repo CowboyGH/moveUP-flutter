@@ -163,6 +163,25 @@ void main() {
         verify(apiClient.saveTestResult(any, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });
+
+      test('returns UnknownTestsFailure when unexpected exception occurs', () async {
+        final exception = Exception('unexpected_error');
+        when(apiClient.saveTestResult(any, any)).thenThrow(exception);
+
+        final result = await repository.saveResult(
+          attemptId: '11',
+          testingExerciseId: 16,
+          resultValue: 2,
+        );
+
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownTestsFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.saveTestResult(any, any)).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
     group('AuthenticatedTestAttemptRepositoryImpl.completeTest', () {
