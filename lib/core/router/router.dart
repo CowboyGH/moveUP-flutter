@@ -23,6 +23,7 @@ import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/tests/attempt/presentation/pages/tests_attempt_page_builder.dart';
 import '../../features/tests/catalog/presentation/pages/tests_catalog_page_builder.dart';
 import '../../features/workouts/details/presentation/pages/workout_details_page_builder.dart';
 import '../../features/workouts/execution/domain/entities/workout_execution_entry_mode.dart';
@@ -178,6 +179,22 @@ final router = GoRouter(
             GoRoute(
               path: AppRoutePaths.testsPath,
               builder: (_, _) => const TestsCatalogPageBuilder(),
+              routes: [
+                GoRoute(
+                  path: AppRoutePaths.testsAttemptPath,
+                  parentNavigatorKey: _rootKey,
+                  redirect: (_, state) {
+                    final testingId = int.tryParse(state.pathParameters['testingId'] ?? '');
+                    if (testingId == null || testingId <= 0) {
+                      return AppRoutePaths.testsPath;
+                    }
+                    return null;
+                  },
+                  builder: (_, state) => TestsAttemptPageBuilder(
+                    testingId: int.parse(state.pathParameters['testingId']!),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

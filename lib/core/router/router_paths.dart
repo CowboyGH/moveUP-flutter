@@ -12,6 +12,12 @@ abstract class AppRoutePaths {
   /// Route path for the tests root tab.
   static const testsPath = '/tests';
 
+  /// Route path pattern for a concrete authenticated test attempt.
+  static const testsAttemptPath = 'attempt/:testingId';
+
+  /// Builds the concrete route path for an authenticated test attempt by [testingId].
+  static String testsAttemptDetailsPath(int testingId) => '$testsPath/attempt/$testingId';
+
   /// Route path for the profile root tab.
   static const profilePath = '/profile';
 
