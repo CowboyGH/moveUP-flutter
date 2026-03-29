@@ -251,6 +251,7 @@ abstract final class AppStrings {
   static const profileNewPasswordLabel = 'Новый пароль';
   static const profilePasswordConfirmationLabel = 'Подтверждение пароля';
   static const profileUploadFileLabel = 'Загрузить файл:';
+  static const profileUploadFormat = 'формат';
   static const profileUploadFormatPlaceholder = 'jpg формат';
   static const profileEditEmailLabel = 'Введите email';
   static const profileEditNameLabel = 'Введите имя';

@@ -118,7 +118,7 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
     }
 
     final extension = fileName.substring(dotIndex + 1).toLowerCase();
-    return '$extension формат';
+    return '$extension ${AppStrings.profileUploadFormat}';
   }
 
   @override
@@ -245,7 +245,7 @@ final class _AvatarPreview extends StatelessWidget {
     if (localAvatarPath != null && localAvatarPath.isNotEmpty) {
       return Image.file(
         File(localAvatarPath),
-        height: 320,
+        height: 296,
         width: double.infinity,
         fit: BoxFit.cover,
       );
@@ -266,22 +266,26 @@ final class _AvatarPickButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(12),
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: onPressed == null ? colorTheme.disabled : colorTheme.primary,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Center(
-            child: Text(
-              '+',
-              textAlign: TextAlign.center,
-              style: textTheme.button.copyWith(color: colorTheme.onPrimary),
+    return Semantics(
+      button: true,
+      label: AppStrings.profileUploadFileLabel,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: onPressed == null ? colorTheme.disabled : colorTheme.primary,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Center(
+              child: Text(
+                '+',
+                textAlign: TextAlign.center,
+                style: textTheme.button.copyWith(color: colorTheme.onPrimary),
+              ),
             ),
           ),
         ),
