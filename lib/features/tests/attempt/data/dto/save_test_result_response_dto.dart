@@ -7,7 +7,7 @@ part 'save_test_result_response_dto.g.dart';
 /// DTO envelope for saving test exercise result.
 @JsonSerializable(createToJson: false)
 class SaveTestResultResponseDto {
-  /// Guest result payload.
+  /// Saved test result payload.
   final SaveTestResultDataDto data;
 
   /// Creates an instance of [SaveTestResultResponseDto].
