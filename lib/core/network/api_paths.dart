@@ -41,6 +41,15 @@ abstract class ApiPaths {
   /// The endpoint for the current user profile.
   static const String me = '${apiPrefix}me';
 
+  /// The endpoint for the authenticated profile payload.
+  static const String profile = '${apiPrefix}profile';
+
+  /// The endpoint for changing the authenticated user password.
+  static const String profileChangePassword = '$profile/change-password';
+
+  /// The endpoint for uploading or deleting the authenticated user avatar.
+  static const String profileAvatar = '$profile/avatar';
+
   /// The endpoint for all user-parameters references.
   static const String userParameterReferences = '${apiPrefix}user-parameters/references';
 
