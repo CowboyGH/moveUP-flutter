@@ -10,7 +10,7 @@ import '../../domain/repositories/test_attempt_repository.dart';
 part 'test_attempt_cubit.freezed.dart';
 part 'test_attempt_state.dart';
 
-/// Cubit that manages guest test attempt start, progress, and completion.
+/// Cubit that manages test attempt start, progress, and completion.
 final class TestAttemptCubit extends Cubit<TestAttemptState> {
   final TestAttemptRepository _repository;
 
