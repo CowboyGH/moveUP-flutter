@@ -67,6 +67,7 @@ class _TestsCatalogPageState extends State<TestsCatalogPage> {
         }
       }
     }
+    categories.sort((left, right) => left.name.toLowerCase().compareTo(right.name.toLowerCase()));
     return categories;
   }
 
@@ -137,48 +138,50 @@ class _TestsCatalogPageState extends State<TestsCatalogPage> {
                 bottom: 55,
                 child: AppDecorativeFigure(tone: FigureTone.primary),
               ),
-              SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(24, 14, 24, 132),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      AppStrings.testsCatalogDescription,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: colorTheme.darkHint,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    AppSearchField(
-                      controller: _searchController,
-                      hintText: AppStrings.testsCatalogSearchHint,
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TapRegion(
-                        groupId: _filterTapRegionGroupId,
-                        onTapOutside: (_) => _closeFilter(),
-                        child: CompositedTransformTarget(
-                          link: _filterLayerLink,
-                          child: TestsCatalogFilterButton(
-                            onPressed: categories.isEmpty ? null : _toggleFilter,
-                            isSelected: _isFilterOpen,
+              CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(24, 14, 24, 0),
+                    sliver: SliverList.list(
+                      children: [
+                        Text(
+                          AppStrings.testsCatalogDescription,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: colorTheme.darkHint,
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 20),
+                        AppSearchField(
+                          controller: _searchController,
+                          hintText: AppStrings.testsCatalogSearchHint,
+                        ),
+                        const SizedBox(height: 12),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TapRegion(
+                            groupId: _filterTapRegionGroupId,
+                            onTapOutside: (_) => _closeFilter(),
+                            child: CompositedTransformTarget(
+                              link: _filterLayerLink,
+                              child: TestsCatalogFilterButton(
+                                onPressed: categories.isEmpty ? null : _toggleFilter,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      ],
                     ),
-                    const SizedBox(height: 24),
-                    _buildStateSection(
-                      context,
-                      state,
-                      fullItems: allItems,
-                      filteredItems: _filterItems(allItems),
-                    ),
-                  ],
-                ),
+                  ),
+                  ..._buildStateSlivers(
+                    context,
+                    state,
+                    fullItems: allItems,
+                    filteredItems: _filterItems(allItems),
+                  ),
+                ],
               ),
               if (_isFilterOpen && categories.isNotEmpty)
                 CompositedTransformFollower(
@@ -209,21 +212,28 @@ class _TestsCatalogPageState extends State<TestsCatalogPage> {
     );
   }
 
-  Widget _buildStateSection(
+  List<Widget> _buildStateSlivers(
     BuildContext context,
     TestsCatalogState state, {
     required List<TestingCatalogItem> fullItems,
     required List<TestingCatalogItem> filteredItems,
   }) {
     return state.when(
-      initial: () => const SizedBox.shrink(),
-      inProgress: _buildLoadingState,
-      loaded: (_) => _buildLoadedState(
+      initial: () => const <Widget>[SliverToBoxAdapter(child: SizedBox.shrink())],
+      inProgress: () => <Widget>[_buildBoxStateSliver(_buildLoadingState())],
+      loaded: (_) => _buildLoadedStateSlivers(
         context,
         fullItems: fullItems,
         filteredItems: filteredItems,
       ),
-      failed: (_) => _buildRetryState(context),
+      failed: (_) => <Widget>[_buildBoxStateSliver(_buildRetryState(context))],
+    );
+  }
+
+  Widget _buildBoxStateSliver(Widget child) {
+    return SliverPadding(
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 132),
+      sliver: SliverToBoxAdapter(child: child),
     );
   }
 
@@ -239,42 +249,60 @@ class _TestsCatalogPageState extends State<TestsCatalogPage> {
     );
   }
 
-  Widget _buildLoadedState(
+  List<Widget> _buildLoadedStateSlivers(
     BuildContext context, {
     required List<TestingCatalogItem> fullItems,
     required List<TestingCatalogItem> filteredItems,
   }) {
     if (fullItems.isEmpty) {
-      return const Center(
-        child: Text(
-          AppStrings.testsEmpty,
-          textAlign: TextAlign.center,
+      return const [
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 132),
+          sliver: SliverToBoxAdapter(
+            child: Center(
+              child: Text(
+                AppStrings.testsEmpty,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
-      );
+      ];
     }
 
     if (filteredItems.isEmpty) {
-      return const Center(
-        child: Text(
-          AppStrings.testsSearchEmpty,
-          textAlign: TextAlign.center,
+      return const [
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(24, 0, 24, 132),
+          sliver: SliverToBoxAdapter(
+            child: Center(
+              child: Text(
+                AppStrings.testsSearchEmpty,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
         ),
-      );
+      ];
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: List.generate(filteredItems.length, (index) {
-        final item = filteredItems[index];
-        return Padding(
-          padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
-          child: TestingCatalogCard(
-            item: item,
-            onPressed: () => context.push(AppRoutePaths.debugPath),
-          ),
-        );
-      }),
-    );
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 132),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final item = filteredItems[index];
+            return Padding(
+              padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
+              child: TestingCatalogCard(
+                item: item,
+                onPressed: () => context.push(AppRoutePaths.debugPath),
+              ),
+            );
+          }, childCount: filteredItems.length),
+        ),
+      ),
+    ];
   }
 
   Widget _buildRetryState(BuildContext context) {

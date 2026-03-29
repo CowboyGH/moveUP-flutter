@@ -11,13 +11,9 @@ class TestsCatalogFilterButton extends StatelessWidget {
   /// Callback executed when the button is pressed.
   final VoidCallback? onPressed;
 
-  /// Whether the dropdown is currently visible.
-  final bool isSelected;
-
   /// Creates an instance of [TestsCatalogFilterButton].
   const TestsCatalogFilterButton({
     required this.onPressed,
-    this.isSelected = false,
     super.key,
   });
 
@@ -26,39 +22,45 @@ class TestsCatalogFilterButton extends StatelessWidget {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
     final isDisabled = onPressed == null;
-    return OutlinedButton(
-      onPressed: onPressed,
-      style:
-          OutlinedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            backgroundColor: colorTheme.surface,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+
+    return Semantics(
+      button: true,
+      enabled: !isDisabled,
+      label: AppStrings.testsCatalogFilterLabel,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style:
+            OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              backgroundColor: colorTheme.surface,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              overlayColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+            ).copyWith(
+              side: WidgetStateProperty.resolveWith((states) {
+                if (isDisabled) return BorderSide(color: colorTheme.disabled);
+                return BorderSide(color: colorTheme.outline);
+              }),
             ),
-            overlayColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-          ).copyWith(
-            side: WidgetStateProperty.resolveWith((states) {
-              if (isDisabled) return BorderSide(color: colorTheme.disabled);
-              return BorderSide(color: colorTheme.outline);
-            }),
-          ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            AppStrings.testsCatalogFilterLabel,
-            style: textTheme.bodyMedium.copyWith(
-              color: isDisabled ? colorTheme.disabled : colorTheme.hint,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              AppStrings.testsCatalogFilterLabel,
+              style: textTheme.bodyMedium.copyWith(
+                color: isDisabled ? colorTheme.disabled : colorTheme.hint,
+              ),
             ),
-          ),
-          const SizedBox(width: 8),
-          SvgPictureWidget.icon(
-            AppAssets.iconFilter,
-            color: isDisabled ? colorTheme.disabled : colorTheme.outline,
-          ),
-        ],
+            const SizedBox(width: 8),
+            SvgPictureWidget.icon(
+              AppAssets.iconFilter,
+              color: isDisabled ? colorTheme.disabled : colorTheme.outline,
+            ),
+          ],
+        ),
       ),
     );
   }
