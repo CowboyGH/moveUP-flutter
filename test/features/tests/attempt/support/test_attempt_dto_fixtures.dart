@@ -1,7 +1,9 @@
-import 'package:moveup_flutter/features/tests/attempt/data/dto/save_guest_test_result_data_dto.dart';
-import 'package:moveup_flutter/features/tests/attempt/data/dto/save_guest_test_result_response_dto.dart';
+import 'package:moveup_flutter/features/tests/attempt/data/dto/save_test_result_data_dto.dart';
+import 'package:moveup_flutter/features/tests/attempt/data/dto/save_test_result_response_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/start_guest_test_data_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/start_guest_test_response_dto.dart';
+import 'package:moveup_flutter/features/tests/attempt/data/dto/start_test_data_dto.dart';
+import 'package:moveup_flutter/features/tests/attempt/data/dto/start_test_response_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/test_attempt_testing_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/testing_exercise_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/mappers/test_attempt_mapper.dart';
@@ -44,15 +46,28 @@ StartGuestTestResponseDto createStartGuestTestResponseDto({
 );
 
 /// Test fixture for save-result response DTO.
-SaveGuestTestResultResponseDto createSaveGuestTestResultResponseDto({
+SaveTestResultResponseDto createSaveGuestTestResultResponseDto({
   bool saved = true,
   TestingExerciseDto? nextExercise,
   bool? allExercisesCompleted,
-}) => SaveGuestTestResultResponseDto(
-  data: SaveGuestTestResultDataDto(
+}) => SaveTestResultResponseDto(
+  data: SaveTestResultDataDto(
     saved: saved,
     nextExercise: nextExercise,
     allExercisesCompleted: allExercisesCompleted,
+  ),
+);
+
+/// Test fixture for authenticated start response DTO.
+StartTestResponseDto createStartTestResponseDto({
+  int attemptId = 11,
+  TestAttemptTestingDto? testing,
+  TestingExerciseDto? currentExercise,
+}) => StartTestResponseDto(
+  data: StartTestDataDto(
+    attemptId: attemptId,
+    testing: testing ?? createTestAttemptTestingDto(),
+    currentExercise: currentExercise ?? createTestingExerciseDto(),
   ),
 );
 
