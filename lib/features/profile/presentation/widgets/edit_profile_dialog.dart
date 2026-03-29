@@ -111,7 +111,13 @@ class _EditProfileDialogState extends State<EditProfileDialog> {
       return AppStrings.profileUploadFormatPlaceholder;
     }
 
-    final extension = avatarPath.split('.').last.toLowerCase();
+    final fileName = avatarPath.split(Platform.pathSeparator).last;
+    final dotIndex = fileName.lastIndexOf('.');
+    if (dotIndex <= 0 || dotIndex == fileName.length - 1) {
+      return AppStrings.profileUploadFormatPlaceholder;
+    }
+
+    final extension = fileName.substring(dotIndex + 1).toLowerCase();
     return '$extension формат';
   }
 

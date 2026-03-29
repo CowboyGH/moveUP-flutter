@@ -54,6 +54,8 @@ final class ProfileUserCubit extends Cubit<ProfileUserState> {
 
   /// Replaces the current user with a freshly updated payload.
   void replaceUser(User user) {
+    if (isClosed) return;
+
     emit(
       state.copyWith(
         user: user,
