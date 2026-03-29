@@ -242,6 +242,27 @@ abstract final class AppStrings {
   static const workoutExecutionWeightSecondary = 'Пропустить';
   static const workoutExecutionWeightInvalid = 'Введите корректный вес в килограммах';
 
+  // Profile.
+  static String profileGreeting(String name) => 'Здравствуйте, $name';
+  static const profileEditButton = 'Редактировать профиль';
+  static const profileChangePasswordButton = 'Сменить пароль';
+  static const profileChangePasswordTitle = 'Смена пароля';
+  static const profileOldPasswordLabel = 'Старый пароль';
+  static const profileNewPasswordLabel = 'Новый пароль';
+  static const profilePasswordConfirmationLabel = 'Подтверждение пароля';
+  static const profileUploadFileLabel = 'Загрузить файл:';
+  static const profileUploadFormatPlaceholder = 'jpg формат';
+  static const profileEditEmailLabel = 'Введите email';
+  static const profileEditNameLabel = 'Введите имя';
+  static const profileSaveButton = 'Сохранить';
+  static const profileCancelButton = 'Отменить';
+  static const profileLoadFailed = 'Не удалось загрузить профиль';
+  static const profileValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const profileUpdateFailed = 'Не удалось обновить профиль. Попробуйте снова';
+  static const profileChangePasswordFailed = 'Не удалось сменить пароль. Попробуйте снова';
+  static const profileImagePickFailed = 'Не удалось выбрать изображение. Попробуйте снова';
+  static const profileUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   /// Builds the increase-adjustment message for a new absolute weight value.
   static String workoutExecutionAdjustmentIncrease(String weight) =>
       'На следующем подходе увеличьте вес до $weight $workoutExecutionWeightHint';
