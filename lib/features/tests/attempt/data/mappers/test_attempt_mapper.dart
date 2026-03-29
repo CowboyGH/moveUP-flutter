@@ -3,8 +3,9 @@ import '../../domain/entities/test_attempt_result.dart';
 import '../../domain/entities/test_attempt_start.dart';
 import '../../domain/entities/test_attempt_testing.dart';
 import '../../domain/entities/testing_exercise.dart';
-import '../dto/save_guest_test_result_data_dto.dart';
+import '../dto/save_test_result_data_dto.dart';
 import '../dto/start_guest_test_data_dto.dart';
+import '../dto/start_test_data_dto.dart';
 import '../dto/test_attempt_testing_dto.dart';
 import '../dto/testing_exercise_dto.dart';
 
@@ -38,8 +39,18 @@ extension StartGuestTestMapper on StartGuestTestDataDto {
   );
 }
 
-/// Extension that maps [SaveGuestTestResultDataDto] to [TestAttemptResult].
-extension SaveGuestTestResultMapper on SaveGuestTestResultDataDto {
+/// Extension that maps [StartTestDataDto] to [TestAttemptStart].
+extension StartTestMapper on StartTestDataDto {
+  /// Converts DTO to a domain entity.
+  TestAttemptStart toEntity() => TestAttemptStart(
+    attemptId: attemptId.toString(),
+    testing: testing.toEntity(),
+    currentExercise: currentExercise.toEntity(),
+  );
+}
+
+/// Extension that maps save-result DTOs to [TestAttemptResult].
+extension SaveGuestTestResultMapper on SaveTestResultDataDto {
   /// Converts DTO to a domain entity.
   TestAttemptResult toEntity() => TestAttemptResult(
     nextExercise: nextExercise?.toEntity(),

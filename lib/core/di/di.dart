@@ -17,6 +17,7 @@ import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
+import '../../features/tests/attempt/data/repositories/authenticated_test_attempt_repository_impl.dart';
 import '../../features/tests/attempt/data/repositories/guest_test_attempt_repository_impl.dart';
 import '../../features/tests/attempt/domain/repositories/test_attempt_repository.dart';
 import '../../features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
@@ -139,8 +140,14 @@ Future<void> setupDI() async {
       di<TestsApiClient>(),
     ),
   );
-  di.registerLazySingleton<TestAttemptRepository>(
+  di.registerLazySingleton<GuestTestAttemptRepository>(
     () => GuestTestAttemptRepositoryImpl(
+      di<AppLogger>(),
+      di<TestsApiClient>(),
+    ),
+  );
+  di.registerLazySingleton<AuthenticatedTestAttemptRepository>(
+    () => AuthenticatedTestAttemptRepositoryImpl(
       di<AppLogger>(),
       di<TestsApiClient>(),
     ),

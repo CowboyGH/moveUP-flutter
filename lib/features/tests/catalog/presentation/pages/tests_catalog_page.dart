@@ -296,7 +296,7 @@ class _TestsCatalogPageState extends State<TestsCatalogPage> {
               padding: EdgeInsets.only(bottom: index == filteredItems.length - 1 ? 0 : 20),
               child: TestingCatalogCard(
                 item: item,
-                onPressed: () => context.push(AppRoutePaths.debugPath),
+                onPressed: () => context.push(AppRoutePaths.testsAttemptDetailsPath(item.id)),
               ),
             );
           }, childCount: filteredItems.length),

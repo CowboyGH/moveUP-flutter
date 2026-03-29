@@ -14,27 +14,27 @@ import '../dto/save_test_result_request_dto.dart';
 import '../mappers/test_attempt_mapper.dart';
 import 'test_attempt_result_payload_validator.dart';
 
-/// Guest implementation of [GuestTestAttemptRepository].
-final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository {
-  /// Logger for tracking guest test attempt operations.
+/// Authenticated implementation of [AuthenticatedTestAttemptRepository].
+final class AuthenticatedTestAttemptRepositoryImpl implements AuthenticatedTestAttemptRepository {
+  /// Logger for tracking authenticated test attempt operations.
   final AppLogger _logger;
 
-  /// API client for tests catalog and guest attempts.
+  /// API client for tests catalog and attempts.
   final TestsApiClient _apiClient;
 
-  /// Creates an instance of [GuestTestAttemptRepositoryImpl].
-  GuestTestAttemptRepositoryImpl(this._logger, this._apiClient);
+  /// Creates an instance of [AuthenticatedTestAttemptRepositoryImpl].
+  AuthenticatedTestAttemptRepositoryImpl(this._logger, this._apiClient);
 
   @override
   Future<Result<TestAttemptStart, TestsFailure>> startTest(int testingId) async {
     try {
-      final response = await _apiClient.startGuestTest(testingId);
+      final response = await _apiClient.startTest(testingId);
       return Result.success(response.data.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toTestsFailure());
     } catch (e, s) {
-      _logger.e('StartGuestTest failed with unexpected error', e, s);
+      _logger.e('StartTest failed with unexpected error', e, s);
       return Result.failure(UnknownTestsFailure(parentException: e, stackTrace: s));
     }
   }
@@ -50,11 +50,11 @@ final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository
         testingExerciseId: testingExerciseId,
         resultValue: resultValue,
       );
-      final response = await _apiClient.saveGuestTestResult(attemptId, request);
+      final response = await _apiClient.saveTestResult(attemptId, request);
       final payload = response.data;
       if (!isValidTestAttemptResultPayload(payload)) {
-        final exception = StateError('Malformed guest test result payload.');
-        _logger.e('SaveGuestTestResult returned malformed payload', exception);
+        final exception = StateError('Malformed authenticated test result payload.');
+        _logger.e('SaveTestResult returned malformed payload', exception);
         return Result.failure(UnknownTestsFailure(parentException: exception));
       }
       return Result.success(payload.toEntity());
@@ -62,7 +62,7 @@ final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toTestsFailure());
     } catch (e, s) {
-      _logger.e('SaveGuestTestResult failed with unexpected error', e, s);
+      _logger.e('SaveTestResult failed with unexpected error', e, s);
       return Result.failure(UnknownTestsFailure(parentException: e, stackTrace: s));
     }
   }
@@ -74,13 +74,13 @@ final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository
   }) async {
     try {
       final request = CompleteTestRequestDto(pulse: pulse);
-      await _apiClient.completeGuestTest(attemptId, request);
+      await _apiClient.completeTest(attemptId, request);
       return const Result.success(null);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toTestsFailure());
     } catch (e, s) {
-      _logger.e('CompleteGuestTest failed with unexpected error', e, s);
+      _logger.e('CompleteTest failed with unexpected error', e, s);
       return Result.failure(UnknownTestsFailure(parentException: e, stackTrace: s));
     }
   }
