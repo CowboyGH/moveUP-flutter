@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authenticated tests catalog screen for the `/tests` root tab, reusing the existing tests catalog slice and adding local search plus multi-select category filtering UI before navigating to the debug screen.
 - Workout execution feature for authenticated users, including execution DTOs/mappers, repository, Cubit, fullscreen route, local rest countdown, dialogs, and the warmup/training UI backed by workout start/progression/complete endpoints.
 - Authenticated test attempt flow for `/tests/attempt/:testingId`, including auth API client methods, repository wiring, fullscreen attempt route, and the attempt UI mirrored from the Fitness Start flow.
+- Profile user section for the authenticated `/profile` tab, including `ProfileApiClient`, profile repository/failures, user section Cubits, edit-profile and change-password dialogs, avatar upload flow, and the first profile screen UI based on the provided layout.
 
 ### Changed
 
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workouts overview and details app bars now reuse a dedicated `appBarTitle` text token instead of local per-page style overrides.
 - Authenticated tests catalog cards now open the real test attempt flow instead of the debug screen.
 - `TestingCatalogCard` now skips the extra spacing above category chips when a test has no categories.
+- The `/profile` root tab now renders the real user-section screen instead of the previous placeholder, reuses the authenticated session user as an initial seed, and keeps forgot-password routes reachable from the change-password dialog for authenticated users.
 
 ### Breaking
 
