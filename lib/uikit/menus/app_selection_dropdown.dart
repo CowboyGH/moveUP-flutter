@@ -87,15 +87,19 @@ class AppSelectionDropdown<T extends Object> extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: ConstrainedBox(
           constraints: constraints,
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: List.generate(items.length, (index) {
-                final item = items[index];
-                final isSelected = selectedValues.contains(item.value);
-                return Padding(
-                  padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 2),
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              final isSelected = selectedValues.contains(item.value);
+              return Padding(
+                padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 2),
+                child: Semantics(
+                  container: true,
+                  button: true,
+                  selected: isSelected,
+                  label: item.label,
                   child: InkWell(
                     onTap: () => _toggleValue(item.value),
                     borderRadius: BorderRadius.circular(10),
@@ -111,38 +115,42 @@ class AppSelectionDropdown<T extends Object> extends StatelessWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                item.label,
-                                maxLines: 1,
-                                style: textTheme.body.copyWith(
-                                  color: colorTheme.hint,
-                                  fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
-                                  overflow: TextOverflow.ellipsis,
+                              child: ExcludeSemantics(
+                                child: Text(
+                                  item.label,
+                                  maxLines: 1,
+                                  style: textTheme.body.copyWith(
+                                    color: colorTheme.hint,
+                                    fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ),
                             ),
                             if (isSelected)
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  color: colorTheme.primary,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: colorTheme.primary,
-                                      blurRadius: 8,
-                                    ),
-                                  ],
+                              ExcludeSemantics(
+                                child: DecoratedBox(
+                                  decoration: BoxDecoration(
+                                    color: colorTheme.primary,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: colorTheme.primary,
+                                        blurRadius: 8,
+                                      ),
+                                    ],
+                                  ),
+                                  child: const SizedBox.square(dimension: 10),
                                 ),
-                                child: const SizedBox.square(dimension: 10),
                               ),
                           ],
                         ),
                       ),
                     ),
                   ),
-                );
-              }),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),
