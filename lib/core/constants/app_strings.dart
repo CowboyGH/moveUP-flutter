@@ -8,6 +8,7 @@ abstract final class AppStrings {
   static const emailHint = 'email@example.com';
   static const codeLabel = 'Код';
   static const codeHint = '******';
+  static const retryButton = 'Попробовать снова';
 
   // No-connection screen.
   static const noConnectionTitle = 'Нет подключения';
@@ -161,6 +162,13 @@ abstract final class AppStrings {
       'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
 
   // Tests catalog.
+  static const testsCatalogTitle = 'Тесты';
+  static const testsCatalogDescription =
+      'Оцените свою физическую подготовку с помощью углубленных диагностик, чтобы составить программу тренировок, которая будет одновременно безопасной и максимально результативной для Вашего уровня';
+  static const testsCatalogSearchHint = 'Поиск';
+  static const testsCatalogFilterLabel = 'Фильтрация';
+  static const testsEmpty = 'Тесты не найдены';
+  static const testsSearchEmpty = 'По вашему запросу тесты не найдены';
   static const testsLoadFailed = 'Не удалось загрузить тесты';
   static const testsStartFailed = 'Не удалось начать тест. Попробуйте снова';
   static const testsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
@@ -258,7 +266,7 @@ abstract final class AppStrings {
   static const debugLogoutButton = 'Выйти';
 
   /// Root tabs.
-  static const testsTab = 'Тесты';
+  static const testsTab = testsCatalogTitle;
   static const trainingsTab = 'Тренировки';
   static const profileTab = 'Профиль';
 }

@@ -23,6 +23,7 @@ import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/tests/catalog/presentation/pages/tests_catalog_page_builder.dart';
 import '../../features/workouts/details/presentation/pages/workout_details_page_builder.dart';
 import '../../features/workouts/execution/domain/entities/workout_execution_entry_mode.dart';
 import '../../features/workouts/execution/presentation/pages/workout_execution_page_builder.dart';
@@ -176,9 +177,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutePaths.testsPath,
-              builder: (_, _) => const _RootPlaceholderScreen(
-                screenName: AppStrings.testsTab,
-              ),
+              builder: (_, _) => const TestsCatalogPageBuilder(),
             ),
           ],
         ),
