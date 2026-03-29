@@ -139,7 +139,7 @@ Future<void> setupDI() async {
       di<TestsApiClient>(),
     ),
   );
-  di.registerLazySingleton<TestAttemptRepository>(
+  di.registerLazySingleton<GuestTestAttemptRepository>(
     () => GuestTestAttemptRepositoryImpl(
       di<AppLogger>(),
       di<TestsApiClient>(),

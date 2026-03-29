@@ -21,3 +21,9 @@ abstract interface class TestAttemptRepository {
     required int pulse,
   });
 }
+
+/// Repository contract for guest test attempts.
+abstract interface class GuestTestAttemptRepository implements TestAttemptRepository {}
+
+/// Repository contract for authenticated test attempts.
+abstract interface class AuthenticatedTestAttemptRepository implements TestAttemptRepository {}

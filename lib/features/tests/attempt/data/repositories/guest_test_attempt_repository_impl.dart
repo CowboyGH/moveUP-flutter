@@ -8,14 +8,12 @@ import '../../../data/remote/tests_api_client.dart';
 import '../../domain/entities/test_attempt_result.dart';
 import '../../domain/entities/test_attempt_start.dart';
 import '../../domain/repositories/test_attempt_repository.dart';
-import '../../../catalog/data/mappers/tests_failure_mapper.dart';
-import '../dto/complete_guest_test_request_dto.dart';
-import '../dto/save_guest_test_result_data_dto.dart';
-import '../dto/save_guest_test_result_request_dto.dart';
+import '../dto/complete_test_request_dto.dart';
+import '../dto/save_test_result_request_dto.dart';
 import '../mappers/test_attempt_mapper.dart';
 
-/// Guest implementation of [TestAttemptRepository].
-final class GuestTestAttemptRepositoryImpl implements TestAttemptRepository {
+/// Guest implementation of [GuestTestAttemptRepository].
+final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository {
   /// Logger for tracking guest test attempt operations.
   final AppLogger _logger;
 
@@ -46,7 +44,7 @@ final class GuestTestAttemptRepositoryImpl implements TestAttemptRepository {
     required int resultValue,
   }) async {
     try {
-      final request = SaveGuestTestResultRequestDto(
+      final request = SaveTestResultRequestDto(
         testingExerciseId: testingExerciseId,
         resultValue: resultValue,
       );
@@ -73,7 +71,7 @@ final class GuestTestAttemptRepositoryImpl implements TestAttemptRepository {
     required int pulse,
   }) async {
     try {
-      final request = CompleteGuestTestRequestDto(pulse: pulse);
+      final request = CompleteTestRequestDto(pulse: pulse);
       await _apiClient.completeGuestTest(attemptId, request);
       return const Result.success(null);
     } on DioException catch (e) {
