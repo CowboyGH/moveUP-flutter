@@ -4,6 +4,7 @@ import '../../../../../core/failures/feature/tests/tests_failure.dart';
 import '../../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../../core/result/result.dart';
 import '../../../../../core/utils/logger/app_logger.dart';
+import '../../../catalog/data/mappers/tests_failure_mapper.dart';
 import '../../../data/remote/tests_api_client.dart';
 import '../../domain/entities/test_attempt_result.dart';
 import '../../domain/entities/test_attempt_start.dart';
@@ -11,6 +12,7 @@ import '../../domain/repositories/test_attempt_repository.dart';
 import '../dto/complete_test_request_dto.dart';
 import '../dto/save_test_result_request_dto.dart';
 import '../mappers/test_attempt_mapper.dart';
+import 'test_attempt_result_payload_validator.dart';
 
 /// Guest implementation of [GuestTestAttemptRepository].
 final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository {
@@ -50,7 +52,7 @@ final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository
       );
       final response = await _apiClient.saveGuestTestResult(attemptId, request);
       final payload = response.data;
-      if (!_isValidGuestResultPayload(payload)) {
+      if (!isValidTestAttemptResultPayload(payload)) {
         final exception = StateError('Malformed guest test result payload.');
         _logger.e('SaveGuestTestResult returned malformed payload', exception);
         return Result.failure(UnknownTestsFailure(parentException: exception));
@@ -82,17 +84,4 @@ final class GuestTestAttemptRepositoryImpl implements GuestTestAttemptRepository
       return Result.failure(UnknownTestsFailure(parentException: e, stackTrace: s));
     }
   }
-}
-
-bool _isValidGuestResultPayload(SaveGuestTestResultDataDto payload) {
-  if (!payload.saved) return false;
-
-  final hasNextExercise = payload.nextExercise != null;
-  final isCompleted = payload.allExercisesCompleted == true;
-
-  if (hasNextExercise) {
-    return !isCompleted;
-  }
-
-  return isCompleted;
 }
