@@ -205,6 +205,38 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'updateAuthenticatedUser emits authenticated(updatedUser) when session is authenticated',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.authenticated(user),
+      act: (cubit) => cubit.updateAuthenticatedUser(
+        const User(
+          id: 1,
+          name: 'updated_name',
+          email: 'updated@mail.com',
+          avatar: 'avatar.jpg',
+        ),
+      ),
+      expect: () => const [
+        AuthSessionState.authenticated(
+          User(
+            id: 1,
+            name: 'updated_name',
+            email: 'updated@mail.com',
+            avatar: 'avatar.jpg',
+          ),
+        ),
+      ],
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'updateAuthenticatedUser is no-op when session is not authenticated',
+      build: () => authSessionCubit,
+      seed: () => const AuthSessionState.unauthenticated(),
+      act: (cubit) => cubit.updateAuthenticatedUser(user),
+      expect: () => const <AuthSessionState>[],
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'startGuestFitnessStart emits guest',
       setUp: () => when(tokenStorage.getAccessToken()).thenAnswer((_) async => null),
       build: () => authSessionCubit,
