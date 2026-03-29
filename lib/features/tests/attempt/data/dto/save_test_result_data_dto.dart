@@ -2,11 +2,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'testing_exercise_dto.dart';
 
-part 'save_guest_test_result_data_dto.g.dart';
+part 'save_test_result_data_dto.g.dart';
 
-/// DTO payload returned after saving guest exercise result.
+/// DTO payload returned after saving exercise result.
 @JsonSerializable(createToJson: false)
-class SaveGuestTestResultDataDto {
+class SaveTestResultDataDto {
   /// Whether the result was saved successfully.
   final bool saved;
 
@@ -18,14 +18,14 @@ class SaveGuestTestResultDataDto {
   @JsonKey(name: 'all_exercises_completed')
   final bool? allExercisesCompleted;
 
-  /// Creates an instance of [SaveGuestTestResultDataDto].
-  SaveGuestTestResultDataDto({
+  /// Creates an instance of [SaveTestResultDataDto].
+  SaveTestResultDataDto({
     required this.saved,
     required this.nextExercise,
     required this.allExercisesCompleted,
   });
 
-  /// Creates a [SaveGuestTestResultDataDto] from JSON.
-  factory SaveGuestTestResultDataDto.fromJson(Map<String, dynamic> json) =>
-      _$SaveGuestTestResultDataDtoFromJson(json);
+  /// Creates a [SaveTestResultDataDto] from JSON.
+  factory SaveTestResultDataDto.fromJson(Map<String, dynamic> json) =>
+      _$SaveTestResultDataDtoFromJson(json);
 }

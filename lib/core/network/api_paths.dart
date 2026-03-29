@@ -56,6 +56,12 @@ abstract class ApiPaths {
   /// The endpoint for all active testings.
   static const String testings = '${apiPrefix}testings';
 
+  /// The endpoint prefix for authenticated tests.
+  static const String tests = '${apiPrefix}tests';
+
+  /// The endpoint prefix for authenticated test attempts.
+  static const String testAttempts = '${apiPrefix}test-attempts';
+
   /// The endpoint prefix for guest tests.
   static const String guestTests = '${apiPrefix}guest/tests';
 
