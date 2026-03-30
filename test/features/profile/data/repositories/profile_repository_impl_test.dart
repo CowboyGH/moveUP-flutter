@@ -10,6 +10,7 @@ import 'package:moveup_flutter/features/profile/data/dto/change_password_request
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 
 import '../../support/profile_dto_fixtures.dart';
@@ -243,6 +244,122 @@ void main() {
 
         verify(apiClient.uploadAvatar(any)).called(1);
         verify(apiClient.updateProfile(any)).called(1);
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
+
+    group('getStatsHistorySnapshot', () {
+      test('returns snapshot from cache after getUser succeeds', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            subscriptions: createProfileSubscriptionsDto(),
+            workouts: createProfileWorkoutsDto(),
+            tests: createProfileTestsDto(),
+          ),
+        );
+
+        // Act
+        final getUserResult = await repository.getUser();
+        final historyResult = await repository.getStatsHistorySnapshot();
+
+        // Assert
+        expect(getUserResult.isSuccess, isTrue);
+        expect(historyResult.isSuccess, isTrue);
+        expect(historyResult.success, createProfileStatsHistorySnapshot());
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns latest sorted workout and test when cache is empty', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            subscriptions: createProfileSubscriptionsDto(),
+            workouts: createProfileWorkoutsDto(
+              history: [
+                createProfileWorkoutHistoryItemDto(
+                  id: 1,
+                  title: 'older workout',
+                  completedAt: '2026-03-10 10:30:00',
+                ),
+                createProfileWorkoutHistoryItemDto(
+                  id: 2,
+                  title: 'latest workout',
+                ),
+              ],
+            ),
+            tests: createProfileTestsDto(
+              history: [
+                createProfileTestHistoryItemDto(
+                  attemptId: 1,
+                  title: 'older test',
+                  completedAt: '2026-03-12 15:20:00',
+                ),
+                createProfileTestHistoryItemDto(
+                  attemptId: 2,
+                  title: 'latest test',
+                ),
+              ],
+            ),
+          ),
+        );
+
+        // Act
+        final result = await repository.getStatsHistorySnapshot();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(
+          result.success,
+          const ProfileStatsHistorySnapshot(
+            activeSubscription: ProfileActiveSubscriptionSnapshot(
+              id: testProfileSubscriptionId,
+              name: testProfileSubscriptionName,
+              price: testProfileSubscriptionPrice,
+              startDate: testProfileSubscriptionStartDate,
+              endDate: testProfileSubscriptionEndDate,
+            ),
+            latestWorkout: ProfileLatestWorkoutSnapshot(
+              id: 2,
+              title: 'latest workout',
+              completedAt: '2026-03-15 10:30:00',
+            ),
+            latestTest: ProfileLatestTestSnapshot(
+              attemptId: 2,
+              title: 'latest test',
+              completedAt: '2026-03-14 15:20:00',
+            ),
+          ),
+        );
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api returns server error', () async {
+        // Arrange
+        final exception = createProfileDioBadResponseException(
+          path: '/api/profile',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getStatsHistorySnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
         verify(apiClient.getProfile()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
