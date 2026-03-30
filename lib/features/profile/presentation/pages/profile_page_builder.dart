@@ -5,6 +5,8 @@ import '../../../../../core/di/di.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../domain/repositories/profile_repository.dart';
+import '../../domain/repositories/profile_statistics_repository.dart';
+import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import 'profile_page.dart';
 
@@ -21,11 +23,20 @@ class ProfilePageBuilder extends StatelessWidget {
         orElse: () => null,
       ),
     );
-    return BlocProvider(
-      create: (_) => ProfileUserCubit(
-        di<ProfileRepository>(),
-        seedUser: initialUser,
-      )..refresh(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ProfileUserCubit(
+            di<ProfileRepository>(),
+            seedUser: initialUser,
+          )..refresh(),
+        ),
+        BlocProvider(
+          create: (_) => ProfileStatisticsCubit(
+            di<ProfileStatisticsRepository>(),
+          )..loadInitial(),
+        ),
+      ],
       child: const ProfilePage(),
     );
   }
