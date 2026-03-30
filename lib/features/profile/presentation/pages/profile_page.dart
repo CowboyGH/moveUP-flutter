@@ -8,14 +8,18 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
 import '../../../../../uikit/buttons/main_button.dart';
+import '../../../../../uikit/buttons/secondary_button.dart';
 import '../../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
+import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/edit_profile_dialog.dart';
+import '../widgets/profile_history_dialog.dart';
+import '../widgets/stats_section_widget.dart';
 import '../widgets/user_section_widget.dart';
 
 /// Authenticated profile page with the user section only.
@@ -36,6 +40,10 @@ class ProfilePage extends StatelessWidget {
     if (!context.mounted || result != ChangePasswordDialogResult.forgotPassword) return;
 
     unawaited(context.push(AppRoutePaths.forgotPasswordPath));
+  }
+
+  Future<void> _openHistoryDialog(BuildContext context) async {
+    await showProfileHistoryDialog(context);
   }
 
   @override
@@ -59,39 +67,55 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<ProfileUserCubit, ProfileUserState>(
-        builder: (context, state) {
-          final user = state.user;
-          if (user == null) {
-            return _ProfileUserFallbackState(
-              isLoading: state.isLoading,
-              onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
-            );
-          }
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  AppStrings.profileGreeting(user.name),
-                  style: textTheme.bodyMedium.copyWith(
-                    fontSize: 18,
-                    height: 27 / 18,
-                    fontWeight: FontWeight.w500,
-                    color: colorTheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                UserSectionWidget(
-                  user: user,
-                  onEditPressed: () => _openEditProfileDialog(context, user),
-                  onChangePasswordPressed: () => _openChangePasswordDialog(context),
-                ),
-              ],
-            ),
-          );
+      body: BlocListener<ProfileUserCubit, ProfileUserState>(
+        listenWhen: (previous, current) => previous.historySnapshot != current.historySnapshot,
+        listener: (context, state) {
+          final historySnapshot = state.historySnapshot;
+          if (historySnapshot == null) return;
+
+          context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
         },
+        child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
+          builder: (context, state) {
+            final user = state.user;
+            if (user == null) {
+              return _ProfileUserFallbackState(
+                isLoading: state.isLoading,
+                onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
+              );
+            }
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    AppStrings.profileGreeting(user.name),
+                    style: textTheme.bodyMedium.copyWith(
+                      fontSize: 18,
+                      height: 27 / 18,
+                      fontWeight: FontWeight.w500,
+                      color: colorTheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  UserSectionWidget(
+                    user: user,
+                    onEditPressed: () => _openEditProfileDialog(context, user),
+                    onChangePasswordPressed: () => _openChangePasswordDialog(context),
+                  ),
+                  const SizedBox(height: 36),
+                  const StatsSectionWidget(),
+                  const SizedBox(height: 20),
+                  SecondaryButton(
+                    onPressed: () => _openHistoryDialog(context),
+                    child: const Text(AppStrings.profileStatsHistoryButton),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -262,7 +262,36 @@ abstract final class AppStrings {
   static const profileUpdateFailed = 'Не удалось обновить профиль. Попробуйте снова';
   static const profileChangePasswordFailed = 'Не удалось сменить пароль. Попробуйте снова';
   static const profileImagePickFailed = 'Не удалось выбрать изображение. Попробуйте снова';
+  static const profileStatsTitle = 'Статистика тренировок пользователя';
+  static const profileStatsHistoryButton = 'История';
+  static const profileStatsVolumeMode = 'Объём';
+  static const profileStatsFrequencyMode = 'Частота';
+  static const profileStatsTrendMode = 'Тренд';
+  static const profileStatsCategoriesButton = 'Категории';
+  static const profileStatsExercisesButton = 'Упражнения';
+  static const profileStatsWorkoutsButton = 'Тренировки';
+  static const profileStatsVolumeChartTitle = 'Объём (кг)';
+  static const profileStatsFrequencyChartTitle = 'Частота тренировок';
+  static const profileStatsTrendChartTitle = 'Тренд по упражнениям';
+  static const profileStatsLoadFailed = 'Не удалось загрузить статистику';
+  static const profileStatsEmpty = 'Пока недостаточно данных для отображения статистики';
+  static const profileStatsHistoryTitle = 'История';
+  static const profileStatsHistoryCloseButton = 'Закрыть';
+  static const profileStatsHistorySubscriptionsTab = 'Подписки';
+  static const profileStatsHistoryWorkoutsTab = 'Тренировки';
+  static const profileStatsHistoryTestsTab = 'Тесты';
+  static const profileStatsHistorySubscriptionEmpty = 'Активная подписка отсутствует';
+  static const profileStatsHistoryWorkoutEmpty = 'Тренировки пока не завершены';
+  static const profileStatsHistoryTestEmpty = 'Тесты пока не пройдены';
+  static const profileStatsHistoryNameLabel = 'Название';
+  static const profileStatsHistoryPriceLabel = 'Стоимость';
+  static const profileStatsHistoryPeriodLabel = 'Срок действия';
+  static const profileStatsHistoryCompletedAtLabel = 'Дата прохождения';
   static const profileUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
+  static String profileStatsAverageScore(int percent) => 'Средняя оценка: $percent%';
+
+  static String profileStatsAveragePerWeek(String value) => 'В среднем: $value / нед';
 
   /// Builds the increase-adjustment message for a new absolute weight value.
   static String workoutExecutionAdjustmentIncrease(String weight) =>
