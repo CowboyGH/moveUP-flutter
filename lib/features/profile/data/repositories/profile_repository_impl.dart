@@ -7,10 +7,12 @@ import '../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../../auth/domain/entities/user.dart';
+import '../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../dto/change_password_request_dto.dart';
 import '../dto/update_profile_request_dto.dart';
 import '../mappers/profile_failure_mapper.dart';
+import '../mappers/profile_history_snapshot_mapper.dart';
 import '../mappers/profile_user_entity_mapper.dart';
 import '../remote/profile_api_client.dart';
 
@@ -18,6 +20,7 @@ import '../remote/profile_api_client.dart';
 final class ProfileRepositoryImpl implements ProfileRepository {
   final AppLogger _logger;
   final ProfileApiClient _apiClient;
+  ProfileStatsHistorySnapshot? _cachedStatsHistorySnapshot;
 
   /// Creates an instance of [ProfileRepositoryImpl].
   ProfileRepositoryImpl(this._logger, this._apiClient);
@@ -26,12 +29,36 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   Future<Result<User, ProfileFailure>> getUser() async {
     try {
       final response = await _apiClient.getProfile();
+      _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
       return Result.success(response.data.user.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toProfileFailure());
     } catch (e, s) {
       _logger.e('GetUser failed with unexpected error', e, s);
+      return Result.failure(
+        UnknownProfileFailure(parentException: e, stackTrace: s),
+      );
+    }
+  }
+
+  @override
+  Future<Result<ProfileStatsHistorySnapshot, ProfileFailure>> getStatsHistorySnapshot() async {
+    final cachedStatsHistorySnapshot = _cachedStatsHistorySnapshot;
+    if (cachedStatsHistorySnapshot != null) {
+      return Result.success(cachedStatsHistorySnapshot);
+    }
+
+    try {
+      final response = await _apiClient.getProfile();
+      final snapshot = response.data.toStatsHistorySnapshot();
+      _cachedStatsHistorySnapshot = snapshot;
+      return Result.success(snapshot);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toProfileFailure());
+    } catch (e, s) {
+      _logger.e('GetStatsHistorySnapshot failed with unexpected error', e, s);
       return Result.failure(
         UnknownProfileFailure(parentException: e, stackTrace: s),
       );
@@ -74,6 +101,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       }
 
       final refreshedResponse = await _apiClient.getProfile();
+      _cachedStatsHistorySnapshot = refreshedResponse.data.toStatsHistorySnapshot();
       return Result.success(refreshedResponse.data.user.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
