@@ -50,6 +50,24 @@ abstract class ApiPaths {
   /// The endpoint for uploading or deleting the authenticated user avatar.
   static const String profileAvatar = '$profile/avatar';
 
+  /// The endpoint prefix for profile statistics.
+  static const String profileStatistics = '$profile/statistics';
+
+  /// The endpoint for volume statistics.
+  static const String profileStatisticsVolume = '$profileStatistics/volume';
+
+  /// The endpoint for trend statistics.
+  static const String profileStatisticsTrend = '$profileStatistics/trend';
+
+  /// The endpoint for frequency statistics.
+  static const String profileStatisticsFrequency = '$profileStatistics/frequency';
+
+  /// The endpoint for profile statistics exercises selector.
+  static const String profileStatisticsExercises = '$profileStatistics/exercises';
+
+  /// The endpoint for profile statistics workouts selector.
+  static const String profileStatisticsWorkouts = '$profileStatistics/workouts';
+
   /// The endpoint for all user-parameters references.
   static const String userParameterReferences = '${apiPrefix}user-parameters/references';
 
