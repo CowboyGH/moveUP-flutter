@@ -22,6 +22,7 @@ import 'profile_statistics_cubit_test.mocks.dart';
 void main() {
   late MockProfileStatisticsRepository repository;
   late ProfileStatisticsCubit cubit;
+  const failure = ProfileRequestFailure('error_message');
 
   setUp(() {
     repository = MockProfileStatisticsRepository();
@@ -73,6 +74,30 @@ void main() {
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'stores failure when initial volume load fails',
+      setUp: () {
+        when(repository.getVolume()).thenAnswer((_) async => const Failure(failure));
+        when(repository.getExercises()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsExercises),
+        );
+      },
+      build: () => cubit,
+      act: (cubit) => cubit.loadInitial(),
+      expect: () => const [
+        ProfileStatisticsState(
+          isLoading: true,
+        ),
+        ProfileStatisticsState(
+          failure: failure,
+        ),
+      ],
+      verify: (_) {
+        verify(repository.getVolume()).called(1);
+        verify(repository.getExercises()).called(1);
+      },
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
       'loads frequency mode on demand',
       setUp: () => when(
         repository.getFrequency(period: FrequencyPeriod.month, offset: 0),
@@ -104,6 +129,45 @@ void main() {
           volumeData: testProfileStatisticsVolumeData,
           frequencyData: testProfileStatisticsFrequencyData,
           exerciseOptions: testProfileStatisticsExercises,
+        ),
+      ],
+      verify: (_) => verify(
+        repository.getFrequency(period: FrequencyPeriod.month, offset: 0),
+      ).called(1),
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'stores failure when loading frequency mode fails',
+      setUp: () => when(
+        repository.getFrequency(period: FrequencyPeriod.month, offset: 0),
+      ).thenAnswer((_) async => const Failure(failure)),
+      build: () => cubit,
+      seed: () => const ProfileStatisticsState(
+        selectedExerciseId: 17,
+        volumeData: testProfileStatisticsVolumeData,
+        exerciseOptions: testProfileStatisticsExercises,
+      ),
+      act: (cubit) => cubit.selectMode(ProfileStatisticsMode.frequency),
+      expect: () => const [
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.frequency,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+        ),
+        ProfileStatisticsState(
+          isLoading: true,
+          mode: ProfileStatisticsMode.frequency,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+        ),
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.frequency,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+          failure: failure,
         ),
       ],
       verify: (_) => verify(
@@ -159,6 +223,78 @@ void main() {
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'reuses cached trend mode payload without reloading',
+      build: () => cubit,
+      seed: () => const ProfileStatisticsState(
+        selectedExerciseId: 17,
+        volumeData: testProfileStatisticsVolumeData,
+        exerciseOptions: testProfileStatisticsExercises,
+        selectedWorkoutId: 231,
+        trendData: testProfileStatisticsTrendData,
+        workoutOptions: testProfileStatisticsWorkouts,
+      ),
+      act: (cubit) => cubit.selectMode(ProfileStatisticsMode.trend),
+      expect: () => const [
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.trend,
+          selectedExerciseId: 17,
+          selectedWorkoutId: 231,
+          volumeData: testProfileStatisticsVolumeData,
+          trendData: testProfileStatisticsTrendData,
+          exerciseOptions: testProfileStatisticsExercises,
+          workoutOptions: testProfileStatisticsWorkouts,
+        ),
+      ],
+      verify: (_) {
+        verifyNever(repository.getTrend());
+        verifyNever(repository.getWorkouts());
+      },
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'stores failure when loading trend mode fails',
+      setUp: () {
+        when(repository.getTrend()).thenAnswer((_) async => const Failure(failure));
+        when(repository.getWorkouts()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsWorkouts),
+        );
+      },
+      build: () => cubit,
+      seed: () => const ProfileStatisticsState(
+        selectedExerciseId: 17,
+        volumeData: testProfileStatisticsVolumeData,
+        exerciseOptions: testProfileStatisticsExercises,
+      ),
+      act: (cubit) => cubit.selectMode(ProfileStatisticsMode.trend),
+      expect: () => const [
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.trend,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+        ),
+        ProfileStatisticsState(
+          isLoading: true,
+          mode: ProfileStatisticsMode.trend,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+        ),
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.trend,
+          selectedExerciseId: 17,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+          failure: failure,
+        ),
+      ],
+      verify: (_) {
+        verify(repository.getTrend()).called(1);
+        verify(repository.getWorkouts()).called(1);
+      },
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
       'refreshes volume when selecting another exercise',
       setUp: () => when(
         repository.getVolume(exerciseId: 17, weekOffset: 0),
@@ -189,6 +325,37 @@ void main() {
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'stores failure when refreshing volume for another exercise fails',
+      setUp: () => when(
+        repository.getVolume(exerciseId: 17, weekOffset: 0),
+      ).thenAnswer((_) async => const Failure(failure)),
+      build: () => cubit,
+      seed: () => const ProfileStatisticsState(
+        selectedExerciseId: 1,
+        volumeData: testProfileStatisticsVolumeData,
+        exerciseOptions: testProfileStatisticsExercises,
+      ),
+      act: (cubit) => cubit.selectExercise(17),
+      expect: () => const [
+        ProfileStatisticsState(
+          isLoading: true,
+          selectedExerciseId: 1,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+        ),
+        ProfileStatisticsState(
+          selectedExerciseId: 1,
+          volumeData: testProfileStatisticsVolumeData,
+          exerciseOptions: testProfileStatisticsExercises,
+          failure: failure,
+        ),
+      ],
+      verify: (_) => verify(
+        repository.getVolume(exerciseId: 17, weekOffset: 0),
+      ).called(1),
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
       'updates frequency period and resets offset',
       setUp: () => when(
         repository.getFrequency(period: FrequencyPeriod.year, offset: 0),
@@ -211,6 +378,37 @@ void main() {
           mode: ProfileStatisticsMode.frequency,
           selectedFrequencyPeriod: FrequencyPeriod.year,
           frequencyData: testProfileStatisticsYearFrequencyData,
+        ),
+      ],
+      verify: (_) => verify(
+        repository.getFrequency(period: FrequencyPeriod.year, offset: 0),
+      ).called(1),
+    );
+
+    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
+      'stores failure when updating frequency period fails',
+      setUp: () => when(
+        repository.getFrequency(period: FrequencyPeriod.year, offset: 0),
+      ).thenAnswer((_) async => const Failure(failure)),
+      build: () => cubit,
+      seed: () => const ProfileStatisticsState(
+        mode: ProfileStatisticsMode.frequency,
+        selectedFrequencyOffset: 3,
+        frequencyData: testProfileStatisticsFrequencyData,
+      ),
+      act: (cubit) => cubit.selectFrequencyPeriod(FrequencyPeriod.year),
+      expect: () => const [
+        ProfileStatisticsState(
+          isLoading: true,
+          mode: ProfileStatisticsMode.frequency,
+          selectedFrequencyOffset: 3,
+          frequencyData: testProfileStatisticsFrequencyData,
+        ),
+        ProfileStatisticsState(
+          mode: ProfileStatisticsMode.frequency,
+          selectedFrequencyOffset: 3,
+          frequencyData: testProfileStatisticsFrequencyData,
+          failure: failure,
         ),
       ],
       verify: (_) => verify(
