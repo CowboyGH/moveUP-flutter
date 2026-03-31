@@ -356,6 +356,33 @@ void main() {
         verifyNever(apiClient.getCurrentParameters());
       });
 
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileDioBadResponseException(
+          path: '/api/user-parameters/goal',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.saveGoal(any)).thenThrow(exception);
+
+        // Act
+        final result = await repository.saveParameters(
+          currentParameters: testProfileParametersData,
+          currentWeeklyGoal: testProfileParametersWeeklyGoal,
+          payload: createProfileParametersSubmitPayload(
+            goalId: testProfileParametersUpdatedGoalId,
+          ),
+        );
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.saveGoal(any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
       test('returns UnknownProfileFailure when unexpected exception occurs', () async {
         // Arrange
         final exception = Exception('unexpected_error');
