@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import '../../../../core/network/api_paths.dart';
 import '../dto/stats/frequency_response_dto.dart';
 import '../dto/stats/profile_exercises_response_dto.dart';
+import '../dto/stats/profile_statistics_overview_response_dto.dart';
 import '../dto/stats/profile_workouts_response_dto.dart';
 import '../dto/stats/trend_response_dto.dart';
 import '../dto/stats/volume_response_dto.dart';
@@ -18,6 +19,10 @@ abstract class ProfileStatisticsApiClient {
     Dio dio, {
     String? baseUrl,
   }) = _ProfileStatisticsApiClient;
+
+  /// Returns aggregate profile statistics overview.
+  @GET(ApiPaths.profileStatistics)
+  Future<ProfileStatisticsOverviewResponseDto> getOverview();
 
   /// Returns volume statistics for the authenticated profile.
   @GET(ApiPaths.profileStatisticsVolume)
