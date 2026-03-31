@@ -6,6 +6,7 @@ import '../../../../core/result/result.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/profile_statistics/frequency_period.dart';
 import '../../domain/entities/profile_statistics/frequency_statistics_data.dart';
+import '../../domain/entities/profile_statistics/profile_current_phase_summary.dart';
 import '../../domain/entities/profile_statistics/profile_exercise_option.dart';
 import '../../domain/entities/profile_statistics/profile_workout_option.dart';
 import '../../domain/entities/profile_statistics/trend_statistics_data.dart';
@@ -22,6 +23,22 @@ final class ProfileStatisticsRepositoryImpl implements ProfileStatisticsReposito
 
   /// Creates an instance of [ProfileStatisticsRepositoryImpl].
   ProfileStatisticsRepositoryImpl(this._logger, this._apiClient);
+
+  @override
+  Future<Result<ProfileCurrentPhaseSummary, ProfileFailure>> getCurrentPhaseSummary() async {
+    try {
+      final response = await _apiClient.getOverview();
+      return Result.success(response.data.toCurrentPhaseSummary());
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toProfileFailure());
+    } catch (e, s) {
+      _logger.e('GetCurrentPhaseSummary failed with unexpected error', e, s);
+      return Result.failure(
+        UnknownProfileFailure(parentException: e, stackTrace: s),
+      );
+    }
+  }
 
   @override
   Future<Result<VolumeStatisticsData, ProfileFailure>> getVolume({

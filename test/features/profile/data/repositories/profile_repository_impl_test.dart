@@ -10,6 +10,7 @@ import 'package:moveup_flutter/features/profile/data/dto/change_password_request
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 
@@ -361,6 +362,120 @@ void main() {
         expect(result.failure!.parentException, exception);
 
         verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getStatsHistorySnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getProfile()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
+
+    group('getPhaseSnapshot', () {
+      test('returns snapshot from cache after getUser succeeds', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            phase: createProfilePhaseDto(),
+          ),
+        );
+
+        // Act
+        final getUserResult = await repository.getUser();
+        final phaseResult = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(getUserResult.isSuccess, isTrue);
+        expect(phaseResult.isSuccess, isTrue);
+        expect(phaseResult.success, createProfilePhaseSnapshot());
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns phase snapshot from /profile when cache is empty', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            phase: createProfilePhaseDto(
+              currentPhase: createProfileCurrentPhaseDto(
+                id: 12,
+                name: 'B2',
+              ),
+            ),
+          ),
+        );
+
+        // Act
+        final result = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(
+          result.success,
+          const ProfilePhaseSnapshot(
+            hasProgress: true,
+            currentPhaseName: 'B2',
+          ),
+        );
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api returns server error', () async {
+        // Arrange
+        final exception = createProfileDioBadResponseException(
+          path: '/api/profile',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getProfile()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });
     });

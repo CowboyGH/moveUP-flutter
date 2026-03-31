@@ -1,14 +1,25 @@
 import '../../domain/entities/profile_statistics/frequency_period.dart';
 import '../../domain/entities/profile_statistics/frequency_statistics_data.dart';
+import '../../domain/entities/profile_statistics/profile_current_phase_summary.dart';
 import '../../domain/entities/profile_statistics/profile_exercise_option.dart';
 import '../../domain/entities/profile_statistics/profile_workout_option.dart';
 import '../../domain/entities/profile_statistics/trend_statistics_data.dart';
 import '../../domain/entities/profile_statistics/volume_statistics_data.dart';
 import '../dto/stats/frequency_response_dto.dart';
 import '../dto/stats/profile_exercises_response_dto.dart';
+import '../dto/stats/profile_statistics_overview_response_dto.dart';
 import '../dto/stats/profile_workouts_response_dto.dart';
 import '../dto/stats/trend_response_dto.dart';
 import '../dto/stats/volume_response_dto.dart';
+
+/// Maps profile statistics DTOs into domain entities.
+extension ProfileStatisticsOverviewMapper on ProfileStatisticsOverviewDataDto {
+  /// Converts aggregate statistics overview into current phase summary data.
+  ProfileCurrentPhaseSummary toCurrentPhaseSummary() => ProfileCurrentPhaseSummary(
+    averagePerWeek: frequency?.summary?.averagePerWeek ?? 0.0,
+    weeklyGoal: frequency?.summary?.weeklyGoal ?? 0,
+  );
+}
 
 /// Maps profile statistics DTOs into domain entities.
 extension VolumeStatisticsMapper on VolumeStatisticsDto {

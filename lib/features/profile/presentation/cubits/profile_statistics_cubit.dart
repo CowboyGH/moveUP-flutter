@@ -5,6 +5,7 @@ import '../../../../../core/failures/feature/profile/profile_failure.dart';
 import '../../../../../core/result/result.dart';
 import '../../domain/entities/profile_statistics/frequency_period.dart';
 import '../../domain/entities/profile_statistics/frequency_statistics_data.dart';
+import '../../domain/entities/profile_statistics/profile_current_phase_summary.dart';
 import '../../domain/entities/profile_statistics/profile_exercise_option.dart';
 import '../../domain/entities/profile_statistics/profile_history_tab.dart';
 import '../../domain/entities/profile_statistics/profile_statistics_mode.dart';
@@ -28,12 +29,33 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
   Future<void> loadInitial() async {
     if (state.isLoading) return;
 
-    emit(state.copyWith(isLoading: true, failure: null));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isLoadingCurrentPhaseSummary: true,
+        failure: null,
+        currentPhaseSummaryFailure: null,
+      ),
+    );
 
-    final volumeResult = await _repository.getVolume();
-    final exercisesResult = await _repository.getExercises();
+    final volumeFuture = _repository.getVolume();
+    final exercisesFuture = _repository.getExercises();
+    final currentPhaseSummaryFuture = _repository.getCurrentPhaseSummary();
+
+    final volumeResult = await volumeFuture;
+    final exercisesResult = await exercisesFuture;
+    final currentPhaseSummaryResult = await currentPhaseSummaryFuture;
 
     if (isClosed) return;
+
+    final currentPhaseSummary = switch (currentPhaseSummaryResult) {
+      Success(data: final summary) => summary,
+      Failure() => state.currentPhaseSummary,
+    };
+    final currentPhaseSummaryFailure = switch (currentPhaseSummaryResult) {
+      Success() => null,
+      Failure(:final error) => error,
+    };
 
     switch (volumeResult) {
       case Success(data: final volumeData):
@@ -44,10 +66,13 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         emit(
           state.copyWith(
             isLoading: false,
+            isLoadingCurrentPhaseSummary: false,
             mode: ProfileStatisticsMode.volume,
             selectedExerciseId: volumeData.exerciseId,
+            currentPhaseSummary: currentPhaseSummary,
             volumeData: volumeData,
             exerciseOptions: exerciseOptions,
+            currentPhaseSummaryFailure: currentPhaseSummaryFailure,
             failure: null,
           ),
         );
@@ -55,6 +80,9 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         emit(
           state.copyWith(
             isLoading: false,
+            isLoadingCurrentPhaseSummary: false,
+            currentPhaseSummary: currentPhaseSummary,
+            currentPhaseSummaryFailure: currentPhaseSummaryFailure,
             failure: error,
           ),
         );
@@ -199,6 +227,39 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         await _loadTrend(
           workoutId: state.selectedWorkoutId,
           loadWorkouts: state.workoutOptions.isEmpty,
+        );
+    }
+  }
+
+  /// Reloads only the current phase summary data used by the profile phase section.
+  Future<void> reloadCurrentPhaseSummary() async {
+    if (state.isLoadingCurrentPhaseSummary) return;
+
+    emit(
+      state.copyWith(
+        isLoadingCurrentPhaseSummary: true,
+        currentPhaseSummaryFailure: null,
+      ),
+    );
+
+    final result = await _repository.getCurrentPhaseSummary();
+    if (isClosed) return;
+
+    switch (result) {
+      case Success(data: final summary):
+        emit(
+          state.copyWith(
+            isLoadingCurrentPhaseSummary: false,
+            currentPhaseSummary: summary,
+            currentPhaseSummaryFailure: null,
+          ),
+        );
+      case Failure(:final error):
+        emit(
+          state.copyWith(
+            isLoadingCurrentPhaseSummary: false,
+            currentPhaseSummaryFailure: error,
+          ),
         );
     }
   }

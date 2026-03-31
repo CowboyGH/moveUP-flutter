@@ -27,6 +27,64 @@ void main() {
   });
 
   group('ProfileStatisticsRepositoryImpl', () {
+    group('getCurrentPhaseSummary()', () {
+      test('returns success(data) when api succeeds', () async {
+        // Arrange
+        when(
+          apiClient.getOverview(),
+        ).thenAnswer((_) async => createProfileStatisticsOverviewResponseDto());
+
+        // Act
+        final result = await repository.getCurrentPhaseSummary();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success, testProfileCurrentPhaseSummary);
+
+        verify(apiClient.getOverview()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getOverview()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getCurrentPhaseSummary();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getOverview()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getOverview()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getCurrentPhaseSummary();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getOverview()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
+
     group('getVolume()', () {
       test('returns success(data) when api succeeds', () async {
         // Arrange

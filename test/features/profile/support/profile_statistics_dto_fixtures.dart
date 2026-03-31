@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/profile/data/dto/stats/frequency_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/stats/profile_exercises_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/profile_statistics_overview_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/stats/profile_workouts_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/stats/trend_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/stats/volume_response_dto.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/frequency_period.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/frequency_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_current_phase_summary.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_exercise_option.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_workout_option.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/trend_statistics_data.dart';
@@ -24,6 +26,8 @@ const testTrendWorkoutId = 231;
 const testTrendWorkoutTitle = 'Силовая: Грудь + трицепс';
 const testTrendWorkoutCompletedFormatted = '18.03.2026 08:32';
 const testFrequencyLabel = 'Текущий месяц';
+const testProfileCurrentPhaseAveragePerWeek = 2.3;
+const testProfileCurrentPhaseWeeklyGoal = 4;
 
 const testProfileStatisticsVolumeData = VolumeStatisticsData(
   hasData: true,
@@ -96,6 +100,11 @@ const testProfileStatisticsFrequencyData = FrequencyStatisticsData(
       goal: 4,
     ),
   ],
+);
+
+const testProfileCurrentPhaseSummary = ProfileCurrentPhaseSummary(
+  averagePerWeek: testProfileCurrentPhaseAveragePerWeek,
+  weeklyGoal: testProfileCurrentPhaseWeeklyGoal,
 );
 
 const testProfileStatisticsYearFrequencyData = FrequencyStatisticsData(
@@ -267,6 +276,36 @@ FrequencyResponseDto createFrequencyResponseDto({
   FrequencyStatisticsDto? data,
 }) => FrequencyResponseDto(
   data: data ?? createFrequencyStatisticsDto(),
+);
+
+/// Test fixture for [ProfileStatisticsOverviewResponseDto].
+ProfileStatisticsOverviewResponseDto createProfileStatisticsOverviewResponseDto({
+  ProfileStatisticsOverviewDataDto? data,
+}) => ProfileStatisticsOverviewResponseDto(
+  data: data ?? createProfileStatisticsOverviewDataDto(),
+);
+
+/// Test fixture for [ProfileStatisticsOverviewDataDto].
+ProfileStatisticsOverviewDataDto createProfileStatisticsOverviewDataDto({
+  ProfileStatisticsOverviewFrequencyDto? frequency,
+}) => ProfileStatisticsOverviewDataDto(
+  frequency: frequency ?? createProfileStatisticsOverviewFrequencyDto(),
+);
+
+/// Test fixture for [ProfileStatisticsOverviewFrequencyDto].
+ProfileStatisticsOverviewFrequencyDto createProfileStatisticsOverviewFrequencyDto({
+  ProfileStatisticsOverviewFrequencySummaryDto? summary,
+}) => ProfileStatisticsOverviewFrequencyDto(
+  summary: summary ?? createProfileStatisticsOverviewFrequencySummaryDto(),
+);
+
+/// Test fixture for [ProfileStatisticsOverviewFrequencySummaryDto].
+ProfileStatisticsOverviewFrequencySummaryDto createProfileStatisticsOverviewFrequencySummaryDto({
+  double averagePerWeek = testProfileCurrentPhaseAveragePerWeek,
+  int weeklyGoal = testProfileCurrentPhaseWeeklyGoal,
+}) => ProfileStatisticsOverviewFrequencySummaryDto(
+  averagePerWeek: averagePerWeek,
+  weeklyGoal: weeklyGoal,
 );
 
 /// Test fixture for [FrequencyStatisticsDto].

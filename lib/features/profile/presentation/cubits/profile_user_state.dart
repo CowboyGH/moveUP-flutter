@@ -8,6 +8,7 @@ abstract class ProfileUserState with _$ProfileUserState {
     @Default(false) bool isLoading,
     User? user,
     ProfileStatsHistorySnapshot? historySnapshot,
+    ProfilePhaseSnapshot? phaseSnapshot,
     ProfileFailure? failure,
   }) = _ProfileUserState;
 }

@@ -6,6 +6,7 @@ abstract class ProfileStatisticsState with _$ProfileStatisticsState {
   /// Creates an instance of [ProfileStatisticsState].
   const factory ProfileStatisticsState({
     @Default(false) bool isLoading,
+    @Default(false) bool isLoadingCurrentPhaseSummary,
     @Default(ProfileStatisticsMode.volume) ProfileStatisticsMode mode,
     @Default(ProfileHistoryTab.subscriptions) ProfileHistoryTab selectedHistoryTab,
     int? selectedExerciseId,
@@ -13,11 +14,13 @@ abstract class ProfileStatisticsState with _$ProfileStatisticsState {
     @Default(FrequencyPeriod.month) FrequencyPeriod selectedFrequencyPeriod,
     @Default(0) int selectedFrequencyOffset,
     ProfileStatsHistorySnapshot? historySnapshot,
+    ProfileCurrentPhaseSummary? currentPhaseSummary,
     VolumeStatisticsData? volumeData,
     FrequencyStatisticsData? frequencyData,
     TrendStatisticsData? trendData,
     @Default(<ProfileExerciseOption>[]) List<ProfileExerciseOption> exerciseOptions,
     @Default(<ProfileWorkoutOption>[]) List<ProfileWorkoutOption> workoutOptions,
+    ProfileFailure? currentPhaseSummaryFailure,
     ProfileFailure? failure,
   }) = _ProfileStatisticsState;
 }
