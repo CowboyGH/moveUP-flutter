@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/network/api_paths.dart';
-import '../dto/profile_statistics/frequency_response_dto.dart';
-import '../dto/profile_statistics/profile_exercises_response_dto.dart';
-import '../dto/profile_statistics/profile_workouts_response_dto.dart';
-import '../dto/profile_statistics/trend_response_dto.dart';
-import '../dto/profile_statistics/volume_response_dto.dart';
+import '../dto/stats/frequency_response_dto.dart';
+import '../dto/stats/profile_exercises_response_dto.dart';
+import '../dto/stats/profile_workouts_response_dto.dart';
+import '../dto/stats/trend_response_dto.dart';
+import '../dto/stats/volume_response_dto.dart';
 
 part 'profile_statistics_api_client.g.dart';
 

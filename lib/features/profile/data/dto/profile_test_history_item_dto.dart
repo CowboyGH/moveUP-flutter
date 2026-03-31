@@ -10,9 +10,7 @@ class ProfileTestsDto {
   final List<ProfileTestHistoryItemDto> history;
 
   /// Creates an instance of [ProfileTestsDto].
-  ProfileTestsDto({
-    required this.history,
-  });
+  ProfileTestsDto({required this.history});
 
   /// Creates a [ProfileTestsDto] from JSON.
   factory ProfileTestsDto.fromJson(Map<String, dynamic> json) => _$ProfileTestsDtoFromJson(json);

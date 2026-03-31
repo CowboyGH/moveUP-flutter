@@ -4,11 +4,11 @@ import '../../domain/entities/profile_statistics/profile_exercise_option.dart';
 import '../../domain/entities/profile_statistics/profile_workout_option.dart';
 import '../../domain/entities/profile_statistics/trend_statistics_data.dart';
 import '../../domain/entities/profile_statistics/volume_statistics_data.dart';
-import '../dto/profile_statistics/frequency_response_dto.dart';
-import '../dto/profile_statistics/profile_exercises_response_dto.dart';
-import '../dto/profile_statistics/profile_workouts_response_dto.dart';
-import '../dto/profile_statistics/trend_response_dto.dart';
-import '../dto/profile_statistics/volume_response_dto.dart';
+import '../dto/stats/frequency_response_dto.dart';
+import '../dto/stats/profile_exercises_response_dto.dart';
+import '../dto/stats/profile_workouts_response_dto.dart';
+import '../dto/stats/trend_response_dto.dart';
+import '../dto/stats/volume_response_dto.dart';
 
 /// Maps profile statistics DTOs into domain entities.
 extension VolumeStatisticsMapper on VolumeStatisticsDto {
@@ -92,7 +92,9 @@ extension FrequencyStatisticsMapper on FrequencyStatisticsDto {
 extension on FrequencyChartItemDto {
   FrequencyChartBarData toEntity() => FrequencyChartBarData(
     label: label,
-    shortLabel: shortLabel,
+    shortLabel: shortLabel?.isNotEmpty == true ? shortLabel! : label,
+    startDate: startDate,
+    endDate: endDate,
     count: count,
     goal: goal ?? 0,
   );

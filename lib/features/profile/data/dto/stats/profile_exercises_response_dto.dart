@@ -9,9 +9,7 @@ class ProfileExercisesResponseDto {
   final List<ProfileExerciseItemDto> data;
 
   /// Creates an instance of [ProfileExercisesResponseDto].
-  ProfileExercisesResponseDto({
-    required this.data,
-  });
+  ProfileExercisesResponseDto({required this.data});
 
   /// Creates a [ProfileExercisesResponseDto] from JSON.
   factory ProfileExercisesResponseDto.fromJson(Map<String, dynamic> json) =>

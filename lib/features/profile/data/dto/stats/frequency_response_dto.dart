@@ -9,9 +9,7 @@ class FrequencyResponseDto {
   final FrequencyStatisticsDto data;
 
   /// Creates an instance of [FrequencyResponseDto].
-  FrequencyResponseDto({
-    required this.data,
-  });
+  FrequencyResponseDto({required this.data});
 
   /// Creates a [FrequencyResponseDto] from JSON.
   factory FrequencyResponseDto.fromJson(Map<String, dynamic> json) =>
@@ -118,6 +116,14 @@ class FrequencySummaryDto {
 /// DTO item for the frequency chart.
 @JsonSerializable(createToJson: false)
 class FrequencyChartItemDto {
+  /// Current day position for `week` payloads.
+  @JsonKey(name: 'day_index')
+  final int? dayIndex;
+
+  /// Day number for `week` payloads.
+  @JsonKey(name: 'day_number')
+  final int? dayNumber;
+
   /// Current chart position.
   @JsonKey(name: 'week_index')
   final int? weekIndex;
@@ -131,7 +137,11 @@ class FrequencyChartItemDto {
 
   /// Short label.
   @JsonKey(name: 'short_label')
-  final String shortLabel;
+  final String? shortLabel;
+
+  /// Formatted date label for `week` payloads.
+  @JsonKey(name: 'date_formatted')
+  final String? dateFormatted;
 
   /// Range start date.
   @JsonKey(name: 'start_date')
@@ -149,10 +159,13 @@ class FrequencyChartItemDto {
 
   /// Creates an instance of [FrequencyChartItemDto].
   FrequencyChartItemDto({
+    required this.dayIndex,
+    required this.dayNumber,
     required this.weekIndex,
     required this.weekNumber,
     required this.label,
-    required this.shortLabel,
+    this.shortLabel,
+    this.dateFormatted,
     required this.startDate,
     required this.endDate,
     required this.count,

@@ -9,9 +9,7 @@ class TrendResponseDto {
   final TrendStatisticsDto data;
 
   /// Creates an instance of [TrendResponseDto].
-  TrendResponseDto({
-    required this.data,
-  });
+  TrendResponseDto({required this.data});
 
   /// Creates a [TrendResponseDto] from JSON.
   factory TrendResponseDto.fromJson(Map<String, dynamic> json) => _$TrendResponseDtoFromJson(json);

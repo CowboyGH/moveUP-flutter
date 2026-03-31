@@ -9,9 +9,7 @@ class ProfileSubscriptionsDto {
   final ActiveProfileSubscriptionDto? active;
 
   /// Creates an instance of [ProfileSubscriptionsDto].
-  ProfileSubscriptionsDto({
-    required this.active,
-  });
+  ProfileSubscriptionsDto({required this.active});
 
   /// Creates a [ProfileSubscriptionsDto] from JSON.
   factory ProfileSubscriptionsDto.fromJson(Map<String, dynamic> json) =>

@@ -11,9 +11,7 @@ class ProfileUserResponseDto {
   final ProfileUserDataDto data;
 
   /// Creates an instance of [ProfileUserResponseDto].
-  ProfileUserResponseDto({
-    required this.data,
-  });
+  ProfileUserResponseDto({required this.data});
 
   /// Creates a [ProfileUserResponseDto] from JSON.
   factory ProfileUserResponseDto.fromJson(Map<String, dynamic> json) =>

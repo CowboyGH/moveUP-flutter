@@ -9,9 +9,7 @@ class VolumeResponseDto {
   final VolumeStatisticsDto data;
 
   /// Creates an instance of [VolumeResponseDto].
-  VolumeResponseDto({
-    required this.data,
-  });
+  VolumeResponseDto({required this.data});
 
   /// Creates a [VolumeResponseDto] from JSON.
   factory VolumeResponseDto.fromJson(Map<String, dynamic> json) =>
