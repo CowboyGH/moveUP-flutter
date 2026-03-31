@@ -53,7 +53,7 @@ class ProfilePhaseDto {
   /// Creates an instance of [ProfilePhaseDto].
   ProfilePhaseDto({
     required this.hasProgress,
-    required this.currentPhase,
+    this.currentPhase,
   });
 
   /// Creates a [ProfilePhaseDto] from JSON.

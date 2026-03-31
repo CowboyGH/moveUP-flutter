@@ -57,6 +57,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       final response = await _apiClient.getProfile();
       final snapshot = response.data.toStatsHistorySnapshot();
       _cachedStatsHistorySnapshot = snapshot;
+      _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       return Result.success(snapshot);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();

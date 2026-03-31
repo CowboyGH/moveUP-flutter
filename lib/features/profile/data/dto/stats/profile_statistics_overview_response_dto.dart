@@ -23,7 +23,7 @@ class ProfileStatisticsOverviewDataDto {
   final ProfileStatisticsOverviewFrequencyDto? frequency;
 
   /// Creates an instance of [ProfileStatisticsOverviewDataDto].
-  ProfileStatisticsOverviewDataDto({required this.frequency});
+  ProfileStatisticsOverviewDataDto({this.frequency});
 
   /// Creates a [ProfileStatisticsOverviewDataDto] from JSON.
   factory ProfileStatisticsOverviewDataDto.fromJson(Map<String, dynamic> json) =>
