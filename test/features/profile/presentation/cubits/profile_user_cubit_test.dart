@@ -5,6 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
@@ -41,6 +43,9 @@ void main() {
     provideDummy<Result<ProfilePhaseSnapshot, ProfileFailure>>(
       Success(createProfilePhaseSnapshot()),
     );
+    provideDummy<Result<ProfileParametersSnapshot?, ProfileFailure>>(
+      Success(createProfileParametersSnapshot()),
+    );
   });
 
   group('ProfileUserCubit', () {
@@ -53,6 +58,9 @@ void main() {
         );
         when(repository.getPhaseSnapshot()).thenAnswer(
           (_) async => Success(createProfilePhaseSnapshot()),
+        );
+        when(repository.getParametersSnapshot()).thenAnswer(
+          (_) async => Success(createProfileParametersSnapshot()),
         );
       },
       build: () => cubit,
@@ -87,12 +95,22 @@ void main() {
             hasProgress: testProfileHasProgress,
             currentPhaseName: testProfilePhaseName,
           ),
+          parametersSnapshot: ProfileParametersSnapshot(
+            goal: testProfileParametersGoal,
+            gender: ProfileParametersGender.female,
+            age: testProfileParametersAge,
+            weight: testProfileParametersWeight,
+            height: testProfileParametersHeight,
+            equipment: testProfileParametersEquipment,
+            level: testProfileParametersLevel,
+          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
         verify(repository.getStatsHistorySnapshot()).called(1);
         verify(repository.getPhaseSnapshot()).called(1);
+        verify(repository.getParametersSnapshot()).called(1);
       },
     );
 
@@ -105,6 +123,9 @@ void main() {
         );
         when(repository.getPhaseSnapshot()).thenAnswer(
           (_) async => Success(createProfilePhaseSnapshot()),
+        );
+        when(repository.getParametersSnapshot()).thenAnswer(
+          (_) async => Success(createProfileParametersSnapshot()),
         );
       },
       build: () => cubit,
@@ -142,12 +163,22 @@ void main() {
             hasProgress: testProfileHasProgress,
             currentPhaseName: testProfilePhaseName,
           ),
+          parametersSnapshot: ProfileParametersSnapshot(
+            goal: testProfileParametersGoal,
+            gender: ProfileParametersGender.female,
+            age: testProfileParametersAge,
+            weight: testProfileParametersWeight,
+            height: testProfileParametersHeight,
+            equipment: testProfileParametersEquipment,
+            level: testProfileParametersLevel,
+          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
         verify(repository.getStatsHistorySnapshot()).called(1);
         verify(repository.getPhaseSnapshot()).called(1);
+        verify(repository.getParametersSnapshot()).called(1);
       },
     );
 

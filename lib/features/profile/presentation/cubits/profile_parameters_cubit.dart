@@ -105,6 +105,16 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
   }) async {
     final currentParameters = state.currentParameters;
     if (state.isSubmitting || currentParameters == null) return;
+    final hasChanges =
+        payload.goalId != currentParameters.goalId ||
+        payload.gender != currentParameters.gender ||
+        payload.age != currentParameters.age ||
+        payload.weight != currentParameters.weight ||
+        payload.height != currentParameters.height ||
+        payload.equipmentId != currentParameters.equipmentId ||
+        payload.levelId != currentParameters.levelId ||
+        payload.weeklyGoal != currentWeeklyGoal;
+    if (!hasChanges) return;
 
     emit(
       state.copyWith(
