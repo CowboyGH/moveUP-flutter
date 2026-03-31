@@ -262,6 +262,10 @@ abstract final class AppStrings {
   static const profileUpdateFailed = 'Не удалось обновить профиль. Попробуйте снова';
   static const profileChangePasswordFailed = 'Не удалось сменить пароль. Попробуйте снова';
   static const profileImagePickFailed = 'Не удалось выбрать изображение. Попробуйте снова';
+  static const profileCurrentPhaseTitle = 'Текущая фаза';
+  static const profileCurrentPhaseRecommendation = 'Вам рекомендуется тренироваться в неделю';
+  static const profileCurrentPhaseEmpty = 'У вас пока нет активной фазы';
+  static const profileCurrentPhaseLoadFailed = 'Не удалось загрузить текущую фазу';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';
@@ -292,6 +296,9 @@ abstract final class AppStrings {
   static const profileStatsAverageScoreLabel = 'Средняя оценка:';
 
   static String profileStatsAveragePerWeek(String value) => 'В среднем: $value / нед';
+
+  static String profileCurrentPhaseTrainingsPerWeek(String value) =>
+      'Вы тренируетесь $value раза в неделю.';
 
   /// Builds the increase-adjustment message for a new absolute weight value.
   static String workoutExecutionAdjustmentIncrease(String weight) =>

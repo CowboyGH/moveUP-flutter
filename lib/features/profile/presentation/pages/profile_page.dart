@@ -17,6 +17,7 @@ import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
+import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/stats/profile_history_dialog.dart';
 import '../widgets/stats/stats_section_widget.dart';
@@ -111,6 +112,8 @@ class ProfilePage extends StatelessWidget {
                     onPressed: () => _openHistoryDialog(context),
                     child: const Text(AppStrings.profileStatsHistoryButton),
                   ),
+                  const SizedBox(height: 36),
+                  const CurrentPhaseSectionWidget(),
                 ],
               ),
             );
