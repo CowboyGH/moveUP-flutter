@@ -27,187 +27,305 @@ void main() {
   });
 
   group('ProfileStatisticsRepositoryImpl', () {
-    test('getVolume returns success(data) when api succeeds', () async {
-      // Arrange
-      when(apiClient.getVolume()).thenAnswer((_) async => createVolumeResponseDto());
+    group('getVolume()', () {
+      test('returns success(data) when api succeeds', () async {
+        // Arrange
+        when(apiClient.getVolume()).thenAnswer((_) async => createVolumeResponseDto());
 
-      // Act
-      final result = await repository.getVolume();
+        // Act
+        final result = await repository.getVolume();
 
-      // Assert
-      expect(result.isSuccess, isTrue);
-      expect(result.success!.exerciseId, testVolumeExerciseId);
-      expect(result.success!.title, testVolumeExerciseTitle);
-      expect(result.success!.averageScorePercent, testVolumeAverageScorePercent);
-      verify(apiClient.getVolume()).called(1);
-      verifyNoMoreInteractions(apiClient);
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success!.exerciseId, testVolumeExerciseId);
+        expect(result.success!.title, testVolumeExerciseTitle);
+        expect(result.success!.averageScorePercent, testVolumeAverageScorePercent);
+
+        verify(apiClient.getVolume()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics/volume',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getVolume()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getVolume();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getVolume()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getVolume()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getVolume();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getVolume()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
-    test('getVolume returns ProfileRequestFailure when api fails', () async {
-      // Arrange
-      final exception = createProfileStatisticsDioBadResponseException(
-        path: '/api/profile/statistics/volume',
-        statusCode: 500,
-        code: 'server_error',
-      );
-      when(apiClient.getVolume()).thenThrow(exception);
+    group('getTrend()', () {
+      test('returns success(data) when api succeeds', () async {
+        // Arrange
+        when(apiClient.getTrend()).thenAnswer((_) async => createTrendResponseDto());
 
-      // Act
-      final result = await repository.getVolume();
+        // Act
+        final result = await repository.getTrend();
 
-      // Assert
-      expect(result.isFailure, isTrue);
-      expect(result.failure, isA<ProfileRequestFailure>());
-      verify(apiClient.getVolume()).called(1);
-      verifyNoMoreInteractions(apiClient);
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success!.workoutId, testTrendWorkoutId);
+        expect(result.success!.title, testTrendWorkoutTitle);
+        expect(result.success!.averageScorePercent, 100);
+
+        verify(apiClient.getTrend()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics/trend',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getTrend()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getTrend();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getTrend()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getTrend()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getTrend();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getTrend()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
-    test('getTrend returns success(data) when api succeeds', () async {
-      // Arrange
-      when(apiClient.getTrend()).thenAnswer((_) async => createTrendResponseDto());
+    group('getFrequency()', () {
+      test('returns success(data) when api succeeds', () async {
+        // Arrange
+        when(
+          apiClient.getFrequency(period: 'month', offset: 0),
+        ).thenAnswer((_) async => createFrequencyResponseDto());
 
-      // Act
-      final result = await repository.getTrend();
+        // Act
+        final result = await repository.getFrequency(
+          period: FrequencyPeriod.month,
+          offset: 0,
+        );
 
-      // Assert
-      expect(result.isSuccess, isTrue);
-      expect(result.success!.workoutId, testTrendWorkoutId);
-      expect(result.success!.title, testTrendWorkoutTitle);
-      expect(result.success!.averageScorePercent, 100);
-      verify(apiClient.getTrend()).called(1);
-      verifyNoMoreInteractions(apiClient);
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success!.period, FrequencyPeriod.month);
+        expect(result.success!.label, testFrequencyLabel);
+        expect(result.success!.averagePerWeek, 2.3);
+
+        verify(apiClient.getFrequency(period: 'month', offset: 0)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics/frequency',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getFrequency(period: 'month', offset: 0)).thenThrow(exception);
+
+        // Act
+        final result = await repository.getFrequency(
+          period: FrequencyPeriod.month,
+          offset: 0,
+        );
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getFrequency(period: 'month', offset: 0)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getFrequency(period: 'month', offset: 0)).thenThrow(exception);
+
+        // Act
+        final result = await repository.getFrequency(
+          period: FrequencyPeriod.month,
+          offset: 0,
+        );
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getFrequency(period: 'month', offset: 0)).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
-    test('getTrend returns ProfileRequestFailure when api fails', () async {
-      // Arrange
-      final exception = createProfileStatisticsDioBadResponseException(
-        path: '/api/profile/statistics/trend',
-        statusCode: 500,
-        code: 'server_error',
-      );
-      when(apiClient.getTrend()).thenThrow(exception);
+    group('getExercises()', () {
+      test('returns success(items) when api succeeds', () async {
+        // Arrange
+        when(apiClient.getExercises()).thenAnswer((_) async => createProfileExercisesResponseDto());
 
-      // Act
-      final result = await repository.getTrend();
+        // Act
+        final result = await repository.getExercises();
 
-      // Assert
-      expect(result.isFailure, isTrue);
-      expect(result.failure, isA<ProfileRequestFailure>());
-      verify(apiClient.getTrend()).called(1);
-      verifyNoMoreInteractions(apiClient);
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success, hasLength(1));
+        expect(result.success!.first.id, testVolumeExerciseId);
+        expect(result.success!.first.name, testVolumeExerciseTitle);
+
+        verify(apiClient.getExercises()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics/exercises',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getExercises()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getExercises();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getExercises()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getExercises()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getExercises();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getExercises()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
 
-    test('getFrequency returns success(data) when api succeeds', () async {
-      // Arrange
-      when(
-        apiClient.getFrequency(period: 'month', offset: 0),
-      ).thenAnswer((_) async => createFrequencyResponseDto());
+    group('getWorkouts()', () {
+      test('returns success(items) when api succeeds', () async {
+        // Arrange
+        when(apiClient.getWorkouts()).thenAnswer((_) async => createProfileWorkoutsResponseDto());
 
-      // Act
-      final result = await repository.getFrequency(
-        period: FrequencyPeriod.month,
-        offset: 0,
-      );
+        // Act
+        final result = await repository.getWorkouts();
 
-      // Assert
-      expect(result.isSuccess, isTrue);
-      expect(result.success!.period, FrequencyPeriod.month);
-      expect(result.success!.label, testFrequencyLabel);
-      expect(result.success!.averagePerWeek, 2.3);
-      verify(apiClient.getFrequency(period: 'month', offset: 0)).called(1);
-      verifyNoMoreInteractions(apiClient);
-    });
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(result.success, hasLength(1));
+        expect(result.success!.first.id, testTrendWorkoutId);
+        expect(result.success!.first.title, testTrendWorkoutTitle);
 
-    test('getFrequency returns ProfileRequestFailure when api fails', () async {
-      // Arrange
-      final exception = createProfileStatisticsDioBadResponseException(
-        path: '/api/profile/statistics/frequency',
-        statusCode: 500,
-        code: 'server_error',
-      );
-      when(apiClient.getFrequency(period: 'month', offset: 0)).thenThrow(exception);
+        verify(apiClient.getWorkouts()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
 
-      // Act
-      final result = await repository.getFrequency(
-        period: FrequencyPeriod.month,
-        offset: 0,
-      );
+      test('returns ProfileRequestFailure when api fails', () async {
+        // Arrange
+        final exception = createProfileStatisticsDioBadResponseException(
+          path: '/api/profile/statistics/workouts',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getWorkouts()).thenThrow(exception);
 
-      // Assert
-      expect(result.isFailure, isTrue);
-      expect(result.failure, isA<ProfileRequestFailure>());
-      verify(apiClient.getFrequency(period: 'month', offset: 0)).called(1);
-      verifyNoMoreInteractions(apiClient);
-    });
+        // Act
+        final result = await repository.getWorkouts();
 
-    test('getExercises returns success(items) when api succeeds', () async {
-      // Arrange
-      when(apiClient.getExercises()).thenAnswer((_) async => createProfileExercisesResponseDto());
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
 
-      // Act
-      final result = await repository.getExercises();
+        verify(apiClient.getWorkouts()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
 
-      // Assert
-      expect(result.isSuccess, isTrue);
-      expect(result.success, hasLength(1));
-      expect(result.success!.first.id, testVolumeExerciseId);
-      expect(result.success!.first.name, testVolumeExerciseTitle);
-      verify(apiClient.getExercises()).called(1);
-      verifyNoMoreInteractions(apiClient);
-    });
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getWorkouts()).thenThrow(exception);
 
-    test('getExercises returns ProfileRequestFailure when api fails', () async {
-      // Arrange
-      final exception = createProfileStatisticsDioBadResponseException(
-        path: '/api/profile/statistics/exercises',
-        statusCode: 500,
-        code: 'server_error',
-      );
-      when(apiClient.getExercises()).thenThrow(exception);
+        // Act
+        final result = await repository.getWorkouts();
 
-      // Act
-      final result = await repository.getExercises();
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
 
-      // Assert
-      expect(result.isFailure, isTrue);
-      expect(result.failure, isA<ProfileRequestFailure>());
-      verify(apiClient.getExercises()).called(1);
-      verifyNoMoreInteractions(apiClient);
-    });
-
-    test('getWorkouts returns success(items) when api succeeds', () async {
-      // Arrange
-      when(apiClient.getWorkouts()).thenAnswer((_) async => createProfileWorkoutsResponseDto());
-
-      // Act
-      final result = await repository.getWorkouts();
-
-      // Assert
-      expect(result.isSuccess, isTrue);
-      expect(result.success, hasLength(1));
-      expect(result.success!.first.id, testTrendWorkoutId);
-      expect(result.success!.first.title, testTrendWorkoutTitle);
-      verify(apiClient.getWorkouts()).called(1);
-      verifyNoMoreInteractions(apiClient);
-    });
-
-    test('getWorkouts returns ProfileRequestFailure when api fails', () async {
-      // Arrange
-      final exception = createProfileStatisticsDioBadResponseException(
-        path: '/api/profile/statistics/workouts',
-        statusCode: 500,
-        code: 'server_error',
-      );
-      when(apiClient.getWorkouts()).thenThrow(exception);
-
-      // Act
-      final result = await repository.getWorkouts();
-
-      // Assert
-      expect(result.isFailure, isTrue);
-      expect(result.failure, isA<ProfileRequestFailure>());
-      verify(apiClient.getWorkouts()).called(1);
-      verifyNoMoreInteractions(apiClient);
+        verify(apiClient.getWorkouts()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/frequency_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/mappers/profile_statistics_mapper.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/frequency_period.dart';
 
@@ -28,6 +29,39 @@ void main() {
       expect(result.period, FrequencyPeriod.year);
       expect(result.offset, 2);
       expect(result.averagePerWeek, 2.3);
+    });
+
+    test('maps weekly frequency dto without short_label', () {
+      final result =
+          createFrequencyStatisticsDto(
+            periodInfo: FrequencyPeriodInfoDto(
+              type: 'week',
+              offset: 0,
+              label: 'Текущяя неделя',
+              itemsCount: 7,
+            ),
+            chart: [
+              FrequencyChartItemDto(
+                dayIndex: 0,
+                dayNumber: 1,
+                weekIndex: null,
+                weekNumber: null,
+                label: 'Пн',
+                dateFormatted: '30.03',
+                startDate: null,
+                endDate: null,
+                count: 0,
+                goal: null,
+              ),
+            ],
+          ).toEntity(
+            fallbackPeriod: FrequencyPeriod.month,
+            fallbackOffset: 0,
+          );
+
+      expect(result.period, FrequencyPeriod.week);
+      expect(result.chart.first.label, 'Пн');
+      expect(result.chart.first.shortLabel, 'Пн');
     });
 
     test('maps workout selector dto to profile workout options', () {

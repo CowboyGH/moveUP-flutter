@@ -1,9 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:moveup_flutter/features/profile/data/dto/profile_statistics/frequency_response_dto.dart';
-import 'package:moveup_flutter/features/profile/data/dto/profile_statistics/profile_exercises_response_dto.dart';
-import 'package:moveup_flutter/features/profile/data/dto/profile_statistics/profile_workouts_response_dto.dart';
-import 'package:moveup_flutter/features/profile/data/dto/profile_statistics/trend_response_dto.dart';
-import 'package:moveup_flutter/features/profile/data/dto/profile_statistics/volume_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/frequency_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/profile_exercises_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/profile_workouts_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/trend_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/stats/volume_response_dto.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/frequency_period.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/frequency_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_exercise_option.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_workout_option.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/trend_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/volume_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 
 const testVolumeExerciseId = 17;
 const testVolumeExerciseTitle = 'Скручивания на пресс';
@@ -17,6 +24,115 @@ const testTrendWorkoutId = 231;
 const testTrendWorkoutTitle = 'Силовая: Грудь + трицепс';
 const testTrendWorkoutCompletedFormatted = '18.03.2026 08:32';
 const testFrequencyLabel = 'Текущий месяц';
+
+const testProfileStatisticsVolumeData = VolumeStatisticsData(
+  hasData: true,
+  exerciseId: 17,
+  title: 'Скручивания на пресс',
+  averageScorePercent: 66,
+  averageScoreLabel: 'Нормально',
+  period: VolumePeriodData(
+    start: '2026-03-16',
+    end: '2026-03-22',
+    label: 'Неделя 4',
+    weekOffset: 0,
+    canGoPrevious: true,
+    canGoNext: false,
+  ),
+  chart: [
+    VolumeChartBarData(
+      label: 'Пн',
+      value: 3500,
+      date: '2026-03-16',
+    ),
+  ],
+);
+
+const testProfileStatisticsExercises = [
+  ProfileExerciseOption(
+    id: 17,
+    name: 'Скручивания на пресс',
+    lastUsedFormatted: '19.03.2026',
+  ),
+];
+
+const testProfileStatisticsTrendData = TrendStatisticsData(
+  hasData: true,
+  workoutId: 231,
+  title: 'Силовая: Грудь + трицепс',
+  completedAtFormatted: '18.03.2026 08:32',
+  averageScorePercent: 100,
+  averageScoreLabel: 'Отлично',
+  exercises: [
+    TrendExerciseData(
+      exerciseName: 'Жим штанги лежа',
+      scorePercent: 100,
+      scoreLabel: 'Отлично',
+      reaction: 'good',
+      weightUsed: '60.0',
+    ),
+  ],
+);
+
+const testProfileStatisticsWorkouts = [
+  ProfileWorkoutOption(
+    id: 231,
+    title: 'Силовая: Грудь + трицепс',
+    completedAtFormatted: '18.03.2026',
+  ),
+];
+
+const testProfileStatisticsFrequencyData = FrequencyStatisticsData(
+  hasData: true,
+  period: FrequencyPeriod.month,
+  offset: 0,
+  label: 'Текущий месяц',
+  averagePerWeek: 2.3,
+  chart: [
+    FrequencyChartBarData(
+      label: 'Нед 1',
+      shortLabel: '1',
+      count: 1,
+      goal: 4,
+    ),
+  ],
+);
+
+const testProfileStatisticsYearFrequencyData = FrequencyStatisticsData(
+  hasData: true,
+  period: FrequencyPeriod.year,
+  offset: 0,
+  label: 'Текущий год',
+  averagePerWeek: 2.3,
+  chart: [
+    FrequencyChartBarData(
+      label: 'Янв',
+      shortLabel: 'Я',
+      count: 1,
+      goal: 4,
+    ),
+  ],
+);
+
+const testProfileStatisticsHistorySnapshot = ProfileStatsHistorySnapshot(
+  activeSubscription: ProfileActiveSubscriptionSnapshot(
+    id: 21,
+    name: '3 месяца',
+    price: '1400.00',
+    startDate: '2026-03-15',
+    endDate: '2026-06-13',
+  ),
+  latestWorkout: ProfileLatestWorkoutSnapshot(
+    id: 101,
+    title: 'Утренняя зарядка',
+    completedAt: '2026-03-15 10:30:00',
+  ),
+  latestTest: ProfileLatestTestSnapshot(
+    attemptId: 3,
+    title: 'Базовый тест',
+    completedAt: '2026-03-14 15:20:00',
+  ),
+);
 
 /// Test fixture for [VolumeResponseDto].
 VolumeResponseDto createVolumeResponseDto({
@@ -182,6 +298,8 @@ FrequencyStatisticsDto createFrequencyStatisticsDto({
       chart ??
       [
         FrequencyChartItemDto(
+          dayIndex: null,
+          dayNumber: null,
           weekIndex: 0,
           weekNumber: 1,
           label: 'Нед 1',
@@ -192,6 +310,8 @@ FrequencyStatisticsDto createFrequencyStatisticsDto({
           goal: 4,
         ),
         FrequencyChartItemDto(
+          dayIndex: null,
+          dayNumber: null,
           weekIndex: 1,
           weekNumber: 2,
           label: 'Нед 2',
