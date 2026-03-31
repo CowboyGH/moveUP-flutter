@@ -5,6 +5,7 @@ import '../../../../../core/failures/feature/profile/profile_failure.dart';
 import '../../../../../core/result/result.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../domain/entities/profile_phase_snapshot.dart';
+import '../../domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../domain/repositories/profile_repository.dart';
 
@@ -41,6 +42,8 @@ final class ProfileUserCubit extends Cubit<ProfileUserState> {
         if (isClosed) return;
         final phaseResult = await _repository.getPhaseSnapshot();
         if (isClosed) return;
+        final parametersResult = await _repository.getParametersSnapshot();
+        if (isClosed) return;
 
         final historySnapshot = switch (historyResult) {
           Success(data: final snapshot) => snapshot,
@@ -50,12 +53,17 @@ final class ProfileUserCubit extends Cubit<ProfileUserState> {
           Success(data: final snapshot) => snapshot,
           Failure() => state.phaseSnapshot,
         };
+        final parametersSnapshot = switch (parametersResult) {
+          Success(data: final snapshot) => snapshot,
+          Failure() => state.parametersSnapshot,
+        };
         emit(
           state.copyWith(
             isLoading: false,
             user: user,
             historySnapshot: historySnapshot,
             phaseSnapshot: phaseSnapshot,
+            parametersSnapshot: parametersSnapshot,
             failure: null,
           ),
         );

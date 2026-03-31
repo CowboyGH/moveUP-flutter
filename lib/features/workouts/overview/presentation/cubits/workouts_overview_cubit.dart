@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../core/failures/feature/workouts/workouts_failure.dart';
 import '../../../../../core/result/result.dart';
+import '../../../../../core/services/workouts_reload_signal/workouts_reload_signal.dart';
 import '../../domain/entities/workout_overview_item.dart';
 import '../../domain/repositories/workouts_overview_repository.dart';
 
@@ -13,9 +16,17 @@ part 'workouts_overview_state.dart';
 final class WorkoutsOverviewCubit extends Cubit<WorkoutsOverviewState> {
   /// Repository used for workouts overview requests.
   final WorkoutsOverviewRepository _repository;
+  StreamSubscription<void>? _reloadSubscription;
 
   /// Creates an instance of [WorkoutsOverviewCubit].
-  WorkoutsOverviewCubit(this._repository) : super(const WorkoutsOverviewState.initial());
+  WorkoutsOverviewCubit(
+    this._repository, [
+    WorkoutsReloadSignal? workoutsReloadSignal,
+  ]) : super(const WorkoutsOverviewState.initial()) {
+    _reloadSubscription = workoutsReloadSignal?.stream.listen((_) {
+      unawaited(loadWorkouts());
+    });
+  }
 
   /// Loads all workouts available for the overview screen.
   Future<void> loadWorkouts() async {
@@ -36,5 +47,11 @@ final class WorkoutsOverviewCubit extends Cubit<WorkoutsOverviewState> {
       case Failure(:final error):
         emit(WorkoutsOverviewState.failed(error));
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await _reloadSubscription?.cancel();
+    return super.close();
   }
 }
