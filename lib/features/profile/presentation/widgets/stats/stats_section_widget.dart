@@ -219,7 +219,7 @@ class _StatsSectionWidgetState extends State<StatsSectionWidget> {
                   const SizedBox(height: 24),
                   if (state.isLoading && !_hasCurrentPayload(state))
                     const _StatsLoadingState()
-                  else if (state.failure != null && !_hasCurrentPayload(state))
+                  else if (state.failure != null)
                     _StatsErrorState(
                       onRetryPressed: () {
                         _closeDropdown();
