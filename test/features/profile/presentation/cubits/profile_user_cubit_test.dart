@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_user_cubit.dart';
 
@@ -33,12 +34,20 @@ void main() {
     repository = MockProfileRepository();
     cubit = ProfileUserCubit(repository, seedUser: seedUser);
     provideDummy<Result<User, ProfileFailure>>(const Success(seedUser));
+    provideDummy<Result<ProfileStatsHistorySnapshot, ProfileFailure>>(
+      Success(createProfileStatsHistorySnapshot()),
+    );
   });
 
   group('ProfileUserCubit', () {
     blocTest<ProfileUserCubit, ProfileUserState>(
       'emits loading and refreshed user when refresh succeeds',
-      setUp: () => when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser)),
+      setUp: () {
+        when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
+        when(repository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => Success(createProfileStatsHistorySnapshot()),
+        );
+      },
       build: () => cubit,
       act: (cubit) => cubit.refresh(),
       expect: () => const [
@@ -48,14 +57,41 @@ void main() {
         ),
         ProfileUserState(
           user: updatedUser,
+          historySnapshot: ProfileStatsHistorySnapshot(
+            activeSubscription: ProfileActiveSubscriptionSnapshot(
+              id: testProfileSubscriptionId,
+              name: testProfileSubscriptionName,
+              price: testProfileSubscriptionPrice,
+              startDate: testProfileSubscriptionStartDate,
+              endDate: testProfileSubscriptionEndDate,
+            ),
+            latestWorkout: ProfileLatestWorkoutSnapshot(
+              id: testProfileWorkoutHistoryId,
+              title: testProfileWorkoutTitle,
+              completedAt: testProfileWorkoutCompletedAt,
+            ),
+            latestTest: ProfileLatestTestSnapshot(
+              attemptId: testProfileTestAttemptId,
+              title: testProfileTestTitle,
+              completedAt: testProfileTestCompletedAt,
+            ),
+          ),
         ),
       ],
-      verify: (_) => verify(repository.getUser()).called(1),
+      verify: (_) {
+        verify(repository.getUser()).called(1);
+        verify(repository.getStatsHistorySnapshot()).called(1);
+      },
     );
 
     blocTest<ProfileUserCubit, ProfileUserState>(
       'emits loading only once when refresh is called twice in progress',
-      setUp: () => when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser)),
+      setUp: () {
+        when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
+        when(repository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => Success(createProfileStatsHistorySnapshot()),
+        );
+      },
       build: () => cubit,
       act: (cubit) {
         cubit.refresh();
@@ -68,9 +104,31 @@ void main() {
         ),
         ProfileUserState(
           user: updatedUser,
+          historySnapshot: ProfileStatsHistorySnapshot(
+            activeSubscription: ProfileActiveSubscriptionSnapshot(
+              id: testProfileSubscriptionId,
+              name: testProfileSubscriptionName,
+              price: testProfileSubscriptionPrice,
+              startDate: testProfileSubscriptionStartDate,
+              endDate: testProfileSubscriptionEndDate,
+            ),
+            latestWorkout: ProfileLatestWorkoutSnapshot(
+              id: testProfileWorkoutHistoryId,
+              title: testProfileWorkoutTitle,
+              completedAt: testProfileWorkoutCompletedAt,
+            ),
+            latestTest: ProfileLatestTestSnapshot(
+              attemptId: testProfileTestAttemptId,
+              title: testProfileTestTitle,
+              completedAt: testProfileTestCompletedAt,
+            ),
+          ),
         ),
       ],
-      verify: (_) => verify(repository.getUser()).called(1),
+      verify: (_) {
+        verify(repository.getUser()).called(1);
+        verify(repository.getStatsHistorySnapshot()).called(1);
+      },
     );
 
     blocTest<ProfileUserCubit, ProfileUserState>(

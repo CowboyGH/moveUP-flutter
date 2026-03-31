@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../themes/colors/app_color_theme.dart';
 import '../themes/text/app_text_theme.dart';
+import 'button_size.dart';
 import 'button_state.dart';
 
 /// Shared outlined option button.
@@ -18,12 +19,16 @@ class OptionButton extends StatelessWidget {
   /// Whether the button is currently selected.
   final bool isSelected;
 
+  /// Canonical visual size of the button.
+  final ButtonSize size;
+
   /// Creates an instance of [OptionButton].
   const OptionButton({
     this.state = ButtonState.enabled,
     required this.onPressed,
     required this.child,
     this.isSelected = false,
+    this.size = ButtonSize.large,
     super.key,
   });
 
@@ -32,16 +37,29 @@ class OptionButton extends StatelessWidget {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
     final isDisabled = state == ButtonState.disabled;
+    final height = switch (size) {
+      ButtonSize.large => 53.0,
+      ButtonSize.small => 42.0,
+    };
+    final padding = switch (size) {
+      ButtonSize.large => const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      ButtonSize.small => const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    };
+    final textStyle = switch (size) {
+      ButtonSize.large => textTheme.bodyMedium,
+      ButtonSize.small => textTheme.body,
+    };
+
     return SizedBox(
       width: double.infinity,
       child: OutlinedButton(
         onPressed: isDisabled ? null : onPressed,
         style:
             OutlinedButton.styleFrom(
-              fixedSize: const Size.fromHeight(53),
-              padding: const EdgeInsets.all(16),
+              fixedSize: Size.fromHeight(height),
+              padding: padding,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              textStyle: textTheme.bodyMedium,
+              textStyle: textStyle,
               foregroundColor: colorTheme.onSurface,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
