@@ -47,6 +47,7 @@ import '../services/guest_session_storage/cookie_jar_guest_session_storage.dart'
 import '../services/guest_session_storage/guest_session_storage.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
+import '../services/workouts_reload_signal/workouts_reload_signal.dart';
 import '../services/token_storage/secure_token_storage.dart';
 import '../services/token_storage/token_storage.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -103,6 +104,10 @@ Future<void> setupDI() async {
       di<CookieJar>(),
       Uri.parse(ApiPaths.baseUrl),
     ),
+  );
+  di.registerLazySingleton<WorkoutsReloadSignal>(
+    () => WorkoutsReloadSignal(),
+    dispose: (signal) => signal.dispose(),
   );
 
   // Authentication
