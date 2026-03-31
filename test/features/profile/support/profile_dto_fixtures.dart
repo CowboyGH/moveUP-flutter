@@ -6,6 +6,8 @@ import 'package:moveup_flutter/features/profile/data/dto/profile_user_data_dto.d
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_workout_history_item_dto.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 
@@ -31,6 +33,13 @@ const testProfileTestCompletedAt = '2026-03-14 15:20:00';
 const testProfilePhaseId = 7;
 const testProfilePhaseName = 'A1';
 const testProfileHasProgress = true;
+const testProfileParametersGoal = 'Рост силовых показателей';
+const testProfileParametersGender = 'female';
+const testProfileParametersAge = 18;
+const testProfileParametersWeight = 80.0;
+const testProfileParametersHeight = 150;
+const testProfileParametersEquipment = 'Смешанное';
+const testProfileParametersLevel = 'Профессионал';
 
 /// Test fixture for a shared authenticated [User].
 User createProfileUser({
@@ -69,6 +78,7 @@ ProfileUserResponseDto createProfileUserResponseDto({
   ProfileWorkoutsDto? workouts,
   ProfileTestsDto? tests,
   ProfilePhaseDto? phase,
+  ProfileParametersInProfileDto? parameters,
 }) => ProfileUserResponseDto(
   data: ProfileUserDataDto(
     user: user ?? createProfileUserDto(),
@@ -76,6 +86,7 @@ ProfileUserResponseDto createProfileUserResponseDto({
     workouts: workouts,
     tests: tests,
     phase: phase,
+    parameters: parameters,
   ),
 );
 
@@ -95,6 +106,25 @@ ProfileCurrentPhaseDto createProfileCurrentPhaseDto({
 }) => ProfileCurrentPhaseDto(
   id: id,
   name: name,
+);
+
+/// Test fixture for [ProfileParametersInProfileDto].
+ProfileParametersInProfileDto createProfileParametersInProfileDto({
+  String goal = testProfileParametersGoal,
+  String gender = testProfileParametersGender,
+  int age = testProfileParametersAge,
+  num weight = testProfileParametersWeight,
+  int height = testProfileParametersHeight,
+  String equipment = testProfileParametersEquipment,
+  String level = testProfileParametersLevel,
+}) => ProfileParametersInProfileDto(
+  goal: goal,
+  gender: gender,
+  age: age,
+  weight: weight,
+  height: height,
+  equipment: equipment,
+  level: level,
 );
 
 /// Test fixture for [ProfileSubscriptionsDto].
@@ -209,6 +239,25 @@ ProfilePhaseSnapshot createProfilePhaseSnapshot({
 }) => ProfilePhaseSnapshot(
   hasProgress: hasProgress,
   currentPhaseName: currentPhaseName,
+);
+
+/// Test fixture for [ProfileParametersSnapshot].
+ProfileParametersSnapshot createProfileParametersSnapshot({
+  String goal = testProfileParametersGoal,
+  ProfileParametersGender gender = ProfileParametersGender.female,
+  int age = testProfileParametersAge,
+  double weight = testProfileParametersWeight,
+  int height = testProfileParametersHeight,
+  String equipment = testProfileParametersEquipment,
+  String level = testProfileParametersLevel,
+}) => ProfileParametersSnapshot(
+  goal: goal,
+  gender: gender,
+  age: age,
+  weight: weight,
+  height: height,
+  equipment: equipment,
+  level: level,
 );
 
 /// Test fixture for Dio bad response exception.
