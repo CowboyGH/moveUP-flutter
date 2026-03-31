@@ -297,8 +297,8 @@ abstract final class AppStrings {
 
   static String profileStatsAveragePerWeek(String value) => 'В среднем: $value / нед';
 
-  static String profileCurrentPhaseTrainingsPerWeek(String value) =>
-      'Вы тренируетесь $value раза в неделю.';
+  static String profileCurrentPhaseTrainingsPerWeek(String value, String timesLabel) =>
+      'Вы тренируетесь $value $timesLabel в неделю.';
 
   /// Builds the increase-adjustment message for a new absolute weight value.
   static String workoutExecutionAdjustmentIncrease(String weight) =>

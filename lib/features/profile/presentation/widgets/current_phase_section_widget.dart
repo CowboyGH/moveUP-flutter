@@ -59,7 +59,7 @@ class CurrentPhaseSectionWidget extends StatelessWidget {
 
             return _CurrentPhaseContent(
               currentPhaseName: phaseSnapshot.currentPhaseName!,
-              averagePerWeek: _formatAveragePerWeek(currentPhaseSummary.averagePerWeek),
+              averagePerWeek: currentPhaseSummary.averagePerWeek.round(),
               weeklyGoal: '${currentPhaseSummary.weeklyGoal}',
             );
           },
@@ -71,7 +71,7 @@ class CurrentPhaseSectionWidget extends StatelessWidget {
 
 final class _CurrentPhaseContent extends StatelessWidget {
   final String currentPhaseName;
-  final String averagePerWeek;
+  final int averagePerWeek;
   final String weeklyGoal;
 
   const _CurrentPhaseContent({
@@ -90,7 +90,6 @@ final class _CurrentPhaseContent extends StatelessWidget {
         _CurrentPhaseNameField(currentPhaseName: currentPhaseName),
         const SizedBox(height: 20),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _CurrentPhaseSummaryText(averagePerWeek: averagePerWeek),
@@ -232,11 +231,11 @@ final class _CurrentPhaseNameField extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: colorTheme.outline),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         child: Text(
           currentPhaseName,
           style: textTheme.bodyMedium.copyWith(
@@ -249,7 +248,7 @@ final class _CurrentPhaseNameField extends StatelessWidget {
 }
 
 final class _CurrentPhaseSummaryText extends StatelessWidget {
-  final String averagePerWeek;
+  final int averagePerWeek;
 
   const _CurrentPhaseSummaryText({
     required this.averagePerWeek,
@@ -261,8 +260,11 @@ final class _CurrentPhaseSummaryText extends StatelessWidget {
     final textTheme = AppTextTheme.of(context);
 
     return Text(
-      '${AppStrings.profileCurrentPhaseTrainingsPerWeek(averagePerWeek)}\n'
+      '${AppStrings.profileCurrentPhaseTrainingsPerWeek('$averagePerWeek', _buildTimesLabel(averagePerWeek))}\n'
       '${AppStrings.profileCurrentPhaseRecommendation}',
+      maxLines: 3,
+      overflow: TextOverflow.ellipsis,
+      textAlign: TextAlign.start,
       style: textTheme.body.copyWith(
         color: colorTheme.onSurface,
       ),
@@ -287,7 +289,7 @@ final class _CurrentPhaseGoalBox extends StatelessWidget {
       height: 41,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(6),
           border: Border.all(color: colorTheme.outline),
         ),
         child: Center(
@@ -303,10 +305,15 @@ final class _CurrentPhaseGoalBox extends StatelessWidget {
   }
 }
 
-String _formatAveragePerWeek(double value) {
-  if (value == value.roundToDouble()) {
-    return value.toStringAsFixed(0);
+String _buildTimesLabel(int value) {
+  final mod100 = value % 100;
+  if (mod100 >= 11 && mod100 <= 14) {
+    return 'раз';
   }
 
-  return value.toStringAsFixed(1).replaceFirst('.', ',');
+  return switch (value % 10) {
+    1 => 'раз',
+    2 || 3 || 4 => 'раза',
+    _ => 'раз',
+  };
 }
