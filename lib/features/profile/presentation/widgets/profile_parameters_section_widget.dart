@@ -14,6 +14,8 @@ import '../../../../../uikit/dialogs/app_feedback_dialog.dart';
 import '../../../../../uikit/menus/app_selection_dropdown.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
+import '../../../../core/constants/app_assets.dart';
+import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../fitness_start/presentation/validators/fitness_start_validators.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_gender.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_option.dart';
@@ -380,7 +382,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
                             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: _LabeledTextField(
                             controller: _weightController,
@@ -393,7 +395,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: _LabeledTextField(
                             controller: _heightController,
@@ -440,6 +442,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
                       enabled: !state.isSubmitting,
                       validator: _weeklyGoalValidator,
                       keyboardType: TextInputType.number,
+                      textAlign: TextAlign.start,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     ),
                     const SizedBox(height: 24),
@@ -557,11 +560,11 @@ final class _SelectField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: textTheme.bodyMedium.copyWith(color: colorTheme.hint),
+          style: textTheme.label.copyWith(color: colorTheme.hint),
         ),
         const SizedBox(height: 4),
-        Material(
-          color: Colors.transparent,
+        Padding(
+          padding: const EdgeInsetsGeometry.only(right: 13),
           child: InkWell(
             onTap: onPressed,
             borderRadius: BorderRadius.circular(10),
@@ -573,22 +576,19 @@ final class _SelectField extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
                       child: Text(
                         value,
-                        style: textTheme.bodyMedium.copyWith(
+                        style: textTheme.body.copyWith(
                           color: colorTheme.hint,
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: colorTheme.hint,
-                      size: 28,
-                    ),
+                    const SvgPictureWidget.icon(AppAssets.iconArrowDown),
                   ],
                 ),
               ),
@@ -630,7 +630,7 @@ final class _SegmentedOptionsField<T extends Object> extends StatelessWidget {
       children: [
         Text(
           label,
-          style: textTheme.bodyMedium.copyWith(color: colorTheme.hint),
+          style: textTheme.label.copyWith(color: colorTheme.hint),
         ),
         const SizedBox(height: 4),
         Row(
@@ -668,6 +668,7 @@ final class _LabeledTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
   final List<TextInputFormatter>? inputFormatters;
+  final TextAlign textAlign;
 
   const _LabeledTextField({
     required this.controller,
@@ -675,6 +676,7 @@ final class _LabeledTextField extends StatelessWidget {
     required this.enabled,
     required this.validator,
     required this.keyboardType,
+    this.textAlign = TextAlign.center,
     this.inputFormatters,
   });
 
@@ -692,7 +694,7 @@ final class _LabeledTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: textTheme.bodyMedium.copyWith(color: colorTheme.hint),
+          style: textTheme.label.copyWith(color: colorTheme.hint),
         ),
         const SizedBox(height: 4),
         TextFormField(
@@ -701,19 +703,19 @@ final class _LabeledTextField extends StatelessWidget {
           validator: validator,
           keyboardType: keyboardType,
           inputFormatters: inputFormatters,
-          textAlign: TextAlign.center,
-          style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+          textAlign: textAlign,
+          style: textTheme.body.copyWith(color: colorTheme.onSurface),
           decoration: InputDecoration(
             isDense: true,
-            contentPadding: const EdgeInsets.all(16),
+            contentPadding: const EdgeInsets.all(12),
             border: border,
             enabledBorder: border,
             disabledBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(color: colorTheme.disabled),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               borderSide: BorderSide(color: colorTheme.primary.withValues(alpha: 0.8)),
             ),
           ),
