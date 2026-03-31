@@ -18,9 +18,12 @@ import '../../features/fitness_start/data/repositories/fitness_start_repository_
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/profile/data/remote/profile_api_client.dart';
+import '../../features/profile/data/remote/profile_parameters_api_client.dart';
 import '../../features/profile/data/remote/profile_statistics_api_client.dart';
+import '../../features/profile/data/repositories/profile_parameters_repository_impl.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/data/repositories/profile_statistics_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_parameters_repository.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
 import '../../features/profile/domain/repositories/profile_statistics_repository.dart';
 import '../../features/tests/attempt/data/repositories/authenticated_test_attempt_repository_impl.dart';
@@ -119,6 +122,9 @@ Future<void> setupDI() async {
     ),
   );
   di.registerLazySingleton<ProfileApiClient>(() => ProfileApiClient(di<Dio>()));
+  di.registerLazySingleton<ProfileParametersApiClient>(
+    () => ProfileParametersApiClient(di<Dio>()),
+  );
   di.registerLazySingleton<ProfileStatisticsApiClient>(
     () => ProfileStatisticsApiClient(di<Dio>()),
   );
@@ -132,6 +138,12 @@ Future<void> setupDI() async {
     () => ProfileStatisticsRepositoryImpl(
       di<AppLogger>(),
       di<ProfileStatisticsApiClient>(),
+    ),
+  );
+  di.registerLazySingleton<ProfileParametersRepository>(
+    () => ProfileParametersRepositoryImpl(
+      di<AppLogger>(),
+      di<ProfileParametersApiClient>(),
     ),
   );
 

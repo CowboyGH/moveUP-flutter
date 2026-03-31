@@ -15,6 +15,7 @@ abstract interface class ProfileParametersRepository {
   /// Saves all changed profile parameters and returns the refreshed payload.
   Future<Result<ProfileParametersData, ProfileFailure>> saveParameters({
     required ProfileParametersData currentParameters,
+    required int currentWeeklyGoal,
     required ProfileParametersSubmitPayload payload,
   });
 }
