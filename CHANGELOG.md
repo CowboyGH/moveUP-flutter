@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Authenticated test attempt flow for `/tests/attempt/:testingId`, including auth API client methods, repository wiring, fullscreen attempt route, and the attempt UI mirrored from the Fitness Start flow.
 - Profile user section for the authenticated `/profile` tab, including `ProfileApiClient`, profile repository/failures, user section Cubits, edit-profile and change-password dialogs, avatar upload flow, and the first profile screen UI based on the provided layout.
 - Profile statistics section for the authenticated `/profile` tab, including dedicated statistics API client/repository, focused `/profile` history snapshot mapping, statistics Cubit/state flow, chart widgets, selectors, history dialog, and widget coverage for the integrated UI.
+- Profile current phase section for the authenticated `/profile` tab, reusing the bootstrap profile phase snapshot plus aggregate statistics frequency summary to render the read-only phase block without a standalone phase slice.
 
 ### Changed
 
