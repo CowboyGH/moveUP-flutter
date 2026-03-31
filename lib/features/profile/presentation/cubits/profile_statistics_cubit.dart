@@ -96,6 +96,7 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
           offset: state.selectedFrequencyOffset,
         );
       case ProfileStatisticsMode.trend:
+        if (state.trendData != null && state.workoutOptions.isNotEmpty) return;
         await _loadTrend(
           workoutId: state.selectedWorkoutId,
           loadWorkouts: state.workoutOptions.isEmpty,
