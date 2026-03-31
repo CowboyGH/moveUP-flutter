@@ -18,8 +18,8 @@ import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/edit_profile_dialog.dart';
-import '../widgets/profile_history_dialog.dart';
-import '../widgets/stats_section_widget.dart';
+import '../widgets/stats/profile_history_dialog.dart';
+import '../widgets/stats/stats_section_widget.dart';
 import '../widgets/user_section_widget.dart';
 
 /// Authenticated profile page with the user section only.

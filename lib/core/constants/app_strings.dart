@@ -285,11 +285,11 @@ abstract final class AppStrings {
   static const profileStatsHistoryTestEmpty = 'Тесты пока не пройдены';
   static const profileStatsHistoryNameLabel = 'Название';
   static const profileStatsHistoryPriceLabel = 'Стоимость';
-  static const profileStatsHistoryPeriodLabel = 'Срок действия';
-  static const profileStatsHistoryCompletedAtLabel = 'Дата прохождения';
+  static const profileStatsHistoryPeriodLabel = 'Активность';
+  static const profileStatsHistoryCompletedLabel = 'Завершено';
   static const profileUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
-  static String profileStatsAverageScore(int percent) => 'Средняя оценка: $percent%';
+  static const profileStatsAverageScoreLabel = 'Средняя оценка:';
 
   static String profileStatsAveragePerWeek(String value) => 'В среднем: $value / нед';
 

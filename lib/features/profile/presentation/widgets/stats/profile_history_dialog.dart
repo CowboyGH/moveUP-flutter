@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/constants/app_strings.dart';
-import '../../../../../uikit/buttons/button_state.dart';
-import '../../../../../uikit/buttons/option_button.dart';
-import '../../../../../uikit/buttons/secondary_button.dart';
-import '../../../../../uikit/themes/colors/app_color_theme.dart';
-import '../../../../../uikit/themes/text/app_text_theme.dart';
-import '../../domain/entities/profile_statistics/profile_history_tab.dart';
-import '../../domain/entities/profile_stats_history_snapshot.dart';
-import '../cubits/profile_statistics_cubit.dart';
-import 'profile_dialog_shell.dart';
+import '../../../../../../core/constants/app_strings.dart';
+import '../../../../../../uikit/buttons/button_state.dart';
+import '../../../../../../uikit/buttons/option_button.dart';
+import '../../../../../../uikit/themes/colors/app_color_theme.dart';
+import '../../../../../../uikit/themes/text/app_text_theme.dart';
+import '../../../../../uikit/buttons/button_size.dart';
+import '../../../domain/entities/profile_statistics/profile_history_tab.dart';
+import '../../../domain/entities/profile_stats_history_snapshot.dart';
+import '../../cubits/profile_statistics_cubit.dart';
+import '../profile_dialog_shell.dart';
 
 /// Opens the profile statistics history dialog.
 Future<void> showProfileHistoryDialog(BuildContext context) {
@@ -19,7 +19,9 @@ Future<void> showProfileHistoryDialog(BuildContext context) {
 
   return showProfileDialog<void>(
     context,
-    insetPadding: const EdgeInsets.symmetric(horizontal: 19.5),
+    insetPadding: const EdgeInsets.symmetric(horizontal: 32.5),
+    contentPadding: const EdgeInsets.all(32),
+    isBarrierDismissible: true,
     child: BlocProvider.value(
       value: cubit,
       child: const ProfileHistoryDialog(),
@@ -34,30 +36,18 @@ class ProfileHistoryDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = AppTextTheme.of(context);
     return BlocBuilder<ProfileStatisticsCubit, ProfileStatisticsState>(
       builder: (context, state) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 8),
-            Text(
-              AppStrings.profileStatsHistoryTitle,
-              textAlign: TextAlign.center,
-              style: textTheme.title.copyWith(
-                fontSize: 18,
-                height: 27 / 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 28),
             _HistoryTabs(
               selectedTab: state.selectedHistoryTab,
               isEnabled: state.historySnapshot != null,
               onSelected: (tab) => context.read<ProfileStatisticsCubit>().selectHistoryTab(tab),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 32),
             if (state.historySnapshot == null)
               const _HistoryLoadingState()
             else
@@ -65,11 +55,6 @@ class ProfileHistoryDialog extends StatelessWidget {
                 snapshot: state.historySnapshot!,
                 selectedTab: state.selectedHistoryTab,
               ),
-            const SizedBox(height: 24),
-            SecondaryButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(AppStrings.profileStatsHistoryCloseButton),
-            ),
           ],
         );
       },
@@ -92,35 +77,46 @@ final class _HistoryTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonState = isEnabled ? ButtonState.enabled : ButtonState.disabled;
 
-    return Row(
-      children: [
-        Expanded(
-          child: OptionButton(
-            state: buttonState,
-            isSelected: selectedTab == ProfileHistoryTab.subscriptions,
-            onPressed: () => onSelected(ProfileHistoryTab.subscriptions),
-            child: const Text(AppStrings.profileStatsHistorySubscriptionsTab),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: OptionButton(
-            state: buttonState,
-            isSelected: selectedTab == ProfileHistoryTab.workouts,
-            onPressed: () => onSelected(ProfileHistoryTab.workouts),
-            child: const Text(AppStrings.profileStatsHistoryWorkoutsTab),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: OptionButton(
-            state: buttonState,
-            isSelected: selectedTab == ProfileHistoryTab.tests,
-            onPressed: () => onSelected(ProfileHistoryTab.tests),
-            child: const Text(AppStrings.profileStatsHistoryTestsTab),
-          ),
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final buttonWidth = (constraints.maxWidth - 10) / 2;
+        return Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            SizedBox(
+              width: buttonWidth,
+              child: OptionButton(
+                size: ButtonSize.small,
+                state: buttonState,
+                isSelected: selectedTab == ProfileHistoryTab.subscriptions,
+                onPressed: () => onSelected(ProfileHistoryTab.subscriptions),
+                child: const Text(AppStrings.profileStatsHistorySubscriptionsTab),
+              ),
+            ),
+            SizedBox(
+              width: buttonWidth,
+              child: OptionButton(
+                size: ButtonSize.small,
+                state: buttonState,
+                isSelected: selectedTab == ProfileHistoryTab.workouts,
+                onPressed: () => onSelected(ProfileHistoryTab.workouts),
+                child: const Text(AppStrings.profileStatsHistoryWorkoutsTab),
+              ),
+            ),
+            SizedBox(
+              width: buttonWidth,
+              child: OptionButton(
+                size: ButtonSize.small,
+                state: buttonState,
+                isSelected: selectedTab == ProfileHistoryTab.tests,
+                onPressed: () => onSelected(ProfileHistoryTab.tests),
+                child: const Text(AppStrings.profileStatsHistoryTestsTab),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -159,16 +155,7 @@ final class _HistoryContent extends StatelessWidget {
       ProfileHistoryTab.tests => _buildTestContent(),
     };
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColorTheme.of(context).outline.withValues(alpha: 0.7)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: content,
-      ),
-    );
+    return content;
   }
 
   Widget _buildSubscriptionContent() {
@@ -191,7 +178,7 @@ final class _HistoryContent extends StatelessWidget {
         ),
         _HistoryValueItem(
           label: AppStrings.profileStatsHistoryPeriodLabel,
-          value: '${_formatDate(subscription.startDate)} - ${_formatDate(subscription.endDate)}',
+          value: '${_formatDate(subscription.startDate)}-${_formatDate(subscription.endDate)}',
         ),
       ],
     );
@@ -212,7 +199,7 @@ final class _HistoryContent extends StatelessWidget {
           value: workout.title,
         ),
         _HistoryValueItem(
-          label: AppStrings.profileStatsHistoryCompletedAtLabel,
+          label: AppStrings.profileStatsHistoryCompletedLabel,
           value: _formatDate(workout.completedAt),
         ),
       ],
@@ -234,7 +221,7 @@ final class _HistoryContent extends StatelessWidget {
           value: test.title,
         ),
         _HistoryValueItem(
-          label: AppStrings.profileStatsHistoryCompletedAtLabel,
+          label: AppStrings.profileStatsHistoryCompletedLabel,
           value: _formatDate(test.completedAt),
         ),
       ],
@@ -254,7 +241,7 @@ final class _HistoryValueList extends StatelessWidget {
       children: items
           .map(
             (item) => Padding(
-              padding: EdgeInsets.only(bottom: item == items.last ? 0 : 16),
+              padding: EdgeInsets.only(bottom: item == items.last ? 0 : 8),
               child: _HistoryValueRow(item: item),
             ),
           )
@@ -272,28 +259,25 @@ final class _HistoryValueRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          item.label,
-          style: textTheme.bodySmall.copyWith(
-            fontSize: 11,
-            height: 16 / 11,
-            color: colorTheme.darkHint,
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '${item.label}: ',
+            style: textTheme.bodyMedium.copyWith(
+              color: colorTheme.onSurface,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          item.value,
-          style: textTheme.bodyMedium.copyWith(
-            fontSize: 14,
-            height: 21 / 14,
-            fontWeight: FontWeight.w500,
-            color: colorTheme.onSurface,
+          TextSpan(
+            text: item.value,
+            style: textTheme.bodyMedium.copyWith(
+              color: colorTheme.onSurface,
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -339,6 +323,5 @@ String _formatDate(String rawValue) {
 
   final day = dateTime.day.toString().padLeft(2, '0');
   final month = dateTime.month.toString().padLeft(2, '0');
-  final year = dateTime.year.toString().padLeft(4, '0');
-  return '$day.$month.$year';
+  return '$day.$month';
 }
