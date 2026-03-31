@@ -51,6 +51,12 @@ final class FrequencyChartBarData extends Equatable {
   /// Short axis label.
   final String shortLabel;
 
+  /// Period start date used for monthly aggregation in long frequency ranges.
+  final String? startDate;
+
+  /// Period end date used for monthly aggregation in long frequency ranges.
+  final String? endDate;
+
   /// Bar count.
   final int count;
 
@@ -61,15 +67,12 @@ final class FrequencyChartBarData extends Equatable {
   const FrequencyChartBarData({
     required this.label,
     required this.shortLabel,
+    this.startDate,
+    this.endDate,
     required this.count,
     required this.goal,
   });
 
   @override
-  List<Object?> get props => [
-    label,
-    shortLabel,
-    count,
-    goal,
-  ];
+  List<Object?> get props => [label, shortLabel, startDate, endDate, count, goal];
 }

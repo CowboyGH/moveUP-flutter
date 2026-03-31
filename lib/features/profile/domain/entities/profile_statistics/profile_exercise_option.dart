@@ -19,9 +19,5 @@ final class ProfileExerciseOption extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    id,
-    name,
-    lastUsedFormatted,
-  ];
+  List<Object?> get props => [id, name, lastUsedFormatted];
 }

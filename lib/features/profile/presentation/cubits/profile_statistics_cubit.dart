@@ -30,11 +30,9 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
 
     emit(state.copyWith(isLoading: true, failure: null));
 
-    final volumeFuture = _repository.getVolume();
-    final exercisesFuture = _repository.getExercises();
+    final volumeResult = await _repository.getVolume();
+    final exercisesResult = await _repository.getExercises();
 
-    final volumeResult = await volumeFuture;
-    final exercisesResult = await exercisesFuture;
     if (isClosed) return;
 
     switch (volumeResult) {

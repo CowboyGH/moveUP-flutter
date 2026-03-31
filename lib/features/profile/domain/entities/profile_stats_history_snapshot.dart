@@ -19,11 +19,7 @@ final class ProfileStatsHistorySnapshot extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    activeSubscription,
-    latestWorkout,
-    latestTest,
-  ];
+  List<Object?> get props => [activeSubscription, latestWorkout, latestTest];
 }
 
 /// Active subscription content used in the history dialog.
@@ -53,13 +49,7 @@ final class ProfileActiveSubscriptionSnapshot extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    id,
-    name,
-    price,
-    startDate,
-    endDate,
-  ];
+  List<Object?> get props => [id, name, price, startDate, endDate];
 }
 
 /// Latest workout content used in the history dialog.
@@ -81,11 +71,7 @@ final class ProfileLatestWorkoutSnapshot extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    id,
-    title,
-    completedAt,
-  ];
+  List<Object?> get props => [id, title, completedAt];
 }
 
 /// Latest test content used in the history dialog.
@@ -107,9 +93,5 @@ final class ProfileLatestTestSnapshot extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    attemptId,
-    title,
-    completedAt,
-  ];
+  List<Object?> get props => [attemptId, title, completedAt];
 }

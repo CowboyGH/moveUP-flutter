@@ -106,9 +106,5 @@ final class VolumeChartBarData extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    label,
-    value,
-    date,
-  ];
+  List<Object?> get props => [label, value, date];
 }
