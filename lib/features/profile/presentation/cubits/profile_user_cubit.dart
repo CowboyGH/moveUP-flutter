@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../core/failures/feature/profile/profile_failure.dart';
 import '../../../../../core/result/result.dart';
 import '../../../auth/domain/entities/user.dart';
+import '../../domain/entities/profile_phase_snapshot.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../domain/repositories/profile_repository.dart';
 
@@ -38,16 +39,23 @@ final class ProfileUserCubit extends Cubit<ProfileUserState> {
       case Success(data: final user):
         final historyResult = await _repository.getStatsHistorySnapshot();
         if (isClosed) return;
+        final phaseResult = await _repository.getPhaseSnapshot();
+        if (isClosed) return;
 
         final historySnapshot = switch (historyResult) {
           Success(data: final snapshot) => snapshot,
           Failure() => state.historySnapshot,
+        };
+        final phaseSnapshot = switch (phaseResult) {
+          Success(data: final snapshot) => snapshot,
+          Failure() => state.phaseSnapshot,
         };
         emit(
           state.copyWith(
             isLoading: false,
             user: user,
             historySnapshot: historySnapshot,
+            phaseSnapshot: phaseSnapshot,
             failure: null,
           ),
         );
