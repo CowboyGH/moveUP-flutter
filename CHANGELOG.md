@@ -32,11 +32,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TestingCatalogCard` now skips the extra spacing above category chips when a test has no categories.
 - The `/profile` root tab now renders the real user-section screen instead of the previous placeholder, reuses the authenticated session user as an initial seed, and keeps forgot-password routes reachable from the change-password dialog for authenticated users.
 - The `/profile` screen now bootstraps statistics and history from the authenticated profile flow: user bootstrap reuses `/api/profile`, charts switch between dedicated volume/frequency/trend endpoints, and the `История` modal reads active subscription plus the latest workout/test from the cached profile snapshot instead of issuing extra requests.
+- Profile statistics internals were reorganized into dedicated `profile/data/dto/stats` and `profile/presentation/widgets/stats` folders, while repository/cubit/widget tests were aligned with the new structure and shared fixtures.
+- Shared `OptionButton` now supports canonical `large` and `small` size presets, and the profile statistics plus history-tab controls use the compact 42px variant from the mockups.
+- Profile dialogs now support per-dialog content padding and optional barrier dismissal, allowing the statistics history modal to match the provided sheet behavior without affecting non-dismissible dialogs.
 
 ### Breaking
 
 - Shared test-attempt transport DTOs were renamed from guest-prefixed names to neutral request/response models because the same payload shapes are now reused by both guest and authenticated flows.
 - Test-attempt DI wiring now resolves separate guest and authenticated repository bindings while keeping the shared `TestAttemptCubit` and domain contract unchanged.
+
+### Fixed
+
+- Profile frequency statistics now handle weekly payloads without `short_label`, keep dense period charts readable across `week`, `month`, `3 months`, `6 months`, and `year`, and clarify non-daily X-axis scales with short `нед.` / `мес.` labels.
+- Profile statistics dropdown menus now size to their content and render above surrounding UI instead of being clipped by the statistics card or overlapping incorrectly with lower screen sections.
+- Profile history and statistics copy now matches the latest profile mockups more closely, including `Активность` / `Завершено` labels, the separate `Средняя оценка:` summary label, and shortened cross-year period labels like `25-26`.
 
 ## [0.3.1] - 2026-03-25
 
