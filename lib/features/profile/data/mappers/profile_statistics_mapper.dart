@@ -16,7 +16,7 @@ import '../dto/stats/volume_response_dto.dart';
 extension ProfileStatisticsOverviewMapper on ProfileStatisticsOverviewDataDto {
   /// Converts aggregate statistics overview into current phase summary data.
   ProfileCurrentPhaseSummary toCurrentPhaseSummary() => ProfileCurrentPhaseSummary(
-    averagePerWeek: frequency?.summary?.averagePerWeek ?? 0,
+    averagePerWeek: frequency?.summary?.averagePerWeek ?? 0.0,
     weeklyGoal: frequency?.summary?.weeklyGoal ?? 0,
   );
 }

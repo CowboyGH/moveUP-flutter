@@ -260,7 +260,7 @@ final class _CurrentPhaseSummaryText extends StatelessWidget {
     final textTheme = AppTextTheme.of(context);
 
     return Text(
-      '${AppStrings.profileCurrentPhaseTrainingsPerWeek('$averagePerWeek', _buildTimesLabel(averagePerWeek))}\n'
+      '${AppStrings.profileCurrentPhaseTrainingsPerWeek(averagePerWeek)}\n'
       '${AppStrings.profileCurrentPhaseRecommendation}',
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
@@ -303,17 +303,4 @@ final class _CurrentPhaseGoalBox extends StatelessWidget {
       ),
     );
   }
-}
-
-String _buildTimesLabel(int value) {
-  final mod100 = value % 100;
-  if (mod100 >= 11 && mod100 <= 14) {
-    return 'раз';
-  }
-
-  return switch (value % 10) {
-    1 => 'раз',
-    2 || 3 || 4 => 'раза',
-    _ => 'раз',
-  };
 }
