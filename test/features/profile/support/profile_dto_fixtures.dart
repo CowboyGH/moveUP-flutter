@@ -6,6 +6,7 @@ import 'package:moveup_flutter/features/profile/data/dto/profile_user_data_dto.d
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_workout_history_item_dto.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 
 const testProfileUserId = 1;
@@ -27,6 +28,9 @@ const testProfileTestAttemptId = 3;
 const testProfileTestId = 2;
 const testProfileTestTitle = 'Базовый тест';
 const testProfileTestCompletedAt = '2026-03-14 15:20:00';
+const testProfilePhaseId = 7;
+const testProfilePhaseName = 'A1';
+const testProfileHasProgress = true;
 
 /// Test fixture for a shared authenticated [User].
 User createProfileUser({
@@ -64,13 +68,33 @@ ProfileUserResponseDto createProfileUserResponseDto({
   ProfileSubscriptionsDto? subscriptions,
   ProfileWorkoutsDto? workouts,
   ProfileTestsDto? tests,
+  ProfilePhaseDto? phase,
 }) => ProfileUserResponseDto(
   data: ProfileUserDataDto(
     user: user ?? createProfileUserDto(),
     subscriptions: subscriptions,
     workouts: workouts,
     tests: tests,
+    phase: phase,
   ),
+);
+
+/// Test fixture for [ProfilePhaseDto].
+ProfilePhaseDto createProfilePhaseDto({
+  bool hasProgress = testProfileHasProgress,
+  ProfileCurrentPhaseDto? currentPhase,
+}) => ProfilePhaseDto(
+  hasProgress: hasProgress,
+  currentPhase: currentPhase ?? createProfileCurrentPhaseDto(),
+);
+
+/// Test fixture for [ProfileCurrentPhaseDto].
+ProfileCurrentPhaseDto createProfileCurrentPhaseDto({
+  int id = testProfilePhaseId,
+  String name = testProfilePhaseName,
+}) => ProfileCurrentPhaseDto(
+  id: id,
+  name: name,
 );
 
 /// Test fixture for [ProfileSubscriptionsDto].
@@ -176,6 +200,15 @@ ProfileStatsHistorySnapshot createProfileStatsHistorySnapshot({
         title: testProfileTestTitle,
         completedAt: testProfileTestCompletedAt,
       ),
+);
+
+/// Test fixture for [ProfilePhaseSnapshot].
+ProfilePhaseSnapshot createProfilePhaseSnapshot({
+  bool hasProgress = testProfileHasProgress,
+  String? currentPhaseName = testProfilePhaseName,
+}) => ProfilePhaseSnapshot(
+  hasProgress: hasProgress,
+  currentPhaseName: currentPhaseName,
 );
 
 /// Test fixture for Dio bad response exception.

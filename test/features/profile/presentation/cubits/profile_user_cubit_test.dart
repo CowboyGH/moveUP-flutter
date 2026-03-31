@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_user_cubit.dart';
@@ -37,6 +38,9 @@ void main() {
     provideDummy<Result<ProfileStatsHistorySnapshot, ProfileFailure>>(
       Success(createProfileStatsHistorySnapshot()),
     );
+    provideDummy<Result<ProfilePhaseSnapshot, ProfileFailure>>(
+      Success(createProfilePhaseSnapshot()),
+    );
   });
 
   group('ProfileUserCubit', () {
@@ -46,6 +50,9 @@ void main() {
         when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
         when(repository.getStatsHistorySnapshot()).thenAnswer(
           (_) async => Success(createProfileStatsHistorySnapshot()),
+        );
+        when(repository.getPhaseSnapshot()).thenAnswer(
+          (_) async => Success(createProfilePhaseSnapshot()),
         );
       },
       build: () => cubit,
@@ -76,11 +83,16 @@ void main() {
               completedAt: testProfileTestCompletedAt,
             ),
           ),
+          phaseSnapshot: ProfilePhaseSnapshot(
+            hasProgress: testProfileHasProgress,
+            currentPhaseName: testProfilePhaseName,
+          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
         verify(repository.getStatsHistorySnapshot()).called(1);
+        verify(repository.getPhaseSnapshot()).called(1);
       },
     );
 
@@ -90,6 +102,9 @@ void main() {
         when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
         when(repository.getStatsHistorySnapshot()).thenAnswer(
           (_) async => Success(createProfileStatsHistorySnapshot()),
+        );
+        when(repository.getPhaseSnapshot()).thenAnswer(
+          (_) async => Success(createProfilePhaseSnapshot()),
         );
       },
       build: () => cubit,
@@ -123,11 +138,16 @@ void main() {
               completedAt: testProfileTestCompletedAt,
             ),
           ),
+          phaseSnapshot: ProfilePhaseSnapshot(
+            hasProgress: testProfileHasProgress,
+            currentPhaseName: testProfilePhaseName,
+          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
         verify(repository.getStatsHistorySnapshot()).called(1);
+        verify(repository.getPhaseSnapshot()).called(1);
       },
     );
 
