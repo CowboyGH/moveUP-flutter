@@ -704,5 +704,60 @@ void main() {
         verifyNoMoreInteractions(apiClient);
       });
     });
+
+    group('deleteProfile', () {
+      test('returns success when api succeeds', () async {
+        // Arrange
+        when(apiClient.deleteProfile()).thenAnswer((_) async {});
+
+        // Act
+        final result = await repository.deleteProfile();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+
+        verify(apiClient.deleteProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api returns server error', () async {
+        // Arrange
+        final exception = createProfileDioBadResponseException(
+          path: '/api/profile',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.deleteProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.deleteProfile();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.deleteProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.deleteProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.deleteProfile();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.deleteProfile()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
   });
 }
