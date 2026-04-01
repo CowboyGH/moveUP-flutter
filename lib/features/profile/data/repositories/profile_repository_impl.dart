@@ -205,4 +205,20 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       );
     }
   }
+
+  @override
+  Future<Result<void, ProfileFailure>> deleteProfile() async {
+    try {
+      await _apiClient.deleteProfile();
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toProfileFailure());
+    } catch (e, s) {
+      _logger.e('DeleteProfile failed with unexpected error', e, s);
+      return Result.failure(
+        UnknownProfileFailure(parentException: e, stackTrace: s),
+      );
+    }
+  }
 }
