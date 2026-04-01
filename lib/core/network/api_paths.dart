@@ -71,6 +71,9 @@ abstract class ApiPaths {
   /// The endpoint for all user-parameters references.
   static const String userParameterReferences = '${apiPrefix}user-parameters/references';
 
+  /// The endpoint for the current authenticated user parameters.
+  static const String userParameterMe = '${apiPrefix}user-parameters/me';
+
   /// The endpoint for saving user training goal.
   static const String userParameterGoal = '${apiPrefix}user-parameters/goal';
 
@@ -79,6 +82,9 @@ abstract class ApiPaths {
 
   /// The endpoint for saving user fitness level.
   static const String userParameterLevel = '${apiPrefix}user-parameters/level';
+
+  /// The endpoint for updating the current weekly training goal.
+  static const String userWeeklyGoal = '${apiPrefix}user/weekly-goal';
 
   /// The endpoint for all active testings.
   static const String testings = '${apiPrefix}testings';

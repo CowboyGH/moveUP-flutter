@@ -10,6 +10,8 @@ import 'package:moveup_flutter/features/profile/data/dto/change_password_request
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
@@ -344,6 +346,30 @@ void main() {
         verifyNoMoreInteractions(apiClient);
       });
 
+      test('warms parameters cache from the same /profile response', () async {
+        // Arrange
+        when(apiClient.getProfile()).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            subscriptions: createProfileSubscriptionsDto(),
+            workouts: createProfileWorkoutsDto(),
+            tests: createProfileTestsDto(),
+            parameters: createProfileParametersInProfileDto(),
+          ),
+        );
+
+        // Act
+        final historyResult = await repository.getStatsHistorySnapshot();
+        final parametersResult = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(historyResult.isSuccess, isTrue);
+        expect(parametersResult.isSuccess, isTrue);
+        expect(parametersResult.success, createProfileParametersSnapshot());
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
       test('returns ProfileRequestFailure when api returns server error', () async {
         // Arrange
         final exception = createProfileDioBadResponseException(
@@ -468,6 +494,130 @@ void main() {
 
         // Act
         final result = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownProfileFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getProfile()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
+
+    group('getParametersSnapshot', () {
+      test('returns snapshot from cache after getUser succeeds', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            parameters: createProfileParametersInProfileDto(),
+          ),
+        );
+
+        // Act
+        final getUserResult = await repository.getUser();
+        final parametersResult = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(getUserResult.isSuccess, isTrue);
+        expect(parametersResult.isSuccess, isTrue);
+        expect(parametersResult.success, createProfileParametersSnapshot());
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns parameters snapshot from /profile when cache is empty', () async {
+        // Arrange
+        when(
+          apiClient.getProfile(),
+        ).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            parameters: createProfileParametersInProfileDto(
+              goal: 'Снижение веса',
+              gender: 'male',
+              age: 24,
+              weight: 73.5,
+              height: 180,
+              equipment: 'Зал',
+              level: 'Начинающий',
+            ),
+          ),
+        );
+
+        // Act
+        final result = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(
+          result.success,
+          const ProfileParametersSnapshot(
+            goal: 'Снижение веса',
+            gender: ProfileParametersGender.male,
+            age: 24,
+            weight: 73.5,
+            height: 180,
+            equipment: 'Зал',
+            level: 'Начинающий',
+          ),
+        );
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('does not refetch when server parameters are null', () async {
+        // Arrange
+        when(apiClient.getProfile()).thenAnswer(
+          (_) async => createProfileUserResponseDto(),
+        );
+
+        // Act
+        final firstResult = await repository.getParametersSnapshot();
+        final secondResult = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(firstResult.isSuccess, isTrue);
+        expect(firstResult.success, isNull);
+        expect(secondResult.isSuccess, isTrue);
+        expect(secondResult.success, isNull);
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns ProfileRequestFailure when api returns server error', () async {
+        // Arrange
+        final exception = createProfileDioBadResponseException(
+          path: '/api/profile',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<ProfileRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.getProfile()).thenThrow(exception);
+
+        // Act
+        final result = await repository.getParametersSnapshot();
 
         // Assert
         expect(result.isFailure, isTrue);

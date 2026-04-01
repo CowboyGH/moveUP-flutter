@@ -9,6 +9,7 @@ abstract class ProfileUserState with _$ProfileUserState {
     User? user,
     ProfileStatsHistorySnapshot? historySnapshot,
     ProfilePhaseSnapshot? phaseSnapshot,
+    ProfileParametersSnapshot? parametersSnapshot,
     ProfileFailure? failure,
   }) = _ProfileUserState;
 }

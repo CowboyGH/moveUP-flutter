@@ -25,6 +25,9 @@ class ProfileUserDataDto {
   /// Phase snapshot for the current phase section.
   final ProfilePhaseDto? phase;
 
+  /// Parameters snapshot for the editable parameters section.
+  final ProfileParametersInProfileDto? parameters;
+
   /// Creates an instance of [ProfileUserDataDto].
   ProfileUserDataDto({
     required this.user,
@@ -32,11 +35,52 @@ class ProfileUserDataDto {
     this.workouts,
     this.tests,
     this.phase,
+    this.parameters,
   });
 
   /// Creates a [ProfileUserDataDto] from JSON.
   factory ProfileUserDataDto.fromJson(Map<String, dynamic> json) =>
       _$ProfileUserDataDtoFromJson(json);
+}
+
+/// DTO with focused parameters payload from `/profile`.
+@JsonSerializable(createToJson: false)
+class ProfileParametersInProfileDto {
+  /// Goal display name.
+  final String goal;
+
+  /// Selected gender value.
+  final String gender;
+
+  /// User age in years.
+  final int age;
+
+  /// User weight in kilograms.
+  final num weight;
+
+  /// User height in centimeters.
+  final int height;
+
+  /// Equipment display name.
+  final String equipment;
+
+  /// Preparation level display name.
+  final String level;
+
+  /// Creates an instance of [ProfileParametersInProfileDto].
+  ProfileParametersInProfileDto({
+    required this.goal,
+    required this.gender,
+    required this.age,
+    required this.weight,
+    required this.height,
+    required this.equipment,
+    required this.level,
+  });
+
+  /// Creates a [ProfileParametersInProfileDto] from JSON.
+  factory ProfileParametersInProfileDto.fromJson(Map<String, dynamic> json) =>
+      _$ProfileParametersInProfileDtoFromJson(json);
 }
 
 /// DTO with focused phase payload from `/profile`.

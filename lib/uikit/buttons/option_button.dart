@@ -49,6 +49,14 @@ class OptionButton extends StatelessWidget {
       ButtonSize.large => textTheme.bodyMedium,
       ButtonSize.small => textTheme.body,
     };
+    final shape = switch (size) {
+      ButtonSize.large => const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      ButtonSize.small => const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+    };
 
     return SizedBox(
       width: double.infinity,
@@ -61,9 +69,7 @@ class OptionButton extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               textStyle: textStyle,
               foregroundColor: colorTheme.onSurface,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
+              shape: shape,
               backgroundColor: colorTheme.surface,
               shadowColor: Colors.transparent,
               overlayColor: Colors.transparent,

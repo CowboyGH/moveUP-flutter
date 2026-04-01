@@ -266,6 +266,16 @@ abstract final class AppStrings {
   static const profileCurrentPhaseRecommendation = 'Вам рекомендуется тренироваться в неделю';
   static const profileCurrentPhaseEmpty = 'У вас пока нет активной фазы';
   static const profileCurrentPhaseLoadFailed = 'Не удалось загрузить текущую фазу';
+  static const profileParametersGoalLabel = 'Цель тренировок';
+  static const profileParametersLevelLabel = 'Уровень подготовки';
+  static const profileParametersWeeklyGoalLabel = 'Количество тренировок в неделю';
+  static const profileParametersSubmitButton = 'Подтвердить';
+  static const profileParametersLoadFailed = 'Не удалось загрузить параметры профиля';
+  static const profileParametersEquipmentUnavailable = 'Нет доступных вариантов';
+  static const profileParametersWeeklyGoalRequired = 'Введите количество тренировок в неделю';
+  static const profileParametersWeeklyGoalInvalid =
+      'Введите корректное количество тренировок в неделю';
+  static const profileParametersWeeklyGoalRange = 'Допустимо от 1 до 7 тренировок в неделю';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';
