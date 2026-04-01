@@ -33,4 +33,7 @@ abstract interface class ProfileRepository {
     required String newPassword,
     required String newPasswordConfirmation,
   });
+
+  /// Deletes the current authenticated profile.
+  Future<Result<void, ProfileFailure>> deleteProfile();
 }

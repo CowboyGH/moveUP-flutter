@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/di/di.dart';
 import '../../../auth/domain/entities/user.dart';
+import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
+import '../../../auth/presentation/cubits/logout_cubit.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
+import '../cubits/delete_profile_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
@@ -42,6 +45,12 @@ class ProfilePageBuilder extends StatelessWidget {
           create: (_) => ProfileParametersCubit(
             di<ProfileParametersRepository>(),
           )..loadInitial(),
+        ),
+        BlocProvider(
+          create: (_) => LogoutCubit(di<AuthRepository>()),
+        ),
+        BlocProvider(
+          create: (_) => DeleteProfileCubit(di<ProfileRepository>()),
         ),
       ],
       child: const ProfilePage(),

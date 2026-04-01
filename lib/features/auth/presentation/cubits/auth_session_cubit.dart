@@ -270,4 +270,10 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
       emit(const AuthSessionState.unauthenticated());
     }
   }
+
+  /// Fully signs out the authenticated user from the current device.
+  Future<void> signOut() async {
+    await _clearTokenSafely();
+    await clearSession();
+  }
 }

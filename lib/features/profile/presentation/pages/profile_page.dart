@@ -20,6 +20,7 @@ import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
+import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/profile_parameters_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
 import '../widgets/stats/stats_section_widget.dart';
@@ -122,6 +123,8 @@ class ProfilePage extends StatelessWidget {
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileParametersSectionWidget(),
+                  const SizedBox(height: 36),
+                  const ProfileBottomSectionWidget(),
                 ],
               ),
             );
@@ -145,6 +148,7 @@ final class _ProfileUserFallbackState extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
+    const contentPadding = EdgeInsets.fromLTRB(24, 28, 24, 132);
 
     if (isLoading) {
       return const Center(
@@ -155,25 +159,47 @@ final class _ProfileUserFallbackState extends StatelessWidget {
       );
     }
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              AppStrings.profileLoadFailed,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          padding: contentPadding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight - contentPadding.vertical,
             ),
-            const SizedBox(height: 16),
-            MainButton(
-              onPressed: onRetryPressed,
-              child: const Text(AppStrings.retryButton),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppStrings.profileLoadFailed,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+                      ),
+                      const SizedBox(height: 16),
+                      MainButton(
+                        onPressed: onRetryPressed,
+                        child: const Text(AppStrings.retryButton),
+                      ),
+                    ],
+                  ),
+                ),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 16),
+                    ProfileBottomSectionWidget(),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

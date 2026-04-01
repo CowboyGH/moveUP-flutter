@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile statistics section for the authenticated `/profile` tab, including dedicated statistics API client/repository, focused `/profile` history snapshot mapping, statistics Cubit/state flow, chart widgets, selectors, history dialog, and widget coverage for the integrated UI.
 - Profile current phase section for the authenticated `/profile` tab, reusing the bootstrap profile phase snapshot plus aggregate statistics frequency summary to render the read-only phase block without a standalone phase slice.
 - Introduce personal parameters section for the authenticated `/profile` tab, including canonical `user-parameters` read/update flow, editable profile form card, weekly-goal save support, and selective workouts overview refresh when goal, equipment, or level changes regenerate the personal plan.
+- Add profile bottom section for the authenticated `/profile` tab, including logout and delete-profile confirmation actions plus direct links to the bundled legal documents.
 
 ### Changed
 
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile statistics internals were reorganized into dedicated `profile/data/dto/stats` and `profile/presentation/widgets/stats` folders, while repository/cubit/widget tests were aligned with the new structure and shared fixtures.
 - Shared `OptionButton` now supports canonical `large` and `small` size presets, and the profile statistics plus history-tab controls use the compact 42px variant from the mockups.
 - Profile dialogs now support per-dialog content padding and optional barrier dismissal, allowing the statistics history modal to match the provided sheet behavior without affecting non-dismissible dialogs.
+- The debug route is now a static centered placeholder again and no longer owns a separate logout flow.
 
 ### Breaking
 
