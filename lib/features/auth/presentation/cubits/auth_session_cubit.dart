@@ -273,12 +273,7 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
 
   /// Fully signs out the authenticated user from the current device.
   Future<void> signOut() async {
-    try {
-      await _tokenStorage.deleteAccessToken();
-    } catch (e, s) {
-      _logger.e('Failed to clear access token during sign-out.', e, s);
-    }
-
+    await _clearTokenSafely();
     await clearSession();
   }
 }
