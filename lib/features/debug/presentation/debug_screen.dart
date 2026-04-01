@@ -26,7 +26,7 @@ class DebugScreen extends StatelessWidget {
       child: BlocListener<LogoutCubit, LogoutState>(
         listener: (context, state) {
           state.whenOrNull(
-            succeed: () => unawaited(context.read<AuthSessionCubit>().clearSession()),
+            succeed: () => unawaited(context.read<AuthSessionCubit>().signOut()),
             failed: (failure) {
               if (failure.message.isNotEmpty) {
                 showAppFeedbackDialog(
