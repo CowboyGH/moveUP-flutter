@@ -27,7 +27,7 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
     emit(
       state.copyWith(
         bootstrapSnapshot: snapshot,
-        selectedGender: state.currentParameters?.gender ?? state.selectedGender ?? snapshot?.gender,
+        selectedGender: state.selectedGender ?? state.currentParameters?.gender ?? snapshot?.gender,
       ),
     );
   }
@@ -107,7 +107,7 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
     required int currentWeeklyGoal,
   }) async {
     final currentParameters = state.currentParameters;
-    if (state.isSubmitting || currentParameters == null) return;
+    if (state.isLoading || state.isSubmitting || currentParameters == null) return;
     final hasChanges =
         payload.goalId != currentParameters.goalId ||
         payload.gender != currentParameters.gender ||
@@ -166,6 +166,7 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
 
   Future<void> _load({required bool force}) async {
     final hasLoadedState = state.references != null && state.currentParameters != null;
+    if (state.isSubmitting) return;
     if (!force && (state.isLoading || hasLoadedState)) return;
 
     emit(

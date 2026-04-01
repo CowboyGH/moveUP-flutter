@@ -108,6 +108,23 @@ void main() {
     );
 
     blocTest<ProfileParametersCubit, ProfileParametersState>(
+      'setBootstrapSnapshot keeps local selected gender',
+      build: () => cubit,
+      seed: () => const ProfileParametersState(
+        currentParameters: testProfileParametersData,
+        selectedGender: ProfileParametersGender.male,
+      ),
+      act: (cubit) => cubit.setBootstrapSnapshot(createProfileParametersSnapshot()),
+      expect: () => [
+        ProfileParametersState(
+          currentParameters: testProfileParametersData,
+          bootstrapSnapshot: createProfileParametersSnapshot(),
+          selectedGender: ProfileParametersGender.male,
+        ),
+      ],
+    );
+
+    blocTest<ProfileParametersCubit, ProfileParametersState>(
       'selection methods update selected values',
       build: () => cubit,
       seed: () => const ProfileParametersState(
@@ -445,6 +462,29 @@ void main() {
     );
 
     blocTest<ProfileParametersCubit, ProfileParametersState>(
+      'submit ignores requests while initial load is in progress',
+      build: () => cubit,
+      seed: () => const ProfileParametersState(
+        isLoading: true,
+        currentParameters: testProfileParametersData,
+      ),
+      act: (cubit) => cubit.submit(
+        payload: createProfileParametersSubmitPayload(
+          goalId: testProfileParametersUpdatedGoalId,
+        ),
+        currentWeeklyGoal: testProfileParametersWeeklyGoal,
+      ),
+      expect: () => const <ProfileParametersState>[],
+      verify: (_) => verifyNever(
+        repository.saveParameters(
+          currentParameters: anyNamed('currentParameters'),
+          currentWeeklyGoal: anyNamed('currentWeeklyGoal'),
+          payload: anyNamed('payload'),
+        ),
+      ),
+    );
+
+    blocTest<ProfileParametersCubit, ProfileParametersState>(
       'consumeWorkoutsReloadRequest clears pending reload flag',
       build: () => cubit,
       seed: () => const ProfileParametersState(shouldReloadWorkouts: true),
@@ -452,6 +492,20 @@ void main() {
       expect: () => const [
         ProfileParametersState(),
       ],
+    );
+
+    blocTest<ProfileParametersCubit, ProfileParametersState>(
+      'reload ignores requests while submit is in progress',
+      build: () => cubit,
+      seed: () => const ProfileParametersState(
+        isSubmitting: true,
+      ),
+      act: (cubit) => cubit.reload(),
+      expect: () => const <ProfileParametersState>[],
+      verify: (_) {
+        verifyNever(repository.getReferences());
+        verifyNever(repository.getCurrentParameters());
+      },
     );
   });
 }
