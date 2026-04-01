@@ -350,7 +350,7 @@ abstract final class AppStrings {
   }
 
   // Debug screen.
-  static const debugLogoutButton = 'Выйти';
+  static const debugScreenTitle = 'Debug Screen';
 
   /// Root tabs.
   static const testsTab = testsCatalogTitle;
