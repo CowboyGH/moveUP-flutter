@@ -122,6 +122,7 @@ String? _redirectByAuth(
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
+      if (state.matchedLocation == AppRoutePaths.legalDocumentPath) return null;
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
@@ -145,6 +146,7 @@ String? _redirectByAuth(
           state.matchedLocation == AppRoutePaths.debugPath) {
         return null;
       }
+      if (state.matchedLocation == AppRoutePaths.legalDocumentPath) return null;
       if (_isAuthenticatedAllowedAuthPath(state.matchedLocation)) return null;
       if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
         return AppRoutePaths.workoutsPath;
@@ -156,6 +158,7 @@ String? _redirectByAuth(
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
+      if (state.matchedLocation == AppRoutePaths.legalDocumentPath) return null;
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },

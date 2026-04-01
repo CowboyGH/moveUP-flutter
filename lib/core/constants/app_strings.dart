@@ -74,6 +74,7 @@ abstract final class AppStrings {
   static const legalDataProcessingConsentTitle = 'Согласие на обработку персональных данных';
   static const legalPublicOfferTitle = 'Публичная оферта';
   static const legalDocumentLoadError = 'Не удалось загрузить документ.';
+  static const legalDataProcessingConsentProfileTitle = 'Пользовательское соглашение';
 
   // Feedback dialogs.
   static const feedbackErrorTitle = 'Что-то пошло не так';
@@ -276,6 +277,11 @@ abstract final class AppStrings {
   static const profileParametersWeeklyGoalInvalid =
       'Введите корректное количество тренировок в неделю';
   static const profileParametersWeeklyGoalRange = 'Допустимо от 1 до 7 тренировок в неделю';
+  static const profileBottomLogoutButton = 'Выйти';
+  static const profileBottomDeleteButton = 'Удалить профиль';
+  static const profileBottomLogoutTitle = 'Вы уверены, что хотите выйти?';
+  static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
+  static const profileBottomDeleteConfirm = 'Удалить';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';

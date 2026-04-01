@@ -19,6 +19,7 @@ import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
+import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/profile_parameters_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
@@ -122,6 +123,8 @@ class ProfilePage extends StatelessWidget {
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileParametersSectionWidget(),
+                  const SizedBox(height: 36),
+                  const ProfileBottomSectionWidget(),
                 ],
               ),
             );
