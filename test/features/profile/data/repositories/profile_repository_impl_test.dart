@@ -346,6 +346,30 @@ void main() {
         verifyNoMoreInteractions(apiClient);
       });
 
+      test('warms parameters cache from the same /profile response', () async {
+        // Arrange
+        when(apiClient.getProfile()).thenAnswer(
+          (_) async => createProfileUserResponseDto(
+            subscriptions: createProfileSubscriptionsDto(),
+            workouts: createProfileWorkoutsDto(),
+            tests: createProfileTestsDto(),
+            parameters: createProfileParametersInProfileDto(),
+          ),
+        );
+
+        // Act
+        final historyResult = await repository.getStatsHistorySnapshot();
+        final parametersResult = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(historyResult.isSuccess, isTrue);
+        expect(parametersResult.isSuccess, isTrue);
+        expect(parametersResult.success, createProfileParametersSnapshot());
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
       test('returns ProfileRequestFailure when api returns server error', () async {
         // Arrange
         final exception = createProfileDioBadResponseException(
@@ -541,6 +565,26 @@ void main() {
             level: 'Начинающий',
           ),
         );
+
+        verify(apiClient.getProfile()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('does not refetch when server parameters are null', () async {
+        // Arrange
+        when(apiClient.getProfile()).thenAnswer(
+          (_) async => createProfileUserResponseDto(),
+        );
+
+        // Act
+        final firstResult = await repository.getParametersSnapshot();
+        final secondResult = await repository.getParametersSnapshot();
+
+        // Assert
+        expect(firstResult.isSuccess, isTrue);
+        expect(firstResult.success, isNull);
+        expect(secondResult.isSuccess, isTrue);
+        expect(secondResult.success, isNull);
 
         verify(apiClient.getProfile()).called(1);
         verifyNoMoreInteractions(apiClient);

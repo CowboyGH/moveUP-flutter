@@ -27,6 +27,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   ProfileStatsHistorySnapshot? _cachedStatsHistorySnapshot;
   ProfilePhaseSnapshot? _cachedPhaseSnapshot;
   ProfileParametersSnapshot? _cachedParametersSnapshot;
+  bool _hasCachedParametersSnapshot = false;
 
   /// Creates an instance of [ProfileRepositoryImpl].
   ProfileRepositoryImpl(this._logger, this._apiClient);
@@ -38,6 +39,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
       _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       _cachedParametersSnapshot = response.data.toParametersSnapshot();
+      _hasCachedParametersSnapshot = true;
       return Result.success(response.data.user.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
@@ -62,6 +64,8 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       final snapshot = response.data.toStatsHistorySnapshot();
       _cachedStatsHistorySnapshot = snapshot;
       _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
+      _cachedParametersSnapshot = response.data.toParametersSnapshot();
+      _hasCachedParametersSnapshot = true;
       return Result.success(snapshot);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
@@ -87,6 +91,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
       _cachedPhaseSnapshot = snapshot;
       _cachedParametersSnapshot = response.data.toParametersSnapshot();
+      _hasCachedParametersSnapshot = true;
       return Result.success(snapshot);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
@@ -101,9 +106,8 @@ final class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Result<ProfileParametersSnapshot?, ProfileFailure>> getParametersSnapshot() async {
-    final cachedParametersSnapshot = _cachedParametersSnapshot;
-    if (cachedParametersSnapshot != null) {
-      return Result.success(cachedParametersSnapshot);
+    if (_hasCachedParametersSnapshot) {
+      return Result.success(_cachedParametersSnapshot);
     }
 
     try {
@@ -112,6 +116,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
       _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       _cachedParametersSnapshot = snapshot;
+      _hasCachedParametersSnapshot = true;
       return Result.success(snapshot);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
@@ -163,6 +168,7 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       _cachedStatsHistorySnapshot = refreshedResponse.data.toStatsHistorySnapshot();
       _cachedPhaseSnapshot = refreshedResponse.data.toPhaseSnapshot();
       _cachedParametersSnapshot = refreshedResponse.data.toParametersSnapshot();
+      _hasCachedParametersSnapshot = true;
       return Result.success(refreshedResponse.data.user.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
