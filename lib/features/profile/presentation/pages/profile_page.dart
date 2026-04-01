@@ -8,7 +8,6 @@ import '../../../../../core/constants/app_assets.dart';
 import '../../../../../core/constants/app_strings.dart';
 import '../../../../../core/router/router_paths.dart';
 import '../../../../../uikit/buttons/main_button.dart';
-import '../../../../../uikit/buttons/secondary_button.dart';
 import '../../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
@@ -18,13 +17,9 @@ import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
-import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/profile_bottom_section_widget.dart';
-import '../widgets/profile_parameters_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
-import '../widgets/stats/stats_section_widget.dart';
-import '../widgets/user_section_widget.dart';
 
 /// Authenticated profile page with the user section only.
 class ProfilePage extends StatelessWidget {
@@ -86,48 +81,48 @@ class ProfilePage extends StatelessWidget {
         child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
           builder: (context, state) {
             final user = state.user;
-            if (user == null) {
-              return _ProfileUserFallbackState(
-                isLoading: state.isLoading,
-                onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
-              );
-            }
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    AppStrings.profileGreeting(user.name),
-                    style: textTheme.bodyMedium.copyWith(
-                      fontSize: 18,
-                      height: 27 / 18,
-                      fontWeight: FontWeight.w500,
-                      color: colorTheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  UserSectionWidget(
-                    user: user,
-                    onEditPressed: () => _openEditProfileDialog(context, user),
-                    onChangePasswordPressed: () => _openChangePasswordDialog(context),
-                  ),
-                  const SizedBox(height: 36),
-                  const StatsSectionWidget(),
-                  const SizedBox(height: 20),
-                  SecondaryButton(
-                    onPressed: () => _openHistoryDialog(context),
-                    child: const Text(AppStrings.profileStatsHistoryButton),
-                  ),
-                  const SizedBox(height: 36),
-                  const CurrentPhaseSectionWidget(),
-                  const SizedBox(height: 36),
-                  const ProfileParametersSectionWidget(),
-                  const SizedBox(height: 36),
-                  const ProfileBottomSectionWidget(),
-                ],
-              ),
+            // if (user == null) {
+            return _ProfileUserFallbackState(
+              isLoading: state.isLoading,
+              onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
             );
+            // }
+            // return SingleChildScrollView(
+            //   padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.stretch,
+            //     children: [
+            //       Text(
+            //         AppStrings.profileGreeting(user.name),
+            //         style: textTheme.bodyMedium.copyWith(
+            //           fontSize: 18,
+            //           height: 27 / 18,
+            //           fontWeight: FontWeight.w500,
+            //           color: colorTheme.onSurface,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 24),
+            //       UserSectionWidget(
+            //         user: user,
+            //         onEditPressed: () => _openEditProfileDialog(context, user),
+            //         onChangePasswordPressed: () => _openChangePasswordDialog(context),
+            //       ),
+            //       const SizedBox(height: 36),
+            //       const StatsSectionWidget(),
+            //       const SizedBox(height: 20),
+            //       SecondaryButton(
+            //         onPressed: () => _openHistoryDialog(context),
+            //         child: const Text(AppStrings.profileStatsHistoryButton),
+            //       ),
+            //       const SizedBox(height: 36),
+            //       const CurrentPhaseSectionWidget(),
+            //       const SizedBox(height: 36),
+            //       const ProfileParametersSectionWidget(),
+            //       const SizedBox(height: 36),
+            //       const ProfileBottomSectionWidget(),
+            //     ],
+            //   ),
+            // );
           },
         ),
       ),
@@ -148,6 +143,7 @@ final class _ProfileUserFallbackState extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
+    const contentPadding = EdgeInsets.fromLTRB(24, 28, 24, 132);
 
     if (isLoading) {
       return const Center(
@@ -158,36 +154,47 @@ final class _ProfileUserFallbackState extends StatelessWidget {
       );
     }
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          padding: contentPadding,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight - contentPadding.vertical,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppStrings.profileLoadFailed,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+                      ),
+                      const SizedBox(height: 16),
+                      MainButton(
+                        onPressed: onRetryPressed,
+                        child: const Text(AppStrings.retryButton),
+                      ),
+                    ],
+                  ),
+                ),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      AppStrings.profileLoadFailed,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
-                    ),
-                    const SizedBox(height: 16),
-                    MainButton(
-                      onPressed: onRetryPressed,
-                      child: const Text(AppStrings.retryButton),
-                    ),
+                    SizedBox(height: 16),
+                    ProfileBottomSectionWidget(),
                   ],
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const ProfileBottomSectionWidget(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
