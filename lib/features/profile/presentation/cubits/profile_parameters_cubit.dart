@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../core/failures/feature/profile/profile_failure.dart';
 import '../../../../../core/result/result.dart';
-import '../../../../../core/services/workouts_reload_signal/workouts_reload_signal.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_data.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_gender.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_references.dart';
@@ -17,11 +16,9 @@ part 'profile_parameters_state.dart';
 /// Cubit that manages the editable profile parameters section.
 final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
   final ProfileParametersRepository _repository;
-  final WorkoutsReloadSignal _workoutsReloadSignal;
 
   /// Creates an instance of [ProfileParametersCubit].
-  ProfileParametersCubit(this._repository, this._workoutsReloadSignal)
-    : super(const ProfileParametersState());
+  ProfileParametersCubit(this._repository) : super(const ProfileParametersState());
 
   /// Stores bootstrap snapshot values from `/profile`.
   void setBootstrapSnapshot(ProfileParametersSnapshot? snapshot) {
@@ -98,7 +95,13 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
     emit(state.copyWith(failure: null));
   }
 
-  /// Saves the profile parameters form and reloads workouts on success.
+  /// Resets the pending workouts reload request after the UI handled it.
+  void consumeWorkoutsReloadRequest() {
+    if (!state.shouldReloadWorkouts) return;
+    emit(state.copyWith(shouldReloadWorkouts: false));
+  }
+
+  /// Saves the profile parameters form and marks workouts for reload when needed.
   Future<void> submit({
     required ProfileParametersSubmitPayload payload,
     required int currentWeeklyGoal,
@@ -114,11 +117,16 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
         payload.equipmentId != currentParameters.equipmentId ||
         payload.levelId != currentParameters.levelId ||
         payload.weeklyGoal != currentWeeklyGoal;
+    final shouldReloadWorkouts =
+        payload.goalId != currentParameters.goalId ||
+        payload.equipmentId != currentParameters.equipmentId ||
+        payload.levelId != currentParameters.levelId;
     if (!hasChanges) return;
 
     emit(
       state.copyWith(
         isSubmitting: true,
+        shouldReloadWorkouts: false,
         failure: null,
       ),
     );
@@ -132,10 +140,10 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
 
     switch (result) {
       case Success(data: final data):
-        _workoutsReloadSignal.notify();
         emit(
           state.copyWith(
             isSubmitting: false,
+            shouldReloadWorkouts: shouldReloadWorkouts,
             currentParameters: data,
             bootstrapSnapshot: _toSnapshot(data),
             selectedGoalId: data.goalId,
@@ -149,6 +157,7 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
         emit(
           state.copyWith(
             isSubmitting: false,
+            shouldReloadWorkouts: false,
             failure: error,
           ),
         );

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/constants/app_strings.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../../uikit/buttons/button_size.dart';
 import '../../../../../uikit/buttons/button_state.dart';
 import '../../../../../uikit/buttons/main_button.dart';
@@ -23,6 +24,7 @@ import '../../domain/entities/profile_parameters/profile_parameters_submit_paylo
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
+import '../../../workouts/overview/presentation/cubits/workouts_overview_cubit.dart';
 
 enum _ProfileParametersDropdown {
   goal,
@@ -228,6 +230,10 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
 
         if (!state.isSubmitting) {
           _closeDropdown();
+          if (state.shouldReloadWorkouts) {
+            unawaited(di<WorkoutsOverviewCubit>().loadWorkouts());
+            context.read<ProfileParametersCubit>().consumeWorkoutsReloadRequest();
+          }
           unawaited(context.read<ProfileStatisticsCubit>().reloadCurrentPhaseSummary());
           unawaited(context.read<ProfileUserCubit>().refresh());
         }

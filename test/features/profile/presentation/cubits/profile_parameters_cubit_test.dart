@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
-import 'package:moveup_flutter/core/services/workouts_reload_signal/workouts_reload_signal.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_data.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_references.dart';
@@ -21,19 +18,11 @@ import 'profile_parameters_cubit_test.mocks.dart';
 @GenerateNiceMocks([MockSpec<ProfileParametersRepository>()])
 void main() {
   late MockProfileParametersRepository repository;
-  late WorkoutsReloadSignal workoutsReloadSignal;
-  late StreamSubscription<void> workoutsReloadSubscription;
   late ProfileParametersCubit cubit;
-  var workoutsReloadCount = 0;
 
   setUp(() {
     repository = MockProfileParametersRepository();
-    workoutsReloadSignal = WorkoutsReloadSignal();
-    cubit = ProfileParametersCubit(repository, workoutsReloadSignal);
-    workoutsReloadCount = 0;
-    workoutsReloadSubscription = workoutsReloadSignal.stream.listen((_) {
-      workoutsReloadCount += 1;
-    });
+    cubit = ProfileParametersCubit(repository);
 
     provideDummy<Result<ProfileParametersReferences, ProfileFailure>>(
       const Success(testProfileParametersReferences),
@@ -41,11 +30,6 @@ void main() {
     provideDummy<Result<ProfileParametersData, ProfileFailure>>(
       const Success(testProfileParametersData),
     );
-  });
-
-  tearDown(() async {
-    await workoutsReloadSubscription.cancel();
-    await workoutsReloadSignal.dispose();
   });
 
   group('ProfileParametersCubit', () {
@@ -162,7 +146,7 @@ void main() {
     );
 
     blocTest<ProfileParametersCubit, ProfileParametersState>(
-      'submit updates state and notifies workouts reload signal on success',
+      'submit marks workouts for reload when goal changes',
       setUp: () =>
           when(
             repository.saveParameters(
@@ -202,7 +186,6 @@ void main() {
         ),
         currentWeeklyGoal: testProfileParametersWeeklyGoal,
       ),
-      wait: const Duration(milliseconds: 1),
       expect: () => const [
         ProfileParametersState(
           isSubmitting: true,
@@ -213,6 +196,7 @@ void main() {
           selectedLevelId: testProfileParametersLevelId,
         ),
         ProfileParametersState(
+          shouldReloadWorkouts: true,
           currentParameters: ProfileParametersData(
             goalId: testProfileParametersUpdatedGoalId,
             equipmentId: testProfileParametersEquipmentId,
@@ -240,18 +224,96 @@ void main() {
           selectedLevelId: testProfileParametersLevelId,
         ),
       ],
-      verify: (_) {
-        verify(
-          repository.saveParameters(
-            currentParameters: testProfileParametersData,
-            currentWeeklyGoal: testProfileParametersWeeklyGoal,
-            payload: createProfileParametersSubmitPayload(
-              goalId: testProfileParametersUpdatedGoalId,
+      verify: (_) => verify(
+        repository.saveParameters(
+          currentParameters: testProfileParametersData,
+          currentWeeklyGoal: testProfileParametersWeeklyGoal,
+          payload: createProfileParametersSubmitPayload(
+            goalId: testProfileParametersUpdatedGoalId,
+          ),
+        ),
+      ).called(1),
+    );
+
+    blocTest<ProfileParametersCubit, ProfileParametersState>(
+      'submit keeps workouts reload disabled for anthropometry-only changes',
+      setUp: () =>
+          when(
+            repository.saveParameters(
+              currentParameters: testProfileParametersData,
+              currentWeeklyGoal: testProfileParametersWeeklyGoal,
+              payload: createProfileParametersSubmitPayload(
+                age: testProfileParametersAgeValue + 1,
+              ),
+            ),
+          ).thenAnswer(
+            (_) async => const Success(
+              ProfileParametersData(
+                goalId: testProfileParametersGoalId,
+                equipmentId: testProfileParametersEquipmentId,
+                levelId: testProfileParametersLevelId,
+                gender: ProfileParametersGender.female,
+                age: testProfileParametersAgeValue + 1,
+                weight: testProfileParametersWeightValue,
+                height: testProfileParametersHeightValue,
+                goalName: testProfileParametersGoalName,
+                equipmentName: testProfileParametersEquipmentName,
+                levelName: testProfileParametersLevelName,
+              ),
             ),
           ),
-        ).called(1);
-        expect(workoutsReloadCount, 1);
-      },
+      build: () => cubit,
+      seed: () => const ProfileParametersState(
+        currentParameters: testProfileParametersData,
+      ),
+      act: (cubit) => cubit.submit(
+        payload: createProfileParametersSubmitPayload(
+          age: testProfileParametersAgeValue + 1,
+        ),
+        currentWeeklyGoal: testProfileParametersWeeklyGoal,
+      ),
+      expect: () => const [
+        ProfileParametersState(
+          isSubmitting: true,
+          currentParameters: testProfileParametersData,
+        ),
+        ProfileParametersState(
+          currentParameters: ProfileParametersData(
+            goalId: testProfileParametersGoalId,
+            equipmentId: testProfileParametersEquipmentId,
+            levelId: testProfileParametersLevelId,
+            gender: ProfileParametersGender.female,
+            age: testProfileParametersAgeValue + 1,
+            weight: testProfileParametersWeightValue,
+            height: testProfileParametersHeightValue,
+            goalName: testProfileParametersGoalName,
+            equipmentName: testProfileParametersEquipmentName,
+            levelName: testProfileParametersLevelName,
+          ),
+          bootstrapSnapshot: ProfileParametersSnapshot(
+            goal: testProfileParametersGoalName,
+            gender: ProfileParametersGender.female,
+            age: testProfileParametersAgeValue + 1,
+            weight: testProfileParametersWeightValue,
+            height: testProfileParametersHeightValue,
+            equipment: testProfileParametersEquipmentName,
+            level: testProfileParametersLevelName,
+          ),
+          selectedGoalId: testProfileParametersGoalId,
+          selectedGender: ProfileParametersGender.female,
+          selectedEquipmentId: testProfileParametersEquipmentId,
+          selectedLevelId: testProfileParametersLevelId,
+        ),
+      ],
+      verify: (_) => verify(
+        repository.saveParameters(
+          currentParameters: testProfileParametersData,
+          currentWeeklyGoal: testProfileParametersWeeklyGoal,
+          payload: createProfileParametersSubmitPayload(
+            age: testProfileParametersAgeValue + 1,
+          ),
+        ),
+      ).called(1),
     );
 
     blocTest<ProfileParametersCubit, ProfileParametersState>(
@@ -334,6 +396,7 @@ void main() {
           currentParameters: testProfileParametersData,
         ),
         ProfileParametersState(
+          shouldReloadWorkouts: true,
           currentParameters: testProfileParametersData,
           bootstrapSnapshot: ProfileParametersSnapshot(
             goal: testProfileParametersGoalName,
@@ -379,6 +442,16 @@ void main() {
           payload: anyNamed('payload'),
         ),
       ),
+    );
+
+    blocTest<ProfileParametersCubit, ProfileParametersState>(
+      'consumeWorkoutsReloadRequest clears pending reload flag',
+      build: () => cubit,
+      seed: () => const ProfileParametersState(shouldReloadWorkouts: true),
+      act: (cubit) => cubit.consumeWorkoutsReloadRequest(),
+      expect: () => const [
+        ProfileParametersState(),
+      ],
     );
   });
 }

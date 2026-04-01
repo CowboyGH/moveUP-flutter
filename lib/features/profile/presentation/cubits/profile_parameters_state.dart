@@ -7,6 +7,7 @@ abstract class ProfileParametersState with _$ProfileParametersState {
   const factory ProfileParametersState({
     @Default(false) bool isLoading,
     @Default(false) bool isSubmitting,
+    @Default(false) bool shouldReloadWorkouts,
     ProfileParametersSnapshot? bootstrapSnapshot,
     ProfileParametersReferences? references,
     ProfileParametersData? currentParameters,

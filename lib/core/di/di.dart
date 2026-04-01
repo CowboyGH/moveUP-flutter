@@ -39,6 +39,7 @@ import '../../features/workouts/execution/data/repositories/workout_execution_re
 import '../../features/workouts/execution/domain/repositories/workout_execution_repository.dart';
 import '../../features/workouts/overview/data/repositories/workouts_overview_repository_impl.dart';
 import '../../features/workouts/overview/domain/repositories/workouts_overview_repository.dart';
+import '../../features/workouts/overview/presentation/cubits/workouts_overview_cubit.dart';
 import '../network/api_paths.dart';
 import '../network/dio_setup.dart';
 import '../services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
@@ -47,7 +48,6 @@ import '../services/guest_session_storage/cookie_jar_guest_session_storage.dart'
 import '../services/guest_session_storage/guest_session_storage.dart';
 import '../services/network/network_service.dart';
 import '../services/network/network_service_impl.dart';
-import '../services/workouts_reload_signal/workouts_reload_signal.dart';
 import '../services/token_storage/secure_token_storage.dart';
 import '../services/token_storage/token_storage.dart';
 import '../utils/analytics/app_analytics.dart';
@@ -104,10 +104,6 @@ Future<void> setupDI() async {
       di<CookieJar>(),
       Uri.parse(ApiPaths.baseUrl),
     ),
-  );
-  di.registerLazySingleton<WorkoutsReloadSignal>(
-    () => WorkoutsReloadSignal(),
-    dispose: (signal) => signal.dispose(),
   );
 
   // Authentication
@@ -199,6 +195,10 @@ Future<void> setupDI() async {
       di<AppLogger>(),
       di<WorkoutsApiClient>(),
     ),
+  );
+  di.registerLazySingleton<WorkoutsOverviewCubit>(
+    () => WorkoutsOverviewCubit(di<WorkoutsOverviewRepository>()),
+    dispose: (cubit) => cubit.close(),
   );
   di.registerLazySingleton<WorkoutDetailsRepository>(
     () => WorkoutDetailsRepositoryImpl(

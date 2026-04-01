@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/di/di.dart';
-import '../../../../../core/services/workouts_reload_signal/workouts_reload_signal.dart';
-import '../../domain/repositories/workouts_overview_repository.dart';
 import '../cubits/workouts_overview_cubit.dart';
 import 'workouts_overview_page.dart';
 
@@ -14,11 +12,8 @@ class WorkoutsOverviewPageBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => WorkoutsOverviewCubit(
-        di<WorkoutsOverviewRepository>(),
-        di<WorkoutsReloadSignal>(),
-      )..loadWorkouts(),
+    return BlocProvider.value(
+      value: di<WorkoutsOverviewCubit>()..loadWorkouts(),
       child: const WorkoutsOverviewPage(),
     );
   }

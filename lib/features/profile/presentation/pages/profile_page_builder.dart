@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/di/di.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
-import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
+import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
-import '../../../../../core/services/workouts_reload_signal/workouts_reload_signal.dart';
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
@@ -42,7 +41,6 @@ class ProfilePageBuilder extends StatelessWidget {
         BlocProvider(
           create: (_) => ProfileParametersCubit(
             di<ProfileParametersRepository>(),
-            di<WorkoutsReloadSignal>(),
           )..loadInitial(),
         ),
       ],
