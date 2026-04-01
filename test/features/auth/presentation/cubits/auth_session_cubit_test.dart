@@ -415,6 +415,37 @@ void main() {
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
+      'signOut deletes access token and clears session',
+      setUp: () {
+        when(tokenStorage.deleteAccessToken()).thenAnswer((_) async {});
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.signOut(),
+      expect: () => const [AuthSessionState.unauthenticated()],
+      verify: (_) {
+        verify(tokenStorage.deleteAccessToken()).called(1);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
+      'signOut emits unauthenticated even when token deletion fails',
+      setUp: () {
+        when(tokenStorage.deleteAccessToken()).thenThrow(Exception('storage_error'));
+      },
+      build: () => authSessionCubit,
+      act: (cubit) => cubit.signOut(),
+      expect: () => const [AuthSessionState.unauthenticated()],
+      verify: (_) {
+        verify(tokenStorage.deleteAccessToken()).called(1);
+        verify(progressStorage.clear()).called(1);
+        verify(guestSessionStorage.clear()).called(1);
+        verify(logger.e(any, any, any)).called(1);
+      },
+    );
+
+    blocTest<AuthSessionCubit, AuthSessionState>(
       'restoreSession works only once when called twice',
       setUp: () {
         when(tokenStorage.getAccessToken()).thenAnswer((_) async => 'token');
