@@ -8,6 +8,7 @@ import '../../domain/entities/profile_parameters/profile_parameters_data.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_references.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_submit_payload.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
+import '../dto/params/profile_parameters_request_dto.dart';
 import '../mappers/profile_failure_mapper.dart';
 import '../mappers/profile_parameters_mapper.dart';
 import '../remote/profile_parameters_api_client.dart';
@@ -73,23 +74,33 @@ final class ProfileParametersRepositoryImpl implements ProfileParametersReposito
     }
 
     try {
+      // Backend exposes separate delta endpoints, so this save flow is intentionally
+      // sequential and may partially persist before a later request fails.
       if (hasGoalChanges) {
-        await _apiClient.saveGoal({'goal_id': payload.goalId});
+        await _apiClient.saveGoal(
+          SaveProfileGoalRequestDto(goalId: payload.goalId),
+        );
       }
       if (hasAnthropometryChanges) {
-        await _apiClient.saveAnthropometry({
-          'gender': payload.gender.requestValue,
-          'age': payload.age,
-          'weight': payload.weight,
-          'height': payload.height,
-          'equipment_id': payload.equipmentId,
-        });
+        await _apiClient.saveAnthropometry(
+          SaveProfileAnthropometryRequestDto(
+            gender: payload.gender.requestValue,
+            age: payload.age,
+            weight: payload.weight,
+            height: payload.height,
+            equipmentId: payload.equipmentId,
+          ),
+        );
       }
       if (hasLevelChanges) {
-        await _apiClient.saveLevel({'level_id': payload.levelId});
+        await _apiClient.saveLevel(
+          SaveProfileLevelRequestDto(levelId: payload.levelId),
+        );
       }
       if (hasWeeklyGoalChanges) {
-        await _apiClient.updateWeeklyGoal({'weekly_goal': payload.weeklyGoal});
+        await _apiClient.updateWeeklyGoal(
+          UpdateProfileWeeklyGoalRequestDto(weeklyGoal: payload.weeklyGoal),
+        );
       }
 
       final refreshedResponse = await _apiClient.getCurrentParameters();

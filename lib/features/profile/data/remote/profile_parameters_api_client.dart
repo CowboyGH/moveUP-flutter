@@ -4,6 +4,7 @@ import 'package:retrofit/retrofit.dart';
 import '../../../../core/network/api_paths.dart';
 import '../dto/params/profile_current_parameters_response_dto.dart';
 import '../dto/params/profile_parameters_references_response_dto.dart';
+import '../dto/params/profile_parameters_request_dto.dart';
 
 part 'profile_parameters_api_client.g.dart';
 
@@ -26,17 +27,17 @@ abstract class ProfileParametersApiClient {
 
   /// Saves the selected training goal.
   @POST(ApiPaths.userParameterGoal)
-  Future<void> saveGoal(@Body() Map<String, dynamic> request);
+  Future<void> saveGoal(@Body() SaveProfileGoalRequestDto request);
 
   /// Saves anthropometry values.
   @POST(ApiPaths.userParameterAnthropometry)
-  Future<void> saveAnthropometry(@Body() Map<String, dynamic> request);
+  Future<void> saveAnthropometry(@Body() SaveProfileAnthropometryRequestDto request);
 
   /// Saves the selected preparation level.
   @POST(ApiPaths.userParameterLevel)
-  Future<void> saveLevel(@Body() Map<String, dynamic> request);
+  Future<void> saveLevel(@Body() SaveProfileLevelRequestDto request);
 
   /// Saves the recommended weekly training goal.
   @POST(ApiPaths.userWeeklyGoal)
-  Future<void> updateWeeklyGoal(@Body() Map<String, dynamic> request);
+  Future<void> updateWeeklyGoal(@Body() UpdateProfileWeeklyGoalRequestDto request);
 }

@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
+import 'package:moveup_flutter/features/profile/data/dto/params/profile_parameters_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_parameters_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_parameters_repository_impl.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
@@ -169,8 +170,8 @@ void main() {
         expect(result.success!.goalName, testProfileParametersUpdatedGoalName);
 
         final captured =
-            verify(apiClient.saveGoal(captureAny)).captured.single as Map<String, dynamic>;
-        expect(captured, {'goal_id': testProfileParametersUpdatedGoalId});
+            verify(apiClient.saveGoal(captureAny)).captured.single as SaveProfileGoalRequestDto;
+        expect(captured.goalId, testProfileParametersUpdatedGoalId);
         verify(apiClient.getCurrentParameters()).called(1);
         verifyNever(apiClient.saveAnthropometry(any));
         verifyNever(apiClient.saveLevel(any));
@@ -215,14 +216,12 @@ void main() {
             verify(
                   apiClient.saveAnthropometry(captureAny),
                 ).captured.single
-                as Map<String, dynamic>;
-        expect(captured, {
-          'gender': 'male',
-          'age': 24,
-          'weight': 73.5,
-          'height': 180,
-          'equipment_id': testProfileParametersUpdatedEquipmentId,
-        });
+                as SaveProfileAnthropometryRequestDto;
+        expect(captured.gender, 'male');
+        expect(captured.age, 24);
+        expect(captured.weight, 73.5);
+        expect(captured.height, 180);
+        expect(captured.equipmentId, testProfileParametersUpdatedEquipmentId);
         verify(apiClient.getCurrentParameters()).called(1);
         verifyNever(apiClient.saveGoal(any));
         verifyNever(apiClient.saveLevel(any));
@@ -254,8 +253,8 @@ void main() {
         expect(result.success!.levelName, testProfileParametersUpdatedLevelName);
 
         final captured =
-            verify(apiClient.saveLevel(captureAny)).captured.single as Map<String, dynamic>;
-        expect(captured, {'level_id': testProfileParametersUpdatedLevelId});
+            verify(apiClient.saveLevel(captureAny)).captured.single as SaveProfileLevelRequestDto;
+        expect(captured.levelId, testProfileParametersUpdatedLevelId);
         verify(apiClient.getCurrentParameters()).called(1);
         verifyNever(apiClient.saveGoal(any));
         verifyNever(apiClient.saveAnthropometry(any));
@@ -284,8 +283,9 @@ void main() {
         expect(result.success, testProfileParametersData);
 
         final captured =
-            verify(apiClient.updateWeeklyGoal(captureAny)).captured.single as Map<String, dynamic>;
-        expect(captured, {'weekly_goal': testProfileParametersUpdatedWeeklyGoal});
+            verify(apiClient.updateWeeklyGoal(captureAny)).captured.single
+                as UpdateProfileWeeklyGoalRequestDto;
+        expect(captured.weeklyGoal, testProfileParametersUpdatedWeeklyGoal);
         verify(apiClient.getCurrentParameters()).called(1);
         verifyNever(apiClient.saveGoal(any));
         verifyNever(apiClient.saveAnthropometry(any));
@@ -323,16 +323,10 @@ void main() {
         expect(result.isSuccess, isTrue);
 
         verifyInOrder([
-          apiClient.saveGoal({'goal_id': testProfileParametersUpdatedGoalId}),
-          apiClient.saveAnthropometry({
-            'gender': 'male',
-            'age': 24,
-            'weight': 73.5,
-            'height': 180,
-            'equipment_id': testProfileParametersUpdatedEquipmentId,
-          }),
-          apiClient.saveLevel({'level_id': testProfileParametersUpdatedLevelId}),
-          apiClient.updateWeeklyGoal({'weekly_goal': testProfileParametersUpdatedWeeklyGoal}),
+          apiClient.saveGoal(any),
+          apiClient.saveAnthropometry(any),
+          apiClient.saveLevel(any),
+          apiClient.updateWeeklyGoal(any),
           apiClient.getCurrentParameters(),
         ]);
         verifyNoMoreInteractions(apiClient);
