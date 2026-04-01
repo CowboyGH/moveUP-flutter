@@ -35,91 +35,105 @@ class _ProfileBottomSectionWidgetState extends State<ProfileBottomSectionWidget>
     if (_isLogoutDialogOpen) return;
     _isLogoutDialogOpen = true;
     final logoutCubit = context.read<LogoutCubit>();
-    await showAppActionDialog(
-      context,
-      title: AppStrings.profileBottomLogoutTitle,
-      primaryAction: BlocProvider.value(
-        value: logoutCubit,
-        child: BlocBuilder<LogoutCubit, LogoutState>(
-          builder: (context, state) {
-            final isInProgress = state.maybeWhen(
-              inProgress: () => true,
-              orElse: () => false,
-            );
-            return MainButton(
-              state: isInProgress ? ButtonState.loading : ButtonState.enabled,
-              onPressed: () => context.read<LogoutCubit>().logout(),
-              child: const Text(AppStrings.profileBottomLogoutButton),
-            );
-          },
+    try {
+      await showAppActionDialog(
+        context,
+        title: AppStrings.profileBottomLogoutTitle,
+        primaryAction: BlocProvider.value(
+          value: logoutCubit,
+          child: BlocBuilder<LogoutCubit, LogoutState>(
+            builder: (context, state) {
+              final isInProgress = state.maybeWhen(
+                inProgress: () => true,
+                orElse: () => false,
+              );
+              return MainButton(
+                state: isInProgress ? ButtonState.loading : ButtonState.enabled,
+                onPressed: () => context.read<LogoutCubit>().logout(),
+                child: const Text(AppStrings.profileBottomLogoutButton),
+              );
+            },
+          ),
         ),
-      ),
-      secondaryAction: BlocProvider.value(
-        value: logoutCubit,
-        child: BlocBuilder<LogoutCubit, LogoutState>(
-          builder: (context, state) {
-            final isInProgress = state.maybeWhen(
-              inProgress: () => true,
-              orElse: () => false,
-            );
-            return SecondaryButton(
-              state: isInProgress ? ButtonState.disabled : ButtonState.enabled,
-              onPressed: _closeActiveDialog,
-              child: const Text(AppStrings.profileCancelButton),
-            );
-          },
+        secondaryAction: BlocProvider.value(
+          value: logoutCubit,
+          child: BlocBuilder<LogoutCubit, LogoutState>(
+            builder: (context, state) {
+              final isInProgress = state.maybeWhen(
+                inProgress: () => true,
+                orElse: () => false,
+              );
+              return SecondaryButton(
+                state: isInProgress ? ButtonState.disabled : ButtonState.enabled,
+                onPressed: _closeActiveDialog,
+                child: const Text(AppStrings.profileCancelButton),
+              );
+            },
+          ),
         ),
-      ),
-    );
-    _isLogoutDialogOpen = false;
+      );
+    } finally {
+      _isLogoutDialogOpen = false;
+    }
   }
 
   Future<void> _openDeleteDialog() async {
     if (_isDeleteDialogOpen) return;
     _isDeleteDialogOpen = true;
     final deleteProfileCubit = context.read<DeleteProfileCubit>();
-    await showAppActionDialog(
-      context,
-      title: AppStrings.profileBottomDeleteTitle,
-      primaryAction: BlocProvider.value(
-        value: deleteProfileCubit,
-        child: BlocBuilder<DeleteProfileCubit, DeleteProfileState>(
-          builder: (context, state) {
-            final isInProgress = state.maybeWhen(
-              inProgress: () => true,
-              orElse: () => false,
-            );
-            return MainButton(
-              state: isInProgress ? ButtonState.loading : ButtonState.enabled,
-              onPressed: () => context.read<DeleteProfileCubit>().deleteProfile(),
-              child: const Text(AppStrings.profileBottomDeleteConfirm),
-            );
-          },
+    try {
+      await showAppActionDialog(
+        context,
+        title: AppStrings.profileBottomDeleteTitle,
+        primaryAction: BlocProvider.value(
+          value: deleteProfileCubit,
+          child: BlocBuilder<DeleteProfileCubit, DeleteProfileState>(
+            builder: (context, state) {
+              final isInProgress = state.maybeWhen(
+                inProgress: () => true,
+                orElse: () => false,
+              );
+              return MainButton(
+                state: isInProgress ? ButtonState.loading : ButtonState.enabled,
+                onPressed: () => context.read<DeleteProfileCubit>().deleteProfile(),
+                child: const Text(AppStrings.profileBottomDeleteConfirm),
+              );
+            },
+          ),
         ),
-      ),
-      secondaryAction: BlocProvider.value(
-        value: deleteProfileCubit,
-        child: BlocBuilder<DeleteProfileCubit, DeleteProfileState>(
-          builder: (context, state) {
-            final isInProgress = state.maybeWhen(
-              inProgress: () => true,
-              orElse: () => false,
-            );
-            return SecondaryButton(
-              state: isInProgress ? ButtonState.disabled : ButtonState.enabled,
-              onPressed: _closeActiveDialog,
-              child: const Text(AppStrings.profileCancelButton),
-            );
-          },
+        secondaryAction: BlocProvider.value(
+          value: deleteProfileCubit,
+          child: BlocBuilder<DeleteProfileCubit, DeleteProfileState>(
+            builder: (context, state) {
+              final isInProgress = state.maybeWhen(
+                inProgress: () => true,
+                orElse: () => false,
+              );
+              return SecondaryButton(
+                state: isInProgress ? ButtonState.disabled : ButtonState.enabled,
+                onPressed: _closeActiveDialog,
+                child: const Text(AppStrings.profileCancelButton),
+              );
+            },
+          ),
         ),
-      ),
-    );
-    _isDeleteDialogOpen = false;
+      );
+    } finally {
+      _isDeleteDialogOpen = false;
+    }
   }
 
   void _closeActiveDialog() {
     final navigator = Navigator.of(context, rootNavigator: true);
     if (!navigator.canPop()) return;
+
+    Route<dynamic>? topRoute;
+    navigator.popUntil((route) {
+      topRoute = route;
+      return true;
+    });
+    if (topRoute is! PopupRoute<dynamic>) return;
+
     navigator.pop();
   }
 
