@@ -19,8 +19,8 @@ import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
-import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
+import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/profile_parameters_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
 import '../widgets/stats/stats_section_widget.dart';
@@ -160,20 +160,31 @@ final class _ProfileUserFallbackState extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              AppStrings.profileLoadFailed,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+            Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppStrings.profileLoadFailed,
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+                    ),
+                    const SizedBox(height: 16),
+                    MainButton(
+                      onPressed: onRetryPressed,
+                      child: const Text(AppStrings.retryButton),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 16),
-            MainButton(
-              onPressed: onRetryPressed,
-              child: const Text(AppStrings.retryButton),
-            ),
+            const ProfileBottomSectionWidget(),
           ],
         ),
       ),
