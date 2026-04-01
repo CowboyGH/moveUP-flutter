@@ -18,13 +18,15 @@ import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../fitness_start/presentation/validators/fitness_start_validators.dart';
+import '../../../workouts/overview/presentation/cubits/workouts_overview_cubit.dart';
+import '../../domain/entities/profile_parameters/profile_parameters_data.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_gender.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_option.dart';
+import '../../domain/entities/profile_parameters/profile_parameters_references.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_submit_payload.dart';
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
-import '../../../workouts/overview/presentation/cubits/workouts_overview_cubit.dart';
 
 enum _ProfileParametersDropdown {
   goal,
@@ -415,17 +417,11 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
                       ],
                     ),
                     const SizedBox(height: 12),
-                    _SegmentedOptionsField<int>(
-                      label: AppStrings.fitnessStartEquipmentLabel,
-                      firstValue: references.equipment.first.id,
-                      firstLabel: references.equipment.first.name,
-                      secondValue: references.equipment.last.id,
-                      secondLabel: references.equipment.last.name,
-                      selectedValue: state.selectedEquipmentId ?? currentParameters.equipmentId,
-                      onSelected: state.isSubmitting
-                          ? null
-                          : (value) =>
-                                context.read<ProfileParametersCubit>().selectEquipment(value),
+                    _buildEquipmentField(
+                      context,
+                      state: state,
+                      references: references,
+                      currentParameters: currentParameters,
                     ),
                     const SizedBox(height: 12),
                     CompositedTransformTarget(
@@ -469,6 +465,46 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
       },
     );
   }
+}
+
+Widget _buildEquipmentField(
+  BuildContext context, {
+  required ProfileParametersState state,
+  required ProfileParametersReferences references,
+  required ProfileParametersData currentParameters,
+}) {
+  final options = references.equipment;
+  if (options.isEmpty) {
+    return const _SelectField(
+      label: AppStrings.fitnessStartEquipmentLabel,
+      value: AppStrings.profileParametersEquipmentUnavailable,
+      onPressed: null,
+    );
+  }
+
+  if (options.length == 1) {
+    return _SelectField(
+      label: AppStrings.fitnessStartEquipmentLabel,
+      value: options.first.name,
+      onPressed: null,
+    );
+  }
+
+  final selectedEquipmentId = state.selectedEquipmentId ?? currentParameters.equipmentId;
+  final firstOption = options.first;
+  final secondOption = options[1];
+
+  return _SegmentedOptionsField<int>(
+    label: AppStrings.fitnessStartEquipmentLabel,
+    firstValue: firstOption.id,
+    firstLabel: firstOption.name,
+    secondValue: secondOption.id,
+    secondLabel: secondOption.name,
+    selectedValue: selectedEquipmentId,
+    onSelected: state.isSubmitting
+        ? null
+        : (value) => context.read<ProfileParametersCubit>().selectEquipment(value),
+  );
 }
 
 final class _DropdownFollower<T extends Object> extends StatelessWidget {

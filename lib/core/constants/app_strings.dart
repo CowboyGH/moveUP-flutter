@@ -271,6 +271,7 @@ abstract final class AppStrings {
   static const profileParametersWeeklyGoalLabel = 'Количество тренировок в неделю';
   static const profileParametersSubmitButton = 'Подтвердить';
   static const profileParametersLoadFailed = 'Не удалось загрузить параметры профиля';
+  static const profileParametersEquipmentUnavailable = 'Нет доступных вариантов';
   static const profileParametersWeeklyGoalRequired = 'Введите количество тренировок в неделю';
   static const profileParametersWeeklyGoalInvalid =
       'Введите корректное количество тренировок в неделю';
