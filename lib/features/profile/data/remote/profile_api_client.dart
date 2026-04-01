@@ -22,6 +22,10 @@ abstract class ProfileApiClient {
   @PUT(ApiPaths.profile)
   Future<void> updateProfile(@Body() UpdateProfileRequestDto request);
 
+  /// Deletes the authenticated user profile.
+  @DELETE(ApiPaths.profile)
+  Future<void> deleteProfile();
+
   /// Changes the authenticated user password.
   @POST(ApiPaths.profileChangePassword)
   Future<void> changePassword(@Body() ChangePasswordRequestDto request);
