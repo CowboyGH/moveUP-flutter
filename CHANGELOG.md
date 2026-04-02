@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduce personal parameters section for the authenticated `/profile` tab, including canonical `user-parameters` read/update flow, editable profile form card, weekly-goal save support, and selective workouts overview refresh when goal, equipment, or level changes regenerate the personal plan.
 - Add profile bottom section for the authenticated `/profile` tab, including logout and delete-profile confirmation actions plus direct links to the bundled legal documents.
 - Authenticated subscriptions catalog screen, including dedicated subscriptions route, catalog Cubit, card UI with normalized remote images, and a profile CTA for opening available subscription plans.
+- Authenticated subscription details and payment flow, including a dedicated details route, catalog-backed item resolution, manual-card payment dialog, and redirect to `/profile` after successful purchase.
 
 ### Changed
 
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile dialogs now support per-dialog content padding and optional barrier dismissal, allowing the statistics history modal to match the provided sheet behavior without affecting non-dismissible dialogs.
 - The debug route is now a static centered placeholder again and no longer owns a separate logout flow.
 - `AppCard` now supports an optional fixed height, allowing specialized screens like the subscriptions catalog to match exact card mockups without introducing a forked card component.
+- Subscriptions catalog cards now open a dedicated subscription details screen, and `AppInputField` now supports hidden labels for grouped payment-field layouts without requiring widget forks.
 
 ### Breaking
 
