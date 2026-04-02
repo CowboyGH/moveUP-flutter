@@ -25,7 +25,10 @@ final class SubscriptionsRepositoryImpl implements SubscriptionsRepository {
   Future<Result<List<SubscriptionCatalogItem>, SubscriptionsFailure>> getSubscriptions() async {
     try {
       final response = await _apiClient.getSubscriptions();
-      final items = response.data.map((item) => item.toEntity()).toList(growable: false);
+      final items = response.data
+          .where((item) => item.isActive)
+          .map((item) => item.toEntity())
+          .toList(growable: false);
       return Result.success(items);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();

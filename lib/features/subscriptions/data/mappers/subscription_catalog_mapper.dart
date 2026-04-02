@@ -10,7 +10,6 @@ extension SubscriptionCatalogItemMapper on SubscriptionCatalogItemDto {
     name: name,
     description: description,
     price: price,
-    durationDays: durationDays,
     imageUrl: normalizeSubscriptionImageUrl(image),
   );
 }

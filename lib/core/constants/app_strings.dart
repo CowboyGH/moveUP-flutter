@@ -212,6 +212,10 @@ abstract final class AppStrings {
   static const subscriptionsCatalogTitle = 'Подписки';
   static const subscriptionsCatalogEmpty = 'Подписки не найдены';
   static const subscriptionsCatalogLoadFailed = 'Не удалось загрузить подписки';
+  static const subscriptionsCatalogBenefitTests =
+      'Расширенный набор тестов для качественной адаптации';
+  static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
+  static const subscriptionsCatalogRubles = 'рублей';
   static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
   // Workout details.
@@ -289,9 +293,6 @@ abstract final class AppStrings {
   static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
   static const profileBottomDeleteConfirm = 'Удалить';
   static const profileSubscriptionsButton = 'Выбрать подписку';
-  static const subscriptionsCatalogBenefitTests =
-      'Расширенный набор тестов для качественной адаптации';
-  static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';

@@ -14,9 +14,6 @@ final class SubscriptionCatalogItem extends Equatable {
   /// Subscription price.
   final String price;
 
-  /// Subscription duration in days.
-  final int durationDays;
-
   /// Normalized subscription image URL.
   final String imageUrl;
 
@@ -26,7 +23,6 @@ final class SubscriptionCatalogItem extends Equatable {
     required this.name,
     required this.description,
     required this.price,
-    required this.durationDays,
     required this.imageUrl,
   });
 
@@ -36,7 +32,6 @@ final class SubscriptionCatalogItem extends Equatable {
     name,
     description,
     price,
-    durationDays,
     imageUrl,
   ];
 }

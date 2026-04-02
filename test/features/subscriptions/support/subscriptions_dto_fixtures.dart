@@ -5,8 +5,8 @@ import 'package:moveup_flutter/features/subscriptions/data/dto/subscriptions_res
 import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_catalog_item.dart';
 
 /// Test fixture for subscriptions response DTO.
-SubscriptionsResponseDto createSubscriptionsResponseDto() => SubscriptionsResponseDto(
-  data: [
+SubscriptionsResponseDto createSubscriptionsResponseDto({bool includeInactive = false}) {
+  final data = [
     SubscriptionCatalogItemDto(
       id: 1,
       name: '1 месяц',
@@ -25,8 +25,24 @@ SubscriptionsResponseDto createSubscriptionsResponseDto() => SubscriptionsRespon
       durationDays: 90,
       isActive: true,
     ),
-  ],
-);
+  ];
+
+  if (includeInactive) {
+    data.add(
+      SubscriptionCatalogItemDto(
+        id: 3,
+        name: '6 месяцев',
+        description: 'Архивный тариф',
+        image: '/subscriptions/subscription-archived.png',
+        price: '2500.00',
+        durationDays: 180,
+        isActive: false,
+      ),
+    );
+  }
+
+  return SubscriptionsResponseDto(data: data);
+}
 
 /// Test fixture for subscriptions domain entities.
 List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
@@ -35,7 +51,6 @@ List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
     name: '1 месяц',
     description: 'Полный доступ к тренировкам на один месяц',
     price: '550.00',
-    durationDays: 30,
     imageUrl: Uri.parse(ApiPaths.baseUrl).resolve('storage/subscriptions/subscription.png').toString(),
   ),
   const SubscriptionCatalogItem(
@@ -43,7 +58,6 @@ List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
     name: '3 месяца',
     description: 'Полный доступ к тренировкам на три месяца',
     price: '1400.00',
-    durationDays: 90,
     imageUrl: 'http://localhost:8000/storage/subscriptions/subscription-3.png',
   ),
 ];

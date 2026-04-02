@@ -20,30 +20,26 @@ class SubscriptionCard extends StatelessWidget {
 
   static const double _cardHeight = 276;
 
-  static int _monthsFromDuration(int durationDays) {
-    final months = durationDays ~/ 30;
-    return months < 1 ? 1 : months;
-  }
-
-  static String _monthsLabel(int value) {
-    final mod100 = value % 100;
-    if (mod100 >= 11 && mod100 <= 14) {
-      return 'месяцев';
-    }
-
-    return switch (value % 10) {
-      1 => 'месяц',
-      2 || 3 || 4 => 'месяца',
-      _ => 'месяцев',
-    };
-  }
-
   static String _formatPrice(String value) {
     final normalized = value.trim().replaceAll(',', '.');
-    final parsed = num.tryParse(normalized);
-    if (parsed == null) return value;
-    if (parsed == parsed.roundToDouble()) return parsed.toInt().toString();
-    return parsed.toString().replaceAll('.', ',');
+    if (normalized.endsWith('.00')) {
+      return normalized.substring(0, normalized.length - 3);
+    }
+    return normalized.replaceAll('.', ',');
+  }
+
+  static ({String value, String unit}) _buildPeriodParts(String name) {
+    final match = RegExp(r'^\s*(\d+)\s+(.+?)\s*$').firstMatch(name);
+    if (match != null) {
+      return (
+        value: match.group(1)!,
+        unit: match.group(2)!,
+      );
+    }
+    return (
+      value: name.trim(),
+      unit: '',
+    );
   }
 
   static const List<String> _benefits = [
@@ -55,7 +51,7 @@ class SubscriptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    final months = _monthsFromDuration(item.durationDays);
+    final period = _buildPeriodParts(item.name);
 
     return SizedBox(
       height: 306,
@@ -72,7 +68,7 @@ class SubscriptionCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    '${_formatPrice(item.price)} рублей',
+                    '${_formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
                     style: textTheme.bodyMedium.copyWith(
                       fontSize: 16,
                       height: 24 / 16,
@@ -122,7 +118,7 @@ class SubscriptionCard extends StatelessWidget {
               text: TextSpan(
                 children: [
                   TextSpan(
-                    text: '$months',
+                    text: period.value,
                     style: textTheme.bodyMedium.copyWith(
                       fontSize: 96,
                       height: 0.85,
@@ -131,7 +127,7 @@ class SubscriptionCard extends StatelessWidget {
                     ),
                   ),
                   TextSpan(
-                    text: ' ${_monthsLabel(months)}',
+                    text: period.unit.isEmpty ? '' : ' ${period.unit}',
                     style: textTheme.bodyMedium.copyWith(
                       fontSize: 20,
                       height: 30 / 20,
@@ -143,8 +139,9 @@ class SubscriptionCard extends StatelessWidget {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.topRight,
+          Positioned(
+            right: 0,
+            top: 0,
             child: NetworkImageWidget(
               imageUrl: item.imageUrl,
               height: 230,

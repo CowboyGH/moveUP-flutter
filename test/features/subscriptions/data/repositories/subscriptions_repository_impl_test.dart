@@ -37,9 +37,26 @@ void main() {
         expect(result.isSuccess, isTrue);
         expect(result.success, expectedItems);
         expect(result.success!.first.imageUrl, expectedItems.first.imageUrl);
-        expect(result.success!.first.durationDays, 30);
+        expect(result.success!.first.name, '1 месяц');
 
         verify(apiClient.getSubscriptions()).called(1);
+        verifyNever(logger.e(any, any, any));
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('filters out inactive subscriptions from the catalog payload', () async {
+        final responseDto = createSubscriptionsResponseDto(includeInactive: true);
+        final expectedItems = createSubscriptionCatalogItems();
+        when(apiClient.getSubscriptions()).thenAnswer((_) async => responseDto);
+
+        final result = await repository.getSubscriptions();
+
+        expect(result.isSuccess, isTrue);
+        expect(result.success, expectedItems);
+        expect(result.success!.any((item) => item.id == 3), isFalse);
+
+        verify(apiClient.getSubscriptions()).called(1);
+        verifyNever(logger.e(any, any, any));
         verifyNoMoreInteractions(apiClient);
       });
 
@@ -57,6 +74,7 @@ void main() {
         expect(result.failure!.parentException, exception);
 
         verify(apiClient.getSubscriptions()).called(1);
+        verifyNever(logger.e(any, any, any));
         verifyNoMoreInteractions(apiClient);
       });
 
