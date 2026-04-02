@@ -86,7 +86,7 @@ class SubscriptionsCatalogPage extends StatelessWidget {
     return state.when(
       initial: () => const SizedBox.shrink(),
       inProgress: _buildLoadingState,
-      loaded: _buildLoadedState,
+      loaded: (items) => _buildLoadedState(context, items),
       failed: (_) => _buildRetryState(context),
     );
   }
@@ -100,7 +100,7 @@ class SubscriptionsCatalogPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedState(List<SubscriptionCatalogItem> items) {
+  Widget _buildLoadedState(BuildContext context, List<SubscriptionCatalogItem> items) {
     if (items.isEmpty) {
       return const Center(
         child: Padding(
