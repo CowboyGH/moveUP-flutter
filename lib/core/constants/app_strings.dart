@@ -217,6 +217,29 @@ abstract final class AppStrings {
   static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
   static const subscriptionsCatalogRubles = 'рублей';
   static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const subscriptionsDetailsLoadFailed = 'Не удалось загрузить подписку';
+  static const subscriptionsDetailsInfoPrefix = 'Подписка';
+  static const subscriptionsDetailsAccessDescription =
+      'Полный доступ к персональной системе тренировок';
+  static const subscriptionsDetailsBuyButton = 'Оформить подписку';
+  static const subscriptionsDetailsAdvantagesTitle = 'Наши преимущества';
+  static const subscriptionsDetailsAdvantagesDescriptionPrefix =
+      'Не просто доступ к функциям, а ';
+  static const subscriptionsDetailsAdvantagesDescriptionHighlighted = 'индивидуальный';
+  static const subscriptionsDetailsAdvantagesDescriptionSuffix =
+      ' фитнес-маршрут, который строится на ваших уникальных данных и целях. Получите максимум от каждой тренировки.';
+  static const subscriptionsDetailsAdvantageLoadTitle = 'Умное управление нагрузкой';
+  static const subscriptionsDetailsAdvantageLoadSubtitle =
+      'Технология, которая помогает повысить эффективность силовых упражнений и ускорить восстановление мышц';
+  static const subscriptionsDetailsAdvantageInjuryTitle = 'Профилактика травм';
+  static const subscriptionsDetailsAdvantageInjurySubtitle =
+      'Рекомендации по разминке и заминке, подобранные под Ваш тип тренировок';
+  static const subscriptionsDetailsAdvantageDiagnosticsTitle = 'Расширенная диагностика';
+  static const subscriptionsDetailsAdvantageDiagnosticsSubtitle =
+      'Набор из специализированных тестов (сила, выносливость, мобильность, тип телосложения) для точного определения Вашего уровня';
+  static const subscriptionsDetailsAdvantagePlanTitle = 'Персональный план';
+  static const subscriptionsDetailsAdvantagePlanSubtitle =
+      'Автоматически сформированная программа тренировок, которая адаптируется по мере Вашего прогресса';
 
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';

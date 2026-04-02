@@ -20,7 +20,8 @@ class SubscriptionCard extends StatelessWidget {
 
   static const double _cardHeight = 276;
 
-  static String _formatPrice(String value) {
+  /// Formats a backend price string for subscriptions UI.
+  static String formatPrice(String value) {
     final normalized = value.trim().replaceAll(',', '.');
     if (normalized.endsWith('.00')) {
       return normalized.substring(0, normalized.length - 3);
@@ -68,7 +69,7 @@ class SubscriptionCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    '${_formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
+                    '${formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
                     style: textTheme.bodyMedium.copyWith(
                       fontSize: 16,
                       height: 24 / 16,
