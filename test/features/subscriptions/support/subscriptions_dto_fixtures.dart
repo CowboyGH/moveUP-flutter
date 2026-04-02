@@ -3,6 +3,7 @@ import 'package:moveup_flutter/core/network/api_paths.dart';
 import 'package:moveup_flutter/features/subscriptions/data/dto/subscription_catalog_item_dto.dart';
 import 'package:moveup_flutter/features/subscriptions/data/dto/subscriptions_response_dto.dart';
 import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_catalog_item.dart';
+import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_payment_payload.dart';
 
 /// Test fixture for subscriptions response DTO.
 SubscriptionsResponseDto createSubscriptionsResponseDto({bool includeInactive = false}) {
@@ -83,3 +84,14 @@ DioException createSubscriptionsDioBadResponseException({
     type: DioExceptionType.badResponse,
   );
 }
+
+/// Test fixture for a subscription payment payload.
+const testSubscriptionPaymentPayload = SubscriptionPaymentPayload(
+  subscriptionId: 2,
+  saveCard: true,
+  cardNumber: '4111111111111111',
+  cardHolder: 'IVAN IVANOV',
+  expiryMonth: '12',
+  expiryYear: '2028',
+  cvv: '123',
+);
