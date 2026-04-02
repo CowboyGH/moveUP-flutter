@@ -27,6 +27,7 @@ import '../../features/profile/domain/repositories/profile_parameters_repository
 import '../../features/profile/domain/repositories/profile_repository.dart';
 import '../../features/profile/domain/repositories/profile_statistics_repository.dart';
 import '../../features/subscriptions/data/remote/subscriptions_api_client.dart';
+import '../../features/subscriptions/data/remote/subscription_payment_api_client.dart';
 import '../../features/subscriptions/data/repositories/subscriptions_repository_impl.dart';
 import '../../features/subscriptions/domain/repositories/subscriptions_repository.dart';
 import '../../features/tests/attempt/data/repositories/authenticated_test_attempt_repository_impl.dart';
@@ -151,10 +152,14 @@ Future<void> setupDI() async {
     ),
   );
   di.registerLazySingleton<SubscriptionsApiClient>(() => SubscriptionsApiClient(di<Dio>()));
+  di.registerLazySingleton<SubscriptionPaymentApiClient>(
+    () => SubscriptionPaymentApiClient(di<Dio>()),
+  );
   di.registerLazySingleton<SubscriptionsRepository>(
     () => SubscriptionsRepositoryImpl(
       di<AppLogger>(),
       di<SubscriptionsApiClient>(),
+      di<SubscriptionPaymentApiClient>(),
     ),
   );
 
