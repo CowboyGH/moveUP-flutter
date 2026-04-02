@@ -208,6 +208,16 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Subscriptions catalog.
+  static const subscriptionsCatalogTitle = 'Подписки';
+  static const subscriptionsCatalogEmpty = 'Подписки не найдены';
+  static const subscriptionsCatalogLoadFailed = 'Не удалось загрузить подписки';
+  static const subscriptionsCatalogBenefitTests =
+      'Расширенный набор тестов для качественной адаптации';
+  static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
+  static const subscriptionsCatalogRubles = 'рублей';
+  static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';
   static const workoutDetailsStartWarmupButton = 'Начать разминку';
@@ -282,6 +292,7 @@ abstract final class AppStrings {
   static const profileBottomLogoutTitle = 'Вы уверены, что хотите выйти?';
   static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
   static const profileBottomDeleteConfirm = 'Удалить';
+  static const profileSubscriptionsButton = 'Выбрать подписку';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';

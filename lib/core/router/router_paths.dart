@@ -67,6 +67,9 @@ abstract class AppRoutePaths {
   /// Route path for workouts overview.
   static const workoutsPath = '/workouts';
 
+  /// Route path for subscriptions catalog.
+  static const subscriptionsCatalogPath = '/subscriptions';
+
   /// Base route path for a concrete workout details screen.
   static const workoutDetailsBasePath = '$workoutsPath/details';
 
