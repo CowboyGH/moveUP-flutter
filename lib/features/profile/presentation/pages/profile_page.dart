@@ -119,7 +119,12 @@ class ProfilePage extends StatelessWidget {
                     onPressed: () => _openHistoryDialog(context),
                     child: const Text(AppStrings.profileStatsHistoryButton),
                   ),
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 24),
+                  MainButton(
+                    onPressed: () => context.push(AppRoutePaths.subscriptionsCatalogPath),
+                    child: const Text(AppStrings.profileSubscriptionsButton),
+                  ),
+                  const SizedBox(height: 24),
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileParametersSectionWidget(),
