@@ -6,7 +6,6 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
-import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/cards/app_card.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
@@ -14,7 +13,9 @@ import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
 import '../../domain/entities/subscription_catalog_item.dart';
 import '../cubits/subscription_details_cubit.dart';
+import '../cubits/subscription_payment_cubit.dart';
 import '../widgets/subscription_card.dart';
+import '../widgets/subscription_payment_dialog.dart';
 
 /// Subscription details page.
 class SubscriptionsDetailsPage extends StatelessWidget {
@@ -33,6 +34,19 @@ class SubscriptionsDetailsPage extends StatelessWidget {
       return;
     }
     context.go(AppRoutePaths.subscriptionsCatalogPath);
+  }
+
+  Future<void> _openPaymentDialog(
+    BuildContext context,
+    SubscriptionCatalogItem item,
+  ) async {
+    final didPay = await showSubscriptionPaymentDialog(
+      context,
+      item: item,
+      paymentCubit: context.read<SubscriptionPaymentCubit>(),
+    );
+    if (!context.mounted || didPay != true) return;
+    context.go(AppRoutePaths.profilePath);
   }
 
   @override
@@ -97,7 +111,10 @@ class SubscriptionsDetailsPage extends StatelessWidget {
         children: [
           SubscriptionCard(item: item),
           const SizedBox(height: 36),
-          _SubscriptionInfoCard(item: item),
+          _SubscriptionInfoCard(
+            item: item,
+            onPurchasePressed: () => _openPaymentDialog(context, item),
+          ),
           const SizedBox(height: 36),
           const _SubscriptionAdvantagesCard(),
         ],
@@ -130,8 +147,12 @@ class SubscriptionsDetailsPage extends StatelessWidget {
 
 final class _SubscriptionInfoCard extends StatelessWidget {
   final SubscriptionCatalogItem item;
+  final VoidCallback onPurchasePressed;
 
-  const _SubscriptionInfoCard({required this.item});
+  const _SubscriptionInfoCard({
+    required this.item,
+    required this.onPurchasePressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -217,8 +238,7 @@ final class _SubscriptionInfoCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           MainButton(
-            state: ButtonState.disabled,
-            onPressed: () {},
+            onPressed: onPurchasePressed,
             child: const Text(AppStrings.subscriptionsDetailsBuyButton),
           ),
         ],

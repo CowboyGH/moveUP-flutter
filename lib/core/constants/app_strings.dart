@@ -240,6 +240,19 @@ abstract final class AppStrings {
   static const subscriptionsDetailsAdvantagePlanTitle = 'Персональный план';
   static const subscriptionsDetailsAdvantagePlanSubtitle =
       'Автоматически сформированная программа тренировок, которая адаптируется по мере Вашего прогресса';
+  static const subscriptionsPaymentCardNumberLabel = 'Номер карты';
+  static const subscriptionsPaymentCardNumberHint = '#### #### #### ####';
+  static const subscriptionsPaymentCardHolderLabel = 'Держатель карты';
+  static const subscriptionsPaymentCardHolderHint = 'IVAN IVANOV';
+  static const subscriptionsPaymentExpiryLabel = 'Срок действия';
+  static const subscriptionsPaymentExpiryMonthHint = 'Месяц';
+  static const subscriptionsPaymentExpiryYearHint = 'Год';
+  static const subscriptionsPaymentYearLabel = 'Год';
+  static const subscriptionsPaymentCvvLabel = 'CVV';
+  static const subscriptionsPaymentCvvHint = '***';
+  static const subscriptionsPaymentRememberData = 'Запомнить мои данные';
+  static const subscriptionsPaymentPayButton = 'Оплатить';
+  static const subscriptionsPaymentPreviewExpiryLabel = 'Истекает';
 
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';
