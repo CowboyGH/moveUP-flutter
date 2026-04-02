@@ -208,6 +208,9 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Subscriptions catalog.
+  static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';
   static const workoutDetailsStartWarmupButton = 'Начать разминку';
