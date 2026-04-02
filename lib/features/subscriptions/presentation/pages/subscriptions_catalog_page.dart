@@ -121,7 +121,13 @@ class SubscriptionsCatalogPage extends StatelessWidget {
           final item = items[index];
           return Padding(
             padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 12),
-            child: SubscriptionCard(item: item),
+            child: SubscriptionCard(
+              item: item,
+              onPressed: () => context.push(
+                AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
+                extra: item,
+              ),
+            ),
           );
         }),
       ),
