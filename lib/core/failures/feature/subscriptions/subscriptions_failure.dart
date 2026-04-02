@@ -29,3 +29,9 @@ final class UnknownSubscriptionsFailure extends SubscriptionsFailure {
     super.stackTrace,
   }) : super(AppStrings.subscriptionsUnknown);
 }
+
+/// Subscription could not be found in the active catalog payload.
+final class SubscriptionsNotFoundFailure extends SubscriptionsFailure {
+  /// Creates an instance of [SubscriptionsNotFoundFailure].
+  const SubscriptionsNotFoundFailure() : super(AppStrings.subscriptionsUnknown);
+}
