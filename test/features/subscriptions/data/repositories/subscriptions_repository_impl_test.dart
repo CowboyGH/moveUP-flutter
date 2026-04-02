@@ -47,7 +47,6 @@ void main() {
         final exception = createSubscriptionsDioBadResponseException(
           path: '/subscriptions',
           statusCode: 500,
-          code: 'server_error',
         );
         when(apiClient.getSubscriptions()).thenThrow(exception);
 

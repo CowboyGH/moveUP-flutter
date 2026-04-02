@@ -22,7 +22,7 @@ class SubscriptionCatalogItemDto {
 
   /// Subscription duration in days.
   @JsonKey(name: 'duration_days')
-  final String durationDays;
+  final int durationDays;
 
   /// Whether the subscription is active in the catalog.
   @JsonKey(name: 'is_active')

@@ -7,9 +7,10 @@ extension SubscriptionCatalogItemMapper on SubscriptionCatalogItemDto {
   /// Converts DTO to a domain entity.
   SubscriptionCatalogItem toEntity() => SubscriptionCatalogItem(
     id: id,
+    name: name,
     description: description,
     price: price,
-    durationDays: int.tryParse(durationDays.trim()) ?? 0,
+    durationDays: durationDays,
     imageUrl: normalizeSubscriptionImageUrl(image),
   );
 }

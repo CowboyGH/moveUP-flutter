@@ -13,7 +13,7 @@ SubscriptionsResponseDto createSubscriptionsResponseDto() => SubscriptionsRespon
       description: 'Полный доступ к тренировкам на один месяц',
       image: '/subscriptions/subscription.png',
       price: '550.00',
-      durationDays: '30',
+      durationDays: 30,
       isActive: true,
     ),
     SubscriptionCatalogItemDto(
@@ -22,7 +22,7 @@ SubscriptionsResponseDto createSubscriptionsResponseDto() => SubscriptionsRespon
       description: 'Полный доступ к тренировкам на три месяца',
       image: 'http://localhost:8000/storage/subscriptions/subscription-3.png',
       price: '1400.00',
-      durationDays: '90',
+      durationDays: 90,
       isActive: true,
     ),
   ],
@@ -32,6 +32,7 @@ SubscriptionsResponseDto createSubscriptionsResponseDto() => SubscriptionsRespon
 List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
   SubscriptionCatalogItem(
     id: 1,
+    name: '1 месяц',
     description: 'Полный доступ к тренировкам на один месяц',
     price: '550.00',
     durationDays: 30,
@@ -39,6 +40,7 @@ List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
   ),
   const SubscriptionCatalogItem(
     id: 2,
+    name: '3 месяца',
     description: 'Полный доступ к тренировкам на три месяца',
     price: '1400.00',
     durationDays: 90,
