@@ -23,6 +23,7 @@ import '../../features/offline/presentation/pages/offline_page.dart';
 import '../../features/profile/presentation/pages/profile_page_builder.dart';
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/subscriptions/presentation/pages/subscriptions_catalog_page_builder.dart';
 import '../../features/tests/attempt/presentation/pages/tests_attempt_page_builder.dart';
 import '../../features/tests/catalog/presentation/pages/tests_catalog_page_builder.dart';
 import '../../features/workouts/details/presentation/pages/workout_details_page_builder.dart';
@@ -270,6 +271,10 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.offlinePath,
       builder: (context, state) => const OfflinePage(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.subscriptionsCatalogPath,
+      builder: (_, _) => const SubscriptionsCatalogPageBuilder(),
     ),
     GoRoute(
       path: AppRoutePaths.signInPath,
