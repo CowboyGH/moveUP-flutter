@@ -225,8 +225,7 @@ abstract final class AppStrings {
       'Полный доступ к персональной системе тренировок';
   static const subscriptionsDetailsBuyButton = 'Оформить подписку';
   static const subscriptionsDetailsAdvantagesTitle = 'Наши преимущества';
-  static const subscriptionsDetailsAdvantagesDescriptionPrefix =
-      'Не просто доступ к функциям, а ';
+  static const subscriptionsDetailsAdvantagesDescriptionPrefix = 'Не просто доступ к функциям, а ';
   static const subscriptionsDetailsAdvantagesDescriptionHighlighted = 'индивидуальный';
   static const subscriptionsDetailsAdvantagesDescriptionSuffix =
       ' фитнес-маршрут, который строится на ваших уникальных данных и целях. Получите максимум от каждой тренировки.';
@@ -244,8 +243,13 @@ abstract final class AppStrings {
       'Автоматически сформированная программа тренировок, которая адаптируется по мере Вашего прогресса';
   static const subscriptionsPaymentCardNumberLabel = 'Номер карты';
   static const subscriptionsPaymentCardNumberHint = '#### #### #### ####';
+  static const subscriptionsPaymentCardNumberRequired = 'Введите номер карты';
+  static const subscriptionsPaymentCardNumberInvalid = 'Номер карты должен состоять из 16 цифр';
   static const subscriptionsPaymentCardHolderLabel = 'Держатель карты';
   static const subscriptionsPaymentCardHolderHint = 'IVAN IVANOV';
+  static const subscriptionsPaymentCardHolderRequired = 'Введите имя держателя карты';
+  static const subscriptionsPaymentCardHolderInvalid =
+      'Имя держателя карты должно содержать только заглавные латинские буквы и пробелы';
   static const subscriptionsPaymentExpiryLabel = 'Срок действия';
   static const subscriptionsPaymentExpiryMonthHint = 'Месяц';
   static const subscriptionsPaymentExpiryYearHint = 'Год';
@@ -255,6 +259,8 @@ abstract final class AppStrings {
   static const subscriptionsPaymentRememberData = 'Запомнить мои данные';
   static const subscriptionsPaymentPayButton = 'Оплатить';
   static const subscriptionsPaymentPreviewExpiryLabel = 'Истекает';
+  static const subscriptionsPaymentPreviewExpiryMonthLabel = 'MM';
+  static const subscriptionsPaymentPreviewExpiryYearLabel = 'YY';
 
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';

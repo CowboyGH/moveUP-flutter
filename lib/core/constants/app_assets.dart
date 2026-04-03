@@ -20,6 +20,7 @@ abstract final class AppAssets {
   static const iconGoodFace = 'good_face';
   static const iconArrowDown = 'arrow_down';
   static const iconStats = 'stats';
+  static const iconCardBig = 'card_big';
 
   // Images.
   static const imageFigure = 'figure';
