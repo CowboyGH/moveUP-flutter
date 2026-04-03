@@ -23,7 +23,7 @@ extension SubscriptionsFailureMapper on NetworkFailure {
         parentException: parentException,
         stackTrace: stackTrace,
       ),
-      NotFoundFailure() => const SubscriptionsNotFoundFailure(),
+      NotFoundFailure() ||
       NoNetworkFailure() ||
       ConnectionTimeoutFailure() ||
       BadRequestFailure() ||

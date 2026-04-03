@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../../../core/failures/feature/subscriptions/subscriptions_failure.dart';
+import '../../../../core/failures/network/network_failure.dart';
 import '../../../../core/network/mappers/dio_exception_mapper.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/utils/logger/app_logger.dart';
@@ -54,6 +55,9 @@ final class SubscriptionsRepositoryImpl implements SubscriptionsRepository {
       return Result.success(itemDto.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
+      if (networkFailure case NotFoundFailure()) {
+        return const Result.failure(SubscriptionsNotFoundFailure());
+      }
       return Result.failure(networkFailure.toSubscriptionsFailure());
     } catch (e, s) {
       _logger.e('GetSubscriptionById failed with unexpected error', e, s);
