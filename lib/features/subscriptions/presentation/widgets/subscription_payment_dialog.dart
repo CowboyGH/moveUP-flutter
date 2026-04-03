@@ -99,7 +99,12 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
       final end = (index + 4).clamp(0, digits.length);
       chunks.add(digits.substring(index, end));
     }
-    _previewCardNumberController.text = chunks.join(' ');
+    final previewCardNumber = chunks.join(' ');
+    if (_previewCardNumberController.text == previewCardNumber) return;
+
+    _previewCardNumberController.text = previewCardNumber;
+    if (!mounted) return;
+    setState(() {});
   }
 
   void _submit() {
