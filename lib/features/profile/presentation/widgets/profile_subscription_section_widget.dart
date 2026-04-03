@@ -17,8 +17,8 @@ import '../../../subscriptions/domain/entities/subscription_catalog_item.dart';
 import '../../../subscriptions/presentation/cubits/cancel_subscription_cubit.dart';
 import '../../../subscriptions/presentation/widgets/subscription_card.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
+import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_subscription_cubit.dart';
-import '../cubits/profile_user_cubit.dart';
 
 /// Subscription section rendered inside `/profile`.
 class ProfileSubscriptionSectionWidget extends StatefulWidget {
@@ -135,7 +135,7 @@ class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSe
         state.whenOrNull(
           succeed: () {
             _closeActiveDialog();
-            unawaited(context.read<ProfileUserCubit>().refresh());
+            context.read<ProfileRefreshCubit>().requestRefresh();
           },
           failed: (failure) {
             _closeActiveDialog();
