@@ -97,7 +97,7 @@ abstract final class SubscriptionPaymentValidators {
     if (trimmed.isEmpty) {
       return AppStrings.subscriptionsPaymentCvvHint;
     }
-    if (trimmed.length != 3) {
+    if (trimmed.length != 3 || int.tryParse(trimmed) == null) {
       return AppStrings.subscriptionsPaymentCvvHint;
     }
     return null;

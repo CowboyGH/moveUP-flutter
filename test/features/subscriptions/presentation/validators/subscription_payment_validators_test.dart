@@ -204,6 +204,11 @@ void main() {
       expect(SubscriptionPaymentValidators.cvv('1234'), invalidMessage);
     });
 
+    test('returns invalid error when cvv contains non-digit characters', () {
+      expect(SubscriptionPaymentValidators.cvv('abc'), invalidMessage);
+      expect(SubscriptionPaymentValidators.cvv('12a'), invalidMessage);
+    });
+
     test('returns null when cvv length is 3', () {
       expect(SubscriptionPaymentValidators.cvv('123'), isNull);
       expect(SubscriptionPaymentValidators.cvv(' 123 '), isNull);
