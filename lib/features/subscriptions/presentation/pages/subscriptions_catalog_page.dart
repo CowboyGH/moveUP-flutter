@@ -86,7 +86,7 @@ class SubscriptionsCatalogPage extends StatelessWidget {
     return state.when(
       initial: () => const SizedBox.shrink(),
       inProgress: _buildLoadingState,
-      loaded: _buildLoadedState,
+      loaded: (items) => _buildLoadedState(context, items),
       failed: (_) => _buildRetryState(context),
     );
   }
@@ -100,7 +100,7 @@ class SubscriptionsCatalogPage extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadedState(List<SubscriptionCatalogItem> items) {
+  Widget _buildLoadedState(BuildContext context, List<SubscriptionCatalogItem> items) {
     if (items.isEmpty) {
       return const Center(
         child: Padding(
@@ -119,9 +119,18 @@ class SubscriptionsCatalogPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: List.generate(items.length, (index) {
           final item = items[index];
+          final onPressed = item.id <= 0
+              ? null
+              : () => context.push(
+                  AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
+                  extra: item,
+                );
           return Padding(
             padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 12),
-            child: SubscriptionCard(item: item),
+            child: SubscriptionCard(
+              item: item,
+              onPressed: onPressed,
+            ),
           );
         }),
       ),

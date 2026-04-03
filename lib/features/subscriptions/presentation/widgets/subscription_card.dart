@@ -12,15 +12,20 @@ class SubscriptionCard extends StatelessWidget {
   /// Catalog item displayed by this card.
   final SubscriptionCatalogItem item;
 
+  /// Optional tap callback for opening the subscription details screen.
+  final VoidCallback? onPressed;
+
   /// Creates an instance of [SubscriptionCard].
   const SubscriptionCard({
     required this.item,
+    this.onPressed,
     super.key,
   });
 
   static const double _cardHeight = 276;
 
-  static String _formatPrice(String value) {
+  /// Formats a backend price string for subscriptions UI.
+  static String formatPrice(String value) {
     final normalized = value.trim().replaceAll(',', '.');
     if (normalized.endsWith('.00')) {
       return normalized.substring(0, normalized.length - 3);
@@ -52,8 +57,7 @@ class SubscriptionCard extends StatelessWidget {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
     final period = _buildPeriodParts(item.name);
-
-    return SizedBox(
+    final content = SizedBox(
       height: 306,
       child: Stack(
         clipBehavior: Clip.none,
@@ -68,7 +72,7 @@ class SubscriptionCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    '${_formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
+                    '${formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
                     style: textTheme.bodyMedium.copyWith(
                       fontSize: 16,
                       height: 24 / 16,
@@ -148,6 +152,20 @@ class SubscriptionCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+    if (onPressed == null) {
+      return content;
+    }
+    return Semantics(
+      button: true,
+      child: Material(
+        color: Colors.transparent,
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: onPressed,
+          child: content,
+        ),
       ),
     );
   }

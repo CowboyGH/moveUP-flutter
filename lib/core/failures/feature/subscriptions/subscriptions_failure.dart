@@ -11,6 +11,16 @@ sealed class SubscriptionsFailure extends AppFailure {
   });
 }
 
+/// Subscriptions validation failed because the provided input is invalid.
+final class SubscriptionsValidationFailure extends SubscriptionsFailure {
+  /// Creates an instance of [SubscriptionsValidationFailure].
+  const SubscriptionsValidationFailure({
+    String message = AppStrings.subscriptionsValidationFailed,
+    super.parentException,
+    super.stackTrace,
+  }) : super(message);
+}
+
 /// Subscriptions request failed because of infrastructure or network conditions.
 final class SubscriptionsRequestFailure extends SubscriptionsFailure {
   /// Creates an instance of [SubscriptionsRequestFailure].
@@ -19,6 +29,12 @@ final class SubscriptionsRequestFailure extends SubscriptionsFailure {
     super.parentException,
     super.stackTrace,
   });
+}
+
+/// Subscription could not be found in the active catalog payload.
+final class SubscriptionsNotFoundFailure extends SubscriptionsFailure {
+  /// Creates an instance of [SubscriptionsNotFoundFailure].
+  const SubscriptionsNotFoundFailure() : super(AppStrings.subscriptionsNotFound);
 }
 
 /// Unknown subscriptions failure.

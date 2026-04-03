@@ -107,6 +107,9 @@ abstract class ApiPaths {
   /// The endpoint for the subscriptions catalog.
   static const String subscriptions = '${apiPrefix}subscriptions';
 
+  /// The endpoint for paying for a subscription.
+  static const String paymentSubscription = '${apiPrefix}payment/subscription';
+
   /// The endpoint for starting a workout.
   static const String workoutsStart = '$workouts/start';
 
