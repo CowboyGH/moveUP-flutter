@@ -9,8 +9,8 @@ import 'package:moveup_flutter/features/profile/presentation/cubits/profile_subs
 import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_catalog_item.dart';
 import 'package:moveup_flutter/features/subscriptions/domain/repositories/subscriptions_repository.dart';
 
-import '../../support/profile_dto_fixtures.dart';
 import '../../../subscriptions/support/subscriptions_dto_fixtures.dart';
+import '../../support/profile_dto_fixtures.dart';
 import 'profile_subscription_cubit_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<SubscriptionsRepository>()])
@@ -53,7 +53,7 @@ void main() {
       expect: () => const [
         ProfileSubscriptionState(),
       ],
-      verify: (_) => verifyNever(repository.getSubscriptionById(any)),
+      verify: (_) => verifyNever(repository.getSubscriptions()),
     );
 
     blocTest<ProfileSubscriptionCubit, ProfileSubscriptionState>(
