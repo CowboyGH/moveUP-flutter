@@ -11,10 +11,14 @@ class AppCard extends StatelessWidget {
   /// Internal content padding.
   final EdgeInsetsGeometry contentPadding;
 
+  /// Optional card height.
+  final double? height;
+
   /// Creates an instance of [AppCard].
   const AppCard({
     required this.child,
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+    this.height,
     super.key,
   });
 
@@ -37,9 +41,12 @@ class AppCard extends StatelessWidget {
           color: colorTheme.surface,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Padding(
-          padding: contentPadding,
-          child: child,
+        child: SizedBox(
+          height: height,
+          child: Padding(
+            padding: contentPadding,
+            child: child,
+          ),
         ),
       ),
     );

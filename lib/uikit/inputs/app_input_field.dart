@@ -12,6 +12,9 @@ class AppInputField extends StatefulWidget {
   /// Field label shown above the input.
   final String labelText;
 
+  /// Optional semantics label when the visible label is hidden.
+  final String? semanticsLabel;
+
   /// Placeholder text.
   final String hintText;
 
@@ -33,6 +36,9 @@ class AppInputField extends StatefulWidget {
   /// Text alignment inside the input.
   final TextAlign textAlign;
 
+  /// Whether the visible label should be rendered.
+  final bool showLabel;
+
   /// Creates an instance of [AppInputField].
   const AppInputField({
     required this.controller,
@@ -44,6 +50,8 @@ class AppInputField extends StatefulWidget {
     this.textInputAction,
     this.inputFormatters,
     this.textAlign = TextAlign.center,
+    this.showLabel = true,
+    this.semanticsLabel,
     super.key,
   });
 
@@ -83,15 +91,17 @@ class _AppInputFieldState extends State<AppInputField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ExcludeSemantics(
-          child: Text(
-            widget.labelText,
-            style: textTheme.label.copyWith(color: colorTheme.hint),
+        if (widget.showLabel) ...[
+          ExcludeSemantics(
+            child: Text(
+              widget.labelText,
+              style: textTheme.label.copyWith(color: colorTheme.hint),
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
+          const SizedBox(height: 6),
+        ],
         Semantics(
-          label: widget.labelText,
+          label: widget.semanticsLabel ?? widget.labelText,
           textField: true,
           child: TextFormField(
             controller: widget.controller,

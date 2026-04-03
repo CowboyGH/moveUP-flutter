@@ -208,6 +208,60 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Subscriptions catalog.
+  static const subscriptionsCatalogTitle = 'Подписки';
+  static const subscriptionsCatalogEmpty = 'Подписки не найдены';
+  static const subscriptionsCatalogLoadFailed = 'Не удалось загрузить подписки';
+  static const subscriptionsCatalogBenefitTests =
+      'Расширенный набор тестов для качественной адаптации';
+  static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
+  static const subscriptionsCatalogRubles = 'рублей';
+  static const subscriptionsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const subscriptionsNotFound = 'Подписка не найдена';
+  static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const subscriptionsDetailsLoadFailed = 'Не удалось загрузить подписку';
+  static const subscriptionsDetailsInfoPrefix = 'Подписка';
+  static const subscriptionsDetailsAccessDescription =
+      'Полный доступ к персональной системе тренировок';
+  static const subscriptionsDetailsBuyButton = 'Оформить подписку';
+  static const subscriptionsDetailsAdvantagesTitle = 'Наши преимущества';
+  static const subscriptionsDetailsAdvantagesDescriptionPrefix = 'Не просто доступ к функциям, а ';
+  static const subscriptionsDetailsAdvantagesDescriptionHighlighted = 'индивидуальный';
+  static const subscriptionsDetailsAdvantagesDescriptionSuffix =
+      ' фитнес-маршрут, который строится на ваших уникальных данных и целях. Получите максимум от каждой тренировки.';
+  static const subscriptionsDetailsAdvantageLoadTitle = 'Умное управление нагрузкой';
+  static const subscriptionsDetailsAdvantageLoadSubtitle =
+      'Технология, которая помогает повысить эффективность силовых упражнений и ускорить восстановление мышц';
+  static const subscriptionsDetailsAdvantageInjuryTitle = 'Профилактика травм';
+  static const subscriptionsDetailsAdvantageInjurySubtitle =
+      'Рекомендации по разминке и заминке, подобранные под Ваш тип тренировок';
+  static const subscriptionsDetailsAdvantageDiagnosticsTitle = 'Расширенная диагностика';
+  static const subscriptionsDetailsAdvantageDiagnosticsSubtitle =
+      'Набор из специализированных тестов (сила, выносливость, мобильность, тип телосложения) для точного определения Вашего уровня';
+  static const subscriptionsDetailsAdvantagePlanTitle = 'Персональный план';
+  static const subscriptionsDetailsAdvantagePlanSubtitle =
+      'Автоматически сформированная программа тренировок, которая адаптируется по мере Вашего прогресса';
+  static const subscriptionsPaymentCardNumberLabel = 'Номер карты';
+  static const subscriptionsPaymentCardNumberHint = '#### #### #### ####';
+  static const subscriptionsPaymentCardNumberRequired = 'Введите номер карты';
+  static const subscriptionsPaymentCardNumberInvalid = 'Номер карты должен состоять из 16 цифр';
+  static const subscriptionsPaymentCardHolderLabel = 'Держатель карты';
+  static const subscriptionsPaymentCardHolderHint = 'IVAN IVANOV';
+  static const subscriptionsPaymentCardHolderRequired = 'Введите имя держателя карты';
+  static const subscriptionsPaymentCardHolderInvalid =
+      'Имя держателя карты должно содержать только заглавные латинские буквы и пробелы';
+  static const subscriptionsPaymentExpiryLabel = 'Срок действия';
+  static const subscriptionsPaymentExpiryMonthHint = 'Месяц';
+  static const subscriptionsPaymentExpiryYearHint = 'Год';
+  static const subscriptionsPaymentYearLabel = 'Год';
+  static const subscriptionsPaymentCvvLabel = 'CVV';
+  static const subscriptionsPaymentCvvHint = '***';
+  static const subscriptionsPaymentRememberData = 'Запомнить мои данные';
+  static const subscriptionsPaymentPayButton = 'Оплатить';
+  static const subscriptionsPaymentPreviewExpiryLabel = 'Истекает';
+  static const subscriptionsPaymentPreviewExpiryMonthLabel = 'MM';
+  static const subscriptionsPaymentPreviewExpiryYearLabel = 'YY';
+
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';
   static const workoutDetailsStartWarmupButton = 'Начать разминку';
@@ -282,6 +336,7 @@ abstract final class AppStrings {
   static const profileBottomLogoutTitle = 'Вы уверены, что хотите выйти?';
   static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
   static const profileBottomDeleteConfirm = 'Удалить';
+  static const profileSubscriptionsButton = 'Выбрать подписку';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';

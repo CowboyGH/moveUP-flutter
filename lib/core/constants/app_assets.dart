@@ -19,10 +19,13 @@ abstract final class AppAssets {
   static const iconNormalFace = 'normal_face';
   static const iconGoodFace = 'good_face';
   static const iconArrowDown = 'arrow_down';
+  static const iconStats = 'stats';
+  static const iconCardBig = 'card_big';
 
   // Images.
   static const imageFigure = 'figure';
   static const imageLine = 'line';
+  static const imageLineVariant = 'line_variant';
 
   // Legal documents.
   static const legalPrivacyPolicy = 'assets/legal/privacy_policy.txt';
