@@ -22,6 +22,7 @@ import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/profile_parameters_section_widget.dart';
+import '../widgets/profile_subscription_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
 import '../widgets/stats/stats_section_widget.dart';
 import '../widgets/user_section_widget.dart';
@@ -119,12 +120,11 @@ class ProfilePage extends StatelessWidget {
                     onPressed: () => _openHistoryDialog(context),
                     child: const Text(AppStrings.profileStatsHistoryButton),
                   ),
-                  const SizedBox(height: 24),
-                  MainButton(
-                    onPressed: () => context.push(AppRoutePaths.subscriptionsCatalogPath),
-                    child: const Text(AppStrings.profileSubscriptionsButton),
+                  const SizedBox(height: 36),
+                  ProfileSubscriptionSectionWidget(
+                    activeSubscription: state.historySnapshot?.activeSubscription,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 36),
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileParametersSectionWidget(),

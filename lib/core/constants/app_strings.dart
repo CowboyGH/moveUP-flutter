@@ -337,6 +337,21 @@ abstract final class AppStrings {
   static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
   static const profileBottomDeleteConfirm = 'Удалить';
   static const profileSubscriptionsButton = 'Выбрать подписку';
+  static const profileSubscriptionActiveTitleAccent = 'Срок действия';
+  static const profileSubscriptionActiveTitleSuffix = ' вашей подписки';
+  static const profileSubscriptionExpiryPrefix = 'до';
+  static const profileSubscriptionRenewButton = 'Продлить подписку';
+  static const profileSubscriptionCancelButton = 'Отменить подписку';
+  static const profileSubscriptionCancelTitle = 'Отменить подписку?';
+  static const profileSubscriptionCancelDescription = 'Вы действительно хотите отменить подписку?';
+  static const profileSubscriptionCancelConfirm = 'Подтвердить';
+  static const profileSubscriptionEmptyTitle = 'У Вас нет активной подписки';
+  static const profileSubscriptionEmptySubtitle = 'Оформите подписку и получите:';
+  static const profileSubscriptionBenefitTrainings = 'Полный доступ к персональным тренировкам';
+  static const profileSubscriptionBenefitTestsAndExercises =
+      'Расширенный набор тестов и упражнений';
+  static const profileSubscriptionCardLoadFailed = 'Не удалось загрузить подписку';
+  static const profileSubscriptionCardRetryButton = 'Повторить';
   static const profileStatsTitle = 'Статистика тренировок пользователя';
   static const profileStatsHistoryButton = 'История';
   static const profileStatsVolumeMode = 'Объём';
