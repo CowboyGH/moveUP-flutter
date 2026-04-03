@@ -15,6 +15,7 @@ import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
+import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
@@ -72,18 +73,30 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocListener<ProfileUserCubit, ProfileUserState>(
-        listenWhen: (previous, current) =>
-            previous.historySnapshot != current.historySnapshot ||
-            previous.parametersSnapshot != current.parametersSnapshot,
-        listener: (context, state) {
-          final historySnapshot = state.historySnapshot;
-          if (historySnapshot != null) {
-            context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
-          }
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ProfileRefreshCubit, ProfileRefreshState>(
+            listenWhen: (previous, current) => previous.shouldRefresh != current.shouldRefresh,
+            listener: (context, state) {
+              if (!state.shouldRefresh) return;
+              context.read<ProfileRefreshCubit>().consumeRefreshRequest();
+              unawaited(context.read<ProfileUserCubit>().refresh());
+            },
+          ),
+          BlocListener<ProfileUserCubit, ProfileUserState>(
+            listenWhen: (previous, current) =>
+                previous.historySnapshot != current.historySnapshot ||
+                previous.parametersSnapshot != current.parametersSnapshot,
+            listener: (context, state) {
+              final historySnapshot = state.historySnapshot;
+              if (historySnapshot != null) {
+                context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
+              }
 
-          context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
-        },
+              context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
+            },
+          ),
+        ],
         child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
           builder: (context, state) {
             final user = state.user;
