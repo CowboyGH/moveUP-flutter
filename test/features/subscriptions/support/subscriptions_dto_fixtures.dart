@@ -87,6 +87,8 @@ DioException createSubscriptionsDioBadResponseException({
   required String path,
   required int statusCode,
   String code = 'server_error',
+  String message = 'error',
+  Map<String, List<String>>? errors,
 }) {
   final requestOptions = RequestOptions(path: path);
   return DioException(
@@ -96,8 +98,9 @@ DioException createSubscriptionsDioBadResponseException({
       statusCode: statusCode,
       data: {
         'success': false,
-        'message': 'error',
+        'message': message,
         'code': code,
+        'errors': ?errors,
       },
     ),
     type: DioExceptionType.badResponse,

@@ -39,4 +39,24 @@ extension SubscriptionsFailureMapper on NetworkFailure {
       ),
     };
   }
+
+  /// Maps a payment [NetworkFailure] into a subscriptions-specific failure without
+  /// preserving the original transport exception.
+  SubscriptionsFailure toSanitizedPaymentFailure() {
+    if (this case ValidationFailure(:final errors, :final stackTrace)) {
+      final validationMessage = buildValidationMessage(
+        errors,
+        fallbackMessage: const SubscriptionsValidationFailure().message,
+      );
+      return SubscriptionsValidationFailure(
+        message: validationMessage,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return SubscriptionsRequestFailure(
+      message,
+      stackTrace: stackTrace,
+    );
+  }
 }

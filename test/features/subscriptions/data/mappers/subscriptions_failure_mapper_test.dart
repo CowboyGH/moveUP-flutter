@@ -23,4 +23,26 @@ void main() {
       expect(failure.message, const NotFoundFailure().message);
     });
   });
+
+  group('SubscriptionsFailureMapper.toSanitizedPaymentFailure', () {
+    test('maps validation failure without parentException', () {
+      final failure = const ValidationFailure(
+        errors: {
+          'cvv': ['invalid_cvv'],
+        },
+      ).toSanitizedPaymentFailure();
+
+      expect(failure, isA<SubscriptionsValidationFailure>());
+      expect(failure.message, 'invalid_cvv');
+      expect(failure.parentException, isNull);
+    });
+
+    test('maps request failure without parentException', () {
+      final failure = const ServerErrorFailure().toSanitizedPaymentFailure();
+
+      expect(failure, isA<SubscriptionsRequestFailure>());
+      expect(failure.message, const ServerErrorFailure().message);
+      expect(failure.parentException, isNull);
+    });
+  });
 }

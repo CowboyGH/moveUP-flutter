@@ -191,12 +191,41 @@ void main() {
 
         expect(result.isFailure, isTrue);
         expect(result.failure, isA<SubscriptionsRequestFailure>());
-        expect(result.failure!.parentException, exception);
+        expect(result.failure!.parentException, isNull);
 
         verify(paymentApiClient.paySubscription(any)).called(1);
         verifyNever(logger.e(any, any, any));
         verifyNoMoreInteractions(paymentApiClient);
       });
+
+      test(
+        'returns sanitized SubscriptionsValidationFailure on payment validation error',
+        () async {
+          final exception = createSubscriptionsDioBadResponseException(
+            path: '/payment/subscription',
+            statusCode: 422,
+            code: 'validation_failed',
+            message: 'validation_failed',
+            errors: {
+              'cvv': ['invalid_cvv'],
+            },
+          );
+          when(paymentApiClient.paySubscription(any)).thenThrow(exception);
+
+          final result = await repository.paySubscription(
+            payload: testSubscriptionPaymentPayload,
+          );
+
+          expect(result.isFailure, isTrue);
+          expect(result.failure, isA<SubscriptionsValidationFailure>());
+          expect(result.failure!.message, 'invalid_cvv');
+          expect(result.failure!.parentException, isNull);
+
+          verify(paymentApiClient.paySubscription(any)).called(1);
+          verifyNever(logger.e(any, any, any));
+          verifyNoMoreInteractions(paymentApiClient);
+        },
+      );
 
       test(
         'returns UnknownSubscriptionsFailure when payment throws unexpected exception',

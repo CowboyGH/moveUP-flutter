@@ -8,9 +8,9 @@ import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/subscription_catalog_item.dart';
 import '../../domain/entities/subscription_payment_payload.dart';
 import '../../domain/repositories/subscriptions_repository.dart';
+import '../dto/subscription_payment_request_dto.dart';
 import '../mappers/subscription_catalog_mapper.dart';
 import '../mappers/subscriptions_failure_mapper.dart';
-import '../dto/subscription_payment_request_dto.dart';
 import '../remote/subscription_payment_api_client.dart';
 import '../remote/subscriptions_api_client.dart';
 
@@ -87,7 +87,7 @@ final class SubscriptionsRepositoryImpl implements SubscriptionsRepository {
       return const Result.success(null);
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
-      return Result.failure(networkFailure.toSubscriptionsFailure());
+      return Result.failure(networkFailure.toSanitizedPaymentFailure());
     } catch (e, s) {
       _logger.e('PaySubscription failed with unexpected error', e, s);
       return Result.failure(
