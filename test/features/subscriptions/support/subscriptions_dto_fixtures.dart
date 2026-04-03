@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:moveup_flutter/core/network/api_paths.dart';
 import 'package:moveup_flutter/features/subscriptions/data/dto/subscription_catalog_item_dto.dart';
+import 'package:moveup_flutter/features/subscriptions/data/dto/subscription_response_dto.dart';
 import 'package:moveup_flutter/features/subscriptions/data/dto/subscriptions_response_dto.dart';
 import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_catalog_item.dart';
 import 'package:moveup_flutter/features/subscriptions/domain/entities/subscription_payment_payload.dart';
@@ -52,7 +53,9 @@ List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
     name: '1 месяц',
     description: 'Полный доступ к тренировкам на один месяц',
     price: '550.00',
-    imageUrl: Uri.parse(ApiPaths.baseUrl).resolve('storage/subscriptions/subscription.png').toString(),
+    imageUrl: Uri.parse(
+      ApiPaths.baseUrl,
+    ).resolve('storage/subscriptions/subscription.png').toString(),
   ),
   const SubscriptionCatalogItem(
     id: 2,
@@ -62,6 +65,22 @@ List<SubscriptionCatalogItem> createSubscriptionCatalogItems() => [
     imageUrl: 'http://localhost:8000/storage/subscriptions/subscription-3.png',
   ),
 ];
+
+/// Test fixture for a single subscription response DTO.
+SubscriptionResponseDto createSubscriptionResponseDto({
+  int id = 2,
+  bool isActive = true,
+}) => SubscriptionResponseDto(
+  data: SubscriptionCatalogItemDto(
+    id: id,
+    name: '3 месяца',
+    description: 'Полный доступ к тренировкам на три месяца',
+    image: 'http://localhost:8000/storage/subscriptions/subscription-3.png',
+    price: '1400.00',
+    durationDays: 90,
+    isActive: isActive,
+  ),
+);
 
 /// Creates a bad-response [DioException] for subscriptions API tests.
 DioException createSubscriptionsDioBadResponseException({

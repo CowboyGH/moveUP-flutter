@@ -46,17 +46,12 @@ final class SubscriptionsRepositoryImpl implements SubscriptionsRepository {
   @override
   Future<Result<SubscriptionCatalogItem, SubscriptionsFailure>> getSubscriptionById(int id) async {
     try {
-      final items = await _loadActiveSubscriptions();
-      SubscriptionCatalogItem? item;
-      for (final candidate in items) {
-        if (candidate.id != id) continue;
-        item = candidate;
-        break;
-      }
-      if (item == null) {
+      final response = await _apiClient.getSubscriptionById(id);
+      final itemDto = response.data;
+      if (!itemDto.isActive) {
         return const Result.failure(SubscriptionsNotFoundFailure());
       }
-      return Result.success(item);
+      return Result.success(itemDto.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toSubscriptionsFailure());

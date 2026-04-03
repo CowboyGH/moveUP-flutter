@@ -66,33 +66,55 @@ void main() {
       });
 
       test('returns success(item) when requested id exists in active catalog payload', () async {
-        final responseDto = createSubscriptionsResponseDto(includeInactive: true);
+        final responseDto = createSubscriptionResponseDto();
         final expectedItem = createSubscriptionCatalogItems().last;
-        when(apiClient.getSubscriptions()).thenAnswer((_) async => responseDto);
+        when(apiClient.getSubscriptionById(expectedItem.id)).thenAnswer((_) async => responseDto);
 
         final result = await repository.getSubscriptionById(expectedItem.id);
 
         expect(result.isSuccess, isTrue);
         expect(result.success, expectedItem);
 
-        verify(apiClient.getSubscriptions()).called(1);
+        verify(apiClient.getSubscriptionById(expectedItem.id)).called(1);
         verifyNever(logger.e(any, any, any));
         verifyNoMoreInteractions(apiClient);
       });
 
-      test('returns SubscriptionsNotFoundFailure when id is missing in active catalog payload', () async {
-        final responseDto = createSubscriptionsResponseDto(includeInactive: true);
-        when(apiClient.getSubscriptions()).thenAnswer((_) async => responseDto);
+      test('returns SubscriptionsNotFoundFailure when api returns not found', () async {
+        final exception = createSubscriptionsDioBadResponseException(
+          path: '/subscriptions/999',
+          statusCode: 404,
+          code: 'not_found',
+        );
+        when(apiClient.getSubscriptionById(999)).thenThrow(exception);
 
-        final result = await repository.getSubscriptionById(3);
+        final result = await repository.getSubscriptionById(999);
 
         expect(result.isFailure, isTrue);
         expect(result.failure, isA<SubscriptionsNotFoundFailure>());
+        expect(result.failure!.parentException, isNull);
 
-        verify(apiClient.getSubscriptions()).called(1);
+        verify(apiClient.getSubscriptionById(999)).called(1);
         verifyNever(logger.e(any, any, any));
         verifyNoMoreInteractions(apiClient);
       });
+
+      test(
+        'returns SubscriptionsNotFoundFailure when requested subscription is inactive',
+        () async {
+          final responseDto = createSubscriptionResponseDto(isActive: false);
+          when(apiClient.getSubscriptionById(3)).thenAnswer((_) async => responseDto);
+
+          final result = await repository.getSubscriptionById(3);
+
+          expect(result.isFailure, isTrue);
+          expect(result.failure, isA<SubscriptionsNotFoundFailure>());
+
+          verify(apiClient.getSubscriptionById(3)).called(1);
+          verifyNever(logger.e(any, any, any));
+          verifyNoMoreInteractions(apiClient);
+        },
+      );
 
       test('returns SubscriptionsRequestFailure when api returns server error', () async {
         final exception = createSubscriptionsDioBadResponseException(
@@ -176,22 +198,25 @@ void main() {
         verifyNoMoreInteractions(paymentApiClient);
       });
 
-      test('returns UnknownSubscriptionsFailure when payment throws unexpected exception', () async {
-        final exception = Exception('unexpected_payment_error');
-        when(paymentApiClient.paySubscription(any)).thenThrow(exception);
+      test(
+        'returns UnknownSubscriptionsFailure when payment throws unexpected exception',
+        () async {
+          final exception = Exception('unexpected_payment_error');
+          when(paymentApiClient.paySubscription(any)).thenThrow(exception);
 
-        final result = await repository.paySubscription(
-          payload: testSubscriptionPaymentPayload,
-        );
+          final result = await repository.paySubscription(
+            payload: testSubscriptionPaymentPayload,
+          );
 
-        expect(result.isFailure, isTrue);
-        expect(result.failure, isA<UnknownSubscriptionsFailure>());
-        expect(result.failure!.parentException, exception);
+          expect(result.isFailure, isTrue);
+          expect(result.failure, isA<UnknownSubscriptionsFailure>());
+          expect(result.failure!.parentException, exception);
 
-        verify(paymentApiClient.paySubscription(any)).called(1);
-        verify(logger.e(any, exception, any)).called(1);
-        verifyNoMoreInteractions(paymentApiClient);
-      });
+          verify(paymentApiClient.paySubscription(any)).called(1);
+          verify(logger.e(any, exception, any)).called(1);
+          verifyNoMoreInteractions(paymentApiClient);
+        },
+      );
     });
   });
 }

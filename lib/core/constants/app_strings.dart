@@ -216,6 +216,8 @@ abstract final class AppStrings {
       'Расширенный набор тестов для качественной адаптации';
   static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
   static const subscriptionsCatalogRubles = 'рублей';
+  static const subscriptionsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const subscriptionsNotFound = 'Подписка не найдена';
   static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
   static const subscriptionsDetailsLoadFailed = 'Не удалось загрузить подписку';
   static const subscriptionsDetailsInfoPrefix = 'Подписка';
