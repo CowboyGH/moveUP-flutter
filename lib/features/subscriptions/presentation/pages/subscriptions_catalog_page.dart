@@ -119,14 +119,17 @@ class SubscriptionsCatalogPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: List.generate(items.length, (index) {
           final item = items[index];
+          final onPressed = item.id <= 0
+              ? null
+              : () => context.push(
+                  AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
+                  extra: item,
+                );
           return Padding(
             padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 12),
             child: SubscriptionCard(
               item: item,
-              onPressed: () => context.push(
-                AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
-                extra: item,
-              ),
+              onPressed: onPressed,
             ),
           );
         }),

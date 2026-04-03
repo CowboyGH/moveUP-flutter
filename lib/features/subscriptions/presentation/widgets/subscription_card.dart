@@ -159,10 +159,13 @@ class SubscriptionCard extends StatelessWidget {
     }
     return Semantics(
       button: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onPressed,
-        child: content,
+      child: Material(
+        color: Colors.transparent,
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: onPressed,
+          child: content,
+        ),
       ),
     );
   }
