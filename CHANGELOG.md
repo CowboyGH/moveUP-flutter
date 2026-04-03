@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile current phase section for the authenticated `/profile` tab, reusing the bootstrap profile phase snapshot plus aggregate statistics frequency summary to render the read-only phase block without a standalone phase slice.
 - Introduce personal parameters section for the authenticated `/profile` tab, including canonical `user-parameters` read/update flow, editable profile form card, weekly-goal save support, and selective workouts overview refresh when goal, equipment, or level changes regenerate the personal plan.
 - Add profile bottom section for the authenticated `/profile` tab, including logout and delete-profile confirmation actions plus direct links to the bundled legal documents.
+- Profile subscription section for the authenticated `/profile` tab, including active and empty subscription states, catalog entrypoints, profile-local subscription card hydration by `subscriptionId`, cancel-subscription confirmation flow and profile page refresh after cancellation.
 - Authenticated subscriptions catalog screen, including dedicated subscriptions route, catalog Cubit, card UI with normalized remote images, and a profile CTA for opening available subscription plans.
 - Authenticated subscription details and payment flow, including a dedicated details route, catalog-backed item resolution, manual-card payment dialog, and redirect to `/profile` after successful purchase.
 

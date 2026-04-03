@@ -13,6 +13,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
   final TextStyle display;
   final TextStyle title;
   final TextStyle appBarTitle;
+  final TextStyle sectionTitle;
   final TextStyle body;
   final TextStyle bodyMedium;
   final TextStyle bodySmall;
@@ -23,6 +24,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     required this.display,
     required this.title,
     required this.appBarTitle,
+    required this.sectionTitle,
     required this.body,
     required this.bodyMedium,
     required this.bodySmall,
@@ -34,6 +36,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     : display = AppTextStyle.display,
       title = AppTextStyle.title,
       appBarTitle = AppTextStyle.appBarTitle,
+      sectionTitle = AppTextStyle.sectionTitle,
       body = AppTextStyle.body,
       bodyMedium = AppTextStyle.bodyMedium,
       bodySmall = AppTextStyle.bodySmall,
@@ -45,6 +48,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
     TextStyle? display,
     TextStyle? title,
     TextStyle? appBarTitle,
+    TextStyle? sectionTitle,
     TextStyle? body,
     TextStyle? bodyMedium,
     TextStyle? bodySmall,
@@ -55,6 +59,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
       display: display ?? this.display,
       title: title ?? this.title,
       appBarTitle: appBarTitle ?? this.appBarTitle,
+      sectionTitle: sectionTitle ?? this.sectionTitle,
       body: body ?? this.body,
       bodyMedium: bodyMedium ?? this.bodyMedium,
       bodySmall: bodySmall ?? this.bodySmall,
@@ -72,6 +77,7 @@ class AppTextTheme extends ThemeExtension<AppTextTheme> {
       display: TextStyle.lerp(display, other.display, t)!,
       title: TextStyle.lerp(title, other.title, t)!,
       appBarTitle: TextStyle.lerp(appBarTitle, other.appBarTitle, t)!,
+      sectionTitle: TextStyle.lerp(sectionTitle, other.sectionTitle, t)!,
       body: TextStyle.lerp(body, other.body, t)!,
       bodyMedium: TextStyle.lerp(bodyMedium, other.bodyMedium, t)!,
       bodySmall: TextStyle.lerp(bodySmall, other.bodySmall, t)!,

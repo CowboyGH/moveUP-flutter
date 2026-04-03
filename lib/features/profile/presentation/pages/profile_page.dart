@@ -15,6 +15,7 @@ import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
+import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
@@ -22,6 +23,7 @@ import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/profile_bottom_section_widget.dart';
 import '../widgets/profile_parameters_section_widget.dart';
+import '../widgets/profile_subscription_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
 import '../widgets/stats/stats_section_widget.dart';
 import '../widgets/user_section_widget.dart';
@@ -71,18 +73,30 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocListener<ProfileUserCubit, ProfileUserState>(
-        listenWhen: (previous, current) =>
-            previous.historySnapshot != current.historySnapshot ||
-            previous.parametersSnapshot != current.parametersSnapshot,
-        listener: (context, state) {
-          final historySnapshot = state.historySnapshot;
-          if (historySnapshot != null) {
-            context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
-          }
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ProfileRefreshCubit, ProfileRefreshState>(
+            listenWhen: (previous, current) => previous.shouldRefresh != current.shouldRefresh,
+            listener: (context, state) {
+              if (!state.shouldRefresh) return;
+              context.read<ProfileRefreshCubit>().consumeRefreshRequest();
+              unawaited(context.read<ProfileUserCubit>().refresh());
+            },
+          ),
+          BlocListener<ProfileUserCubit, ProfileUserState>(
+            listenWhen: (previous, current) =>
+                previous.historySnapshot != current.historySnapshot ||
+                previous.parametersSnapshot != current.parametersSnapshot,
+            listener: (context, state) {
+              final historySnapshot = state.historySnapshot;
+              if (historySnapshot != null) {
+                context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
+              }
 
-          context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
-        },
+              context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
+            },
+          ),
+        ],
         child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
           builder: (context, state) {
             final user = state.user;
@@ -119,12 +133,11 @@ class ProfilePage extends StatelessWidget {
                     onPressed: () => _openHistoryDialog(context),
                     child: const Text(AppStrings.profileStatsHistoryButton),
                   ),
-                  const SizedBox(height: 24),
-                  MainButton(
-                    onPressed: () => context.push(AppRoutePaths.subscriptionsCatalogPath),
-                    child: const Text(AppStrings.profileSubscriptionsButton),
+                  const SizedBox(height: 36),
+                  ProfileSubscriptionSectionWidget(
+                    activeSubscription: state.historySnapshot?.activeSubscription,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 36),
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileParametersSectionWidget(),

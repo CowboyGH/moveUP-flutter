@@ -96,6 +96,22 @@ final class SubscriptionsRepositoryImpl implements SubscriptionsRepository {
     }
   }
 
+  @override
+  Future<Result<void, SubscriptionsFailure>> cancelSubscription() async {
+    try {
+      await _apiClient.cancelSubscription();
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toSubscriptionsFailure());
+    } catch (e, s) {
+      _logger.e('CancelSubscription failed with unexpected error', e, s);
+      return Result.failure(
+        UnknownSubscriptionsFailure(parentException: e, stackTrace: s),
+      );
+    }
+  }
+
   Future<List<SubscriptionCatalogItem>> _loadActiveSubscriptions() async {
     final response = await _apiClient.getSubscriptions();
     return response.data

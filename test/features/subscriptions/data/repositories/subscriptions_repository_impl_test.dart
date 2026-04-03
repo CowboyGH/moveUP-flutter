@@ -247,5 +247,51 @@ void main() {
         },
       );
     });
+
+    group('SubscriptionsRepositoryImpl.cancelSubscription', () {
+      test('returns success when cancel api succeeds', () async {
+        when(apiClient.cancelSubscription()).thenAnswer((_) async {});
+
+        final result = await repository.cancelSubscription();
+
+        expect(result.isSuccess, isTrue);
+        verify(apiClient.cancelSubscription()).called(1);
+        verifyNever(logger.e(any, any, any));
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns SubscriptionsRequestFailure when cancel api returns server error', () async {
+        final exception = createSubscriptionsDioBadResponseException(
+          path: '/cancel-subscription',
+          statusCode: 500,
+        );
+        when(apiClient.cancelSubscription()).thenThrow(exception);
+
+        final result = await repository.cancelSubscription();
+
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<SubscriptionsRequestFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.cancelSubscription()).called(1);
+        verifyNever(logger.e(any, any, any));
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownSubscriptionsFailure when cancel throws unexpected exception', () async {
+        final exception = Exception('unexpected_cancel_error');
+        when(apiClient.cancelSubscription()).thenThrow(exception);
+
+        final result = await repository.cancelSubscription();
+
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownSubscriptionsFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.cancelSubscription()).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
   });
 }

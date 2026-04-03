@@ -26,6 +26,13 @@ abstract class AppTextStyle {
     fontWeight: FontWeight.w600,
   );
 
+  static const sectionTitle = TextStyle(
+    fontFamily: _fontFamily,
+    fontSize: 18,
+    height: 27 / 18,
+    fontWeight: FontWeight.w600,
+  );
+
   static const body = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,

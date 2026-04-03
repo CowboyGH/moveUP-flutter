@@ -8,11 +8,14 @@ abstract interface class SubscriptionsRepository {
   /// Returns all subscriptions available for the catalog screen.
   Future<Result<List<SubscriptionCatalogItem>, SubscriptionsFailure>> getSubscriptions();
 
-  /// Returns a single subscription by [id] using the catalog source of truth.
+  /// Returns a single subscription by [id].
   Future<Result<SubscriptionCatalogItem, SubscriptionsFailure>> getSubscriptionById(int id);
 
   /// Pays for a subscription using the provided [payload].
   Future<Result<void, SubscriptionsFailure>> paySubscription({
     required SubscriptionPaymentPayload payload,
   });
+
+  /// Cancels the currently active subscription.
+  Future<Result<void, SubscriptionsFailure>> cancelSubscription();
 }
