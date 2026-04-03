@@ -257,6 +257,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
                             enabled: !isInProgress,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
+                            obscureText: true,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
                               LengthLimitingTextInputFormatter(3),
