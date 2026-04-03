@@ -13,6 +13,9 @@ import '../../features/auth/data/remote/auth_api_client.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
+import '../../features/cards/data/remote/cards_api_client.dart';
+import '../../features/cards/data/repositories/cards_repository_impl.dart';
+import '../../features/cards/domain/repositories/cards_repository.dart';
 import '../../features/fitness_start/data/remote/fitness_start_api_client.dart';
 import '../../features/fitness_start/data/repositories/fitness_start_repository_impl.dart';
 import '../../features/fitness_start/domain/repositories/fitness_start_repository.dart';
@@ -157,8 +160,15 @@ Future<void> setupDI() async {
     ),
   );
   di.registerLazySingleton<SubscriptionsApiClient>(() => SubscriptionsApiClient(di<Dio>()));
+  di.registerLazySingleton<CardsApiClient>(() => CardsApiClient(di<Dio>()));
   di.registerLazySingleton<SubscriptionPaymentApiClient>(
     () => SubscriptionPaymentApiClient(di<Dio>()),
+  );
+  di.registerLazySingleton<CardsRepository>(
+    () => CardsRepositoryImpl(
+      di<AppLogger>(),
+      di<CardsApiClient>(),
+    ),
   );
   di.registerLazySingleton<SubscriptionsRepository>(
     () => SubscriptionsRepositoryImpl(
