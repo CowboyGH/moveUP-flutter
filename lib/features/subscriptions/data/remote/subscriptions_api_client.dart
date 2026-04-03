@@ -20,4 +20,8 @@ abstract class SubscriptionsApiClient {
   /// Returns a single subscription by identifier.
   @GET('${ApiPaths.subscriptions}/{subscription}')
   Future<SubscriptionResponseDto> getSubscriptionById(@Path('subscription') int subscriptionId);
+
+  /// Cancels the currently active subscription.
+  @POST(ApiPaths.cancelSubscription)
+  Future<void> cancelSubscription();
 }
