@@ -208,6 +208,10 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Cards.
+  static const cardsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const cardsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
   // Subscriptions catalog.
   static const subscriptionsCatalogTitle = 'Подписки';
   static const subscriptionsCatalogEmpty = 'Подписки не найдены';
