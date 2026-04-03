@@ -6,6 +6,11 @@ import '../../../auth/domain/entities/user.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../../../auth/presentation/cubits/logout_cubit.dart';
+import '../../../cards/domain/repositories/cards_repository.dart';
+import '../../../cards/presentation/cubits/cards_cubit.dart';
+import '../../../cards/presentation/cubits/delete_card_cubit.dart';
+import '../../../cards/presentation/cubits/save_card_cubit.dart';
+import '../../../cards/presentation/cubits/set_default_card_cubit.dart';
 import '../../../subscriptions/domain/repositories/subscriptions_repository.dart';
 import '../../../subscriptions/presentation/cubits/cancel_subscription_cubit.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
@@ -54,6 +59,20 @@ class ProfilePageBuilder extends StatelessWidget {
           create: (_) => ProfileSubscriptionCubit(
             di<SubscriptionsRepository>(),
           ),
+        ),
+        BlocProvider(
+          create: (_) => CardsCubit(
+            di<CardsRepository>(),
+          )..loadCards(),
+        ),
+        BlocProvider(
+          create: (_) => SaveCardCubit(di<CardsRepository>()),
+        ),
+        BlocProvider(
+          create: (_) => SetDefaultCardCubit(di<CardsRepository>()),
+        ),
+        BlocProvider(
+          create: (_) => DeleteCardCubit(di<CardsRepository>()),
         ),
         BlocProvider.value(
           value: di<ProfileRefreshCubit>(),

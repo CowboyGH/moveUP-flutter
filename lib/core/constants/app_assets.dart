@@ -21,6 +21,8 @@ abstract final class AppAssets {
   static const iconArrowDown = 'arrow_down';
   static const iconStats = 'stats';
   static const iconCardBig = 'card_big';
+  static const iconCardSmall = 'card_small';
+  static const iconPlus = 'plus';
 
   // Images.
   static const imageFigure = 'figure';
