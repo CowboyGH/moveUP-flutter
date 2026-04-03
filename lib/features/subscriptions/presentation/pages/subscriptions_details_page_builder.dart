@@ -2,8 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/di.dart';
-import '../../../profile/domain/repositories/profile_repository.dart';
-import '../../../profile/presentation/cubits/profile_user_cubit.dart';
 import '../../domain/entities/subscription_catalog_item.dart';
 import '../../domain/repositories/subscriptions_repository.dart';
 import '../cubits/subscription_details_cubit.dart';
@@ -29,9 +27,6 @@ class SubscriptionsDetailsPageBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => ProfileUserCubit(di<ProfileRepository>()),
-        ),
         BlocProvider(
           create: (_) => SubscriptionDetailsCubit(
             di<SubscriptionsRepository>(),
