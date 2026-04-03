@@ -52,6 +52,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: AppBackButton(onPressed: () => _handleBack(context)),
@@ -62,24 +63,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
       ),
       body: BlocBuilder<SubscriptionDetailsCubit, SubscriptionDetailsState>(
         builder: (context, state) {
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              const Positioned(
-                left: 100,
-                top: 100,
-                child: IgnorePointer(
-                  child: ExcludeSemantics(
-                    child: SvgPictureWidget.frame(
-                      AppAssets.imageLine,
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
-                ),
-              ),
-              _buildStateSection(context, state),
-            ],
-          );
+          return _buildStateSection(context, state);
         },
       ),
     );
@@ -105,7 +89,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
 
   Widget _buildLoadedState(BuildContext context, SubscriptionCatalogItem item) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 48),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -116,7 +100,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
             onPurchasePressed: () => _openPaymentDialog(context, item),
           ),
           const SizedBox(height: 36),
-          const _SubscriptionAdvantagesCard(),
+          const _SubscriptionAdvantagesSection(),
         ],
       ),
     );
@@ -158,76 +142,58 @@ final class _SubscriptionInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    final descriptionItems = item.description
-        .split(RegExp(r'\r?\n'))
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty)
-        .toList(growable: false);
+    final descriptionItems = _splitDescription(item.description);
 
-    return AppCard(
-      contentPadding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${AppStrings.subscriptionsDetailsInfoPrefix} ${item.name}',
-            style: textTheme.title.copyWith(
-              fontSize: 18,
-              height: 27 / 18,
-              fontWeight: FontWeight.w600,
-              color: colorTheme.onSurface,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          '${AppStrings.subscriptionsDetailsInfoPrefix} "${item.name}"',
+          style: textTheme.title.copyWith(
+            fontSize: 18,
+            height: 27 / 18,
+            fontWeight: FontWeight.w600,
+            color: colorTheme.onSurface,
           ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 14,
-                height: 14,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: colorTheme.secondary.withValues(alpha: 0.5),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  AppStrings.subscriptionsDetailsAccessDescription,
-                  style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: descriptionItems
-                .map(
-                  (line) => Padding(
-                    padding: const EdgeInsets.only(bottom: 6),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '•',
-                          style: textTheme.body.copyWith(color: colorTheme.onSurface),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            line,
-                            style: textTheme.body.copyWith(color: colorTheme.onSurface),
-                          ),
-                        ),
-                      ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          AppStrings.subscriptionsDetailsAccessDescription,
+          style: textTheme.bodyMedium.copyWith(color: colorTheme.onSurface),
+        ),
+        const SizedBox(height: 20),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List.generate(descriptionItems.length, (index) {
+            final line = descriptionItems[index];
+            return Padding(
+              padding: EdgeInsets.only(bottom: index == descriptionItems.length - 1 ? 0 : 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colorTheme.secondary.withValues(alpha: 0.5),
                     ),
                   ),
-                )
-                .toList(),
-          ),
-          const SizedBox(height: 32),
-          Text(
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      line,
+                      style: textTheme.body.copyWith(color: colorTheme.onSurface),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+        ),
+        const SizedBox(height: 32),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
             '${SubscriptionCard.formatPrice(item.price)} ${AppStrings.subscriptionsCatalogRubles}',
             style: textTheme.bodyMedium.copyWith(
               fontSize: 20,
@@ -236,13 +202,64 @@ final class _SubscriptionInfoCard extends StatelessWidget {
               color: colorTheme.onSurface,
             ),
           ),
-          const SizedBox(height: 24),
-          MainButton(
-            onPressed: onPurchasePressed,
-            child: const Text(AppStrings.subscriptionsDetailsBuyButton),
+        ),
+        const SizedBox(height: 24),
+        MainButton(
+          onPressed: onPurchasePressed,
+          child: const Text(AppStrings.subscriptionsDetailsBuyButton),
+        ),
+      ],
+    );
+  }
+
+  List<String> _splitDescription(String description) {
+    final normalized = description.replaceAll('\n', ' ').replaceAll('\r', ' ').trim();
+    if (normalized.isEmpty) return const [];
+
+    final items = <String>[];
+    var buffer = StringBuffer();
+
+    for (var index = 0; index < normalized.length; index++) {
+      final char = normalized[index];
+      buffer.write(char);
+      if (char == '.' || char == '!' || char == '?') {
+        final sentence = buffer.toString().trim();
+        if (sentence.isNotEmpty) {
+          items.add(sentence);
+        }
+        buffer = StringBuffer();
+      }
+    }
+
+    final tail = buffer.toString().trim();
+    if (tail.isNotEmpty) {
+      items.add(tail);
+    }
+
+    return items;
+  }
+}
+
+final class _SubscriptionAdvantagesSection extends StatelessWidget {
+  const _SubscriptionAdvantagesSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned(
+          left: -5,
+          right: 0,
+          top: -30,
+          child: IgnorePointer(
+            child: ExcludeSemantics(
+              child: SvgPictureWidget.frame(AppAssets.imageLineVariant),
+            ),
           ),
-        ],
-      ),
+        ),
+        _SubscriptionAdvantagesCard(),
+      ],
     );
   }
 }
@@ -273,49 +290,58 @@ final class _SubscriptionAdvantagesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    return AppCard(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            AppStrings.subscriptionsDetailsAdvantagesTitle,
-            style: textTheme.title.copyWith(
-              fontSize: 18,
-              height: 27 / 18,
-              fontWeight: FontWeight.w600,
-              color: colorTheme.onSurface,
-            ),
-          ),
-          const SizedBox(height: 8),
-          RichText(
-            text: TextSpan(
-              style: textTheme.body.copyWith(color: colorTheme.onSurface),
-              children: [
-                const TextSpan(text: AppStrings.subscriptionsDetailsAdvantagesDescriptionPrefix),
-                TextSpan(
-                  text: AppStrings.subscriptionsDetailsAdvantagesDescriptionHighlighted,
-                  style: textTheme.body.copyWith(
-                    color: colorTheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const TextSpan(text: AppStrings.subscriptionsDetailsAdvantagesDescriptionSuffix),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          ...List.generate(_items.length, (index) {
-            final item = _items[index];
-            return Padding(
-              padding: EdgeInsets.only(bottom: index == _items.length - 1 ? 0 : 12),
-              child: _SubscriptionAdvantageItemCard(
-                title: item.$1,
-                subtitle: item.$2,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorTheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: colorTheme.secondary.withValues(alpha: 0.5),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppStrings.subscriptionsDetailsAdvantagesTitle,
+              style: textTheme.title.copyWith(
+                fontSize: 18,
+                height: 27 / 18,
+                fontWeight: FontWeight.w600,
+                color: colorTheme.onSurface,
               ),
-            );
-          }),
-        ],
+            ),
+            const SizedBox(height: 8),
+            RichText(
+              text: TextSpan(
+                style: textTheme.body.copyWith(color: colorTheme.onSurface),
+                children: [
+                  const TextSpan(text: AppStrings.subscriptionsDetailsAdvantagesDescriptionPrefix),
+                  TextSpan(
+                    text: AppStrings.subscriptionsDetailsAdvantagesDescriptionHighlighted,
+                    style: textTheme.body.copyWith(
+                      color: colorTheme.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const TextSpan(text: AppStrings.subscriptionsDetailsAdvantagesDescriptionSuffix),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            ...List.generate(_items.length, (index) {
+              final item = _items[index];
+              return Padding(
+                padding: EdgeInsets.only(bottom: index == _items.length - 1 ? 0 : 20),
+                child: _SubscriptionAdvantageItemCard(
+                  title: item.$1,
+                  subtitle: item.$2,
+                ),
+              );
+            }),
+          ],
+        ),
       ),
     );
   }
@@ -336,7 +362,7 @@ final class _SubscriptionAdvantageItemCard extends StatelessWidget {
     final colorTheme = AppColorTheme.of(context);
     return AppCard(
       height: 248,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

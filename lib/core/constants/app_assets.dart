@@ -24,6 +24,7 @@ abstract final class AppAssets {
   // Images.
   static const imageFigure = 'figure';
   static const imageLine = 'line';
+  static const imageLineVariant = 'line_variant';
 
   // Legal documents.
   static const legalPrivacyPolicy = 'assets/legal/privacy_policy.txt';
