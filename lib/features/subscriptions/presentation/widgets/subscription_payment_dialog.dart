@@ -66,6 +66,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
   void initState() {
     super.initState();
     _cardNumberController.addListener(_syncPreviewCardNumber);
+    _cardNumberController.addListener(_handlePreviewChanged);
     _cardHolderController.addListener(_handlePreviewChanged);
     _expiryMonthController.addListener(_handlePreviewChanged);
     _expiryYearController.addListener(_handlePreviewChanged);
@@ -75,6 +76,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
   void dispose() {
     _cardNumberController
       ..removeListener(_syncPreviewCardNumber)
+      ..removeListener(_handlePreviewChanged)
       ..dispose();
     _cardHolderController.removeListener(_handlePreviewChanged);
     _previewCardNumberController.dispose();
@@ -99,12 +101,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
       final end = (index + 4).clamp(0, digits.length);
       chunks.add(digits.substring(index, end));
     }
-    final previewCardNumber = chunks.join(' ');
-    if (_previewCardNumberController.text == previewCardNumber) return;
-
-    _previewCardNumberController.text = previewCardNumber;
-    if (!mounted) return;
-    setState(() {});
+    _previewCardNumberController.text = chunks.join(' ');
   }
 
   void _submit() {
