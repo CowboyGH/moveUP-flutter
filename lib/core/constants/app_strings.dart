@@ -216,7 +216,7 @@ abstract final class AppStrings {
   static const cardsAddButton = 'Добавить карту';
   static const cardsDefaultButton = 'Основная карта';
   static const cardsMakeDefaultButton = 'Сделать карту основной';
-  static const cardsDeleteTitle = 'Удалить карту?';
+  static const cardsDeleteTitle = 'Удалить карту';
   static const cardsDeleteDescription = 'Вы действительно хотите удалить карту?';
   static const cardsDeleteConfirmButton = 'Подтвердить';
   static const cardsAddLimitTitle = 'Нельзя добавить карту';

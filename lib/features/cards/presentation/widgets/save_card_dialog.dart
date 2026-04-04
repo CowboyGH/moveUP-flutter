@@ -269,12 +269,12 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
               ),
             ),
             Positioned(
-              left: 18,
-              right: 18,
-              top: -32,
+              top: -100,
+              left: 0,
+              right: 0,
               child: _CardPreview(
                 previewCardNumberController: _previewCardNumberController,
-                cardHolderValue: _cardHolderController.text.trim(),
+                cardHolderValue: _cardHolderController.text,
                 expiryMonthValue: _expiryMonthController.text.trim(),
                 expiryYearValue: _expiryYearController.text.trim(),
               ),
@@ -305,65 +305,71 @@ final class _CardPreview extends StatelessWidget {
     final textTheme = AppTextTheme.of(context);
     return Stack(
       children: [
-        const SvgPictureWidget.icon(
-          AppAssets.iconCardBig,
-          fit: BoxFit.fitWidth,
+        const Positioned.fill(
+          child: IgnorePointer(
+            child: ExcludeSemantics(
+              child: SvgPictureWidget.icon(AppAssets.iconCardBig),
+            ),
+          ),
         ),
-        Positioned.fill(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(24, 51, 24, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _PreviewNumberField(controller: previewCardNumberController),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              AppStrings.subscriptionsPaymentCardHolderLabel,
-                              style: textTheme.label.copyWith(color: colorTheme.onPrimary),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              cardHolderValue.isEmpty
-                                  ? AppStrings.subscriptionsPaymentCardHolderHint
-                                  : cardHolderValue,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodyMedium.copyWith(color: colorTheme.onPrimary),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Column(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(24, 51, 24, 12),
+          child: Column(
+            children: [
+              SizedBox(
+                width: 224,
+                child: _PreviewNumberField(controller: previewCardNumberController),
+              ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 48),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            AppStrings.subscriptionsPaymentPreviewExpiryLabel,
+                            AppStrings.subscriptionsPaymentCardHolderLabel,
                             style: textTheme.label.copyWith(color: colorTheme.onPrimary),
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 4),
                           Text(
-                            '${expiryMonthValue.isEmpty ? AppStrings.subscriptionsPaymentPreviewExpiryMonthLabel : expiryMonthValue}/'
-                            '${expiryYearValue.isEmpty ? AppStrings.subscriptionsPaymentPreviewExpiryYearLabel : expiryYearValue.substring(expiryYearValue.length > 2 ? expiryYearValue.length - 2 : 0)}',
-                            style: textTheme.bodyMedium.copyWith(color: colorTheme.onPrimary),
+                            cardHolderValue.isEmpty
+                                ? AppStrings.subscriptionsPaymentCardHolderHint
+                                : cardHolderValue,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: textTheme.label.copyWith(color: colorTheme.onPrimary),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 12),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          AppStrings.subscriptionsPaymentPreviewExpiryLabel,
+                          style: textTheme.label.copyWith(color: colorTheme.onPrimary),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          [expiryMonthValue, expiryYearValue]
+                              .where((value) => value.isNotEmpty)
+                              .join('/')
+                              .ifEmpty(
+                                '${AppStrings.subscriptionsPaymentPreviewExpiryMonthLabel}/'
+                                '${AppStrings.subscriptionsPaymentPreviewExpiryYearLabel}',
+                              ),
+                          style: textTheme.label.copyWith(color: colorTheme.onPrimary),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -382,26 +388,25 @@ final class _PreviewNumberField extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
+    final displayText = controller.text.isEmpty
+        ? AppStrings.subscriptionsPaymentCardNumberHint
+        : controller.text;
+    final textColor = controller.text.isEmpty ? colorTheme.outline : colorTheme.onSurface;
 
     return Semantics(
       label: AppStrings.subscriptionsPaymentCardNumberLabel,
+      textField: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
+          color: colorTheme.surface,
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: colorTheme.outline),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           child: Text(
-            controller.text.isEmpty
-                ? AppStrings.subscriptionsPaymentCardNumberHint
-                : controller.text,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: textTheme.body.copyWith(
-              color: controller.text.isEmpty ? colorTheme.outline : colorTheme.onSurface,
-            ),
+            displayText,
+            style: textTheme.body.copyWith(color: textColor),
           ),
         ),
       ),
@@ -434,4 +439,8 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
       selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
+}
+
+extension on String {
+  String ifEmpty(String fallback) => isEmpty ? fallback : this;
 }

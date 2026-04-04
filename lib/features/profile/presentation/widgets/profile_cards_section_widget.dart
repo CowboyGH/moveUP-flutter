@@ -353,37 +353,24 @@ final class _DeleteCardButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
+    final isInactive = isDisabled || isLoading;
 
     return IgnorePointer(
-      ignoring: isDisabled || isLoading,
-      child: Opacity(
-        opacity: isDisabled ? 0.6 : 1,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onPressed,
+      ignoring: isInactive,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const .all(10),
+          decoration: BoxDecoration(
+            color: isInactive ? colorTheme.disabled : colorTheme.surface,
             borderRadius: BorderRadius.circular(8),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: colorTheme.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: colorTheme.darkHint),
-              ),
-              child: SizedBox(
-                width: 38,
-                height: 38,
-                child: Center(
-                  child: !isLoading
-                      ? SvgPictureWidget.icon(
-                          AppAssets.iconClose,
-                          color: colorTheme.onSurface,
-                        )
-                      : const SizedBox.square(
-                          dimension: 16,
-                          child: CircularProgressIndicator.adaptive(strokeWidth: 2),
-                        ),
-                ),
-              ),
+            border: Border.all(color: colorTheme.darkHint),
+          ),
+          child: Center(
+            child: SvgPictureWidget.icon(
+              AppAssets.iconCloseVariant,
+              color: colorTheme.onSurface,
             ),
           ),
         ),
@@ -441,9 +428,7 @@ class _AddCardButtonState extends State<_AddCardButton> {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
     final foreground = _isPressed ? colorTheme.primary : colorTheme.onSurface;
-    final borderColor = _isPressed
-        ? colorTheme.primary
-        : colorTheme.outline.withValues(alpha: 0.6);
+    final borderColor = _isPressed ? colorTheme.primary : colorTheme.outline.withValues(alpha: 0.6);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -451,32 +436,29 @@ class _AddCardButtonState extends State<_AddCardButton> {
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: borderColor),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: widget.onPressed,
-          onHighlightChanged: (value) {
-            if (!mounted) return;
-            setState(() => _isPressed = value);
-          },
-          borderRadius: BorderRadius.circular(8),
-          child: SizedBox(
-            height: 38,
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    AppStrings.cardsAddButton,
-                    style: textTheme.label.copyWith(color: foreground),
-                  ),
-                  const SizedBox(width: 2),
-                  SvgPictureWidget.icon(
-                    AppAssets.iconPlus,
-                    color: foreground,
-                  ),
-                ],
-              ),
+      child: InkWell(
+        onTap: widget.onPressed,
+        onHighlightChanged: (value) {
+          if (!mounted) return;
+          setState(() => _isPressed = value);
+        },
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          height: 38,
+          child: Center(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  AppStrings.cardsAddButton,
+                  style: textTheme.label.copyWith(color: foreground),
+                ),
+                const SizedBox(width: 2),
+                SvgPictureWidget.icon(
+                  AppAssets.iconPlus,
+                  color: foreground,
+                ),
+              ],
             ),
           ),
         ),

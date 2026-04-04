@@ -14,6 +14,7 @@ abstract final class AppAssets {
   static const iconSearch = 'search';
   static const iconFilter = 'filter';
   static const iconClose = 'close';
+  static const iconCloseVariant = 'close_variant';
   static const iconNotification = 'notification';
   static const iconBadFace = 'bad_face';
   static const iconNormalFace = 'normal_face';
