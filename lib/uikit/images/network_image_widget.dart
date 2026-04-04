@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../themes/colors/app_color_theme.dart';
+import '../../core/constants/app_assets.dart';
 
 /// Widget for displaying cached network images.
 class NetworkImageWidget extends StatelessWidget {
@@ -26,26 +26,24 @@ class NetworkImageWidget extends StatelessWidget {
         imageUrl: imageUrl,
         fit: BoxFit.cover,
         placeholder: (_, _) => const _ImagePlaceholder(),
-        errorWidget: (_, _, _) => const _ImagePlaceholder(
-          icon: Icons.image_not_supported_outlined,
-        ),
+        errorWidget: (_, _, _) => const _ImagePlaceholder(),
       ),
     );
   }
 }
 
 class _ImagePlaceholder extends StatelessWidget {
-  final IconData icon;
-  const _ImagePlaceholder({this.icon = Icons.image_outlined});
+  const _ImagePlaceholder();
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Center(
+    return Image.asset(
+      AppAssets.imagePlaceholder,
+      fit: BoxFit.cover,
+      errorBuilder: (_, _, _) => const Center(
         child: Icon(
-          icon,
+          Icons.image_not_supported_outlined,
           size: 64,
-          color: AppColorTheme.of(context).disabled,
         ),
       ),
     );
