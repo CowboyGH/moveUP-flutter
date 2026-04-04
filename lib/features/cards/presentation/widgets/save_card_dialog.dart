@@ -424,6 +424,10 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
   ) {
     final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
     final limitedDigits = digits.length > 16 ? digits.substring(0, 16) : digits;
+    final rawSelectionOffset = _countDigitsBefore(
+      newValue.text,
+      newValue.selection.baseOffset,
+    ).clamp(0, limitedDigits.length);
     final buffer = StringBuffer();
 
     for (var index = 0; index < limitedDigits.length; index++) {
@@ -436,9 +440,34 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
     final formatted = buffer.toString();
     return TextEditingValue(
       text: formatted,
-      selection: TextSelection.collapsed(offset: formatted.length),
+      selection: TextSelection.collapsed(
+        offset: _formattedSelectionOffset(
+          rawSelectionOffset,
+          formatted.length,
+        ),
+      ),
     );
   }
+
+  int _countDigitsBefore(String value, int offset) {
+    if (offset <= 0) return 0;
+
+    final clampedOffset = offset.clamp(0, value.length);
+    var count = 0;
+    for (var index = 0; index < clampedOffset; index++) {
+      if (_isDigit(value.codeUnitAt(index))) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  int _formattedSelectionOffset(int rawOffset, int formattedLength) {
+    final spacesBefore = rawOffset == 0 ? 0 : rawOffset ~/ 4;
+    return (rawOffset + spacesBefore).clamp(0, formattedLength);
+  }
+
+  bool _isDigit(int codeUnit) => codeUnit >= 48 && codeUnit <= 57;
 }
 
 extension on String {
