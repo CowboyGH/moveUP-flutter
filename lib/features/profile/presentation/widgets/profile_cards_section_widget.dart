@@ -435,21 +435,23 @@ class _AddCardButtonState extends State<_AddCardButton> {
     final foreground = _isPressed ? colorTheme.primary : colorTheme.onSurface;
     final borderColor = _isPressed ? colorTheme.primary : colorTheme.outline.withValues(alpha: 0.6);
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colorTheme.surface,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: borderColor),
-      ),
-      child: InkWell(
-        onTap: widget.onPressed,
-        onHighlightChanged: (value) {
-          if (!mounted) return;
-          setState(() => _isPressed = value);
-        },
-        borderRadius: BorderRadius.circular(8),
-        child: SizedBox(
-          height: 38,
+    return Semantics(
+      button: true,
+      label: AppStrings.cardsAddButton,
+      child: Container(
+        padding: const .symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: colorTheme.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: borderColor),
+        ),
+        child: InkWell(
+          onTap: widget.onPressed,
+          onHighlightChanged: (value) {
+            if (!mounted) return;
+            setState(() => _isPressed = value);
+          },
+          borderRadius: BorderRadius.circular(8),
           child: Center(
             child: Row(
               mainAxisSize: MainAxisSize.min,
