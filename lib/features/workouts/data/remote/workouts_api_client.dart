@@ -63,4 +63,10 @@ abstract class WorkoutsApiClient {
   Future<void> completeWorkout(
     @Path('userWorkout') int userWorkoutId,
   );
+
+  /// Abandons the current workout and resets it back to assigned.
+  @POST('${ApiPaths.workouts}/{userWorkout}/abandon')
+  Future<void> abandonWorkout(
+    @Path('userWorkout') int userWorkoutId,
+  );
 }
