@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/constants/app_strings.dart';
-import '../../../../../core/di/di.dart';
 import '../../../../../uikit/buttons/button_size.dart';
 import '../../../../../uikit/buttons/button_state.dart';
 import '../../../../../uikit/buttons/main_button.dart';
@@ -233,7 +232,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
         if (!state.isSubmitting) {
           _closeDropdown();
           if (state.shouldReloadWorkouts) {
-            unawaited(di<WorkoutsOverviewCubit>().loadWorkouts());
+            unawaited(context.read<WorkoutsOverviewCubit>().loadWorkouts());
             context.read<ProfileParametersCubit>().consumeWorkoutsReloadRequest();
           }
           unawaited(context.read<ProfileStatisticsCubit>().reloadCurrentPhaseSummary());

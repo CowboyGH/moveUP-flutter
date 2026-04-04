@@ -13,14 +13,16 @@ import '../../../cards/presentation/cubits/save_card_cubit.dart';
 import '../../../cards/presentation/cubits/set_default_card_cubit.dart';
 import '../../../subscriptions/domain/repositories/subscriptions_repository.dart';
 import '../../../subscriptions/presentation/cubits/cancel_subscription_cubit.dart';
+import '../../../workouts/overview/domain/repositories/workouts_overview_repository.dart';
+import '../../../workouts/overview/presentation/cubits/workouts_overview_cubit.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
 import '../cubits/delete_profile_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_refresh_cubit.dart';
-import '../cubits/profile_subscription_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
+import '../cubits/profile_subscription_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import 'profile_page.dart';
 
@@ -85,6 +87,9 @@ class ProfilePageBuilder extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => CancelSubscriptionCubit(di<SubscriptionsRepository>()),
+        ),
+        BlocProvider(
+          create: (_) => WorkoutsOverviewCubit(di<WorkoutsOverviewRepository>()),
         ),
       ],
       child: const ProfilePage(),
