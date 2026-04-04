@@ -355,22 +355,27 @@ final class _DeleteCardButton extends StatelessWidget {
     final colorTheme = AppColorTheme.of(context);
     final isInactive = isDisabled || isLoading;
 
-    return IgnorePointer(
-      ignoring: isInactive,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const .all(10),
-          decoration: BoxDecoration(
-            color: isInactive ? colorTheme.disabled : colorTheme.surface,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: colorTheme.darkHint),
-          ),
-          child: Center(
-            child: SvgPictureWidget.icon(
-              AppAssets.iconCloseVariant,
-              color: colorTheme.onSurface,
+    return Semantics(
+      button: true,
+      enabled: !isInactive,
+      label: AppStrings.cardsDeleteConfirmButton,
+      child: IgnorePointer(
+        ignoring: isInactive,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            padding: const .all(10),
+            decoration: BoxDecoration(
+              color: isInactive ? colorTheme.disabled : colorTheme.surface,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: colorTheme.darkHint),
+            ),
+            child: Center(
+              child: SvgPictureWidget.icon(
+                AppAssets.iconCloseVariant,
+                color: colorTheme.onSurface,
+              ),
             ),
           ),
         ),
