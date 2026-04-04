@@ -328,7 +328,7 @@ final class _SavedCardDetailsWidget extends StatelessWidget {
               const SizedBox(width: 16),
               _DeleteCardButton(
                 isLoading: isDeleteLoading,
-                isDisabled: isAnyDeleteInProgress && !isDeleteLoading,
+                isDisabled: isAnyDefaultInProgress || (isAnyDeleteInProgress && !isDeleteLoading),
                 onPressed: onDeletePressed,
               ),
             ],
