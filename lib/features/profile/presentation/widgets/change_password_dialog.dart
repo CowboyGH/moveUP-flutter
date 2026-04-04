@@ -29,6 +29,7 @@ Future<ChangePasswordDialogResult?> showChangePasswordDialog(BuildContext contex
   return showProfileDialog<ChangePasswordDialogResult>(
     context,
     insetPadding: const EdgeInsets.symmetric(horizontal: 19.5),
+    contentPadding: const .symmetric(horizontal: 28, vertical: 40),
     child: BlocProvider(
       create: (_) => ChangePasswordCubit(di<ProfileRepository>()),
       child: const ChangePasswordDialog(),

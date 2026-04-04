@@ -29,6 +29,7 @@ Future<User?> showEditProfileDialog(
   return showProfileDialog<User>(
     context,
     insetPadding: const EdgeInsets.symmetric(horizontal: 11.5),
+    contentPadding: const .symmetric(horizontal: 28, vertical: 40),
     child: BlocProvider(
       create: (_) => UpdateProfileCubit(di<ProfileRepository>()),
       child: EditProfileDialog(user: user),
