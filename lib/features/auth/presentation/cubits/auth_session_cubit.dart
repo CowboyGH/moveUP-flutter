@@ -248,6 +248,17 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     emit(AuthSessionState.authenticated(user));
   }
 
+  /// Updates the authenticated user payload without changing the auth mode.
+  void updateAuthenticatedUser(User user) {
+    final canUpdate = state.maybeWhen(
+      authenticated: (_) => true,
+      orElse: () => false,
+    );
+    if (!canUpdate || isClosed) return;
+
+    emit(AuthSessionState.authenticated(user));
+  }
+
   /// Marks the current session as unauthenticated.
   Future<void> clearSession() async {
     final isCleared = await _clearGuestDataSafely();
@@ -258,5 +269,11 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     if (!isClosed) {
       emit(const AuthSessionState.unauthenticated());
     }
+  }
+
+  /// Fully signs out the authenticated user from the current device.
+  Future<void> signOut() async {
+    await _clearTokenSafely();
+    await clearSession();
   }
 }

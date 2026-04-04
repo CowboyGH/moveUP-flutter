@@ -1,0 +1,39 @@
+import '../../../../core/failures/feature/profile/profile_failure.dart';
+import '../../../../core/result/result.dart';
+import '../../../auth/domain/entities/user.dart';
+import '../entities/profile_phase_snapshot.dart';
+import '../entities/profile_parameters/profile_parameters_snapshot.dart';
+import '../entities/profile_stats_history_snapshot.dart';
+
+/// Repository interface for authenticated profile operations.
+abstract interface class ProfileRepository {
+  /// Returns the current authenticated user from the profile payload.
+  Future<Result<User, ProfileFailure>> getUser();
+
+  /// Returns the current history snapshot for the statistics history modal.
+  Future<Result<ProfileStatsHistorySnapshot, ProfileFailure>> getStatsHistorySnapshot();
+
+  /// Returns the current phase snapshot for the current phase section.
+  Future<Result<ProfilePhaseSnapshot, ProfileFailure>> getPhaseSnapshot();
+
+  /// Returns the current parameters snapshot for the profile parameters section.
+  Future<Result<ProfileParametersSnapshot?, ProfileFailure>> getParametersSnapshot();
+
+  /// Updates the current user profile and returns the canonical refreshed user payload.
+  Future<Result<User, ProfileFailure>> updateUser({
+    required User currentUser,
+    required String name,
+    required String email,
+    String? avatarPath,
+  });
+
+  /// Changes the current authenticated user password.
+  Future<Result<void, ProfileFailure>> changePassword({
+    required String oldPassword,
+    required String newPassword,
+    required String newPasswordConfirmation,
+  });
+
+  /// Deletes the current authenticated profile.
+  Future<Result<void, ProfileFailure>> deleteProfile();
+}

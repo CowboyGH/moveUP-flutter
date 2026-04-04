@@ -31,7 +31,7 @@ abstract class AppRoutePaths {
   static const signUpPath = '$authPrefix/sign-up';
 
   /// Route path for the legal-document page.
-  static const legalDocumentPath = '$authPrefix/legal-document';
+  static const legalDocumentPath = '/legal-document';
 
   /// Route path for the forgot-password page.
   static const forgotPasswordPath = '$authPrefix/forgot-password';
@@ -66,6 +66,19 @@ abstract class AppRoutePaths {
 
   /// Route path for workouts overview.
   static const workoutsPath = '/workouts';
+
+  /// Route path for subscriptions catalog.
+  static const subscriptionsCatalogPath = '/subscriptions';
+
+  /// Base route path for a concrete subscriptions details screen.
+  static const subscriptionsDetailsBasePath = '$subscriptionsCatalogPath/details';
+
+  /// Route path pattern for a concrete subscription details screen.
+  static const subscriptionsDetailsPath = '$subscriptionsDetailsBasePath/:subscriptionId';
+
+  /// Builds the concrete route path for subscription details by [subscriptionId].
+  static String subscriptionsDetailsConcretePath(int subscriptionId) =>
+      '$subscriptionsDetailsBasePath/$subscriptionId';
 
   /// Base route path for a concrete workout details screen.
   static const workoutDetailsBasePath = '$workoutsPath/details';

@@ -74,6 +74,7 @@ abstract final class AppStrings {
   static const legalDataProcessingConsentTitle = 'Согласие на обработку персональных данных';
   static const legalPublicOfferTitle = 'Публичная оферта';
   static const legalDocumentLoadError = 'Не удалось загрузить документ.';
+  static const legalDataProcessingConsentProfileTitle = 'Пользовательское соглашение';
 
   // Feedback dialogs.
   static const feedbackErrorTitle = 'Что-то пошло не так';
@@ -207,6 +208,74 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Cards.
+  static const cardsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const cardsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const cardsSectionTitle = 'Мои карты';
+  static const cardsLoadFailed = 'Не удалось загрузить карты';
+  static const cardsAddButton = 'Добавить карту';
+  static const cardsDefaultButton = 'Основная карта';
+  static const cardsMakeDefaultButton = 'Сделать карту основной';
+  static const cardsDeleteTitle = 'Удалить карту';
+  static const cardsDeleteDescription = 'Вы действительно хотите удалить карту?';
+  static const cardsDeleteConfirmButton = 'Подтвердить';
+  static const cardsAddLimitTitle = 'Нельзя добавить карту';
+  static const cardsAddLimitMessage = 'Можно сохранить не более 3 карт';
+
+  // Subscriptions catalog.
+  static const subscriptionsCatalogTitle = 'Подписки';
+  static const subscriptionsCatalogEmpty = 'Подписки не найдены';
+  static const subscriptionsCatalogLoadFailed = 'Не удалось загрузить подписки';
+  static const subscriptionsCatalogBenefitTests =
+      'Расширенный набор тестов для качественной адаптации';
+  static const subscriptionsCatalogBenefitExercises = 'Расширенный набор упражнений';
+  static const subscriptionsCatalogRubles = 'рублей';
+  static const subscriptionsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const subscriptionsNotFound = 'Подписка не найдена';
+  static const subscriptionsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const subscriptionsDetailsLoadFailed = 'Не удалось загрузить подписку';
+  static const subscriptionsDetailsInfoPrefix = 'Подписка';
+  static const subscriptionsDetailsAccessDescription =
+      'Полный доступ к персональной системе тренировок';
+  static const subscriptionsDetailsBuyButton = 'Оформить подписку';
+  static const subscriptionsDetailsAdvantagesTitle = 'Наши преимущества';
+  static const subscriptionsDetailsAdvantagesDescriptionPrefix = 'Не просто доступ к функциям, а ';
+  static const subscriptionsDetailsAdvantagesDescriptionHighlighted = 'индивидуальный';
+  static const subscriptionsDetailsAdvantagesDescriptionSuffix =
+      ' фитнес-маршрут, который строится на ваших уникальных данных и целях. Получите максимум от каждой тренировки.';
+  static const subscriptionsDetailsAdvantageLoadTitle = 'Умное управление нагрузкой';
+  static const subscriptionsDetailsAdvantageLoadSubtitle =
+      'Технология, которая помогает повысить эффективность силовых упражнений и ускорить восстановление мышц';
+  static const subscriptionsDetailsAdvantageInjuryTitle = 'Профилактика травм';
+  static const subscriptionsDetailsAdvantageInjurySubtitle =
+      'Рекомендации по разминке и заминке, подобранные под Ваш тип тренировок';
+  static const subscriptionsDetailsAdvantageDiagnosticsTitle = 'Расширенная диагностика';
+  static const subscriptionsDetailsAdvantageDiagnosticsSubtitle =
+      'Набор из специализированных тестов (сила, выносливость, мобильность, тип телосложения) для точного определения Вашего уровня';
+  static const subscriptionsDetailsAdvantagePlanTitle = 'Персональный план';
+  static const subscriptionsDetailsAdvantagePlanSubtitle =
+      'Автоматически сформированная программа тренировок, которая адаптируется по мере Вашего прогресса';
+  static const subscriptionsPaymentCardNumberLabel = 'Номер карты';
+  static const subscriptionsPaymentCardNumberHint = '#### #### #### ####';
+  static const subscriptionsPaymentCardNumberRequired = 'Введите номер карты';
+  static const subscriptionsPaymentCardNumberInvalid = 'Номер карты должен состоять из 16 цифр';
+  static const subscriptionsPaymentCardHolderLabel = 'Держатель карты';
+  static const subscriptionsPaymentCardHolderHint = 'IVAN IVANOV';
+  static const subscriptionsPaymentCardHolderRequired = 'Введите имя держателя карты';
+  static const subscriptionsPaymentCardHolderInvalid =
+      'Имя держателя карты должно содержать только заглавные латинские буквы и пробелы';
+  static const subscriptionsPaymentExpiryLabel = 'Срок действия';
+  static const subscriptionsPaymentExpiryMonthHint = 'Месяц';
+  static const subscriptionsPaymentExpiryYearHint = 'Год';
+  static const subscriptionsPaymentYearLabel = 'Год';
+  static const subscriptionsPaymentCvvLabel = 'CVV';
+  static const subscriptionsPaymentCvvHint = '***';
+  static const subscriptionsPaymentRememberData = 'Запомнить мои данные';
+  static const subscriptionsPaymentPayButton = 'Оплатить';
+  static const subscriptionsPaymentPreviewExpiryLabel = 'Истекает';
+  static const subscriptionsPaymentPreviewExpiryMonthLabel = 'MM';
+  static const subscriptionsPaymentPreviewExpiryYearLabel = 'YY';
+
   // Workout details.
   static const workoutDetailsTitle = 'Тренировка';
   static const workoutDetailsStartWarmupButton = 'Начать разминку';
@@ -242,6 +311,108 @@ abstract final class AppStrings {
   static const workoutExecutionWeightSecondary = 'Пропустить';
   static const workoutExecutionWeightInvalid = 'Введите корректный вес в килограммах';
 
+  // Profile.
+  static String profileGreeting(String name) => 'Здравствуйте, $name';
+  static const profileEditButton = 'Редактировать профиль';
+  static const profileChangePasswordButton = 'Сменить пароль';
+  static const profileChangePasswordTitle = 'Смена пароля';
+  static const profileOldPasswordLabel = 'Старый пароль';
+  static const profileNewPasswordLabel = 'Новый пароль';
+  static const profilePasswordConfirmationLabel = 'Подтверждение пароля';
+  static const profileUploadFileLabel = 'Загрузить файл:';
+  static const profileUploadFormat = 'формат';
+  static const profileUploadFormatPlaceholder = 'jpg формат';
+  static const profileEditEmailLabel = 'Введите email';
+  static const profileEditNameLabel = 'Введите имя';
+  static const profileSaveButton = 'Сохранить';
+  static const profileCancelButton = 'Отменить';
+  static const profileLoadFailed = 'Не удалось загрузить профиль';
+  static const profileValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const profileUpdateFailed = 'Не удалось обновить профиль. Попробуйте снова';
+  static const profileChangePasswordFailed = 'Не удалось сменить пароль. Попробуйте снова';
+  static const profileImagePickFailed = 'Не удалось выбрать изображение. Попробуйте снова';
+  static const profileCurrentPhaseTitle = 'Текущая фаза';
+  static const profileCurrentPhaseRecommendation = 'Вам рекомендуется тренироваться в неделю';
+  static const profileCurrentPhaseEmpty = 'У вас пока нет активной фазы';
+  static const profileCurrentPhaseLoadFailed = 'Не удалось загрузить текущую фазу';
+  static const profileParametersGoalLabel = 'Цель тренировок';
+  static const profileParametersLevelLabel = 'Уровень подготовки';
+  static const profileParametersWeeklyGoalLabel = 'Количество тренировок в неделю';
+  static const profileParametersSubmitButton = 'Подтвердить';
+  static const profileParametersLoadFailed = 'Не удалось загрузить параметры профиля';
+  static const profileParametersEquipmentUnavailable = 'Нет доступных вариантов';
+  static const profileParametersWeeklyGoalRequired = 'Введите количество тренировок в неделю';
+  static const profileParametersWeeklyGoalInvalid =
+      'Введите корректное количество тренировок в неделю';
+  static const profileParametersWeeklyGoalRange = 'Допустимо от 1 до 7 тренировок в неделю';
+  static const profileBottomLogoutButton = 'Выйти';
+  static const profileBottomDeleteButton = 'Удалить профиль';
+  static const profileBottomLogoutTitle = 'Вы уверены, что хотите выйти?';
+  static const profileBottomDeleteTitle = 'Вы уверены, что хотите удалить профиль?';
+  static const profileBottomDeleteConfirm = 'Удалить';
+  static const profileSubscriptionsButton = 'Выбрать подписку';
+  static const profileSubscriptionActiveTitleAccent = 'Срок действия';
+  static const profileSubscriptionActiveTitleSuffix = ' вашей подписки';
+  static const profileSubscriptionExpiryPrefix = 'до';
+  static const profileSubscriptionRenewButton = 'Продлить подписку';
+  static const profileSubscriptionCancelButton = 'Отменить подписку';
+  static const profileSubscriptionCancelTitle = 'Отменить подписку?';
+  static const profileSubscriptionCancelDescription = 'Вы действительно хотите отменить подписку?';
+  static const profileSubscriptionCancelConfirm = 'Подтвердить';
+  static const profileSubscriptionEmptyTitle = 'У Вас нет активной подписки';
+  static const profileSubscriptionEmptySubtitle = 'Оформите подписку и получите:';
+  static const profileSubscriptionBenefitTrainings = 'Полный доступ к персональным тренировкам';
+  static const profileSubscriptionBenefitTestsAndExercises =
+      'Расширенный набор тестов и упражнений';
+  static const profileSubscriptionCardLoadFailed = 'Не удалось загрузить подписку';
+  static const profileSubscriptionCardRetryButton = 'Повторить';
+  static const profileStatsTitle = 'Статистика тренировок пользователя';
+  static const profileStatsHistoryButton = 'История';
+  static const profileStatsVolumeMode = 'Объём';
+  static const profileStatsFrequencyMode = 'Частота';
+  static const profileStatsTrendMode = 'Тренд';
+  static const profileStatsCategoriesButton = 'Категории';
+  static const profileStatsExercisesButton = 'Упражнения';
+  static const profileStatsWorkoutsButton = 'Тренировки';
+  static const profileStatsVolumeChartTitle = 'Объём (кг)';
+  static const profileStatsFrequencyChartTitle = 'Частота тренировок';
+  static const profileStatsTrendChartTitle = 'Тренд по упражнениям';
+  static const profileStatsLoadFailed = 'Не удалось загрузить статистику';
+  static const profileStatsEmpty = 'Пока недостаточно данных для отображения статистики';
+  static const profileStatsHistoryTitle = 'История';
+  static const profileStatsHistoryCloseButton = 'Закрыть';
+  static const profileStatsHistorySubscriptionsTab = 'Подписки';
+  static const profileStatsHistoryWorkoutsTab = 'Тренировки';
+  static const profileStatsHistoryTestsTab = 'Тесты';
+  static const profileStatsHistorySubscriptionEmpty = 'Активная подписка отсутствует';
+  static const profileStatsHistoryWorkoutEmpty = 'Тренировки пока не завершены';
+  static const profileStatsHistoryTestEmpty = 'Тесты пока не пройдены';
+  static const profileStatsHistoryNameLabel = 'Название';
+  static const profileStatsHistoryPriceLabel = 'Стоимость';
+  static const profileStatsHistoryPeriodLabel = 'Активность';
+  static const profileStatsHistoryCompletedLabel = 'Завершено';
+  static const profileUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+
+  static const profileStatsAverageScoreLabel = 'Средняя оценка:';
+
+  static String profileStatsAveragePerWeek(String value) => 'В среднем: $value / нед';
+
+  static String profileCurrentPhaseTrainingsPerWeek(int value) =>
+      'Вы тренируетесь $value ${_profileCurrentPhaseTimesLabel(value)} в неделю.';
+
+  static String _profileCurrentPhaseTimesLabel(int value) {
+    final mod100 = value % 100;
+    if (mod100 >= 11 && mod100 <= 14) {
+      return 'раз';
+    }
+
+    return switch (value % 10) {
+      1 => 'раз',
+      2 || 3 || 4 => 'раза',
+      _ => 'раз',
+    };
+  }
+
   /// Builds the increase-adjustment message for a new absolute weight value.
   static String workoutExecutionAdjustmentIncrease(String weight) =>
       'На следующем подходе увеличьте вес до $weight $workoutExecutionWeightHint';
@@ -263,7 +434,7 @@ abstract final class AppStrings {
   }
 
   // Debug screen.
-  static const debugLogoutButton = 'Выйти';
+  static const debugScreenTitle = 'Debug Screen';
 
   /// Root tabs.
   static const testsTab = testsCatalogTitle;

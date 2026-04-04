@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/constants/app_strings.dart';
 import '../../features/auth/presentation/cubits/auth_session_cubit.dart';
 import '../../features/auth/presentation/pages/forgot_password_page_builder.dart';
 import '../../features/auth/presentation/pages/legal_document_page.dart';
@@ -21,16 +20,18 @@ import '../../features/fitness_start/presentation/pages/fitness_start_test_attem
 import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
+import '../../features/profile/presentation/pages/profile_page_builder.dart';
 import '../../features/root/presentation/pages/root_screen.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
+import '../../features/subscriptions/domain/entities/subscription_catalog_item.dart';
+import '../../features/subscriptions/presentation/pages/subscriptions_catalog_page_builder.dart';
+import '../../features/subscriptions/presentation/pages/subscriptions_details_page_builder.dart';
 import '../../features/tests/attempt/presentation/pages/tests_attempt_page_builder.dart';
 import '../../features/tests/catalog/presentation/pages/tests_catalog_page_builder.dart';
 import '../../features/workouts/details/presentation/pages/workout_details_page_builder.dart';
 import '../../features/workouts/execution/domain/entities/workout_execution_entry_mode.dart';
 import '../../features/workouts/execution/presentation/pages/workout_execution_page_builder.dart';
 import '../../features/workouts/overview/presentation/pages/workouts_overview_page_builder.dart';
-import '../../uikit/themes/colors/app_color_theme.dart';
-import '../../uikit/themes/text/app_text_theme.dart';
 import '../di/di.dart';
 import '../utils/analytics/app_analytics.dart';
 import 'analytics_route_observer.dart';
@@ -59,6 +60,11 @@ bool _isGuestCompletedAllowedPath(String path) =>
     path == AppRoutePaths.verifyResetCodePath ||
     path == AppRoutePaths.resetPasswordPath ||
     path == AppRoutePaths.legalDocumentPath;
+
+bool _isAuthenticatedAllowedAuthPath(String path) =>
+    path == AppRoutePaths.forgotPasswordPath ||
+    path == AppRoutePaths.verifyResetCodePath ||
+    path == AppRoutePaths.resetPasswordPath;
 
 /// Determines the redirect path based on the current [networkState], [authState] and [state].
 String? _redirect(
@@ -105,6 +111,7 @@ String? _redirectByAuth(
   final isSplashScreen = state.matchedLocation == AppRoutePaths.splashPath;
   final isAuthScreen = state.matchedLocation.startsWith(AppRoutePaths.authPrefix);
   final isFitnessStartScreen = state.matchedLocation.startsWith(AppRoutePaths.fitnessStartPrefix);
+  final isLegalDocument = state.matchedLocation == AppRoutePaths.legalDocumentPath;
   return authState.when(
     initial: () {
       if (isSplashScreen) return null;
@@ -119,6 +126,7 @@ String? _redirectByAuth(
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
+      if (isLegalDocument) return null;
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
@@ -142,6 +150,8 @@ String? _redirectByAuth(
           state.matchedLocation == AppRoutePaths.debugPath) {
         return null;
       }
+      if (isLegalDocument) return null;
+      if (_isAuthenticatedAllowedAuthPath(state.matchedLocation)) return null;
       if (isSplashScreen || isAuthScreen || isFitnessStartScreen) {
         return AppRoutePaths.workoutsPath;
       }
@@ -152,6 +162,7 @@ String? _redirectByAuth(
       if (state.matchedLocation == AppRoutePaths.signUpPath) {
         return AppRoutePaths.fitnessStartQuizPath;
       }
+      if (isLegalDocument) return null;
       if (isAuthScreen) return null;
       return AppRoutePaths.signInPath;
     },
@@ -245,9 +256,7 @@ final router = GoRouter(
           routes: [
             GoRoute(
               path: AppRoutePaths.profilePath,
-              builder: (_, _) => const _RootPlaceholderScreen(
-                screenName: AppStrings.profileTab,
-              ),
+              builder: (_, _) => const ProfilePageBuilder(),
             ),
           ],
         ),
@@ -264,6 +273,29 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.offlinePath,
       builder: (context, state) => const OfflinePage(),
+    ),
+    GoRoute(
+      path: AppRoutePaths.subscriptionsCatalogPath,
+      builder: (_, _) => const SubscriptionsCatalogPageBuilder(),
+      routes: [
+        GoRoute(
+          path: 'details/:subscriptionId',
+          redirect: (_, state) {
+            final rawSubscriptionId = state.pathParameters['subscriptionId'];
+            final subscriptionId = int.tryParse(rawSubscriptionId ?? '');
+            if (subscriptionId == null || subscriptionId <= 0) {
+              return AppRoutePaths.subscriptionsCatalogPath;
+            }
+            return null;
+          },
+          builder: (_, state) => SubscriptionsDetailsPageBuilder(
+            subscriptionId: int.parse(state.pathParameters['subscriptionId']!),
+            seedItem: state.extra is SubscriptionCatalogItem
+                ? state.extra as SubscriptionCatalogItem
+                : null,
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: AppRoutePaths.signInPath,
@@ -386,25 +418,5 @@ class CombinedRouterRefreshListenable<T, S> extends ChangeNotifier {
     _firstSubscription.cancel();
     _secondSubscription.cancel();
     super.dispose();
-  }
-}
-
-final class _RootPlaceholderScreen extends StatelessWidget {
-  final String screenName;
-
-  const _RootPlaceholderScreen({required this.screenName});
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = AppTextTheme.of(context);
-    final colorTheme = AppColorTheme.of(context);
-    return Scaffold(
-      body: Center(
-        child: Text(
-          screenName,
-          style: textTheme.title.copyWith(color: colorTheme.onSurface),
-        ),
-      ),
-    );
   }
 }

@@ -77,18 +77,19 @@ class AppSelectionDropdown<T extends Object> extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorTheme = AppColorTheme.of(context);
     final textTheme = AppTextTheme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colorTheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorTheme.outline),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: ConstrainedBox(
-          constraints: constraints,
+    return ConstrainedBox(
+      constraints: constraints,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorTheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: colorTheme.outline),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: ListView.builder(
             padding: EdgeInsets.zero,
+            shrinkWrap: true,
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];

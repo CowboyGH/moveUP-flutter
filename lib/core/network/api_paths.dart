@@ -41,8 +41,38 @@ abstract class ApiPaths {
   /// The endpoint for the current user profile.
   static const String me = '${apiPrefix}me';
 
+  /// The endpoint for the authenticated profile payload.
+  static const String profile = '${apiPrefix}profile';
+
+  /// The endpoint for changing the authenticated user password.
+  static const String profileChangePassword = '$profile/change-password';
+
+  /// The endpoint for uploading or deleting the authenticated user avatar.
+  static const String profileAvatar = '$profile/avatar';
+
+  /// The endpoint prefix for profile statistics.
+  static const String profileStatistics = '$profile/statistics';
+
+  /// The endpoint for volume statistics.
+  static const String profileStatisticsVolume = '$profileStatistics/volume';
+
+  /// The endpoint for trend statistics.
+  static const String profileStatisticsTrend = '$profileStatistics/trend';
+
+  /// The endpoint for frequency statistics.
+  static const String profileStatisticsFrequency = '$profileStatistics/frequency';
+
+  /// The endpoint for profile statistics exercises selector.
+  static const String profileStatisticsExercises = '$profileStatistics/exercises';
+
+  /// The endpoint for profile statistics workouts selector.
+  static const String profileStatisticsWorkouts = '$profileStatistics/workouts';
+
   /// The endpoint for all user-parameters references.
   static const String userParameterReferences = '${apiPrefix}user-parameters/references';
+
+  /// The endpoint for the current authenticated user parameters.
+  static const String userParameterMe = '${apiPrefix}user-parameters/me';
 
   /// The endpoint for saving user training goal.
   static const String userParameterGoal = '${apiPrefix}user-parameters/goal';
@@ -52,6 +82,9 @@ abstract class ApiPaths {
 
   /// The endpoint for saving user fitness level.
   static const String userParameterLevel = '${apiPrefix}user-parameters/level';
+
+  /// The endpoint for updating the current weekly training goal.
+  static const String userWeeklyGoal = '${apiPrefix}user/weekly-goal';
 
   /// The endpoint for all active testings.
   static const String testings = '${apiPrefix}testings';
@@ -70,6 +103,24 @@ abstract class ApiPaths {
 
   /// The endpoint for the current user workouts overview.
   static const String workouts = '${apiPrefix}workouts';
+
+  /// The endpoint for the subscriptions catalog.
+  static const String subscriptions = '${apiPrefix}subscriptions';
+
+  /// The endpoint for cancelling the active subscription.
+  static const String cancelSubscription = '${apiPrefix}cancel-subscription';
+
+  /// The endpoint for paying for a subscription.
+  static const String paymentSubscription = '${apiPrefix}payment/subscription';
+
+  /// The endpoint for saved cards list.
+  static const String paymentCards = '${apiPrefix}payment/cards';
+
+  /// The endpoint for saving a new card.
+  static const String paymentCardsSave = '$paymentCards/save';
+
+  /// The endpoint prefix for card default command.
+  static const String paymentCardsDefault = '$paymentCards/{cardId}/default';
 
   /// The endpoint for starting a workout.
   static const String workoutsStart = '$workouts/start';
