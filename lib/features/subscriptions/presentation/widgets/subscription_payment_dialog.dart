@@ -234,7 +234,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
                                       showLabel: false,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(2),
+                                        const _ExpiryYearTextInputFormatter(),
                                       ],
                                       validator: (value) =>
                                           SubscriptionPaymentValidators.expiryYear(
@@ -537,5 +537,34 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
+  }
+}
+
+final class _ExpiryYearTextInputFormatter extends TextInputFormatter {
+  const _ExpiryYearTextInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    if (digits.length <= 2) {
+      return TextEditingValue(
+        text: digits,
+        selection: TextSelection.collapsed(offset: digits.length),
+      );
+    }
+
+    if (digits.length == 4 && digits.startsWith('20')) {
+      final shortYear = digits.substring(2);
+      return TextEditingValue(
+        text: shortYear,
+        selection: TextSelection.collapsed(offset: shortYear.length),
+      );
+    }
+
+    return oldValue;
   }
 }
