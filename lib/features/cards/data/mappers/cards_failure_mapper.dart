@@ -6,31 +6,34 @@ import '../../../../core/failures/network/network_failure.dart';
 extension CardsFailureMapper on NetworkFailure {
   /// Maps a [NetworkFailure] into a cards-specific failure.
   CardsFailure toCardsFailure() {
-    if (this case ValidationFailure(:final errors)) {
-      final validationMessage = buildValidationMessage(
-        errors,
-        fallbackMessage: const CardsValidationFailure().message,
-      );
-      return CardsValidationFailure(
-        message: validationMessage,
-        parentException: parentException,
-        stackTrace: stackTrace,
-      );
+    final fieldErrors = switch (this) {
+      ValidationFailure(:final errors) => errors,
+      _ => const <String, List<String>>{},
+    };
+    final validationMessage = buildValidationMessage(
+      fieldErrors,
+      fallbackMessage: const CardsValidationFailure().message,
+    );
+
+    switch (code) {
+      case 'validation_failed':
+        return CardsValidationFailure(
+          message: validationMessage,
+          parentException: parentException,
+          stackTrace: stackTrace,
+        );
     }
+
     return switch (this) {
-      ValidationFailure() => CardsValidationFailure(
-        parentException: parentException,
-        stackTrace: stackTrace,
-      ),
-      const NoNetworkFailure() ||
-      const ConnectionTimeoutFailure() ||
-      const BadRequestFailure() ||
-      const UnauthorizedFailure() ||
-      const ForbiddenFailure() ||
-      const NotFoundFailure() ||
-      const ConflictFailure() ||
-      const RateLimitedFailure() ||
-      const ServerErrorFailure() ||
+      NoNetworkFailure() ||
+      ConnectionTimeoutFailure() ||
+      BadRequestFailure() ||
+      UnauthorizedFailure() ||
+      ForbiddenFailure() ||
+      NotFoundFailure() ||
+      ConflictFailure() ||
+      RateLimitedFailure() ||
+      ServerErrorFailure() ||
       UnknownNetworkFailure() => CardsRequestFailure(
         message,
         parentException: parentException,
