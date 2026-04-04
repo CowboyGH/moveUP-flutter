@@ -53,6 +53,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
   int _remainingRestSeconds = _initialRestSeconds;
   int? _activeExerciseId;
   WorkoutExerciseReaction? _selectedReaction;
+  bool _isExitDialogOpen = false;
 
   @override
   void dispose() {
@@ -76,7 +77,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
         leading: isWarmupScreen
             ? AppBackButton(
                 onPressed: _canHandleUserAction(state)
-                    ? () => context.read<WorkoutExecutionCubit>().exitWarmupToDetails()
+                    ? () => context.read<WorkoutExecutionCubit>().abandonWorkout()
                     : null,
               )
             : WorkoutCloseButton(
@@ -133,7 +134,8 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
     return !state.isStarting &&
         !state.isAdvancingWarmup &&
         !state.isSubmittingResult &&
-        !state.isCompleting;
+        !state.isCompleting &&
+        !state.isAbandoning;
   }
 
   Widget _buildStateSection(BuildContext context, WorkoutExecutionState state) {
@@ -192,7 +194,9 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
   ) {
     final textTheme = AppTextTheme.of(context);
     final colorTheme = AppColorTheme.of(context);
-    final buttonState = state.isAdvancingWarmup ? ButtonState.disabled : ButtonState.enabled;
+    final buttonState = state.isAdvancingWarmup || state.isAbandoning
+        ? ButtonState.disabled
+        : ButtonState.enabled;
     final description = step.durationSeconds > 0
         ? '${step.description}\n${step.durationSeconds} сек.'
         : step.description;
@@ -296,7 +300,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
         Align(
           child: WorkoutReactionPicker(
             selectedReaction: _selectedReaction,
-            isEnabled: !state.isSubmittingResult && !state.isCompleting,
+            isEnabled: !state.isSubmittingResult && !state.isCompleting && !state.isAbandoning,
             onSelected: (reaction) => _handleReactionSelected(context, reaction),
           ),
         ),
@@ -313,6 +317,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
     final adjustment = cubit.consumePendingAdjustment();
 
     if (state.shouldPopToDetails) {
+      _closeExitDialogIfOpen();
       cubit.clearPopToDetails();
       if (!mounted) return;
       if (Navigator.canPop(context)) {
@@ -325,6 +330,7 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
 
     final failure = state.failure;
     if (failure != null && state.currentStep != null) {
+      _closeExitDialogIfOpen();
       await showAppFeedbackDialog(
         context,
         title: AppStrings.feedbackErrorTitle,
@@ -443,22 +449,39 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
   }
 
   Future<void> _showExitDialog(BuildContext context) {
+    if (_isExitDialogOpen) return Future.value();
+
+    _isExitDialogOpen = true;
+    final cubit = context.read<WorkoutExecutionCubit>();
     return showAppActionDialog(
       context,
       title: AppStrings.workoutExecutionExitTitle,
       description: AppStrings.workoutExecutionExitDescription,
-      primaryAction: MainButton(
-        onPressed: () {
-          context.pop();
-          context.read<WorkoutExecutionCubit>().completeWorkout();
-        },
-        child: const Text(AppStrings.workoutExecutionExitPrimary),
+      primaryAction: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<WorkoutExecutionCubit, WorkoutExecutionState>(
+          builder: (context, state) {
+            return MainButton(
+              state: state.isAbandoning ? ButtonState.loading : ButtonState.enabled,
+              onPressed: context.read<WorkoutExecutionCubit>().abandonWorkout,
+              child: const Text(AppStrings.workoutExecutionExitPrimary),
+            );
+          },
+        ),
       ),
-      secondaryAction: SecondaryButton(
-        onPressed: () => context.pop(),
-        child: const Text(AppStrings.workoutExecutionExitSecondary),
+      secondaryAction: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<WorkoutExecutionCubit, WorkoutExecutionState>(
+          builder: (context, state) {
+            return SecondaryButton(
+              state: state.isAbandoning ? ButtonState.disabled : ButtonState.enabled,
+              onPressed: _closeExitDialogIfOpen,
+              child: const Text(AppStrings.workoutExecutionExitSecondary),
+            );
+          },
+        ),
       ),
-    );
+    ).whenComplete(() => _isExitDialogOpen = false);
   }
 
   Future<void> _showCompletedDialog(BuildContext context) {
@@ -474,6 +497,29 @@ class _WorkoutExecutionPageState extends State<WorkoutExecutionPage> {
         child: const Text(AppStrings.workoutExecutionCompletedPrimary),
       ),
     );
+  }
+
+  void _closeExitDialogIfOpen() {
+    if (!_isExitDialogOpen || !mounted) return;
+
+    final navigator = Navigator.of(context, rootNavigator: true);
+    if (!navigator.canPop()) {
+      _isExitDialogOpen = false;
+      return;
+    }
+
+    Route<dynamic>? topRoute;
+    navigator.popUntil((route) {
+      topRoute = route;
+      return true;
+    });
+    if (topRoute is! PopupRoute<dynamic>) {
+      _isExitDialogOpen = false;
+      return;
+    }
+
+    navigator.pop();
+    _isExitDialogOpen = false;
   }
 }
 

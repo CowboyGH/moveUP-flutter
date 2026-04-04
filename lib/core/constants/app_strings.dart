@@ -290,10 +290,10 @@ abstract final class AppStrings {
   static const workoutExecutionReactionPrompt = 'Как ощущался данный подход?';
   static const workoutExecutionNextWarmupButton = 'Далее';
   static const workoutExecutionFinishWarmupButton = 'Завершить разминку';
-  static const workoutExecutionExitTitle = 'Завершить тренировку';
+  static const workoutExecutionExitTitle = 'Сбросить тренировку';
   static const workoutExecutionExitDescription =
-      'Вы действительно хотите завершить тренировку? Если Вы захотите ее продолжить, придется начать сначала';
-  static const workoutExecutionExitPrimary = 'Завершить';
+      'Вы действительно хотите сбросить активную тренировку? Если Вы захотите ее продолжить, придется начать сначала';
+  static const workoutExecutionExitPrimary = 'Сбросить';
   static const workoutExecutionExitSecondary = 'Отменить';
   static const workoutExecutionCompletedTitle = 'Тренировка завершена';
   static const workoutExecutionCompletedDescription =
