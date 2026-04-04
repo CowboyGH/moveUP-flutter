@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Workouts overview now reflects active workout state: started workouts open as a continue flow, while starting a different assigned workout is blocked with a dedicated dialog when another workout is already active.
 - Workout details CTAs now open a fullscreen workout execution flow above the shell, hiding the bottom navigation bar while the user completes warmups and training steps.
 - Workout execution now captures used weight before saving exercise results, shows load-adjustment feedback from backend, and displays exercise instructions with sets, reps, and current weight.
+- Workout execution close actions now abandon the active workout through the new backend command instead of completing it, so warmup back and the in-workout close flow both reset the started workout back to assigned.
 - Workouts overview and details screens now reuse a shared `WorkoutCard` widget instead of maintaining duplicated card implementations.
 - Workouts overview and details app bars now reuse a dedicated `appBarTitle` text token instead of local per-page style overrides.
 - Authenticated tests catalog cards now open the real test attempt flow instead of the debug screen.
