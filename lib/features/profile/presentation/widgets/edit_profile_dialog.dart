@@ -11,7 +11,6 @@ import '../../../../../uikit/buttons/button_state.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/buttons/secondary_button.dart';
 import '../../../../../uikit/dialogs/app_feedback_dialog.dart';
-import '../../../../../uikit/images/network_image_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
@@ -19,6 +18,7 @@ import '../../../auth/presentation/validators/auth_validators.dart';
 import '../../../auth/presentation/widgets/auth_text_field.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../cubits/update_profile_cubit.dart';
+import 'profile_avatar_image.dart';
 import 'profile_dialog_shell.dart';
 
 /// Opens the edit-profile dialog and returns the refreshed user on success.
@@ -251,7 +251,7 @@ final class _AvatarPreview extends StatelessWidget {
         fit: BoxFit.cover,
       );
     }
-    return NetworkImageWidget(
+    return ProfileAvatarImage(
       imageUrl: imageUrl ?? '',
       height: 296,
     );

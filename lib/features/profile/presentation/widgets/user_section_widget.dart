@@ -4,10 +4,10 @@ import '../../../../../core/constants/app_strings.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/buttons/secondary_button.dart';
 import '../../../../../uikit/cards/app_card.dart';
-import '../../../../../uikit/images/network_image_widget.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
+import 'profile_avatar_image.dart';
 
 /// The first profile section with the basic authenticated user data.
 class UserSectionWidget extends StatelessWidget {
@@ -42,7 +42,7 @@ class UserSectionWidget extends StatelessWidget {
             child: ClipOval(
               child: SizedBox.square(
                 dimension: 140,
-                child: NetworkImageWidget(
+                child: ProfileAvatarImage(
                   imageUrl: user.avatar ?? '',
                   height: 140,
                 ),

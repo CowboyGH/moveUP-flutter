@@ -29,6 +29,8 @@ abstract final class AppAssets {
   static const imageFigure = 'figure';
   static const imageLine = 'line';
   static const imageLineVariant = 'line_variant';
+  static const imagePlaceholder = 'assets/images/image_placeholder.png';
+  static const avatarPlaceholder = 'assets/images/avatar_placeholder.png';
 
   // Legal documents.
   static const legalPrivacyPolicy = 'assets/legal/privacy_policy.txt';
