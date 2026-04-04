@@ -9,6 +9,7 @@ abstract class WorkoutExecutionState with _$WorkoutExecutionState {
     @Default(false) bool isAdvancingWarmup,
     @Default(false) bool isSubmittingResult,
     @Default(false) bool isCompleting,
+    @Default(false) bool isAbandoning,
     int? userWorkoutId,
     WorkoutExecutionStep? currentStep,
     WorkoutsFailure? failure,

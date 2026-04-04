@@ -507,5 +507,58 @@ void main() {
         verifyNoMoreInteractions(apiClient);
       });
     });
+
+    group('abandonWorkout', () {
+      test('returns success(null) when api succeeds', () async {
+        // Arrange
+        when(apiClient.abandonWorkout(userWorkoutId)).thenAnswer((_) async {});
+
+        // Act
+        final result = await repository.abandonWorkout(userWorkoutId);
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        verify(apiClient.abandonWorkout(userWorkoutId)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns WorkoutsRequestFailure when api request fails', () async {
+        // Arrange
+        final exception = createWorkoutsDioBadResponseException(
+          path: '/workouts/$userWorkoutId/abandon',
+          statusCode: 500,
+          code: 'server_error',
+        );
+        when(apiClient.abandonWorkout(userWorkoutId)).thenThrow(exception);
+
+        // Act
+        final result = await repository.abandonWorkout(userWorkoutId);
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<WorkoutsRequestFailure>());
+
+        verify(apiClient.abandonWorkout(userWorkoutId)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns UnknownWorkoutsFailure when unexpected exception occurs', () async {
+        // Arrange
+        final exception = Exception('unexpected_error');
+        when(apiClient.abandonWorkout(userWorkoutId)).thenThrow(exception);
+
+        // Act
+        final result = await repository.abandonWorkout(userWorkoutId);
+
+        // Assert
+        expect(result.isFailure, isTrue);
+        expect(result.failure, isA<UnknownWorkoutsFailure>());
+        expect(result.failure!.parentException, exception);
+
+        verify(apiClient.abandonWorkout(userWorkoutId)).called(1);
+        verify(logger.e(any, exception, any)).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+    });
   });
 }

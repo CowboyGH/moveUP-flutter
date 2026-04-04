@@ -154,21 +154,21 @@ void main() {
     );
 
     blocTest<WorkoutExecutionCubit, WorkoutExecutionState>(
-      'exitWarmupToDetails sets shouldPopToDetails to true on success',
+      'abandonWorkout sets shouldPopToDetails to true on success',
       setUp: () => when(
-        repository.skipWarmup(1),
-      ).thenAnswer((_) async => Success(exerciseStep)),
+        repository.abandonWorkout(1),
+      ).thenAnswer((_) async => const Success(null)),
       build: () => cubit,
       seed: () => WorkoutExecutionState(
         userWorkoutId: userWorkoutId,
         currentStep: warmupStep,
       ),
-      act: (cubit) => cubit.exitWarmupToDetails(),
+      act: (cubit) => cubit.abandonWorkout(),
       expect: () => [
         WorkoutExecutionState(
           userWorkoutId: userWorkoutId,
           currentStep: warmupStep,
-          isAdvancingWarmup: true,
+          isAbandoning: true,
         ),
         WorkoutExecutionState(
           userWorkoutId: userWorkoutId,
@@ -176,7 +176,62 @@ void main() {
           shouldPopToDetails: true,
         ),
       ],
-      verify: (_) => verify(repository.skipWarmup(1)).called(1),
+      verify: (_) => verify(repository.abandonWorkout(1)).called(1),
+    );
+
+    blocTest<WorkoutExecutionCubit, WorkoutExecutionState>(
+      'abandonWorkout emits failure and preserves current step context when repository fails',
+      setUp: () => when(
+        repository.abandonWorkout(1),
+      ).thenAnswer((_) async => const Failure(workoutsFailure)),
+      build: () => cubit,
+      seed: () => WorkoutExecutionState(
+        userWorkoutId: userWorkoutId,
+        currentStep: warmupStep,
+      ),
+      act: (cubit) => cubit.abandonWorkout(),
+      expect: () => [
+        WorkoutExecutionState(
+          userWorkoutId: userWorkoutId,
+          currentStep: warmupStep,
+          isAbandoning: true,
+        ),
+        WorkoutExecutionState(
+          userWorkoutId: userWorkoutId,
+          currentStep: warmupStep,
+          failure: workoutsFailure,
+        ),
+      ],
+      verify: (_) => verify(repository.abandonWorkout(1)).called(1),
+    );
+
+    blocTest<WorkoutExecutionCubit, WorkoutExecutionState>(
+      'abandonWorkout emits inProgress only once when called twice',
+      setUp: () => when(
+        repository.abandonWorkout(1),
+      ).thenAnswer((_) async => const Success(null)),
+      build: () => cubit,
+      seed: () => WorkoutExecutionState(
+        userWorkoutId: userWorkoutId,
+        currentStep: warmupStep,
+      ),
+      act: (cubit) {
+        cubit.abandonWorkout();
+        cubit.abandonWorkout();
+      },
+      expect: () => [
+        WorkoutExecutionState(
+          userWorkoutId: userWorkoutId,
+          currentStep: warmupStep,
+          isAbandoning: true,
+        ),
+        WorkoutExecutionState(
+          userWorkoutId: userWorkoutId,
+          currentStep: warmupStep,
+          shouldPopToDetails: true,
+        ),
+      ],
+      verify: (_) => verify(repository.abandonWorkout(1)).called(1),
     );
 
     blocTest<WorkoutExecutionCubit, WorkoutExecutionState>(

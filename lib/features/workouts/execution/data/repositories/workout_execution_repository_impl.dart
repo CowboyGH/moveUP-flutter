@@ -163,6 +163,20 @@ final class WorkoutExecutionRepositoryImpl implements WorkoutExecutionRepository
       return Result.failure(UnknownWorkoutsFailure(parentException: e, stackTrace: s));
     }
   }
+
+  @override
+  Future<Result<void, WorkoutsFailure>> abandonWorkout(int userWorkoutId) async {
+    try {
+      await _apiClient.abandonWorkout(userWorkoutId);
+      return const Result.success(null);
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toWorkoutsFailure());
+    } catch (e, s) {
+      _logger.e('AbandonWorkout failed with unexpected error', e, s);
+      return Result.failure(UnknownWorkoutsFailure(parentException: e, stackTrace: s));
+    }
+  }
 }
 
 WorkoutLoadAdjustment? _mapLoadAdjustment(SaveExerciseResultAdjustmentDto? adjustment) {

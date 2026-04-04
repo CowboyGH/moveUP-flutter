@@ -21,7 +21,11 @@ final class WorkoutExecutionCubit extends Cubit<WorkoutExecutionState> {
   WorkoutExecutionCubit(this._repository) : super(const WorkoutExecutionState());
 
   bool get _isBusy =>
-      state.isStarting || state.isAdvancingWarmup || state.isSubmittingResult || state.isCompleting;
+      state.isStarting ||
+      state.isAdvancingWarmup ||
+      state.isSubmittingResult ||
+      state.isCompleting ||
+      state.isAbandoning;
 
   /// Starts workout execution for the given [userWorkoutId] and [entryMode].
   Future<void> startExecution(
@@ -36,6 +40,7 @@ final class WorkoutExecutionCubit extends Cubit<WorkoutExecutionState> {
         isAdvancingWarmup: false,
         isSubmittingResult: false,
         isCompleting: false,
+        isAbandoning: false,
         userWorkoutId: userWorkoutId,
         currentStep: null,
         failure: null,
@@ -156,46 +161,6 @@ final class WorkoutExecutionCubit extends Cubit<WorkoutExecutionState> {
     }
   }
 
-  /// Completes warmup early and requests the page to return to details.
-  Future<void> exitWarmupToDetails() async {
-    final userWorkoutId = state.userWorkoutId;
-    final currentStep = state.currentStep;
-    if (_isBusy ||
-        state.isCompleted ||
-        userWorkoutId == null ||
-        currentStep is! WorkoutWarmupStep) {
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        isAdvancingWarmup: true,
-        failure: null,
-      ),
-    );
-
-    final result = await _repository.skipWarmup(userWorkoutId);
-    if (isClosed) return;
-
-    switch (result) {
-      case Success():
-        emit(
-          state.copyWith(
-            isAdvancingWarmup: false,
-            failure: null,
-            shouldPopToDetails: true,
-          ),
-        );
-      case Failure(:final error):
-        emit(
-          state.copyWith(
-            isAdvancingWarmup: false,
-            failure: error,
-          ),
-        );
-    }
-  }
-
   /// Submits a reaction for the current workout exercise.
   Future<void> submitReaction(
     WorkoutExerciseReaction reaction, {
@@ -250,6 +215,40 @@ final class WorkoutExecutionCubit extends Cubit<WorkoutExecutionState> {
         emit(
           state.copyWith(
             isSubmittingResult: false,
+            failure: error,
+          ),
+        );
+    }
+  }
+
+  /// Abandons the current workout and requests the page to return to details.
+  Future<void> abandonWorkout() async {
+    final userWorkoutId = state.userWorkoutId;
+    if (_isBusy || state.isCompleted || userWorkoutId == null) return;
+
+    emit(
+      state.copyWith(
+        isAbandoning: true,
+        failure: null,
+      ),
+    );
+
+    final result = await _repository.abandonWorkout(userWorkoutId);
+    if (isClosed) return;
+
+    switch (result) {
+      case Success():
+        emit(
+          state.copyWith(
+            isAbandoning: false,
+            failure: null,
+            shouldPopToDetails: true,
+          ),
+        );
+      case Failure(:final error):
+        emit(
+          state.copyWith(
+            isAbandoning: false,
             failure: error,
           ),
         );
