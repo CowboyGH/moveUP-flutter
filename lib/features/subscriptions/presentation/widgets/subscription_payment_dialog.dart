@@ -108,6 +108,8 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
     final form = _formKey.currentState;
     if (form == null || !form.validate()) return;
 
+    final expiryYear = _expiryYearController.text.trim();
+
     context.read<SubscriptionPaymentCubit>().pay(
       payload: SubscriptionPaymentPayload(
         subscriptionId: widget.item.id,
@@ -115,7 +117,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
         cardNumber: _cardNumberController.text.replaceAll(RegExp(r'\D'), ''),
         cardHolder: _cardHolderController.text.trim(),
         expiryMonth: _expiryMonthController.text.trim(),
-        expiryYear: _expiryYearController.text.trim(),
+        expiryYear: _buildBackendExpiryYear(expiryYear),
         cvv: _cvvController.text.trim(),
       ),
     );
@@ -232,7 +234,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
                                       showLabel: false,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(4),
+                                        LengthLimitingTextInputFormatter(2),
                                       ],
                                       validator: (value) =>
                                           SubscriptionPaymentValidators.expiryYear(
@@ -309,6 +311,8 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
     );
   }
 }
+
+String _buildBackendExpiryYear(String value) => value.isEmpty ? value : '20$value';
 
 final class _PaymentPreviewCard extends StatelessWidget {
   final String previewCardNumber;

@@ -46,7 +46,7 @@ abstract final class CardFormValidators {
       return AppStrings.subscriptionsPaymentExpiryMonthHint;
     }
 
-    final year = int.tryParse(_trimmed(yearValue));
+    final year = _parseFullYear(yearValue);
     if (year != null) {
       final currentDate = now ?? DateTime.now();
       if (_isExpired(month: month, year: year, now: currentDate) ||
@@ -67,11 +67,11 @@ abstract final class CardFormValidators {
     if (trimmed.isEmpty) {
       return AppStrings.subscriptionsPaymentExpiryYearHint;
     }
-    if (trimmed.length != 4) {
+    if (trimmed.length != 2) {
       return AppStrings.subscriptionsPaymentExpiryYearHint;
     }
 
-    final year = int.tryParse(trimmed);
+    final year = _parseFullYear(trimmed);
     if (year == null) {
       return AppStrings.subscriptionsPaymentExpiryYearHint;
     }
@@ -106,6 +106,16 @@ abstract final class CardFormValidators {
   static String _trimmed(String? value) => value?.trim() ?? '';
 
   static String _digitsOnly(String? value) => (value ?? '').replaceAll(RegExp(r'\D'), '');
+
+  static int? _parseFullYear(String? value) {
+    final trimmed = _trimmed(value);
+    if (trimmed.length != 2) return null;
+
+    final shortYear = int.tryParse(trimmed);
+    if (shortYear == null) return null;
+
+    return 2000 + shortYear;
+  }
 
   static bool _isExpired({
     required int month,
