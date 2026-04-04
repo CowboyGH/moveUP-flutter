@@ -208,6 +208,20 @@ abstract final class AppStrings {
       'У вас уже есть начатая тренировка. Сначала завершите её, чтобы начать новую';
   static const workoutsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
 
+  // Cards.
+  static const cardsValidationFailed = 'Проверьте введенные данные и попробуйте снова';
+  static const cardsUnknown = 'Не удалось выполнить действие. Попробуйте снова';
+  static const cardsSectionTitle = 'Мои карты';
+  static const cardsLoadFailed = 'Не удалось загрузить карты';
+  static const cardsAddButton = 'Добавить карту';
+  static const cardsDefaultButton = 'Основная карта';
+  static const cardsMakeDefaultButton = 'Сделать карту основной';
+  static const cardsDeleteTitle = 'Удалить карту';
+  static const cardsDeleteDescription = 'Вы действительно хотите удалить карту?';
+  static const cardsDeleteConfirmButton = 'Подтвердить';
+  static const cardsAddLimitTitle = 'Нельзя добавить карту';
+  static const cardsAddLimitMessage = 'Можно сохранить не более 3 карт';
+
   // Subscriptions catalog.
   static const subscriptionsCatalogTitle = 'Подписки';
   static const subscriptionsCatalogEmpty = 'Подписки не найдены';

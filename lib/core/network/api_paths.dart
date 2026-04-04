@@ -113,6 +113,15 @@ abstract class ApiPaths {
   /// The endpoint for paying for a subscription.
   static const String paymentSubscription = '${apiPrefix}payment/subscription';
 
+  /// The endpoint for saved cards list.
+  static const String paymentCards = '${apiPrefix}payment/cards';
+
+  /// The endpoint for saving a new card.
+  static const String paymentCardsSave = '$paymentCards/save';
+
+  /// The endpoint prefix for card default command.
+  static const String paymentCardsDefault = '$paymentCards/{cardId}/default';
+
   /// The endpoint for starting a workout.
   static const String workoutsStart = '$workouts/start';
 

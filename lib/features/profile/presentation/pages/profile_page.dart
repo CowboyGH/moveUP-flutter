@@ -22,6 +22,7 @@ import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
 import '../widgets/edit_profile_dialog.dart';
 import '../widgets/profile_bottom_section_widget.dart';
+import '../widgets/profile_cards_section_widget.dart';
 import '../widgets/profile_parameters_section_widget.dart';
 import '../widgets/profile_subscription_section_widget.dart';
 import '../widgets/stats/profile_history_dialog.dart';
@@ -137,6 +138,8 @@ class ProfilePage extends StatelessWidget {
                   ProfileSubscriptionSectionWidget(
                     activeSubscription: state.historySnapshot?.activeSubscription,
                   ),
+                  const SizedBox(height: 36),
+                  const ProfileCardsSectionWidget(),
                   const SizedBox(height: 36),
                   const CurrentPhaseSectionWidget(),
                   const SizedBox(height: 36),
