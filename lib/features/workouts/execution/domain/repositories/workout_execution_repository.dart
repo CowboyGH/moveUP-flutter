@@ -31,6 +31,9 @@ abstract interface class WorkoutExecutionRepository {
     double? weightUsed,
   });
 
+  /// Abandons the current workout and resets it back to assigned.
+  Future<Result<void, WorkoutsFailure>> abandonWorkout(int userWorkoutId);
+
   /// Completes the current workout.
   Future<Result<void, WorkoutsFailure>> completeWorkout(int userWorkoutId);
 }
