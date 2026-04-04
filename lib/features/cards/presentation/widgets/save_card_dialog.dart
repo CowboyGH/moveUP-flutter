@@ -51,6 +51,8 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
   final _expiryYearController = TextEditingController();
   final _cvvController = TextEditingController();
 
+  String get _normalizedCardHolder => _cardHolderController.text.trim().toUpperCase();
+
   @override
   void initState() {
     super.initState();
@@ -100,7 +102,7 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
     context.read<SaveCardCubit>().saveCard(
       payload: SaveCardPayload(
         cardNumber: _cardNumberController.text.replaceAll(RegExp(r'\D'), ''),
-        cardHolder: _cardHolderController.text.trim(),
+        cardHolder: _normalizedCardHolder,
         expiryMonth: _expiryMonthController.text.trim(),
         expiryYear: _expiryYearController.text.trim(),
       ),
@@ -160,6 +162,7 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
                       enabled: !isInProgress,
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [const _CardHolderTextInputFormatter()],
                       validator: CardFormValidators.cardHolder,
                     ),
                     const SizedBox(height: 12),
@@ -274,7 +277,7 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
               right: 0,
               child: _CardPreview(
                 previewCardNumberController: _previewCardNumberController,
-                cardHolderValue: _cardHolderController.text,
+                cardHolderValue: _normalizedCardHolder,
                 expiryMonthValue: _expiryMonthController.text.trim(),
                 expiryYearValue: _expiryYearController.text.trim(),
               ),
@@ -468,6 +471,18 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
   }
 
   bool _isDigit(int codeUnit) => codeUnit >= 48 && codeUnit <= 57;
+}
+
+final class _CardHolderTextInputFormatter extends TextInputFormatter {
+  const _CardHolderTextInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(text: newValue.text.toUpperCase());
+  }
 }
 
 extension on String {

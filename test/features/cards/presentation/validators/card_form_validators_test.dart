@@ -34,8 +34,7 @@ void main() {
       expect(CardFormValidators.cardHolder('   '), requiredMessage);
     });
 
-    test('returns invalid error when value contains non-uppercase latin symbols', () {
-      expect(CardFormValidators.cardHolder('Ivan Ivanov'), invalidMessage);
+    test('returns invalid error when value contains non-latin or non-letter symbols', () {
       expect(CardFormValidators.cardHolder('ИВАН ИВАНОВ'), invalidMessage);
       expect(CardFormValidators.cardHolder('IVAN1 IVANOV'), invalidMessage);
       expect(CardFormValidators.cardHolder('IVAN- IVANOV'), invalidMessage);
@@ -43,6 +42,7 @@ void main() {
 
     test('returns null when value is valid', () {
       expect(CardFormValidators.cardHolder('IVAN IVANOV'), isNull);
+      expect(CardFormValidators.cardHolder('Ivan Ivanov'), isNull);
       expect(CardFormValidators.cardHolder('  IVAN IVANOV  '), isNull);
       expect(CardFormValidators.cardHolder('IVAN'), isNull);
     });

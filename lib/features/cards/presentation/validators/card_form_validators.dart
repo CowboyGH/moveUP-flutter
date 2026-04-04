@@ -20,7 +20,7 @@ abstract final class CardFormValidators {
 
   /// Validates a card holder.
   static String? cardHolder(String? value) {
-    final trimmed = _trimmed(value);
+    final trimmed = _trimmed(value).toUpperCase();
     if (trimmed.isEmpty) {
       return AppStrings.subscriptionsPaymentCardHolderRequired;
     }
