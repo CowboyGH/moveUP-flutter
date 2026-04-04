@@ -79,7 +79,7 @@ void main() {
       expect(
         SubscriptionPaymentValidators.expiryMonth(
           '3',
-          yearValue: '2026',
+          yearValue: '26',
           now: fixedNow,
         ),
         isNotNull,
@@ -90,7 +90,7 @@ void main() {
       expect(
         SubscriptionPaymentValidators.expiryMonth(
           '4',
-          yearValue: '2026',
+          yearValue: '26',
           now: fixedNow,
         ),
         isNull,
@@ -98,7 +98,7 @@ void main() {
       expect(
         SubscriptionPaymentValidators.expiryMonth(
           '5',
-          yearValue: '2026',
+          yearValue: '26',
           now: fixedNow,
         ),
         isNull,
@@ -109,7 +109,7 @@ void main() {
       expect(
         SubscriptionPaymentValidators.expiryMonth(
           '5',
-          yearValue: '9999',
+          yearValue: '99',
           now: fixedNow,
         ),
         isNotNull,
@@ -127,21 +127,21 @@ void main() {
       expect(SubscriptionPaymentValidators.expiryYear('   '), invalidMessage);
     });
 
-    test('returns invalid error when year length is not 4', () {
-      expect(SubscriptionPaymentValidators.expiryYear('24'), invalidMessage);
+    test('returns invalid error when year length is not 2', () {
+      expect(SubscriptionPaymentValidators.expiryYear('2'), invalidMessage);
       expect(SubscriptionPaymentValidators.expiryYear('202'), invalidMessage);
-      expect(SubscriptionPaymentValidators.expiryYear('20245'), invalidMessage);
+      expect(SubscriptionPaymentValidators.expiryYear('2026'), invalidMessage);
     });
 
-    test('returns null when year length is 4', () {
-      expect(SubscriptionPaymentValidators.expiryYear('2026'), isNull);
-      expect(SubscriptionPaymentValidators.expiryYear(' 2026 '), isNull);
+    test('returns null when year length is 2', () {
+      expect(SubscriptionPaymentValidators.expiryYear('26'), isNull);
+      expect(SubscriptionPaymentValidators.expiryYear(' 26 '), isNull);
     });
 
     test('returns expired error when year is before current year', () {
       expect(
         SubscriptionPaymentValidators.expiryYear(
-          '2025',
+          '25',
           now: fixedNow,
         ),
         isNotNull,
@@ -151,7 +151,7 @@ void main() {
     test('returns expired error when month is already in the past for current year', () {
       expect(
         SubscriptionPaymentValidators.expiryYear(
-          '2026',
+          '26',
           monthValue: '3',
           now: fixedNow,
         ),
@@ -162,7 +162,7 @@ void main() {
     test('returns null when current year is paired with current or future month', () {
       expect(
         SubscriptionPaymentValidators.expiryYear(
-          '2026',
+          '26',
           monthValue: '4',
           now: fixedNow,
         ),
@@ -170,7 +170,7 @@ void main() {
       );
       expect(
         SubscriptionPaymentValidators.expiryYear(
-          '2026',
+          '26',
           monthValue: '12',
           now: fixedNow,
         ),
@@ -181,7 +181,7 @@ void main() {
     test('returns invalid when year is unrealistically far in the future', () {
       expect(
         SubscriptionPaymentValidators.expiryYear(
-          '9999',
+          '99',
           now: fixedNow,
         ),
         isNotNull,

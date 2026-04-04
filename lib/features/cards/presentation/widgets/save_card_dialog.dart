@@ -99,12 +99,14 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
     final form = _formKey.currentState;
     if (form == null || !form.validate()) return;
 
+    final expiryYear = _expiryYearController.text.trim();
+
     context.read<SaveCardCubit>().saveCard(
       payload: SaveCardPayload(
         cardNumber: _cardNumberController.text.replaceAll(RegExp(r'\D'), ''),
         cardHolder: _normalizedCardHolder,
         expiryMonth: _expiryMonthController.text.trim(),
-        expiryYear: _expiryYearController.text.trim(),
+        expiryYear: _buildBackendExpiryYear(expiryYear),
       ),
     );
   }
@@ -220,7 +222,7 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
                                       showLabel: false,
                                       inputFormatters: [
                                         FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(4),
+                                        const _ExpiryYearTextInputFormatter(),
                                       ],
                                       validator: (value) => CardFormValidators.expiryYear(
                                         value,
@@ -288,6 +290,8 @@ class _SaveCardDialogState extends State<SaveCardDialog> {
     );
   }
 }
+
+String _buildBackendExpiryYear(String value) => value.isEmpty ? value : '20$value';
 
 final class _CardPreview extends StatelessWidget {
   final TextEditingController previewCardNumberController;
@@ -487,4 +491,33 @@ final class _CardHolderTextInputFormatter extends TextInputFormatter {
 
 extension on String {
   String ifEmpty(String fallback) => isEmpty ? fallback : this;
+}
+
+final class _ExpiryYearTextInputFormatter extends TextInputFormatter {
+  const _ExpiryYearTextInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+
+    if (digits.length <= 2) {
+      return TextEditingValue(
+        text: digits,
+        selection: TextSelection.collapsed(offset: digits.length),
+      );
+    }
+
+    if (digits.length == 4 && digits.startsWith('20')) {
+      final shortYear = digits.substring(2);
+      return TextEditingValue(
+        text: shortYear,
+        selection: TextSelection.collapsed(offset: shortYear.length),
+      );
+    }
+
+    return oldValue;
+  }
 }
