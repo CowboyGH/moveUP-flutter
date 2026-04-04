@@ -43,11 +43,12 @@ void main() {
 
     blocTest<SubscriptionPaymentCubit, SubscriptionPaymentState>(
       'emits failed when pay fails',
-      setUp: () => when(
-        repository.paySubscription(payload: testSubscriptionPaymentPayload),
-      ).thenAnswer(
-        (_) async => const Failure<void, SubscriptionsFailure>(subscriptionsFailure),
-      ),
+      setUp: () =>
+          when(
+            repository.paySubscription(payload: testSubscriptionPaymentPayload),
+          ).thenAnswer(
+            (_) async => const Failure<void, SubscriptionsFailure>(subscriptionsFailure),
+          ),
       build: () => cubit,
       act: (cubit) => cubit.pay(payload: testSubscriptionPaymentPayload),
       expect: () => const [

@@ -63,8 +63,9 @@ void main() {
     blocTest<SubscriptionsCubit, SubscriptionsState>(
       'emits failed(subscriptionsFailure) when loadSubscriptions fails',
       setUp: () => when(repository.getSubscriptions()).thenAnswer(
-        (_) async =>
-            const Failure<List<SubscriptionCatalogItem>, SubscriptionsFailure>(subscriptionsFailure),
+        (_) async => const Failure<List<SubscriptionCatalogItem>, SubscriptionsFailure>(
+          subscriptionsFailure,
+        ),
       ),
       build: () => subscriptionsCubit,
       act: (cubit) => cubit.loadSubscriptions(),
