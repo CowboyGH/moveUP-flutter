@@ -24,7 +24,7 @@ class NetworkImageWidget extends StatelessWidget {
       height: height,
       child: CachedNetworkImage(
         imageUrl: imageUrl,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         placeholder: (_, _) => const _ImagePlaceholder(),
         errorWidget: (_, _, _) => const _ImagePlaceholder(),
       ),
@@ -39,7 +39,7 @@ class _ImagePlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       AppAssets.imagePlaceholder,
-      fit: BoxFit.cover,
+      fit: BoxFit.contain,
       errorBuilder: (_, _, _) => const Center(
         child: Icon(
           Icons.image_not_supported_outlined,
