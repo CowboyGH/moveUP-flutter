@@ -15,15 +15,15 @@ import '../mappers/test_attempt_mapper.dart';
 import 'test_attempt_result_payload_validator.dart';
 
 /// Authenticated implementation of [AuthenticatedTestAttemptRepository].
-final class AuthenticatedTestAttemptRepositoryImpl implements AuthenticatedTestAttemptRepository {
+final class TestAttemptRepositoryImpl implements TestAttemptRepository {
   /// Logger for tracking authenticated test attempt operations.
   final AppLogger _logger;
 
   /// API client for tests catalog and attempts.
   final TestsApiClient _apiClient;
 
-  /// Creates an instance of [AuthenticatedTestAttemptRepositoryImpl].
-  AuthenticatedTestAttemptRepositoryImpl(this._logger, this._apiClient);
+  /// Creates an instance of [TestAttemptRepositoryImpl].
+  TestAttemptRepositoryImpl(this._logger, this._apiClient);
 
   @override
   Future<Result<TestAttemptStart, TestsFailure>> startTest(int testingId) async {

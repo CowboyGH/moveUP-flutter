@@ -34,8 +34,7 @@ import '../../features/subscriptions/data/remote/subscription_payment_api_client
 import '../../features/subscriptions/data/remote/subscriptions_api_client.dart';
 import '../../features/subscriptions/data/repositories/subscriptions_repository_impl.dart';
 import '../../features/subscriptions/domain/repositories/subscriptions_repository.dart';
-import '../../features/tests/attempt/data/repositories/authenticated_test_attempt_repository_impl.dart';
-import '../../features/tests/attempt/data/repositories/guest_test_attempt_repository_impl.dart';
+import '../../features/tests/attempt/data/repositories/test_attempt_repository_impl.dart';
 import '../../features/tests/attempt/domain/repositories/test_attempt_repository.dart';
 import '../../features/tests/catalog/data/repositories/tests_catalog_repository_impl.dart';
 import '../../features/tests/catalog/domain/repositories/tests_catalog_repository.dart';
@@ -204,14 +203,8 @@ Future<void> setupDI() async {
       di<TestsApiClient>(),
     ),
   );
-  di.registerLazySingleton<GuestTestAttemptRepository>(
-    () => GuestTestAttemptRepositoryImpl(
-      di<AppLogger>(),
-      di<TestsApiClient>(),
-    ),
-  );
-  di.registerLazySingleton<AuthenticatedTestAttemptRepository>(
-    () => AuthenticatedTestAttemptRepositoryImpl(
+  di.registerLazySingleton<TestAttemptRepository>(
+    () => TestAttemptRepositoryImpl(
       di<AppLogger>(),
       di<TestsApiClient>(),
     ),

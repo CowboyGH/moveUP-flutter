@@ -20,8 +20,7 @@ class TestsAttemptPageBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          TestAttemptCubit(di<AuthenticatedTestAttemptRepository>())..startTest(testingId),
+      create: (_) => TestAttemptCubit(di<TestAttemptRepository>())..startTest(testingId),
       child: TestsAttemptPage(testingId: testingId),
     );
   }
