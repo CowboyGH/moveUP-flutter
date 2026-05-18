@@ -5,13 +5,13 @@ import 'package:moveup_flutter/core/failures/feature/tests/tests_failure.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/complete_test_request_dto.dart';
 import 'package:moveup_flutter/features/tests/attempt/data/dto/save_test_result_request_dto.dart';
-import 'package:moveup_flutter/features/tests/attempt/data/repositories/authenticated_test_attempt_repository_impl.dart';
+import 'package:moveup_flutter/features/tests/attempt/data/repositories/test_attempt_repository_impl.dart';
 import 'package:moveup_flutter/features/tests/attempt/domain/repositories/test_attempt_repository.dart';
 import 'package:moveup_flutter/features/tests/data/remote/tests_api_client.dart';
 
 import '../../../catalog/support/testings_dto_fixtures.dart';
 import '../../support/test_attempt_dto_fixtures.dart';
-import 'authenticated_test_attempt_repository_impl_test.mocks.dart';
+import 'test_attempt_repository_impl_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<AppLogger>(),
@@ -20,16 +20,16 @@ import 'authenticated_test_attempt_repository_impl_test.mocks.dart';
 void main() {
   late MockAppLogger logger;
   late MockTestsApiClient apiClient;
-  late AuthenticatedTestAttemptRepository repository;
+  late TestAttemptRepository repository;
 
   setUp(() {
     logger = MockAppLogger();
     apiClient = MockTestsApiClient();
-    repository = AuthenticatedTestAttemptRepositoryImpl(logger, apiClient);
+    repository = TestAttemptRepositoryImpl(logger, apiClient);
   });
 
-  group('AuthenticatedTestAttemptRepositoryImpl', () {
-    group('AuthenticatedTestAttemptRepositoryImpl.startTest', () {
+  group('TestAttemptRepositoryImpl', () {
+    group('TestAttemptRepositoryImpl.startTest', () {
       test('returns success(start) when api succeeds', () async {
         final responseDto = createStartTestResponseDto();
         when(apiClient.startTest(8)).thenAnswer((_) async => responseDto);
@@ -79,7 +79,7 @@ void main() {
       });
     });
 
-    group('AuthenticatedTestAttemptRepositoryImpl.saveResult', () {
+    group('TestAttemptRepositoryImpl.saveResult', () {
       test('returns success(result) when api succeeds with next exercise', () async {
         final responseDto = createSaveGuestTestResultResponseDto(
           nextExercise: createTestingExerciseDto(id: 17, orderNumber: 2),
@@ -184,7 +184,7 @@ void main() {
       });
     });
 
-    group('AuthenticatedTestAttemptRepositoryImpl.completeTest', () {
+    group('TestAttemptRepositoryImpl.completeTest', () {
       test('returns success(void) when api succeeds', () async {
         when(apiClient.completeTest(any, any)).thenAnswer((_) async {});
 

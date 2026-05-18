@@ -46,11 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The debug route is now a static centered placeholder again and no longer owns a separate logout flow.
 - `AppCard` now supports an optional fixed height, allowing specialized screens like the subscriptions catalog to match exact card mockups without introducing a forked card component.
 - Subscriptions catalog cards now open a dedicated subscription details screen, and `AppInputField` now supports hidden labels for grouped payment-field layouts without requiring widget forks.
+- Removed guest test attempt flow, onboarding testing routes, testing-related string constants from fitness start onboarding.
 
 ### Breaking
 
 - Shared test-attempt transport DTOs were renamed from guest-prefixed names to neutral request/response models because the same payload shapes are now reused by both guest and authenticated flows.
 - Test-attempt DI wiring now resolves separate guest and authenticated repository bindings while keeping the shared `TestAttemptCubit` and domain contract unchanged.
+- Guest fitness start onboarding now completes with fitness parameters collection (goals, physical metrics, and fitness level) and proceeds directly to sign-up, removing the intermediate testing step.
 
 ### Fixed
 

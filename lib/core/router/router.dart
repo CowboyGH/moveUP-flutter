@@ -16,8 +16,6 @@ import '../../features/auth/presentation/pages/verify_email_route_args.dart';
 import '../../features/auth/presentation/pages/verify_reset_code_page_builder.dart';
 import '../../features/debug/presentation/debug_screen.dart';
 import '../../features/fitness_start/presentation/pages/fitness_start_quiz_page_builder.dart';
-import '../../features/fitness_start/presentation/pages/fitness_start_test_attempt_page_builder.dart';
-import '../../features/fitness_start/presentation/pages/fitness_start_tests_page_builder.dart';
 import '../../features/offline/presentation/cubit/network_cubit.dart';
 import '../../features/offline/presentation/pages/offline_page.dart';
 import '../../features/profile/presentation/pages/profile_page_builder.dart';
@@ -375,29 +373,6 @@ final router = GoRouter(
     GoRoute(
       path: AppRoutePaths.fitnessStartQuizPath,
       builder: (_, _) => const FitnessStartQuizPageBuilder(),
-    ),
-    GoRoute(
-      path: AppRoutePaths.fitnessStartTestsPath,
-      redirect: (_, state) {
-        if (state.extra == AppRoutePaths.fitnessStartQuizPath) {
-          return null;
-        }
-        return AppRoutePaths.fitnessStartQuizPath;
-      },
-      builder: (_, _) => const FitnessStartTestsPageBuilder(),
-    ),
-    GoRoute(
-      path: AppRoutePaths.fitnessStartTestAttemptPath,
-      redirect: (_, state) {
-        final testingId = int.tryParse(state.pathParameters['testingId'] ?? '');
-        if (testingId == null || testingId <= 0) {
-          return AppRoutePaths.fitnessStartTestsPath;
-        }
-        return null;
-      },
-      builder: (_, state) => FitnessStartTestAttemptPageBuilder(
-        testingId: int.parse(state.pathParameters['testingId']!),
-      ),
     ),
   ],
 );

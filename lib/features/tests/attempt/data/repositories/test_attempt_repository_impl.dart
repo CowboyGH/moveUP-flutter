@@ -14,16 +14,16 @@ import '../dto/save_test_result_request_dto.dart';
 import '../mappers/test_attempt_mapper.dart';
 import 'test_attempt_result_payload_validator.dart';
 
-/// Authenticated implementation of [AuthenticatedTestAttemptRepository].
-final class AuthenticatedTestAttemptRepositoryImpl implements AuthenticatedTestAttemptRepository {
-  /// Logger for tracking authenticated test attempt operations.
+/// Implementation of [TestAttemptRepository].
+final class TestAttemptRepositoryImpl implements TestAttemptRepository {
+  /// Logger for tracking test attempt operations.
   final AppLogger _logger;
 
   /// API client for tests catalog and attempts.
   final TestsApiClient _apiClient;
 
-  /// Creates an instance of [AuthenticatedTestAttemptRepositoryImpl].
-  AuthenticatedTestAttemptRepositoryImpl(this._logger, this._apiClient);
+  /// Creates an instance of [TestAttemptRepositoryImpl].
+  TestAttemptRepositoryImpl(this._logger, this._apiClient);
 
   @override
   Future<Result<TestAttemptStart, TestsFailure>> startTest(int testingId) async {
@@ -53,7 +53,7 @@ final class AuthenticatedTestAttemptRepositoryImpl implements AuthenticatedTestA
       final response = await _apiClient.saveTestResult(attemptId, request);
       final payload = response.data;
       if (!isValidTestAttemptResultPayload(payload)) {
-        final exception = StateError('Malformed authenticated test result payload.');
+        final exception = StateError('Malformed test result payload.');
         _logger.e('SaveTestResult returned malformed payload', exception);
         return Result.failure(UnknownTestsFailure(parentException: exception));
       }

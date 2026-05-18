@@ -151,16 +151,13 @@ abstract final class AppStrings {
   static const fitnessStartHeightRange = '140–210 см';
   static const fitnessStartReferencesLoadFailed = 'Не удалось загрузить данные';
   static const fitnessStartRetryButton = 'Попробовать снова';
-  static const fitnessStartCompletedTitle = 'Обнаружены данные';
+  static const fitnessStartCompletedTitle = 'Обнаружены сохраненные данные';
   static const fitnessStartCompletedMessage =
-      'Хотите пройти тест снова или использовать ранее введенную информацию?';
-  static const fitnessStartRestartAction = 'Пройти тест снова';
+      'Хотите пройти фитнес-старт заново или использовать ранее введенную информацию?';
+  static const fitnessStartRestartAction = 'Пройти заново';
   static const fitnessStartRegisterAction = 'Использовать введенную информацию';
   static const fitnessStartValidationFailed = 'Проверьте введенные данные и попробуйте снова';
   static const fitnessStartUnknown = 'Не удалось выполнить действие. Попробуйте снова';
-  static const fitnessStartTestsTitle = 'Персональная программа';
-  static const fitnessStartTestsDescription =
-      'Всего несколько быстрых тестов помогут подобрать безопасные и эффективные упражнения для Вашего уровня подготовки';
 
   // Tests catalog.
   static const testsCatalogTitle = 'Тесты';

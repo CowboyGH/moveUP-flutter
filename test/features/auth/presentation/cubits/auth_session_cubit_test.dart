@@ -5,7 +5,6 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/auth/auth_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
-import 'package:moveup_flutter/core/services/guest_session_storage/guest_session_storage.dart';
 import 'package:moveup_flutter/core/services/token_storage/token_storage.dart';
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
@@ -18,14 +17,12 @@ import 'auth_session_cubit_test.mocks.dart';
   MockSpec<AuthRepository>(),
   MockSpec<TokenStorage>(),
   MockSpec<FitnessStartProgressStorage>(),
-  MockSpec<GuestSessionStorage>(),
   MockSpec<AppLogger>(),
 ])
 void main() {
   late MockAuthRepository repository;
   late MockTokenStorage tokenStorage;
   late MockFitnessStartProgressStorage progressStorage;
-  late MockGuestSessionStorage guestSessionStorage;
   late MockAppLogger logger;
   late AuthSessionCubit authSessionCubit;
 
@@ -39,20 +36,17 @@ void main() {
     repository = MockAuthRepository();
     tokenStorage = MockTokenStorage();
     progressStorage = MockFitnessStartProgressStorage();
-    guestSessionStorage = MockGuestSessionStorage();
     logger = MockAppLogger();
     authSessionCubit = AuthSessionCubit(
       repository,
       tokenStorage,
       progressStorage,
-      guestSessionStorage,
       logger,
     );
     provideDummy<Result<User, AuthFailure>>(const Success(user));
     when(progressStorage.hasCompletedProgress()).thenAnswer((_) async => false);
     when(progressStorage.saveCompleted()).thenAnswer((_) async {});
     when(progressStorage.clear()).thenAnswer((_) async {});
-    when(guestSessionStorage.clear()).thenAnswer((_) async {});
   });
 
   group('AuthSessionCubit', () {
@@ -69,7 +63,6 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(progressStorage.hasCompletedProgress()).called(1);
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verifyNever(repository.getCurrentUser());
       },
     );
@@ -90,7 +83,6 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(progressStorage.hasCompletedProgress()).called(1);
         verifyNever(progressStorage.clear());
-        verifyNever(guestSessionStorage.clear());
         verifyNever(repository.getCurrentUser());
       },
     );
@@ -112,7 +104,6 @@ void main() {
         verify(progressStorage.hasCompletedProgress()).called(1);
         verify(logger.e(any, any, any)).called(1);
         verifyNever(progressStorage.clear());
-        verifyNever(guestSessionStorage.clear());
         verifyNever(repository.getCurrentUser());
       },
     );
@@ -133,7 +124,6 @@ void main() {
         verify(tokenStorage.getAccessToken()).called(1);
         verify(repository.getCurrentUser()).called(1);
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verifyNever(progressStorage.hasCompletedProgress());
         verifyNever(tokenStorage.deleteAccessToken());
       },
@@ -159,7 +149,6 @@ void main() {
         verify(repository.getCurrentUser()).called(1);
         verify(tokenStorage.deleteAccessToken()).called(1);
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
@@ -273,7 +262,6 @@ void main() {
       expect: () => const [AuthSessionState.guest()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
@@ -288,7 +276,6 @@ void main() {
       expect: () => const <AuthSessionState>[],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verify(logger.e(any, any, any)).called(1);
       },
     );
@@ -301,7 +288,6 @@ void main() {
       expect: () => const <AuthSessionState>[],
       verify: (_) {
         verifyNever(progressStorage.clear());
-        verifyNever(guestSessionStorage.clear());
       },
     );
 
@@ -351,14 +337,13 @@ void main() {
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
     blocTest<AuthSessionCubit, AuthSessionState>(
-      'cancelGuestFlow does not emit unauthenticated when guest session clear fails',
+      'cancelGuestFlow does not emit unauthenticated when guest progress clear fails',
       setUp: () {
-        when(guestSessionStorage.clear()).thenThrow(Exception('storage_error'));
+        when(progressStorage.clear()).thenThrow(Exception('storage_error'));
       },
       build: () => authSessionCubit,
       seed: () => const AuthSessionState.guest(),
@@ -366,7 +351,6 @@ void main() {
       expect: () => const <AuthSessionState>[],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verify(logger.e(any, any, any)).called(1);
       },
     );
@@ -381,7 +365,6 @@ void main() {
       expect: () => const [AuthSessionState.authenticated(user)],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
@@ -392,7 +375,6 @@ void main() {
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verifyNever(repository.getCurrentUser());
         verifyNever(tokenStorage.deleteAccessToken());
       },
@@ -408,7 +390,6 @@ void main() {
       expect: () => const [AuthSessionState.unauthenticated()],
       verify: (_) {
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verify(logger.e(any, any, any)).called(1);
         verify(logger.w(any, any, any)).called(1);
       },
@@ -425,7 +406,6 @@ void main() {
       verify: (_) {
         verify(tokenStorage.deleteAccessToken()).called(1);
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
       },
     );
 
@@ -440,7 +420,6 @@ void main() {
       verify: (_) {
         verify(tokenStorage.deleteAccessToken()).called(1);
         verify(progressStorage.clear()).called(1);
-        verify(guestSessionStorage.clear()).called(1);
         verify(logger.e(any, any, any)).called(1);
       },
     );

@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/buttons/option_button.dart';
@@ -155,17 +153,14 @@ class _FitnessStartQuizPageState extends State<FitnessStartQuizPage> {
           _fitnessStartCubit.clearFailure();
         }
         if (state.isCompleted) {
-          context.go(
-            AppRoutePaths.fitnessStartTestsPath,
-            extra: AppRoutePaths.fitnessStartQuizPath,
-          );
+          _authSessionCubit.completeGuestFitnessStart();
         }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: FitnessStartFlowAppBar(
             title: AppStrings.fitnessStartTitle,
-            progress: (state.currentStep + 1) / 4,
+            progress: (state.currentStep + 1) / 3,
             showBackButton: isGuestOnboarding,
             onBackPressed: isGuestOnboarding ? () => unawaited(_handleGuestBack(state)) : null,
           ),
