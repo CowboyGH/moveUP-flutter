@@ -101,7 +101,7 @@ lib/
 │   ├── fitness_start/     # Guest onboarding quiz
 │   ├── offline/           # Connectivity state and blocking offline flow
 │   ├── splash/            # Branded startup splash screen
-│   ├── tests/             # Shared tests catalog and guest test attempt flow
+│   ├── tests/             # Tests catalog and guest attempt flow
 │   └── debug/             # Internal debug screen
 ├── uikit/
 │   ├── buttons/           # Shared buttons
