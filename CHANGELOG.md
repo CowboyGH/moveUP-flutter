@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `AppCard` now supports an optional fixed height, allowing specialized screens like the subscriptions catalog to match exact card mockups without introducing a forked card component.
 - Subscriptions catalog cards now open a dedicated subscription details screen, and `AppInputField` now supports hidden labels for grouped payment-field layouts without requiring widget forks.
 - Removed guest test attempt flow, onboarding testing routes, testing-related string constants from fitness start onboarding.
+- iOS dependency management migrated from CocoaPods to Swift Package Manager: removed `Podfile`, `Podfile.lock`, and Pods xcconfig includes; updated `Runner.xcworkspace` to drop the Pods project reference.
 
 ### Breaking
 
