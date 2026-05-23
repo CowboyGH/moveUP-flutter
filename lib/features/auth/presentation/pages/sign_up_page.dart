@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/button_state.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -36,12 +39,46 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool _isAgree = false;
 
+  NavigatorState? _rootNavigator;
+  Timer? _redirectTimer;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _rootNavigator ??= Navigator.of(context, rootNavigator: true);
+  }
+
   @override
   void dispose() {
+    _redirectTimer?.cancel();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _redirectUnverifiedUser({required String dialogMessage}) {
+    if (_redirectTimer != null) return;
+
+    showAppFeedbackDialog<void>(
+      context,
+      title: AppStrings.feedbackErrorTitle,
+      message: dialogMessage,
+      isBarrierDismissible: false,
+    );
+
+    _redirectTimer = Timer(const Duration(seconds: 2), () {
+      _redirectTimer = null;
+      if (!mounted) return;
+      _rootNavigator?.pop();
+      context.push(
+        AppRoutePaths.verifyEmailPath,
+        extra: VerifyEmailRouteArgs(
+          email: _emailController.text.trim(),
+          resendOnOpen: true,
+        ),
+      );
+    });
   }
 
   void _submit() {
@@ -82,11 +119,13 @@ class _SignUpPageState extends State<SignUpPage> {
           },
           failed: (failure) {
             if (failure.message.isNotEmpty) {
-              showAppFeedbackDialog(
-                context,
-                title: AppStrings.feedbackErrorTitle,
-                message: failure.message,
-              );
+              failure is EmailNotVerifiedFailure
+                  ? _redirectUnverifiedUser(dialogMessage: failure.message)
+                  : showAppFeedbackDialog(
+                      context,
+                      title: AppStrings.feedbackErrorTitle,
+                      message: failure.message,
+                    );
             }
           },
         );
