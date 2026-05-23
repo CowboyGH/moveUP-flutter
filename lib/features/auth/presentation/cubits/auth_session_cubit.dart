@@ -6,6 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../core/failures/feature/auth/auth_failure.dart';
 import '../../../../core/result/result.dart';
 import '../../../../core/services/fitness_start_progress_storage/fitness_start_progress_storage.dart';
+import '../../../../core/services/guest_session_storage/guest_session_storage.dart';
 import '../../../../core/services/token_storage/token_storage.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../domain/entities/user.dart';
@@ -25,6 +26,9 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
   /// Storage for persisted guest Fitness Start progress.
   final FitnessStartProgressStorage _fitnessStartProgressStorage;
 
+  /// Storage for persisted guest backend session cookies.
+  final GuestSessionStorage _guestSessionStorage;
+
   /// Logger for non-fatal session cleanup errors.
   final AppLogger _logger;
 
@@ -33,6 +37,7 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     this._repository,
     this._tokenStorage,
     this._fitnessStartProgressStorage,
+    this._guestSessionStorage,
     this._logger,
   ) : super(const AuthSessionState.initial());
 
@@ -122,8 +127,22 @@ final class AuthSessionCubit extends Cubit<AuthSessionState> {
     }
   }
 
+  Future<bool> _clearGuestSessionSafely() async {
+    try {
+      await _guestSessionStorage.clear();
+      return true;
+    } catch (e, s) {
+      _logger.e('Failed to clear guest session cookies.', e, s);
+      return false;
+    }
+  }
+
   Future<bool> _clearGuestDataSafely() async {
-    return _clearGuestProgressSafely();
+    final results = await Future.wait([
+      _clearGuestProgressSafely(),
+      _clearGuestSessionSafely(),
+    ]);
+    return results.every((isSuccess) => isSuccess);
   }
 
   Future<void> _clearGuestDataAfterAuthSuccess() async {
