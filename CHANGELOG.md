@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile current phase section for the authenticated `/profile` tab, reusing the bootstrap profile phase snapshot plus aggregate statistics frequency summary to render the read-only phase block without a standalone phase slice.
 - Introduce personal parameters section for the authenticated `/profile` tab, including canonical `user-parameters` read/update flow, editable profile form card, weekly-goal save support, and selective workouts overview refresh when goal, equipment, or level changes regenerate the personal plan.
 - Add profile bottom section for the authenticated `/profile` tab, including logout and delete-profile confirmation actions plus direct links to the bundled legal documents.
+- Sign-up page now redirects users with unverified emails to the verify-email screen: shows a brief non-dismissible feedback dialog, then automatically pushes the verify-email route after 2 seconds, matching the existing sign-in behavior.
 - Profile subscription section for the authenticated `/profile` tab, including active and empty subscription states, catalog entrypoints, profile-local subscription card hydration by `subscriptionId`, cancel-subscription confirmation flow and profile page refresh after cancellation.
 - Profile saved cards section for the authenticated `/profile` tab, including dedicated cards API/repository flow, saved-cards list rendering, add-card dialog with manual card form, default-card command, delete-card confirmation, and local refresh after successful actions.
 - Authenticated subscriptions catalog screen, including dedicated subscriptions route, catalog Cubit, card UI with normalized remote images, and a profile CTA for opening available subscription plans.
@@ -60,7 +61,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile frequency statistics now handle weekly payloads without `short_label`, keep dense period charts readable across `week`, `month`, `3 months`, `6 months`, and `year`, and clarify non-daily X-axis scales with short `нед.` / `мес.` labels.
 - Profile statistics dropdown menus now size to their content and render above surrounding UI instead of being clipped by the statistics card or overlapping incorrectly with lower screen sections.
 - Profile history and statistics copy now matches the latest profile mockups more closely, including `Активность` / `Завершено` labels, the separate `Средняя оценка:` summary label, and shortened cross-year period labels like `25-26`.
-- Sign-up unverified-email redirect now correctly closes the feedback dialog before pushing the verify-email route, and cancels the redirect timer when the widget is disposed.
 
 ## [0.3.1] - 2026-03-25
 
