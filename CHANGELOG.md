@@ -60,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile frequency statistics now handle weekly payloads without `short_label`, keep dense period charts readable across `week`, `month`, `3 months`, `6 months`, and `year`, and clarify non-daily X-axis scales with short `нед.` / `мес.` labels.
 - Profile statistics dropdown menus now size to their content and render above surrounding UI instead of being clipped by the statistics card or overlapping incorrectly with lower screen sections.
 - Profile history and statistics copy now matches the latest profile mockups more closely, including `Активность` / `Завершено` labels, the separate `Средняя оценка:` summary label, and shortened cross-year period labels like `25-26`.
+- Sign-up unverified-email redirect now correctly closes the feedback dialog before pushing the verify-email route, and cancels the redirect timer when the widget is disposed.
 
 ## [0.3.1] - 2026-03-25
 
