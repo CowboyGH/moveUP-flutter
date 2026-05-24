@@ -16,9 +16,9 @@ class TestingCatalogItemDto {
   /// Short testing description.
   final String description;
 
-  /// Approximate duration in minutes provided by the backend.
+  /// Approximate duration in minutes.
   @JsonKey(name: 'duration_minutes')
-  final String durationMinutes;
+  final int durationMinutes;
 
   /// Testing image path or URL.
   final String image;

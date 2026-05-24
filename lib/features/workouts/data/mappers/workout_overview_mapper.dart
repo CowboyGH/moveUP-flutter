@@ -11,9 +11,7 @@ extension WorkoutOverviewMapper on UserWorkoutOverviewItemDto {
     isBlockedByActiveWorkout: hasActive && status != 'started',
     title: workout.title,
     description: workout.description,
-    durationMinutes: _parseDurationMinutes(workout.durationMinutes),
+    durationMinutes: workout.durationMinutes,
     imageUrl: normalizeWorkoutImageUrl(workout.image ?? ''),
   );
 }
-
-int _parseDurationMinutes(String rawValue) => int.tryParse(rawValue.trim()) ?? 0;

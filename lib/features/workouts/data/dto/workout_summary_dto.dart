@@ -14,9 +14,9 @@ class WorkoutSummaryDto {
   /// Short workout description.
   final String description;
 
-  /// Workout duration in minutes provided by the backend.
+  /// Workout duration in minutes.
   @JsonKey(name: 'duration_minutes')
-  final String durationMinutes;
+  final int durationMinutes;
 
   /// Workout preview image path or URL.
   final String? image;
