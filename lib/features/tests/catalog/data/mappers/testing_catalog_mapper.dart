@@ -11,7 +11,7 @@ extension TestingCatalogItemMapper on TestingCatalogItemDto {
     id: id,
     title: title,
     description: description,
-    durationMinutes: int.tryParse(durationMinutes.trim()) ?? 0,
+    durationMinutes: durationMinutes,
     imageUrl: normalizeTestingImageUrl(image),
     categories: categories.map((category) => category.toEntity()).toList(growable: false),
     exercisesCount: exercisesCount,

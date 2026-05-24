@@ -19,7 +19,7 @@ TestingCatalogItemDto createTestingCatalogItemDto({
   int id = 1,
   String title = 'Расширенная диагностика',
   String description = 'Описание теста',
-  String durationMinutes = '20',
+  int durationMinutes = 20,
   String image = 'test.jpg',
   List<TestingCategoryDto>? categories,
   int exercisesCount = 4,
@@ -45,7 +45,7 @@ TestingsResponseDto createTestingsResponseDto() => TestingsResponseDto(
     createTestingCatalogItemDto(
       id: 2,
       title: 'Быстрая проверка',
-      durationMinutes: '10',
+      durationMinutes: 10,
       image: 'https://cdn.example.com/testing-2.jpg',
       categories: [
         createTestingCategoryDto(id: 3, name: 'Гибкость'),

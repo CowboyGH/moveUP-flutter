@@ -19,7 +19,7 @@ extension WorkoutDetailsMapper on WorkoutDetailsDataDto {
       type: WorkoutDetailsItemType.workout,
       title: workout.title,
       description: workout.description,
-      durationMinutes: _parseDurationMinutes(workout.durationMinutes),
+      durationMinutes: workout.durationMinutes,
       imageUrl: normalizeWorkoutImageUrl(workout.image ?? ''),
     ),
   ];
@@ -29,5 +29,3 @@ int _durationSecondsToMinutes(int seconds) {
   if (seconds <= 0) return 0;
   return (seconds / 60).ceil();
 }
-
-int _parseDurationMinutes(String rawValue) => int.tryParse(rawValue.trim()) ?? 0;

@@ -8,7 +8,7 @@ void main() {
   group('TestingCatalogItemMapper.toEntity', () {
     test('maps dto to entity with normalized relative image url', () {
       final dto = createTestingCatalogItemDto(
-        durationMinutes: '15',
+        durationMinutes: 15,
         image: 'tests/balance.jpg',
       );
 
@@ -54,14 +54,6 @@ void main() {
       final entity = dto.toEntity();
 
       expect(entity.imageUrl, isEmpty);
-    });
-
-    test('maps invalid duration to 0', () {
-      final dto = createTestingCatalogItemDto(durationMinutes: 'not_a_number');
-
-      final entity = dto.toEntity();
-
-      expect(entity.durationMinutes, 0);
     });
   });
 }
