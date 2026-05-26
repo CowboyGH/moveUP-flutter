@@ -34,7 +34,7 @@ Mobile client for the moveUP fitness platform. Targets iOS and Android.
 - `assets/` — `icons/`, `images/`, `splash/`, `legal/`, `fonts/montserrat/`
 
 ## Conventions
-- Files: `snake_case`. Suffixes used in this repo: `_page.dart` (screens, **not** `_screen.dart`), `_widget.dart`, `_cubit.dart`, `_state.dart`, `_repository.dart`, `_dto.dart`, `_mapper.dart`, `_failure.dart`, `_api.dart`.
+- Files: `snake_case`. Suffixes used in this repo: `_page.dart` (screens, **not** `_screen.dart`), `_widget.dart`, `_cubit.dart`, `_state.dart`, `_repository.dart`, `_dto.dart`, `_mapper.dart`, `_failure.dart`, `_api_client.dart`.
 - State files: `part of` cubit, generated as `<name>_state.dart`; cubit class often `final class`.
 - Imports: relative (`prefer_relative_imports` enabled) within `lib/`.
 - Strings: single quotes (`prefer_single_quotes`).

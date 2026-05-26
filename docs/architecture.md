@@ -32,7 +32,7 @@ lib/
 
 Each feature has three layers; each layer only knows about what is below it:
 
-```
+```text
 Presentation  →  Domain  ←  Data
  (Cubit, Page)   (Entity,    (DTO, ApiClient,
                   Repo iface) RepoImpl, Mapper)
