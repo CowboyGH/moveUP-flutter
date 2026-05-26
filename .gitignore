@@ -146,3 +146,6 @@ android/app/google-services.json
 
 # Generated localization
 lib/core/localization/generated/
+
+# Claude Code personal config
+CLAUDE.local.md

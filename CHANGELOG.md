@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Profile saved cards section for the authenticated `/profile` tab, including dedicated cards API/repository flow, saved-cards list rendering, add-card dialog with manual card form, default-card command, delete-card confirmation, and local refresh after successful actions.
 - Authenticated subscriptions catalog screen, including dedicated subscriptions route, catalog Cubit, card UI with normalized remote images, and a profile CTA for opening available subscription plans.
 - Authenticated subscription details and payment flow, including a dedicated details route, catalog-backed item resolution, manual-card payment dialog, and redirect to `/profile` after successful purchase.
+- Claude Code project config: `CLAUDE.md` with stack, commands, conventions, hard rules and PR workflow; path-scoped rules for generated files, state management, widgets, and tests; `docs/architecture.md` with full architecture reference.
 
 ### Changed
 
