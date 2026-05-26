@@ -29,7 +29,6 @@ lib/
 ```
 
 ## Layers
-
 Each feature has three layers; each layer only knows about what is below it:
 
 ```text
@@ -44,7 +43,6 @@ Presentation  →  Domain  ←  Data
 - There is no Use Case layer — the Cubit calls the repository directly. If logic grows complex, extract it into a separate class in `domain/` manually.
 
 ## State management
-
 Uses **Cubit** from `flutter_bloc`. Not Bloc, not Riverpod, not ChangeNotifier.
 
 ```dart
@@ -98,7 +96,6 @@ Adding a new route:
 3. If it needs guarding, add a condition in `_redirectByAuth` / `_redirectFromOffline`.
 
 ## Data / API
-
 **Network layer:**
 - One `Dio` instance for all requests; `refreshDio` is a separate instance used only for `/auth/refresh` (avoids interceptor loop).
 - `AuthInterceptor` — attaches `Authorization: Bearer <token>`, automatically refreshes on 401.
@@ -127,7 +124,6 @@ Adding a new route:
 Feature-specific failures (`AuthFailure`, …) add typed business-logic semantics on top of `NetworkFailure` where needed (e.g. `UnauthorizedAuthFailure` in `AuthSessionCubit`).
 
 ## Dependency injection
-
 Single container — `GetIt.instance` (`di`), configured in `setupDI()` before `runApp`.
 
 Registration order in `di.dart`:
@@ -148,7 +144,6 @@ BlocProvider(create: (_) => MyFeatureCubit(di<MyRepo>()))
 ```
 
 ## Storage
-
 | What | Storage | Implementation |
 |---|---|---|
 | Access token | `flutter_secure_storage` | `SecureTokenStorage` |
