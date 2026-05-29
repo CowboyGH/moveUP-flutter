@@ -55,9 +55,6 @@ void main() {
         when(repository.getVolume()).thenAnswer(
           (_) async => const Success(testProfileStatisticsVolumeData),
         );
-        when(repository.getCurrentPhaseSummary()).thenAnswer(
-          (_) async => const Success(testProfileCurrentPhaseSummary),
-        );
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
         );
@@ -65,21 +62,17 @@ void main() {
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
       expect: () => const [
-        ProfileStatisticsState(
-          isLoading: true,
-          isLoadingCurrentPhaseSummary: true,
-        ),
+        ProfileStatisticsState(isLoading: true),
         ProfileStatisticsState(
           selectedExerciseId: 17,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
           volumeData: testProfileStatisticsVolumeData,
           exerciseOptions: testProfileStatisticsExercises,
         ),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
-        verify(repository.getCurrentPhaseSummary()).called(1);
         verify(repository.getExercises()).called(1);
+        verifyNever(repository.getCurrentPhaseSummary());
       },
     );
 
@@ -87,9 +80,6 @@ void main() {
       'stores failure when initial volume load fails',
       setUp: () {
         when(repository.getVolume()).thenAnswer((_) async => const Failure(failure));
-        when(repository.getCurrentPhaseSummary()).thenAnswer(
-          (_) async => const Success(testProfileCurrentPhaseSummary),
-        );
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
         );
@@ -97,93 +87,14 @@ void main() {
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
       expect: () => const [
-        ProfileStatisticsState(
-          isLoading: true,
-          isLoadingCurrentPhaseSummary: true,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-          failure: failure,
-        ),
+        ProfileStatisticsState(isLoading: true),
+        ProfileStatisticsState(failure: failure),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
-        verify(repository.getCurrentPhaseSummary()).called(1);
         verify(repository.getExercises()).called(1);
+        verifyNever(repository.getCurrentPhaseSummary());
       },
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'reloads current phase summary without affecting statistics mode payload',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Success(testProfileCurrentPhaseSummary)),
-      build: () => cubit,
-      seed: () => const ProfileStatisticsState(
-        selectedExerciseId: 17,
-        volumeData: testProfileStatisticsVolumeData,
-        exerciseOptions: testProfileStatisticsExercises,
-      ),
-      act: (cubit) => cubit.reloadCurrentPhaseSummary(),
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-          selectedExerciseId: 17,
-          volumeData: testProfileStatisticsVolumeData,
-          exerciseOptions: testProfileStatisticsExercises,
-        ),
-        ProfileStatisticsState(
-          selectedExerciseId: 17,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-          volumeData: testProfileStatisticsVolumeData,
-          exerciseOptions: testProfileStatisticsExercises,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'stores failure when reloading current phase summary fails',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Failure(failure)),
-      build: () => cubit,
-      seed: () => const ProfileStatisticsState(
-        currentPhaseSummary: testProfileCurrentPhaseSummary,
-      ),
-      act: (cubit) => cubit.reloadCurrentPhaseSummary(),
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-          currentPhaseSummaryFailure: failure,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'reloadCurrentPhaseSummary ignores repeated calls while request is in progress',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Success(testProfileCurrentPhaseSummary)),
-      build: () => cubit,
-      act: (cubit) {
-        cubit.reloadCurrentPhaseSummary();
-        cubit.reloadCurrentPhaseSummary();
-      },
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(

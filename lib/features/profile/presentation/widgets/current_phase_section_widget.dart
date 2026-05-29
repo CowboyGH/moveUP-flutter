@@ -6,8 +6,7 @@ import '../../../../../uikit/buttons/button_state.dart';
 import '../../../../../uikit/buttons/main_button.dart';
 import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
-import '../cubits/profile_statistics_cubit.dart';
-import '../cubits/profile_user_cubit.dart';
+import '../cubits/profile_phase_cubit.dart';
 
 /// Read-only profile section with the current phase name and summary numbers.
 class CurrentPhaseSectionWidget extends StatelessWidget {
@@ -16,16 +15,13 @@ class CurrentPhaseSectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileUserCubit, ProfileUserState>(
-      buildWhen: (previous, current) =>
-          previous.phaseSnapshot != current.phaseSnapshot ||
-          previous.isLoading != current.isLoading,
-      builder: (context, userState) {
-        final phaseSnapshot = userState.phaseSnapshot;
+    return BlocBuilder<ProfilePhaseCubit, ProfilePhaseState>(
+      builder: (context, state) {
+        final phaseSnapshot = state.phaseSnapshot;
         if (phaseSnapshot == null) {
           return _CurrentPhaseErrorState(
-            onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
-            isLoading: userState.isLoading,
+            onRetryPressed: () => context.read<ProfilePhaseCubit>().load(),
+            isLoading: state.isLoading,
           );
         }
 
@@ -35,34 +31,25 @@ class CurrentPhaseSectionWidget extends StatelessWidget {
           );
         }
 
-        return BlocBuilder<ProfileStatisticsCubit, ProfileStatisticsState>(
-          buildWhen: (previous, current) =>
-              previous.currentPhaseSummary != current.currentPhaseSummary ||
-              previous.isLoadingCurrentPhaseSummary != current.isLoadingCurrentPhaseSummary ||
-              previous.currentPhaseSummaryFailure != current.currentPhaseSummaryFailure,
-          builder: (context, statisticsState) {
-            final currentPhaseSummary = statisticsState.currentPhaseSummary;
-            if (currentPhaseSummary == null) {
-              if (statisticsState.isLoadingCurrentPhaseSummary) {
-                return _CurrentPhaseLoadingState(
-                  currentPhaseName: phaseSnapshot.currentPhaseName!,
-                );
-              }
-
-              return _CurrentPhaseErrorState(
-                currentPhaseName: phaseSnapshot.currentPhaseName,
-                onRetryPressed: () =>
-                    context.read<ProfileStatisticsCubit>().reloadCurrentPhaseSummary(),
-                isLoading: false,
-              );
-            }
-
-            return _CurrentPhaseContent(
+        final summary = state.currentPhaseSummary;
+        if (summary == null) {
+          if (state.isLoadingSummary) {
+            return _CurrentPhaseLoadingState(
               currentPhaseName: phaseSnapshot.currentPhaseName!,
-              averagePerWeek: currentPhaseSummary.averagePerWeek.round(),
-              weeklyGoal: '${currentPhaseSummary.weeklyGoal}',
             );
-          },
+          }
+
+          return _CurrentPhaseErrorState(
+            currentPhaseName: phaseSnapshot.currentPhaseName,
+            onRetryPressed: () => context.read<ProfilePhaseCubit>().reloadSummary(),
+            isLoading: false,
+          );
+        }
+
+        return _CurrentPhaseContent(
+          currentPhaseName: phaseSnapshot.currentPhaseName!,
+          averagePerWeek: summary.averagePerWeek.round(),
+          weeklyGoal: '${summary.weeklyGoal}',
         );
       },
     );

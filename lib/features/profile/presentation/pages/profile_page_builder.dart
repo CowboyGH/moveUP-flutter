@@ -20,6 +20,7 @@ import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
 import '../cubits/delete_profile_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
+import '../cubits/profile_phase_cubit.dart';
 import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_subscription_cubit.dart';
@@ -51,6 +52,12 @@ class ProfilePageBuilder extends StatelessWidget {
           create: (_) => ProfileStatisticsCubit(
             di<ProfileStatisticsRepository>(),
           )..loadInitial(),
+        ),
+        BlocProvider(
+          create: (_) => ProfilePhaseCubit(
+            di<ProfileRepository>(),
+            di<ProfileStatisticsRepository>(),
+          )..load(),
         ),
         BlocProvider(
           create: (_) => ProfileParametersCubit(

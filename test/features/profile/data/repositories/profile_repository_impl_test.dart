@@ -7,6 +7,7 @@ import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dar
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/profile/data/dto/change_password_request_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_phase_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_repository_impl.dart';
@@ -411,35 +412,10 @@ void main() {
     });
 
     group('getPhaseSnapshot', () {
-      test('returns snapshot from cache after getUser succeeds', () async {
+      test('returns phase snapshot from /profile/phase', () async {
         // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            phase: createProfilePhaseDto(),
-          ),
-        );
-
-        // Act
-        final getUserResult = await repository.getUser();
-        final phaseResult = await repository.getPhaseSnapshot();
-
-        // Assert
-        expect(getUserResult.isSuccess, isTrue);
-        expect(phaseResult.isSuccess, isTrue);
-        expect(phaseResult.success, createProfilePhaseSnapshot());
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('returns phase snapshot from /profile when cache is empty', () async {
-        // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
+        when(apiClient.getPhase()).thenAnswer(
+          (_) async => createProfilePhaseResponseDto(
             phase: createProfilePhaseDto(
               currentPhase: createProfileCurrentPhaseDto(
                 id: 12,
@@ -462,18 +438,38 @@ void main() {
           ),
         );
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getPhase()).called(1);
+        verifyNoMoreInteractions(apiClient);
+      });
+
+      test('returns empty snapshot when backend returns no active phase', () async {
+        // Arrange
+        when(apiClient.getPhase()).thenAnswer(
+          (_) async => const ProfilePhaseResponseDto(phase: null),
+        );
+
+        // Act
+        final result = await repository.getPhaseSnapshot();
+
+        // Assert
+        expect(result.isSuccess, isTrue);
+        expect(
+          result.success,
+          const ProfilePhaseSnapshot(hasProgress: false, currentPhaseName: null),
+        );
+
+        verify(apiClient.getPhase()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns ProfileRequestFailure when api returns server error', () async {
         // Arrange
         final exception = createProfileDioBadResponseException(
-          path: '/api/profile',
+          path: '/api/profile/phase',
           statusCode: 500,
           code: 'server_error',
         );
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getPhase()).thenThrow(exception);
 
         // Act
         final result = await repository.getPhaseSnapshot();
@@ -483,14 +479,14 @@ void main() {
         expect(result.failure, isA<ProfileRequestFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getPhase()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns UnknownProfileFailure when unexpected exception occurs', () async {
         // Arrange
         final exception = Exception('unexpected_error');
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getPhase()).thenThrow(exception);
 
         // Act
         final result = await repository.getPhaseSnapshot();
@@ -500,7 +496,7 @@ void main() {
         expect(result.failure, isA<UnknownProfileFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getPhase()).called(1);
         verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });

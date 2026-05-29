@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/profile/data/dto/active_profile_subscription_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_phase_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_test_history_item_dto.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_data_dto.dart';
@@ -98,6 +99,11 @@ ProfilePhaseDto createProfilePhaseDto({
   hasProgress: hasProgress,
   currentPhase: currentPhase ?? createProfileCurrentPhaseDto(),
 );
+
+/// Test fixture for [ProfilePhaseResponseDto].
+ProfilePhaseResponseDto createProfilePhaseResponseDto({
+  ProfilePhaseDto? phase,
+}) => ProfilePhaseResponseDto(phase: phase ?? createProfilePhaseDto());
 
 /// Test fixture for [ProfileCurrentPhaseDto].
 ProfileCurrentPhaseDto createProfileCurrentPhaseDto({

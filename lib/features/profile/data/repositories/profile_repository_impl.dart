@@ -14,7 +14,7 @@ import '../../domain/repositories/profile_repository.dart';
 import '../dto/change_password_request_dto.dart';
 import '../dto/update_profile_request_dto.dart';
 import '../mappers/profile_failure_mapper.dart';
-import '../mappers/profile_phase_snapshot_mapper.dart';
+import '../mappers/profile_phase_response_mapper.dart';
 import '../mappers/profile_parameters_mapper.dart';
 import '../mappers/profile_history_snapshot_mapper.dart';
 import '../mappers/profile_user_entity_mapper.dart';
@@ -25,7 +25,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   final AppLogger _logger;
   final ProfileApiClient _apiClient;
   ProfileStatsHistorySnapshot? _cachedStatsHistorySnapshot;
-  ProfilePhaseSnapshot? _cachedPhaseSnapshot;
   ProfileParametersSnapshot? _cachedParametersSnapshot;
   bool _hasCachedParametersSnapshot = false;
 
@@ -37,7 +36,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
     try {
       final response = await _apiClient.getProfile();
       _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
-      _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       _cachedParametersSnapshot = response.data.toParametersSnapshot();
       _hasCachedParametersSnapshot = true;
       return Result.success(response.data.user.toEntity());
@@ -63,7 +61,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       final response = await _apiClient.getProfile();
       final snapshot = response.data.toStatsHistorySnapshot();
       _cachedStatsHistorySnapshot = snapshot;
-      _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       _cachedParametersSnapshot = response.data.toParametersSnapshot();
       _hasCachedParametersSnapshot = true;
       return Result.success(snapshot);
@@ -80,19 +77,9 @@ final class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Result<ProfilePhaseSnapshot, ProfileFailure>> getPhaseSnapshot() async {
-    final cachedPhaseSnapshot = _cachedPhaseSnapshot;
-    if (cachedPhaseSnapshot != null) {
-      return Result.success(cachedPhaseSnapshot);
-    }
-
     try {
-      final response = await _apiClient.getProfile();
-      final snapshot = response.data.toPhaseSnapshot();
-      _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
-      _cachedPhaseSnapshot = snapshot;
-      _cachedParametersSnapshot = response.data.toParametersSnapshot();
-      _hasCachedParametersSnapshot = true;
-      return Result.success(snapshot);
+      final response = await _apiClient.getPhase();
+      return Result.success(response.toPhaseSnapshot());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toProfileFailure());
@@ -114,7 +101,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       final response = await _apiClient.getProfile();
       final snapshot = response.data.toParametersSnapshot();
       _cachedStatsHistorySnapshot = response.data.toStatsHistorySnapshot();
-      _cachedPhaseSnapshot = response.data.toPhaseSnapshot();
       _cachedParametersSnapshot = snapshot;
       _hasCachedParametersSnapshot = true;
       return Result.success(snapshot);
@@ -166,7 +152,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
 
       final refreshedResponse = await _apiClient.getProfile();
       _cachedStatsHistorySnapshot = refreshedResponse.data.toStatsHistorySnapshot();
-      _cachedPhaseSnapshot = refreshedResponse.data.toPhaseSnapshot();
       _cachedParametersSnapshot = refreshedResponse.data.toParametersSnapshot();
       _hasCachedParametersSnapshot = true;
       return Result.success(refreshedResponse.data.user.toEntity());

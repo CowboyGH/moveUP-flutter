@@ -24,7 +24,7 @@ import '../../domain/entities/profile_parameters/profile_parameters_option.dart'
 import '../../domain/entities/profile_parameters/profile_parameters_references.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_submit_payload.dart';
 import '../cubits/profile_parameters_cubit.dart';
-import '../cubits/profile_statistics_cubit.dart';
+import '../cubits/profile_phase_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 
 enum _ProfileParametersDropdown {
@@ -204,15 +204,14 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
 
   @override
   Widget build(BuildContext context) {
-    final currentWeeklyGoal = context.select<ProfileStatisticsCubit, int?>(
+    final currentWeeklyGoal = context.select<ProfilePhaseCubit, int?>(
       (cubit) => cubit.state.currentPhaseSummary?.weeklyGoal,
     );
-    final isLoadingWeeklyGoal = context.select<ProfileStatisticsCubit, bool>(
-      (cubit) => cubit.state.isLoadingCurrentPhaseSummary,
+    final isLoadingWeeklyGoal = context.select<ProfilePhaseCubit, bool>(
+      (cubit) => cubit.state.isLoadingSummary,
     );
-    final currentWeeklyGoalFailure = context.select<ProfileStatisticsCubit, bool>(
-      (cubit) =>
-          cubit.state.currentPhaseSummary == null && cubit.state.currentPhaseSummaryFailure != null,
+    final currentWeeklyGoalFailure = context.select<ProfilePhaseCubit, bool>(
+      (cubit) => cubit.state.currentPhaseSummary == null && cubit.state.summaryFailure != null,
     );
 
     return BlocConsumer<ProfileParametersCubit, ProfileParametersState>(
@@ -235,7 +234,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
             unawaited(context.read<WorkoutsOverviewCubit>().loadWorkouts());
             context.read<ProfileParametersCubit>().consumeWorkoutsReloadRequest();
           }
-          unawaited(context.read<ProfileStatisticsCubit>().reloadCurrentPhaseSummary());
+          unawaited(context.read<ProfilePhaseCubit>().reloadSummary());
           unawaited(context.read<ProfileUserCubit>().refresh());
         }
       },
@@ -265,7 +264,7 @@ class _ProfileParametersSectionWidgetState extends State<ProfileParametersSectio
               onRetryPressed: () {
                 _closeDropdown();
                 context.read<ProfileParametersCubit>().reload();
-                context.read<ProfileStatisticsCubit>().reloadCurrentPhaseSummary();
+                context.read<ProfilePhaseCubit>().reloadSummary();
               },
             ),
           );
