@@ -9,11 +9,10 @@ import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/profile/data/dto/change_password_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/focused/profile_history_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/focused/profile_phase_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_user_only_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
 import 'package:moveup_flutter/features/profile/data/repositories/profile_repository_impl.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
@@ -40,8 +39,8 @@ void main() {
     group('getUser', () {
       test('returns success(user) when api succeeds', () async {
         // Arrange
-        final responseDto = createProfileUserResponseDto();
-        when(apiClient.getProfile()).thenAnswer((_) async => responseDto);
+        final responseDto = ProfileUserOnlyResponseDto(data: createProfileUserDto());
+        when(apiClient.getUser()).thenAnswer((_) async => responseDto);
 
         // Act
         final result = await repository.getUser();
@@ -50,18 +49,18 @@ void main() {
         expect(result.isSuccess, isTrue);
         expect(result.success, createProfileUser());
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns ProfileRequestFailure when api returns server error', () async {
         // Arrange
         final exception = createProfileDioBadResponseException(
-          path: '/api/profile',
+          path: '/api/profile/user',
           statusCode: 500,
           code: 'server_error',
         );
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getUser()).thenThrow(exception);
 
         // Act
         final result = await repository.getUser();
@@ -71,14 +70,14 @@ void main() {
         expect(result.failure, isA<ProfileRequestFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns UnknownProfileFailure when unexpected exception occurs', () async {
         // Arrange
         final exception = Exception('unexpected_error');
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getUser()).thenThrow(exception);
 
         // Act
         final result = await repository.getUser();
@@ -88,7 +87,7 @@ void main() {
         expect(result.failure, isA<UnknownProfileFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });
@@ -114,7 +113,7 @@ void main() {
         // Assert
         expect(result.isSuccess, isTrue);
         expect(result.success, currentUser);
-        verifyNever(apiClient.getProfile());
+        verifyNever(apiClient.getUser());
         verifyNever(apiClient.updateProfile(any));
         verifyNever(apiClient.uploadAvatar(any));
         verifyNever(apiClient.changePassword(any));
@@ -134,8 +133,8 @@ void main() {
         );
         when(apiClient.updateProfile(any)).thenAnswer((_) async {});
         when(
-          apiClient.getProfile(),
-        ).thenAnswer((_) async => createProfileUserResponseDto(user: refreshedUser));
+          apiClient.getUser(),
+        ).thenAnswer((_) async => ProfileUserOnlyResponseDto(data: refreshedUser));
 
         // Act
         final result = await repository.updateUser(
@@ -159,7 +158,7 @@ void main() {
         expect(captured.name, 'test_name');
         expect(captured.email, 'test@mail.com');
         verifyNever(apiClient.uploadAvatar(any));
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
@@ -174,9 +173,9 @@ void main() {
         final avatarFile = File('${tempDirectory.path}/avatar.jpg');
         await avatarFile.writeAsString('avatar');
         when(apiClient.uploadAvatar(any)).thenAnswer((_) async {});
-        when(apiClient.getProfile()).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            user: createProfileUserDto(avatarUrl: 'new-avatar.jpg'),
+        when(apiClient.getUser()).thenAnswer(
+          (_) async => ProfileUserOnlyResponseDto(
+            data: createProfileUserDto(avatarUrl: 'new-avatar.jpg'),
           ),
         );
 
@@ -198,7 +197,7 @@ void main() {
 
         verify(apiClient.uploadAvatar(any)).called(1);
         verifyNever(apiClient.updateProfile(any));
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
@@ -214,9 +213,9 @@ void main() {
         await avatarFile.writeAsString('avatar');
         when(apiClient.uploadAvatar(any)).thenAnswer((_) async {});
         when(apiClient.updateProfile(any)).thenAnswer((_) async {});
-        when(apiClient.getProfile()).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            user: createProfileUserDto(
+        when(apiClient.getUser()).thenAnswer(
+          (_) async => ProfileUserOnlyResponseDto(
+            data: createProfileUserDto(
               name: 'test_name',
               email: 'test@mail.com',
               avatarUrl: 'new-avatar.jpg',
@@ -249,7 +248,7 @@ void main() {
 
         verify(apiClient.uploadAvatar(any)).called(1);
         verify(apiClient.updateProfile(any)).called(1);
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getUser()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
     });
@@ -457,130 +456,6 @@ void main() {
         expect(result.failure!.parentException, exception);
 
         verify(apiClient.getPhase()).called(1);
-        verify(logger.e(any, exception, any)).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-    });
-
-    group('getParametersSnapshot', () {
-      test('returns snapshot from cache after getUser succeeds', () async {
-        // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            parameters: createProfileParametersInProfileDto(),
-          ),
-        );
-
-        // Act
-        final getUserResult = await repository.getUser();
-        final parametersResult = await repository.getParametersSnapshot();
-
-        // Assert
-        expect(getUserResult.isSuccess, isTrue);
-        expect(parametersResult.isSuccess, isTrue);
-        expect(parametersResult.success, createProfileParametersSnapshot());
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('returns parameters snapshot from /profile when cache is empty', () async {
-        // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            parameters: createProfileParametersInProfileDto(
-              goal: 'Снижение веса',
-              gender: 'male',
-              age: 24,
-              weight: 73.5,
-              height: 180,
-              equipment: 'Зал',
-              level: 'Начинающий',
-            ),
-          ),
-        );
-
-        // Act
-        final result = await repository.getParametersSnapshot();
-
-        // Assert
-        expect(result.isSuccess, isTrue);
-        expect(
-          result.success,
-          const ProfileParametersSnapshot(
-            goal: 'Снижение веса',
-            gender: ProfileParametersGender.male,
-            age: 24,
-            weight: 73.5,
-            height: 180,
-            equipment: 'Зал',
-            level: 'Начинающий',
-          ),
-        );
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('does not refetch when server parameters are null', () async {
-        // Arrange
-        when(apiClient.getProfile()).thenAnswer(
-          (_) async => createProfileUserResponseDto(),
-        );
-
-        // Act
-        final firstResult = await repository.getParametersSnapshot();
-        final secondResult = await repository.getParametersSnapshot();
-
-        // Assert
-        expect(firstResult.isSuccess, isTrue);
-        expect(firstResult.success, isNull);
-        expect(secondResult.isSuccess, isTrue);
-        expect(secondResult.success, isNull);
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('returns ProfileRequestFailure when api returns server error', () async {
-        // Arrange
-        final exception = createProfileDioBadResponseException(
-          path: '/api/profile',
-          statusCode: 500,
-          code: 'server_error',
-        );
-        when(apiClient.getProfile()).thenThrow(exception);
-
-        // Act
-        final result = await repository.getParametersSnapshot();
-
-        // Assert
-        expect(result.isFailure, isTrue);
-        expect(result.failure, isA<ProfileRequestFailure>());
-        expect(result.failure!.parentException, exception);
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('returns UnknownProfileFailure when unexpected exception occurs', () async {
-        // Arrange
-        final exception = Exception('unexpected_error');
-        when(apiClient.getProfile()).thenThrow(exception);
-
-        // Act
-        final result = await repository.getParametersSnapshot();
-
-        // Assert
-        expect(result.isFailure, isTrue);
-        expect(result.failure, isA<UnknownProfileFailure>());
-        expect(result.failure!.parentException, exception);
-
-        verify(apiClient.getProfile()).called(1);
         verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });

@@ -8,7 +8,6 @@ import '../../../../core/result/result.dart';
 import '../../../../core/utils/logger/app_logger.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../domain/entities/profile_phase_snapshot.dart';
-import '../../domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../dto/change_password_request_dto.dart';
@@ -17,7 +16,6 @@ import '../mappers/profile_active_subscription_response_mapper.dart';
 import '../mappers/profile_failure_mapper.dart';
 import '../mappers/profile_history_response_mapper.dart';
 import '../mappers/profile_phase_response_mapper.dart';
-import '../mappers/profile_parameters_mapper.dart';
 import '../mappers/profile_user_entity_mapper.dart';
 import '../remote/profile_api_client.dart';
 
@@ -25,8 +23,6 @@ import '../remote/profile_api_client.dart';
 final class ProfileRepositoryImpl implements ProfileRepository {
   final AppLogger _logger;
   final ProfileApiClient _apiClient;
-  ProfileParametersSnapshot? _cachedParametersSnapshot;
-  bool _hasCachedParametersSnapshot = false;
 
   /// Creates an instance of [ProfileRepositoryImpl].
   ProfileRepositoryImpl(this._logger, this._apiClient);
@@ -34,10 +30,8 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Result<User, ProfileFailure>> getUser() async {
     try {
-      final response = await _apiClient.getProfile();
-      _cachedParametersSnapshot = response.data.toParametersSnapshot();
-      _hasCachedParametersSnapshot = true;
-      return Result.success(response.data.user.toEntity());
+      final response = await _apiClient.getUser();
+      return Result.success(response.data.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toProfileFailure());
@@ -98,29 +92,6 @@ final class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Result<ProfileParametersSnapshot?, ProfileFailure>> getParametersSnapshot() async {
-    if (_hasCachedParametersSnapshot) {
-      return Result.success(_cachedParametersSnapshot);
-    }
-
-    try {
-      final response = await _apiClient.getProfile();
-      final snapshot = response.data.toParametersSnapshot();
-      _cachedParametersSnapshot = snapshot;
-      _hasCachedParametersSnapshot = true;
-      return Result.success(snapshot);
-    } on DioException catch (e) {
-      final networkFailure = e.toNetworkFailure();
-      return Result.failure(networkFailure.toProfileFailure());
-    } catch (e, s) {
-      _logger.e('GetParametersSnapshot failed with unexpected error', e, s);
-      return Result.failure(
-        UnknownProfileFailure(parentException: e, stackTrace: s),
-      );
-    }
-  }
-
-  @override
   Future<Result<User, ProfileFailure>> updateUser({
     required User currentUser,
     required String name,
@@ -155,10 +126,8 @@ final class ProfileRepositoryImpl implements ProfileRepository {
         await _apiClient.updateProfile(request);
       }
 
-      final refreshedResponse = await _apiClient.getProfile();
-      _cachedParametersSnapshot = refreshedResponse.data.toParametersSnapshot();
-      _hasCachedParametersSnapshot = true;
-      return Result.success(refreshedResponse.data.user.toEntity());
+      final refreshedResponse = await _apiClient.getUser();
+      return Result.success(refreshedResponse.data.toEntity());
     } on DioException catch (e) {
       final networkFailure = e.toNetworkFailure();
       return Result.failure(networkFailure.toProfileFailure());

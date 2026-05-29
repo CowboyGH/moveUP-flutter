@@ -7,9 +7,6 @@ abstract class ProfileUserState with _$ProfileUserState {
   const factory ProfileUserState({
     @Default(false) bool isLoading,
     User? user,
-    ProfileStatsHistorySnapshot? historySnapshot,
-    ProfilePhaseSnapshot? phaseSnapshot,
-    ProfileParametersSnapshot? parametersSnapshot,
     ProfileFailure? failure,
   }) = _ProfileUserState;
 }

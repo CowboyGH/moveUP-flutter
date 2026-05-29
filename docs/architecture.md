@@ -64,7 +64,8 @@ switch (result) {
 **Global singletons in DI** (alive for the entire app lifetime):
 - `AuthSessionCubit` — manages session state: `initial → checking → authenticated | unauthenticated | guestResumeAvailable | guest | guestCompletedOnboarding | restoreFailed`.
 - `NetworkCubit` — listens to `NetworkService` (connectivity_plus), emits `initial | connected | disconnected`.
-- `ProfileRefreshCubit` — workaround: the shared `/profile` endpoint is used by multiple features; this cubit acts as a refresh signal without creating direct dependencies between features.
+
+After profile decomposition, each profile section cubit is self-contained and owns its own data. Page-level cubits call `load()` on creation via `..load()` in `BlocProvider`, so no cross-feature refresh signal is needed.
 
 All other cubits are created in `*_page_builder.dart` via `BlocProvider` and live as long as the widget tree.
 
@@ -134,9 +135,8 @@ Registration order in `di.dart`:
 5. TokenStorage, FitnessStartProgressStorage (Hive), CookieJar, GuestSessionStorage
 6. Dio (AuthInterceptor + CookieManager + LoggingInterceptor)
 7. ApiClients → Repositories (per feature)
-8. **ProfileRefreshCubit** (singleton — workaround for profile refresh via shared endpoint)
-9. **AuthSessionCubit** (singleton; depends on AuthRepository, TokenStorage, FitnessStartProgressStorage, GuestSessionStorage)
-10. Tests, Workouts ApiClients → repositories
+8. **AuthSessionCubit** (singleton; depends on AuthRepository, TokenStorage, FitnessStartProgressStorage, GuestSessionStorage)
+9. Tests, Workouts ApiClients → repositories
 
 Page-level cubits are created in `*_page_builder.dart`:
 ```dart

@@ -14,8 +14,6 @@ import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
-import '../cubits/profile_refresh_cubit.dart';
-import '../cubits/profile_subscription_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
@@ -73,15 +71,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocListener<ProfileRefreshCubit, ProfileRefreshState>(
-        listenWhen: (previous, current) => previous.shouldRefresh != current.shouldRefresh,
-        listener: (context, state) {
-          if (!state.shouldRefresh) return;
-          context.read<ProfileRefreshCubit>().consumeRefreshRequest();
-          unawaited(context.read<ProfileUserCubit>().refresh());
-          unawaited(context.read<ProfileSubscriptionCubit>().load());
-        },
-        child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
+      body: BlocBuilder<ProfileUserCubit, ProfileUserState>(
           builder: (context, state) {
             final user = state.user;
             if (user == null) {
@@ -132,7 +122,6 @@ class ProfilePage extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 }
