@@ -50,6 +50,21 @@ abstract class ApiPaths {
   /// The endpoint for uploading or deleting the authenticated user avatar.
   static const String profileAvatar = '$profile/avatar';
 
+  /// The endpoint for focused authenticated user data (id, name, email, avatar).
+  static const String profileUser = '$profile/user';
+
+  /// The endpoint for the focused active subscription snapshot.
+  static const String profileActiveSubscription = '$profile/active-subscription';
+
+  /// The endpoint for the focused user parameters display snapshot.
+  static const String profileUserParameters = '$profile/user-parameters';
+
+  /// The endpoint for the focused profile history (subscriptions + workouts + tests).
+  static const String profileHistory = '$profile/history';
+
+  /// The endpoint for the focused current phase snapshot.
+  static const String profilePhase = '$profile/phase';
+
   /// The endpoint prefix for profile statistics.
   static const String profileStatistics = '$profile/statistics';
 
