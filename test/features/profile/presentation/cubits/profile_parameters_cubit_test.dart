@@ -7,11 +7,9 @@ import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_data.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_references.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_parameters_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_parameters_cubit.dart';
 
-import '../../support/profile_dto_fixtures.dart';
 import '../../support/profile_parameters_dto_fixtures.dart';
 import 'profile_parameters_cubit_test.mocks.dart';
 
@@ -52,15 +50,6 @@ void main() {
         ProfileParametersState(
           references: testProfileParametersReferences,
           currentParameters: testProfileParametersData,
-          bootstrapSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersGoalName,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAgeValue,
-            weight: testProfileParametersWeightValue,
-            height: testProfileParametersHeightValue,
-            equipment: testProfileParametersEquipmentName,
-            level: testProfileParametersLevelName,
-          ),
           selectedGoalId: testProfileParametersGoalId,
           selectedGender: ProfileParametersGender.female,
           selectedEquipmentId: testProfileParametersEquipmentId,
@@ -93,35 +82,6 @@ void main() {
         verify(repository.getReferences()).called(1);
         verify(repository.getCurrentParameters()).called(1);
       },
-    );
-
-    blocTest<ProfileParametersCubit, ProfileParametersState>(
-      'setBootstrapSnapshot stores profile bootstrap seed',
-      build: () => cubit,
-      act: (cubit) => cubit.setBootstrapSnapshot(createProfileParametersSnapshot()),
-      expect: () => [
-        ProfileParametersState(
-          bootstrapSnapshot: createProfileParametersSnapshot(),
-          selectedGender: ProfileParametersGender.female,
-        ),
-      ],
-    );
-
-    blocTest<ProfileParametersCubit, ProfileParametersState>(
-      'setBootstrapSnapshot keeps local selected gender',
-      build: () => cubit,
-      seed: () => const ProfileParametersState(
-        currentParameters: testProfileParametersData,
-        selectedGender: ProfileParametersGender.male,
-      ),
-      act: (cubit) => cubit.setBootstrapSnapshot(createProfileParametersSnapshot()),
-      expect: () => [
-        ProfileParametersState(
-          currentParameters: testProfileParametersData,
-          bootstrapSnapshot: createProfileParametersSnapshot(),
-          selectedGender: ProfileParametersGender.male,
-        ),
-      ],
     );
 
     blocTest<ProfileParametersCubit, ProfileParametersState>(
@@ -226,15 +186,6 @@ void main() {
             equipmentName: testProfileParametersEquipmentName,
             levelName: testProfileParametersLevelName,
           ),
-          bootstrapSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersUpdatedGoalName,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAgeValue,
-            weight: testProfileParametersWeightValue,
-            height: testProfileParametersHeightValue,
-            equipment: testProfileParametersEquipmentName,
-            level: testProfileParametersLevelName,
-          ),
           selectedGoalId: testProfileParametersUpdatedGoalId,
           selectedGender: ProfileParametersGender.female,
           selectedEquipmentId: testProfileParametersEquipmentId,
@@ -306,15 +257,6 @@ void main() {
             goalName: testProfileParametersGoalName,
             equipmentName: testProfileParametersEquipmentName,
             levelName: testProfileParametersLevelName,
-          ),
-          bootstrapSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersGoalName,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAgeValue + 1,
-            weight: testProfileParametersWeightValue,
-            height: testProfileParametersHeightValue,
-            equipment: testProfileParametersEquipmentName,
-            level: testProfileParametersLevelName,
           ),
           selectedGoalId: testProfileParametersGoalId,
           selectedGender: ProfileParametersGender.female,
@@ -415,15 +357,6 @@ void main() {
         ProfileParametersState(
           shouldReloadWorkouts: true,
           currentParameters: testProfileParametersData,
-          bootstrapSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersGoalName,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAgeValue,
-            weight: testProfileParametersWeightValue,
-            height: testProfileParametersHeightValue,
-            equipment: testProfileParametersEquipmentName,
-            level: testProfileParametersLevelName,
-          ),
           selectedGoalId: testProfileParametersGoalId,
           selectedGender: ProfileParametersGender.female,
           selectedEquipmentId: testProfileParametersEquipmentId,

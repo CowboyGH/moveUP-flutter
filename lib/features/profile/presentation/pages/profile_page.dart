@@ -14,7 +14,6 @@ import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
-import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_subscription_cubit.dart';
@@ -87,16 +86,12 @@ class ProfilePage extends StatelessWidget {
             },
           ),
           BlocListener<ProfileUserCubit, ProfileUserState>(
-            listenWhen: (previous, current) =>
-                previous.historySnapshot != current.historySnapshot ||
-                previous.parametersSnapshot != current.parametersSnapshot,
+            listenWhen: (previous, current) => previous.historySnapshot != current.historySnapshot,
             listener: (context, state) {
               final historySnapshot = state.historySnapshot;
               if (historySnapshot != null) {
                 context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
               }
-
-              context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
             },
           ),
         ],
