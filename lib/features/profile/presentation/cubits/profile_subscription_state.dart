@@ -8,6 +8,6 @@ abstract class ProfileSubscriptionState with _$ProfileSubscriptionState {
     @Default(false) bool isLoading,
     ProfileActiveSubscriptionSnapshot? activeSubscription,
     SubscriptionCatalogItem? item,
-    SubscriptionsFailure? failure,
+    AppFailure? failure,
   }) = _ProfileSubscriptionState;
 }

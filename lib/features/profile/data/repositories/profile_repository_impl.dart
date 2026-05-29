@@ -13,6 +13,7 @@ import '../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../domain/repositories/profile_repository.dart';
 import '../dto/change_password_request_dto.dart';
 import '../dto/update_profile_request_dto.dart';
+import '../mappers/profile_active_subscription_response_mapper.dart';
 import '../mappers/profile_failure_mapper.dart';
 import '../mappers/profile_phase_response_mapper.dart';
 import '../mappers/profile_parameters_mapper.dart';
@@ -85,6 +86,22 @@ final class ProfileRepositoryImpl implements ProfileRepository {
       return Result.failure(networkFailure.toProfileFailure());
     } catch (e, s) {
       _logger.e('GetPhaseSnapshot failed with unexpected error', e, s);
+      return Result.failure(
+        UnknownProfileFailure(parentException: e, stackTrace: s),
+      );
+    }
+  }
+
+  @override
+  Future<Result<ProfileActiveSubscriptionSnapshot?, ProfileFailure>> getActiveSubscription() async {
+    try {
+      final response = await _apiClient.getActiveSubscription();
+      return Result.success(response.toSnapshot());
+    } on DioException catch (e) {
+      final networkFailure = e.toNetworkFailure();
+      return Result.failure(networkFailure.toProfileFailure());
+    } catch (e, s) {
+      _logger.e('GetActiveSubscription failed with unexpected error', e, s);
       return Result.failure(
         UnknownProfileFailure(parentException: e, stackTrace: s),
       );

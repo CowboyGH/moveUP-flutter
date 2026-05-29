@@ -16,6 +16,9 @@ abstract interface class ProfileRepository {
   /// Returns the current phase snapshot for the current phase section.
   Future<Result<ProfilePhaseSnapshot, ProfileFailure>> getPhaseSnapshot();
 
+  /// Returns the current active subscription snapshot for the subscription section.
+  Future<Result<ProfileActiveSubscriptionSnapshot?, ProfileFailure>> getActiveSubscription();
+
   /// Returns the current parameters snapshot for the profile parameters section.
   Future<Result<ProfileParametersSnapshot?, ProfileFailure>> getParametersSnapshot();
 

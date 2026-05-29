@@ -17,6 +17,7 @@ import '../../../auth/presentation/cubits/auth_session_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
 import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
+import '../cubits/profile_subscription_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
@@ -82,6 +83,7 @@ class ProfilePage extends StatelessWidget {
               if (!state.shouldRefresh) return;
               context.read<ProfileRefreshCubit>().consumeRefreshRequest();
               unawaited(context.read<ProfileUserCubit>().refresh());
+              unawaited(context.read<ProfileSubscriptionCubit>().load());
             },
           ),
           BlocListener<ProfileUserCubit, ProfileUserState>(
@@ -135,9 +137,7 @@ class ProfilePage extends StatelessWidget {
                     child: const Text(AppStrings.profileStatsHistoryButton),
                   ),
                   const SizedBox(height: 36),
-                  ProfileSubscriptionSectionWidget(
-                    activeSubscription: state.historySnapshot?.activeSubscription,
-                  ),
+                  const ProfileSubscriptionSectionWidget(),
                   const SizedBox(height: 36),
                   const ProfileCardsSectionWidget(),
                   const SizedBox(height: 36),
