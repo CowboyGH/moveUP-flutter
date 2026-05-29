@@ -124,13 +124,6 @@ const testProfileStatisticsYearFrequencyData = FrequencyStatisticsData(
 );
 
 const testProfileStatisticsHistorySnapshot = ProfileStatsHistorySnapshot(
-  activeSubscription: ProfileActiveSubscriptionSnapshot(
-    id: 21,
-    name: '3 месяца',
-    price: '1400.00',
-    startDate: '2026-03-15',
-    endDate: '2026-06-13',
-  ),
   latestWorkout: ProfileLatestWorkoutSnapshot(
     id: 101,
     title: 'Утренняя зарядка',

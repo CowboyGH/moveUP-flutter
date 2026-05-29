@@ -1,18 +1,17 @@
 import '../../domain/entities/profile_stats_history_snapshot.dart';
+import '../dto/focused/profile_history_response_dto.dart';
 import '../dto/profile_test_history_item_dto.dart';
-import '../dto/profile_user_data_dto.dart';
 import '../dto/profile_workout_history_item_dto.dart';
 
-/// Maps aggregate `/profile` DTO subset to history snapshot entities.
-extension ProfileHistorySnapshotMapper on ProfileUserDataDto {
-  /// Returns a focused history snapshot for profile statistics UI.
+/// Maps `/profile/history` DTO to the focused stats history snapshot.
+extension ProfileHistoryResponseMapper on ProfileHistoryResponseDto {
+  /// Returns the latest completed workout and testing snapshots.
   ProfileStatsHistorySnapshot toStatsHistorySnapshot() {
     final sortedWorkouts = <ProfileWorkoutHistoryItemDto>[
-      ...?workouts?.history,
+      ...data.workouts,
     ]..sort((left, right) => _parseDate(right.completedAt).compareTo(_parseDate(left.completedAt)));
-
     final sortedTests = <ProfileTestHistoryItemDto>[
-      ...?tests?.history,
+      ...data.tests,
     ]..sort((left, right) => _parseDate(right.completedAt).compareTo(_parseDate(left.completedAt)));
 
     return ProfileStatsHistorySnapshot(

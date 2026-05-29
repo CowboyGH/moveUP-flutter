@@ -13,21 +13,28 @@ import 'package:moveup_flutter/features/profile/domain/entities/profile_statisti
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_workout_option.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/trend_statistics_data.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/volume_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
+import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_statistics_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_statistics_cubit.dart';
 
 import '../../support/profile_statistics_dto_fixtures.dart';
 import 'profile_statistics_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<ProfileStatisticsRepository>()])
+@GenerateNiceMocks([
+  MockSpec<ProfileStatisticsRepository>(),
+  MockSpec<ProfileRepository>(),
+])
 void main() {
   late MockProfileStatisticsRepository repository;
+  late MockProfileRepository profileRepository;
   late ProfileStatisticsCubit cubit;
   const failure = ProfileRequestFailure('error_message');
 
   setUp(() {
     repository = MockProfileStatisticsRepository();
-    cubit = ProfileStatisticsCubit(repository);
+    profileRepository = MockProfileRepository();
+    cubit = ProfileStatisticsCubit(repository, profileRepository);
     provideDummy<Result<VolumeStatisticsData, ProfileFailure>>(
       const Success(testProfileStatisticsVolumeData),
     );
@@ -46,6 +53,9 @@ void main() {
     provideDummy<Result<List<ProfileWorkoutOption>, ProfileFailure>>(
       const Success(testProfileStatisticsWorkouts),
     );
+    provideDummy<Result<ProfileStatsHistorySnapshot, ProfileFailure>>(
+      const Success(testProfileStatisticsHistorySnapshot),
+    );
   });
 
   group('ProfileStatisticsCubit', () {
@@ -58,6 +68,9 @@ void main() {
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
         );
+        when(profileRepository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsHistorySnapshot),
+        );
       },
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
@@ -67,11 +80,13 @@ void main() {
           selectedExerciseId: 17,
           volumeData: testProfileStatisticsVolumeData,
           exerciseOptions: testProfileStatisticsExercises,
+          historySnapshot: testProfileStatisticsHistorySnapshot,
         ),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
         verify(repository.getExercises()).called(1);
+        verify(profileRepository.getStatsHistorySnapshot()).called(1);
         verifyNever(repository.getCurrentPhaseSummary());
       },
     );
@@ -83,16 +98,23 @@ void main() {
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
         );
+        when(profileRepository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsHistorySnapshot),
+        );
       },
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
       expect: () => const [
         ProfileStatisticsState(isLoading: true),
-        ProfileStatisticsState(failure: failure),
+        ProfileStatisticsState(
+          historySnapshot: testProfileStatisticsHistorySnapshot,
+          failure: failure,
+        ),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
         verify(repository.getExercises()).called(1);
+        verify(profileRepository.getStatsHistorySnapshot()).called(1);
         verifyNever(repository.getCurrentPhaseSummary());
       },
     );
@@ -417,16 +439,13 @@ void main() {
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'stores history snapshot and switches history tab',
+      'selectHistoryTab updates the visible tab',
       build: () => cubit,
-      act: (cubit) {
-        cubit.setHistorySnapshot(testProfileStatisticsHistorySnapshot);
-        cubit.selectHistoryTab(ProfileHistoryTab.tests);
-      },
+      seed: () => const ProfileStatisticsState(
+        historySnapshot: testProfileStatisticsHistorySnapshot,
+      ),
+      act: (cubit) => cubit.selectHistoryTab(ProfileHistoryTab.tests),
       expect: () => const [
-        ProfileStatisticsState(
-          historySnapshot: testProfileStatisticsHistorySnapshot,
-        ),
         ProfileStatisticsState(
           selectedHistoryTab: ProfileHistoryTab.tests,
           historySnapshot: testProfileStatisticsHistorySnapshot,

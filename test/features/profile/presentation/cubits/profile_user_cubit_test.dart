@@ -73,13 +73,6 @@ void main() {
         ProfileUserState(
           user: updatedUser,
           historySnapshot: ProfileStatsHistorySnapshot(
-            activeSubscription: ProfileActiveSubscriptionSnapshot(
-              id: testProfileSubscriptionId,
-              name: testProfileSubscriptionName,
-              price: testProfileSubscriptionPrice,
-              startDate: testProfileSubscriptionStartDate,
-              endDate: testProfileSubscriptionEndDate,
-            ),
             latestWorkout: ProfileLatestWorkoutSnapshot(
               id: testProfileWorkoutHistoryId,
               title: testProfileWorkoutTitle,
@@ -141,13 +134,6 @@ void main() {
         ProfileUserState(
           user: updatedUser,
           historySnapshot: ProfileStatsHistorySnapshot(
-            activeSubscription: ProfileActiveSubscriptionSnapshot(
-              id: testProfileSubscriptionId,
-              name: testProfileSubscriptionName,
-              price: testProfileSubscriptionPrice,
-              startDate: testProfileSubscriptionStartDate,
-              endDate: testProfileSubscriptionEndDate,
-            ),
             latestWorkout: ProfileLatestWorkoutSnapshot(
               id: testProfileWorkoutHistoryId,
               title: testProfileWorkoutTitle,

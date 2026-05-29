@@ -7,6 +7,7 @@ import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dar
 import 'package:moveup_flutter/core/utils/logger/app_logger.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/profile/data/dto/change_password_request_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_history_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/focused/profile_phase_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/update_profile_request_dto.dart';
 import 'package:moveup_flutter/features/profile/data/remote/profile_api_client.dart';
@@ -254,64 +255,32 @@ void main() {
     });
 
     group('getStatsHistorySnapshot', () {
-      test('returns snapshot from cache after getUser succeeds', () async {
+      test('returns latest sorted workout and test from /profile/history', () async {
         // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            subscriptions: createProfileSubscriptionsDto(),
-            workouts: createProfileWorkoutsDto(),
-            tests: createProfileTestsDto(),
-          ),
-        );
-
-        // Act
-        final getUserResult = await repository.getUser();
-        final historyResult = await repository.getStatsHistorySnapshot();
-
-        // Assert
-        expect(getUserResult.isSuccess, isTrue);
-        expect(historyResult.isSuccess, isTrue);
-        expect(historyResult.success, createProfileStatsHistorySnapshot());
-
-        verify(apiClient.getProfile()).called(1);
-        verifyNoMoreInteractions(apiClient);
-      });
-
-      test('returns latest sorted workout and test when cache is empty', () async {
-        // Arrange
-        when(
-          apiClient.getProfile(),
-        ).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            subscriptions: createProfileSubscriptionsDto(),
-            workouts: createProfileWorkoutsDto(
-              history: [
-                createProfileWorkoutHistoryItemDto(
-                  id: 1,
-                  title: 'older workout',
-                  completedAt: '2026-03-10 10:30:00',
-                ),
-                createProfileWorkoutHistoryItemDto(
-                  id: 2,
-                  title: 'latest workout',
-                ),
-              ],
-            ),
-            tests: createProfileTestsDto(
-              history: [
-                createProfileTestHistoryItemDto(
-                  attemptId: 1,
-                  title: 'older test',
-                  completedAt: '2026-03-12 15:20:00',
-                ),
-                createProfileTestHistoryItemDto(
-                  attemptId: 2,
-                  title: 'latest test',
-                ),
-              ],
-            ),
+        when(apiClient.getHistory()).thenAnswer(
+          (_) async => createProfileHistoryResponseDto(
+            workouts: [
+              createProfileWorkoutHistoryItemDto(
+                id: 1,
+                title: 'older workout',
+                completedAt: '2026-03-10 10:30:00',
+              ),
+              createProfileWorkoutHistoryItemDto(
+                id: 2,
+                title: 'latest workout',
+              ),
+            ],
+            tests: [
+              createProfileTestHistoryItemDto(
+                attemptId: 1,
+                title: 'older test',
+                completedAt: '2026-03-12 15:20:00',
+              ),
+              createProfileTestHistoryItemDto(
+                attemptId: 2,
+                title: 'latest test',
+              ),
+            ],
           ),
         );
 
@@ -323,13 +292,6 @@ void main() {
         expect(
           result.success,
           const ProfileStatsHistorySnapshot(
-            activeSubscription: ProfileActiveSubscriptionSnapshot(
-              id: testProfileSubscriptionId,
-              name: testProfileSubscriptionName,
-              price: testProfileSubscriptionPrice,
-              startDate: testProfileSubscriptionStartDate,
-              endDate: testProfileSubscriptionEndDate,
-            ),
             latestWorkout: ProfileLatestWorkoutSnapshot(
               id: 2,
               title: 'latest workout',
@@ -343,42 +305,40 @@ void main() {
           ),
         );
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getHistory()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
-      test('warms parameters cache from the same /profile response', () async {
+      test('returns empty snapshot when backend returns no history', () async {
         // Arrange
-        when(apiClient.getProfile()).thenAnswer(
-          (_) async => createProfileUserResponseDto(
-            subscriptions: createProfileSubscriptionsDto(),
-            workouts: createProfileWorkoutsDto(),
-            tests: createProfileTestsDto(),
-            parameters: createProfileParametersInProfileDto(),
+        when(apiClient.getHistory()).thenAnswer(
+          (_) async => ProfileHistoryResponseDto(
+            data: ProfileHistoryDataDto(workouts: const [], tests: const []),
           ),
         );
 
         // Act
-        final historyResult = await repository.getStatsHistorySnapshot();
-        final parametersResult = await repository.getParametersSnapshot();
+        final result = await repository.getStatsHistorySnapshot();
 
         // Assert
-        expect(historyResult.isSuccess, isTrue);
-        expect(parametersResult.isSuccess, isTrue);
-        expect(parametersResult.success, createProfileParametersSnapshot());
+        expect(result.isSuccess, isTrue);
+        expect(
+          result.success,
+          const ProfileStatsHistorySnapshot(latestWorkout: null, latestTest: null),
+        );
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getHistory()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns ProfileRequestFailure when api returns server error', () async {
         // Arrange
         final exception = createProfileDioBadResponseException(
-          path: '/api/profile',
+          path: '/api/profile/history',
           statusCode: 500,
           code: 'server_error',
         );
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getHistory()).thenThrow(exception);
 
         // Act
         final result = await repository.getStatsHistorySnapshot();
@@ -388,14 +348,14 @@ void main() {
         expect(result.failure, isA<ProfileRequestFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getHistory()).called(1);
         verifyNoMoreInteractions(apiClient);
       });
 
       test('returns UnknownProfileFailure when unexpected exception occurs', () async {
         // Arrange
         final exception = Exception('unexpected_error');
-        when(apiClient.getProfile()).thenThrow(exception);
+        when(apiClient.getHistory()).thenThrow(exception);
 
         // Act
         final result = await repository.getStatsHistorySnapshot();
@@ -405,7 +365,7 @@ void main() {
         expect(result.failure, isA<UnknownProfileFailure>());
         expect(result.failure!.parentException, exception);
 
-        verify(apiClient.getProfile()).called(1);
+        verify(apiClient.getHistory()).called(1);
         verify(logger.e(any, exception, any)).called(1);
         verifyNoMoreInteractions(apiClient);
       });

@@ -51,6 +51,7 @@ class ProfilePageBuilder extends StatelessWidget {
         BlocProvider(
           create: (_) => ProfileStatisticsCubit(
             di<ProfileStatisticsRepository>(),
+            di<ProfileRepository>(),
           )..loadInitial(),
         ),
         BlocProvider(

@@ -12,6 +12,7 @@ import '../../domain/entities/profile_statistics/profile_workout_option.dart';
 import '../../domain/entities/profile_statistics/trend_statistics_data.dart';
 import '../../domain/entities/profile_statistics/volume_statistics_data.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
+import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
 
 part 'profile_statistics_cubit.freezed.dart';
@@ -20,9 +21,13 @@ part 'profile_statistics_state.dart';
 /// Cubit that manages the profile statistics state flow.
 final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
   final ProfileStatisticsRepository _repository;
+  final ProfileRepository _profileRepository;
 
   /// Creates an instance of [ProfileStatisticsCubit].
-  ProfileStatisticsCubit(this._repository) : super(const ProfileStatisticsState());
+  ProfileStatisticsCubit(
+    this._repository,
+    this._profileRepository,
+  ) : super(const ProfileStatisticsState());
 
   /// Loads the initial statistics payload.
   Future<void> loadInitial() async {
@@ -32,11 +37,18 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
 
     final volumeFuture = _repository.getVolume();
     final exercisesFuture = _repository.getExercises();
+    final historyFuture = _profileRepository.getStatsHistorySnapshot();
 
     final volumeResult = await volumeFuture;
     final exercisesResult = await exercisesFuture;
+    final historyResult = await historyFuture;
 
     if (isClosed) return;
+
+    final historySnapshot = switch (historyResult) {
+      Success(:final data) => data,
+      Failure() => state.historySnapshot,
+    };
 
     switch (volumeResult) {
       case Success(data: final volumeData):
@@ -51,6 +63,7 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
             selectedExerciseId: volumeData.exerciseId,
             volumeData: volumeData,
             exerciseOptions: exerciseOptions,
+            historySnapshot: historySnapshot,
             failure: null,
           ),
         );
@@ -58,17 +71,11 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         emit(
           state.copyWith(
             isLoading: false,
+            historySnapshot: historySnapshot,
             failure: error,
           ),
         );
     }
-  }
-
-  /// Stores the latest history snapshot provided by the profile bootstrap flow.
-  void setHistorySnapshot(ProfileStatsHistorySnapshot historySnapshot) {
-    if (isClosed || state.historySnapshot == historySnapshot) return;
-
-    emit(state.copyWith(historySnapshot: historySnapshot));
   }
 
   /// Updates the selected history tab.
