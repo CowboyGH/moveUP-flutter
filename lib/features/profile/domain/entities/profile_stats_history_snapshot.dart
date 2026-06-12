@@ -2,9 +2,6 @@ import 'package:equatable/equatable.dart';
 
 /// Focused snapshot used by the profile statistics history dialog.
 final class ProfileStatsHistorySnapshot extends Equatable {
-  /// Currently active subscription.
-  final ProfileActiveSubscriptionSnapshot? activeSubscription;
-
   /// Latest completed workout.
   final ProfileLatestWorkoutSnapshot? latestWorkout;
 
@@ -13,13 +10,12 @@ final class ProfileStatsHistorySnapshot extends Equatable {
 
   /// Creates an instance of [ProfileStatsHistorySnapshot].
   const ProfileStatsHistorySnapshot({
-    required this.activeSubscription,
     required this.latestWorkout,
     required this.latestTest,
   });
 
   @override
-  List<Object?> get props => [activeSubscription, latestWorkout, latestTest];
+  List<Object?> get props => [latestWorkout, latestTest];
 }
 
 /// Active subscription content used in the history dialog.

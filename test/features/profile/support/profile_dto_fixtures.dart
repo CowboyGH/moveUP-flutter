@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:moveup_flutter/features/profile/data/dto/active_profile_subscription_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_history_response_dto.dart';
+import 'package:moveup_flutter/features/profile/data/dto/focused/profile_phase_response_dto.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_test_history_item_dto.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
 import 'package:moveup_flutter/features/profile/data/dto/profile_user_data_dto.dart';
@@ -97,6 +99,22 @@ ProfilePhaseDto createProfilePhaseDto({
 }) => ProfilePhaseDto(
   hasProgress: hasProgress,
   currentPhase: currentPhase ?? createProfileCurrentPhaseDto(),
+);
+
+/// Test fixture for [ProfilePhaseResponseDto].
+ProfilePhaseResponseDto createProfilePhaseResponseDto({
+  ProfilePhaseDto? phase,
+}) => ProfilePhaseResponseDto(phase: phase ?? createProfilePhaseDto());
+
+/// Test fixture for [ProfileHistoryResponseDto].
+ProfileHistoryResponseDto createProfileHistoryResponseDto({
+  List<ProfileWorkoutHistoryItemDto>? workouts,
+  List<ProfileTestHistoryItemDto>? tests,
+}) => ProfileHistoryResponseDto(
+  data: ProfileHistoryDataDto(
+    workouts: workouts ?? [createProfileWorkoutHistoryItemDto()],
+    tests: tests ?? [createProfileTestHistoryItemDto()],
+  ),
 );
 
 /// Test fixture for [ProfileCurrentPhaseDto].
@@ -203,19 +221,9 @@ ProfileTestHistoryItemDto createProfileTestHistoryItemDto({
 
 /// Test fixture for [ProfileStatsHistorySnapshot].
 ProfileStatsHistorySnapshot createProfileStatsHistorySnapshot({
-  ProfileActiveSubscriptionSnapshot? activeSubscription,
   ProfileLatestWorkoutSnapshot? latestWorkout,
   ProfileLatestTestSnapshot? latestTest,
 }) => ProfileStatsHistorySnapshot(
-  activeSubscription:
-      activeSubscription ??
-      const ProfileActiveSubscriptionSnapshot(
-        id: testProfileSubscriptionId,
-        name: testProfileSubscriptionName,
-        price: testProfileSubscriptionPrice,
-        startDate: testProfileSubscriptionStartDate,
-        endDate: testProfileSubscriptionEndDate,
-      ),
   latestWorkout:
       latestWorkout ??
       const ProfileLatestWorkoutSnapshot(

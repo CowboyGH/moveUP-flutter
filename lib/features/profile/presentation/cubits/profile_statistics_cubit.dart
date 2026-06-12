@@ -5,7 +5,6 @@ import '../../../../../core/failures/feature/profile/profile_failure.dart';
 import '../../../../../core/result/result.dart';
 import '../../domain/entities/profile_statistics/frequency_period.dart';
 import '../../domain/entities/profile_statistics/frequency_statistics_data.dart';
-import '../../domain/entities/profile_statistics/profile_current_phase_summary.dart';
 import '../../domain/entities/profile_statistics/profile_exercise_option.dart';
 import '../../domain/entities/profile_statistics/profile_history_tab.dart';
 import '../../domain/entities/profile_statistics/profile_statistics_mode.dart';
@@ -13,6 +12,7 @@ import '../../domain/entities/profile_statistics/profile_workout_option.dart';
 import '../../domain/entities/profile_statistics/trend_statistics_data.dart';
 import '../../domain/entities/profile_statistics/volume_statistics_data.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
+import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
 
 part 'profile_statistics_cubit.freezed.dart';
@@ -21,40 +21,33 @@ part 'profile_statistics_state.dart';
 /// Cubit that manages the profile statistics state flow.
 final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
   final ProfileStatisticsRepository _repository;
+  final ProfileRepository _profileRepository;
 
   /// Creates an instance of [ProfileStatisticsCubit].
-  ProfileStatisticsCubit(this._repository) : super(const ProfileStatisticsState());
+  ProfileStatisticsCubit(
+    this._repository,
+    this._profileRepository,
+  ) : super(const ProfileStatisticsState());
 
   /// Loads the initial statistics payload.
   Future<void> loadInitial() async {
     if (state.isLoading) return;
 
-    emit(
-      state.copyWith(
-        isLoading: true,
-        isLoadingCurrentPhaseSummary: true,
-        failure: null,
-        currentPhaseSummaryFailure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, failure: null));
 
     final volumeFuture = _repository.getVolume();
     final exercisesFuture = _repository.getExercises();
-    final currentPhaseSummaryFuture = _repository.getCurrentPhaseSummary();
+    final historyFuture = _profileRepository.getStatsHistorySnapshot();
 
     final volumeResult = await volumeFuture;
     final exercisesResult = await exercisesFuture;
-    final currentPhaseSummaryResult = await currentPhaseSummaryFuture;
+    final historyResult = await historyFuture;
 
     if (isClosed) return;
 
-    final currentPhaseSummary = switch (currentPhaseSummaryResult) {
-      Success(data: final summary) => summary,
-      Failure() => state.currentPhaseSummary,
-    };
-    final currentPhaseSummaryFailure = switch (currentPhaseSummaryResult) {
-      Success() => null,
-      Failure(:final error) => error,
+    final historySnapshot = switch (historyResult) {
+      Success(:final data) => data,
+      Failure() => state.historySnapshot,
     };
 
     switch (volumeResult) {
@@ -66,13 +59,11 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         emit(
           state.copyWith(
             isLoading: false,
-            isLoadingCurrentPhaseSummary: false,
             mode: ProfileStatisticsMode.volume,
             selectedExerciseId: volumeData.exerciseId,
-            currentPhaseSummary: currentPhaseSummary,
             volumeData: volumeData,
             exerciseOptions: exerciseOptions,
-            currentPhaseSummaryFailure: currentPhaseSummaryFailure,
+            historySnapshot: historySnapshot,
             failure: null,
           ),
         );
@@ -80,20 +71,11 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         emit(
           state.copyWith(
             isLoading: false,
-            isLoadingCurrentPhaseSummary: false,
-            currentPhaseSummary: currentPhaseSummary,
-            currentPhaseSummaryFailure: currentPhaseSummaryFailure,
+            historySnapshot: historySnapshot,
             failure: error,
           ),
         );
     }
-  }
-
-  /// Stores the latest history snapshot provided by the profile bootstrap flow.
-  void setHistorySnapshot(ProfileStatsHistorySnapshot historySnapshot) {
-    if (isClosed || state.historySnapshot == historySnapshot) return;
-
-    emit(state.copyWith(historySnapshot: historySnapshot));
   }
 
   /// Updates the selected history tab.
@@ -227,39 +209,6 @@ final class ProfileStatisticsCubit extends Cubit<ProfileStatisticsState> {
         await _loadTrend(
           workoutId: state.selectedWorkoutId,
           loadWorkouts: state.workoutOptions.isEmpty,
-        );
-    }
-  }
-
-  /// Reloads only the current phase summary data used by the profile phase section.
-  Future<void> reloadCurrentPhaseSummary() async {
-    if (state.isLoadingCurrentPhaseSummary) return;
-
-    emit(
-      state.copyWith(
-        isLoadingCurrentPhaseSummary: true,
-        currentPhaseSummaryFailure: null,
-      ),
-    );
-
-    final result = await _repository.getCurrentPhaseSummary();
-    if (isClosed) return;
-
-    switch (result) {
-      case Success(data: final summary):
-        emit(
-          state.copyWith(
-            isLoadingCurrentPhaseSummary: false,
-            currentPhaseSummary: summary,
-            currentPhaseSummaryFailure: null,
-          ),
-        );
-      case Failure(:final error):
-        emit(
-          state.copyWith(
-            isLoadingCurrentPhaseSummary: false,
-            currentPhaseSummaryFailure: error,
-          ),
         );
     }
   }

@@ -14,9 +14,6 @@ import '../../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../../uikit/themes/text/app_text_theme.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../auth/presentation/cubits/auth_session_cubit.dart';
-import '../cubits/profile_parameters_cubit.dart';
-import '../cubits/profile_refresh_cubit.dart';
-import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
 import '../widgets/change_password_dialog.dart';
 import '../widgets/current_phase_section_widget.dart';
@@ -74,83 +71,56 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<ProfileRefreshCubit, ProfileRefreshState>(
-            listenWhen: (previous, current) => previous.shouldRefresh != current.shouldRefresh,
-            listener: (context, state) {
-              if (!state.shouldRefresh) return;
-              context.read<ProfileRefreshCubit>().consumeRefreshRequest();
-              unawaited(context.read<ProfileUserCubit>().refresh());
-            },
-          ),
-          BlocListener<ProfileUserCubit, ProfileUserState>(
-            listenWhen: (previous, current) =>
-                previous.historySnapshot != current.historySnapshot ||
-                previous.parametersSnapshot != current.parametersSnapshot,
-            listener: (context, state) {
-              final historySnapshot = state.historySnapshot;
-              if (historySnapshot != null) {
-                context.read<ProfileStatisticsCubit>().setHistorySnapshot(historySnapshot);
-              }
-
-              context.read<ProfileParametersCubit>().setBootstrapSnapshot(state.parametersSnapshot);
-            },
-          ),
-        ],
-        child: BlocBuilder<ProfileUserCubit, ProfileUserState>(
-          builder: (context, state) {
-            final user = state.user;
-            if (user == null) {
-              return _ProfileUserFallbackState(
-                isLoading: state.isLoading,
-                onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
-              );
-            }
-            return SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    AppStrings.profileGreeting(user.name),
-                    style: textTheme.bodyMedium.copyWith(
-                      fontSize: 18,
-                      height: 27 / 18,
-                      fontWeight: FontWeight.w500,
-                      color: colorTheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  UserSectionWidget(
-                    user: user,
-                    onEditPressed: () => _openEditProfileDialog(context, user),
-                    onChangePasswordPressed: () => _openChangePasswordDialog(context),
-                  ),
-                  const SizedBox(height: 36),
-                  const StatsSectionWidget(),
-                  const SizedBox(height: 20),
-                  SecondaryButton(
-                    onPressed: () => _openHistoryDialog(context),
-                    child: const Text(AppStrings.profileStatsHistoryButton),
-                  ),
-                  const SizedBox(height: 36),
-                  ProfileSubscriptionSectionWidget(
-                    activeSubscription: state.historySnapshot?.activeSubscription,
-                  ),
-                  const SizedBox(height: 36),
-                  const ProfileCardsSectionWidget(),
-                  const SizedBox(height: 36),
-                  const CurrentPhaseSectionWidget(),
-                  const SizedBox(height: 36),
-                  const ProfileParametersSectionWidget(),
-                  const SizedBox(height: 36),
-                  const ProfileBottomSectionWidget(),
-                ],
-              ),
+      body: BlocBuilder<ProfileUserCubit, ProfileUserState>(
+        builder: (context, state) {
+          final user = state.user;
+          if (user == null) {
+            return _ProfileUserFallbackState(
+              isLoading: state.isLoading,
+              onRetryPressed: () => context.read<ProfileUserCubit>().refresh(),
             );
-          },
-        ),
+          }
+          return SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 28, 24, 132),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  AppStrings.profileGreeting(user.name),
+                  style: textTheme.bodyMedium.copyWith(
+                    fontSize: 18,
+                    height: 27 / 18,
+                    fontWeight: FontWeight.w500,
+                    color: colorTheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                UserSectionWidget(
+                  user: user,
+                  onEditPressed: () => _openEditProfileDialog(context, user),
+                  onChangePasswordPressed: () => _openChangePasswordDialog(context),
+                ),
+                const SizedBox(height: 36),
+                const StatsSectionWidget(),
+                const SizedBox(height: 20),
+                SecondaryButton(
+                  onPressed: () => _openHistoryDialog(context),
+                  child: const Text(AppStrings.profileStatsHistoryButton),
+                ),
+                const SizedBox(height: 36),
+                const ProfileSubscriptionSectionWidget(),
+                const SizedBox(height: 36),
+                const ProfileCardsSectionWidget(),
+                const SizedBox(height: 36),
+                const CurrentPhaseSectionWidget(),
+                const SizedBox(height: 36),
+                const ProfileParametersSectionWidget(),
+                const SizedBox(height: 36),
+                const ProfileBottomSectionWidget(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

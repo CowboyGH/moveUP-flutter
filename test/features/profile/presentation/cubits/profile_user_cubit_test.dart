@@ -5,10 +5,6 @@ import 'package:mockito/mockito.dart';
 import 'package:moveup_flutter/core/failures/feature/profile/profile_failure.dart';
 import 'package:moveup_flutter/core/result/result.dart';
 import 'package:moveup_flutter/features/auth/domain/entities/user.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_gender.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_parameters/profile_parameters_snapshot.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_phase_snapshot.dart';
-import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_user_cubit.dart';
 
@@ -37,15 +33,6 @@ void main() {
     repository = MockProfileRepository();
     cubit = ProfileUserCubit(repository, seedUser: seedUser);
     provideDummy<Result<User, ProfileFailure>>(const Success(seedUser));
-    provideDummy<Result<ProfileStatsHistorySnapshot, ProfileFailure>>(
-      Success(createProfileStatsHistorySnapshot()),
-    );
-    provideDummy<Result<ProfilePhaseSnapshot, ProfileFailure>>(
-      Success(createProfilePhaseSnapshot()),
-    );
-    provideDummy<Result<ProfileParametersSnapshot?, ProfileFailure>>(
-      Success(createProfileParametersSnapshot()),
-    );
   });
 
   group('ProfileUserCubit', () {
@@ -53,15 +40,6 @@ void main() {
       'emits loading and refreshed user when refresh succeeds',
       setUp: () {
         when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
-        when(repository.getStatsHistorySnapshot()).thenAnswer(
-          (_) async => Success(createProfileStatsHistorySnapshot()),
-        );
-        when(repository.getPhaseSnapshot()).thenAnswer(
-          (_) async => Success(createProfilePhaseSnapshot()),
-        );
-        when(repository.getParametersSnapshot()).thenAnswer(
-          (_) async => Success(createProfileParametersSnapshot()),
-        );
       },
       build: () => cubit,
       act: (cubit) => cubit.refresh(),
@@ -72,45 +50,10 @@ void main() {
         ),
         ProfileUserState(
           user: updatedUser,
-          historySnapshot: ProfileStatsHistorySnapshot(
-            activeSubscription: ProfileActiveSubscriptionSnapshot(
-              id: testProfileSubscriptionId,
-              name: testProfileSubscriptionName,
-              price: testProfileSubscriptionPrice,
-              startDate: testProfileSubscriptionStartDate,
-              endDate: testProfileSubscriptionEndDate,
-            ),
-            latestWorkout: ProfileLatestWorkoutSnapshot(
-              id: testProfileWorkoutHistoryId,
-              title: testProfileWorkoutTitle,
-              completedAt: testProfileWorkoutCompletedAt,
-            ),
-            latestTest: ProfileLatestTestSnapshot(
-              attemptId: testProfileTestAttemptId,
-              title: testProfileTestTitle,
-              completedAt: testProfileTestCompletedAt,
-            ),
-          ),
-          phaseSnapshot: ProfilePhaseSnapshot(
-            hasProgress: testProfileHasProgress,
-            currentPhaseName: testProfilePhaseName,
-          ),
-          parametersSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersGoal,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAge,
-            weight: testProfileParametersWeight,
-            height: testProfileParametersHeight,
-            equipment: testProfileParametersEquipment,
-            level: testProfileParametersLevel,
-          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
-        verify(repository.getStatsHistorySnapshot()).called(1);
-        verify(repository.getPhaseSnapshot()).called(1);
-        verify(repository.getParametersSnapshot()).called(1);
       },
     );
 
@@ -118,15 +61,6 @@ void main() {
       'emits loading only once when refresh is called twice in progress',
       setUp: () {
         when(repository.getUser()).thenAnswer((_) async => const Success(updatedUser));
-        when(repository.getStatsHistorySnapshot()).thenAnswer(
-          (_) async => Success(createProfileStatsHistorySnapshot()),
-        );
-        when(repository.getPhaseSnapshot()).thenAnswer(
-          (_) async => Success(createProfilePhaseSnapshot()),
-        );
-        when(repository.getParametersSnapshot()).thenAnswer(
-          (_) async => Success(createProfileParametersSnapshot()),
-        );
       },
       build: () => cubit,
       act: (cubit) {
@@ -140,45 +74,10 @@ void main() {
         ),
         ProfileUserState(
           user: updatedUser,
-          historySnapshot: ProfileStatsHistorySnapshot(
-            activeSubscription: ProfileActiveSubscriptionSnapshot(
-              id: testProfileSubscriptionId,
-              name: testProfileSubscriptionName,
-              price: testProfileSubscriptionPrice,
-              startDate: testProfileSubscriptionStartDate,
-              endDate: testProfileSubscriptionEndDate,
-            ),
-            latestWorkout: ProfileLatestWorkoutSnapshot(
-              id: testProfileWorkoutHistoryId,
-              title: testProfileWorkoutTitle,
-              completedAt: testProfileWorkoutCompletedAt,
-            ),
-            latestTest: ProfileLatestTestSnapshot(
-              attemptId: testProfileTestAttemptId,
-              title: testProfileTestTitle,
-              completedAt: testProfileTestCompletedAt,
-            ),
-          ),
-          phaseSnapshot: ProfilePhaseSnapshot(
-            hasProgress: testProfileHasProgress,
-            currentPhaseName: testProfilePhaseName,
-          ),
-          parametersSnapshot: ProfileParametersSnapshot(
-            goal: testProfileParametersGoal,
-            gender: ProfileParametersGender.female,
-            age: testProfileParametersAge,
-            weight: testProfileParametersWeight,
-            height: testProfileParametersHeight,
-            equipment: testProfileParametersEquipment,
-            level: testProfileParametersLevel,
-          ),
         ),
       ],
       verify: (_) {
         verify(repository.getUser()).called(1);
-        verify(repository.getStatsHistorySnapshot()).called(1);
-        verify(repository.getPhaseSnapshot()).called(1);
-        verify(repository.getParametersSnapshot()).called(1);
       },
     );
 

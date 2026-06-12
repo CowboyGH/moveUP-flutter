@@ -13,21 +13,28 @@ import 'package:moveup_flutter/features/profile/domain/entities/profile_statisti
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/profile_workout_option.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/trend_statistics_data.dart';
 import 'package:moveup_flutter/features/profile/domain/entities/profile_statistics/volume_statistics_data.dart';
+import 'package:moveup_flutter/features/profile/domain/entities/profile_stats_history_snapshot.dart';
+import 'package:moveup_flutter/features/profile/domain/repositories/profile_repository.dart';
 import 'package:moveup_flutter/features/profile/domain/repositories/profile_statistics_repository.dart';
 import 'package:moveup_flutter/features/profile/presentation/cubits/profile_statistics_cubit.dart';
 
 import '../../support/profile_statistics_dto_fixtures.dart';
 import 'profile_statistics_cubit_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<ProfileStatisticsRepository>()])
+@GenerateNiceMocks([
+  MockSpec<ProfileStatisticsRepository>(),
+  MockSpec<ProfileRepository>(),
+])
 void main() {
   late MockProfileStatisticsRepository repository;
+  late MockProfileRepository profileRepository;
   late ProfileStatisticsCubit cubit;
   const failure = ProfileRequestFailure('error_message');
 
   setUp(() {
     repository = MockProfileStatisticsRepository();
-    cubit = ProfileStatisticsCubit(repository);
+    profileRepository = MockProfileRepository();
+    cubit = ProfileStatisticsCubit(repository, profileRepository);
     provideDummy<Result<VolumeStatisticsData, ProfileFailure>>(
       const Success(testProfileStatisticsVolumeData),
     );
@@ -46,6 +53,9 @@ void main() {
     provideDummy<Result<List<ProfileWorkoutOption>, ProfileFailure>>(
       const Success(testProfileStatisticsWorkouts),
     );
+    provideDummy<Result<ProfileStatsHistorySnapshot, ProfileFailure>>(
+      const Success(testProfileStatisticsHistorySnapshot),
+    );
   });
 
   group('ProfileStatisticsCubit', () {
@@ -55,31 +65,29 @@ void main() {
         when(repository.getVolume()).thenAnswer(
           (_) async => const Success(testProfileStatisticsVolumeData),
         );
-        when(repository.getCurrentPhaseSummary()).thenAnswer(
-          (_) async => const Success(testProfileCurrentPhaseSummary),
-        );
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
+        );
+        when(profileRepository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsHistorySnapshot),
         );
       },
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
       expect: () => const [
-        ProfileStatisticsState(
-          isLoading: true,
-          isLoadingCurrentPhaseSummary: true,
-        ),
+        ProfileStatisticsState(isLoading: true),
         ProfileStatisticsState(
           selectedExerciseId: 17,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
           volumeData: testProfileStatisticsVolumeData,
           exerciseOptions: testProfileStatisticsExercises,
+          historySnapshot: testProfileStatisticsHistorySnapshot,
         ),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
-        verify(repository.getCurrentPhaseSummary()).called(1);
         verify(repository.getExercises()).called(1);
+        verify(profileRepository.getStatsHistorySnapshot()).called(1);
+        verifyNever(repository.getCurrentPhaseSummary());
       },
     );
 
@@ -87,103 +95,28 @@ void main() {
       'stores failure when initial volume load fails',
       setUp: () {
         when(repository.getVolume()).thenAnswer((_) async => const Failure(failure));
-        when(repository.getCurrentPhaseSummary()).thenAnswer(
-          (_) async => const Success(testProfileCurrentPhaseSummary),
-        );
         when(repository.getExercises()).thenAnswer(
           (_) async => const Success(testProfileStatisticsExercises),
+        );
+        when(profileRepository.getStatsHistorySnapshot()).thenAnswer(
+          (_) async => const Success(testProfileStatisticsHistorySnapshot),
         );
       },
       build: () => cubit,
       act: (cubit) => cubit.loadInitial(),
       expect: () => const [
+        ProfileStatisticsState(isLoading: true),
         ProfileStatisticsState(
-          isLoading: true,
-          isLoadingCurrentPhaseSummary: true,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
+          historySnapshot: testProfileStatisticsHistorySnapshot,
           failure: failure,
         ),
       ],
       verify: (_) {
         verify(repository.getVolume()).called(1);
-        verify(repository.getCurrentPhaseSummary()).called(1);
         verify(repository.getExercises()).called(1);
+        verify(profileRepository.getStatsHistorySnapshot()).called(1);
+        verifyNever(repository.getCurrentPhaseSummary());
       },
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'reloads current phase summary without affecting statistics mode payload',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Success(testProfileCurrentPhaseSummary)),
-      build: () => cubit,
-      seed: () => const ProfileStatisticsState(
-        selectedExerciseId: 17,
-        volumeData: testProfileStatisticsVolumeData,
-        exerciseOptions: testProfileStatisticsExercises,
-      ),
-      act: (cubit) => cubit.reloadCurrentPhaseSummary(),
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-          selectedExerciseId: 17,
-          volumeData: testProfileStatisticsVolumeData,
-          exerciseOptions: testProfileStatisticsExercises,
-        ),
-        ProfileStatisticsState(
-          selectedExerciseId: 17,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-          volumeData: testProfileStatisticsVolumeData,
-          exerciseOptions: testProfileStatisticsExercises,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'stores failure when reloading current phase summary fails',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Failure(failure)),
-      build: () => cubit,
-      seed: () => const ProfileStatisticsState(
-        currentPhaseSummary: testProfileCurrentPhaseSummary,
-      ),
-      act: (cubit) => cubit.reloadCurrentPhaseSummary(),
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-          currentPhaseSummaryFailure: failure,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
-    );
-
-    blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'reloadCurrentPhaseSummary ignores repeated calls while request is in progress',
-      setUp: () => when(
-        repository.getCurrentPhaseSummary(),
-      ).thenAnswer((_) async => const Success(testProfileCurrentPhaseSummary)),
-      build: () => cubit,
-      act: (cubit) {
-        cubit.reloadCurrentPhaseSummary();
-        cubit.reloadCurrentPhaseSummary();
-      },
-      expect: () => const [
-        ProfileStatisticsState(
-          isLoadingCurrentPhaseSummary: true,
-        ),
-        ProfileStatisticsState(
-          currentPhaseSummary: testProfileCurrentPhaseSummary,
-        ),
-      ],
-      verify: (_) => verify(repository.getCurrentPhaseSummary()).called(1),
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
@@ -506,16 +439,13 @@ void main() {
     );
 
     blocTest<ProfileStatisticsCubit, ProfileStatisticsState>(
-      'stores history snapshot and switches history tab',
+      'selectHistoryTab updates the visible tab',
       build: () => cubit,
-      act: (cubit) {
-        cubit.setHistorySnapshot(testProfileStatisticsHistorySnapshot);
-        cubit.selectHistoryTab(ProfileHistoryTab.tests);
-      },
+      seed: () => const ProfileStatisticsState(
+        historySnapshot: testProfileStatisticsHistorySnapshot,
+      ),
+      act: (cubit) => cubit.selectHistoryTab(ProfileHistoryTab.tests),
       expect: () => const [
-        ProfileStatisticsState(
-          historySnapshot: testProfileStatisticsHistorySnapshot,
-        ),
         ProfileStatisticsState(
           selectedHistoryTab: ProfileHistoryTab.tests,
           historySnapshot: testProfileStatisticsHistorySnapshot,

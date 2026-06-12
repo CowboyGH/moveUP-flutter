@@ -20,7 +20,7 @@ import '../../domain/repositories/profile_repository.dart';
 import '../../domain/repositories/profile_statistics_repository.dart';
 import '../cubits/delete_profile_cubit.dart';
 import '../cubits/profile_parameters_cubit.dart';
-import '../cubits/profile_refresh_cubit.dart';
+import '../cubits/profile_phase_cubit.dart';
 import '../cubits/profile_statistics_cubit.dart';
 import '../cubits/profile_subscription_cubit.dart';
 import '../cubits/profile_user_cubit.dart';
@@ -50,7 +50,14 @@ class ProfilePageBuilder extends StatelessWidget {
         BlocProvider(
           create: (_) => ProfileStatisticsCubit(
             di<ProfileStatisticsRepository>(),
+            di<ProfileRepository>(),
           )..loadInitial(),
+        ),
+        BlocProvider(
+          create: (_) => ProfilePhaseCubit(
+            di<ProfileRepository>(),
+            di<ProfileStatisticsRepository>(),
+          )..load(),
         ),
         BlocProvider(
           create: (_) => ProfileParametersCubit(
@@ -59,8 +66,9 @@ class ProfilePageBuilder extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => ProfileSubscriptionCubit(
+            di<ProfileRepository>(),
             di<SubscriptionsRepository>(),
-          ),
+          )..load(),
         ),
         BlocProvider(
           create: (_) => CardsCubit(
@@ -75,9 +83,6 @@ class ProfilePageBuilder extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => DeleteCardCubit(di<CardsRepository>()),
-        ),
-        BlocProvider.value(
-          value: di<ProfileRefreshCubit>(),
         ),
         BlocProvider(
           create: (_) => LogoutCubit(di<AuthRepository>()),

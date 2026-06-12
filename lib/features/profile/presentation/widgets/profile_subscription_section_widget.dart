@@ -17,19 +17,12 @@ import '../../../subscriptions/domain/entities/subscription_catalog_item.dart';
 import '../../../subscriptions/presentation/cubits/cancel_subscription_cubit.dart';
 import '../../../subscriptions/presentation/widgets/subscription_card.dart';
 import '../../domain/entities/profile_stats_history_snapshot.dart';
-import '../cubits/profile_refresh_cubit.dart';
 import '../cubits/profile_subscription_cubit.dart';
 
 /// Subscription section rendered inside `/profile`.
 class ProfileSubscriptionSectionWidget extends StatefulWidget {
-  /// Active subscription snapshot from the canonical `/profile` payload.
-  final ProfileActiveSubscriptionSnapshot? activeSubscription;
-
   /// Creates an instance of [ProfileSubscriptionSectionWidget].
-  const ProfileSubscriptionSectionWidget({
-    required this.activeSubscription,
-    super.key,
-  });
+  const ProfileSubscriptionSectionWidget({super.key});
 
   @override
   State<ProfileSubscriptionSectionWidget> createState() => _ProfileSubscriptionSectionWidgetState();
@@ -37,25 +30,6 @@ class ProfileSubscriptionSectionWidget extends StatefulWidget {
 
 class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSectionWidget> {
   bool _isCancelDialogOpen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _syncActiveSubscription();
-  }
-
-  @override
-  void didUpdateWidget(covariant ProfileSubscriptionSectionWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.activeSubscription == widget.activeSubscription) return;
-    _syncActiveSubscription();
-  }
-
-  void _syncActiveSubscription() {
-    unawaited(
-      context.read<ProfileSubscriptionCubit>().syncActiveSubscription(widget.activeSubscription),
-    );
-  }
 
   void _openCatalog() {
     unawaited(context.push(AppRoutePaths.subscriptionsCatalogPath));
@@ -128,14 +102,12 @@ class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSe
 
   @override
   Widget build(BuildContext context) {
-    final activeSubscription = widget.activeSubscription;
-
     return BlocListener<CancelSubscriptionCubit, CancelSubscriptionState>(
       listener: (context, state) {
         state.whenOrNull(
           succeed: () {
             _closeActiveDialog();
-            context.read<ProfileRefreshCubit>().requestRefresh();
+            unawaited(context.read<ProfileSubscriptionCubit>().load());
           },
           failed: (failure) {
             _closeActiveDialog();
@@ -152,6 +124,7 @@ class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSe
       },
       child: BlocBuilder<ProfileSubscriptionCubit, ProfileSubscriptionState>(
         builder: (context, state) {
+          final activeSubscription = state.activeSubscription;
           if (activeSubscription == null) {
             return _ProfileSubscriptionEmptyState(
               onPressed: _openCatalog,

@@ -10,20 +10,25 @@ import '../../../../../uikit/buttons/button_size.dart';
 import '../../../domain/entities/profile_statistics/profile_history_tab.dart';
 import '../../../domain/entities/profile_stats_history_snapshot.dart';
 import '../../cubits/profile_statistics_cubit.dart';
+import '../../cubits/profile_subscription_cubit.dart';
 import '../profile_dialog_shell.dart';
 
 /// Opens the profile statistics history dialog.
 Future<void> showProfileHistoryDialog(BuildContext context) {
-  final cubit = context.read<ProfileStatisticsCubit>();
-  cubit.selectHistoryTab(ProfileHistoryTab.subscriptions);
+  final statisticsCubit = context.read<ProfileStatisticsCubit>();
+  final subscriptionCubit = context.read<ProfileSubscriptionCubit>();
+  statisticsCubit.selectHistoryTab(ProfileHistoryTab.subscriptions);
 
   return showProfileDialog<void>(
     context,
     insetPadding: const EdgeInsets.symmetric(horizontal: 32.5),
     contentPadding: const EdgeInsets.all(32),
     isBarrierDismissible: true,
-    child: BlocProvider.value(
-      value: cubit,
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: statisticsCubit),
+        BlocProvider.value(value: subscriptionCubit),
+      ],
       child: const ProfileHistoryDialog(),
     ),
   );
@@ -150,38 +155,12 @@ final class _HistoryContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content = switch (selectedTab) {
-      ProfileHistoryTab.subscriptions => _buildSubscriptionContent(),
+      ProfileHistoryTab.subscriptions => const _HistorySubscriptionContent(),
       ProfileHistoryTab.workouts => _buildWorkoutContent(),
       ProfileHistoryTab.tests => _buildTestContent(),
     };
 
     return content;
-  }
-
-  Widget _buildSubscriptionContent() {
-    final subscription = snapshot.activeSubscription;
-    if (subscription == null) {
-      return const _HistoryEmptyState(
-        message: AppStrings.profileStatsHistorySubscriptionEmpty,
-      );
-    }
-
-    return _HistoryValueList(
-      items: [
-        _HistoryValueItem(
-          label: AppStrings.profileStatsHistoryNameLabel,
-          value: subscription.name,
-        ),
-        _HistoryValueItem(
-          label: AppStrings.profileStatsHistoryPriceLabel,
-          value: subscription.price,
-        ),
-        _HistoryValueItem(
-          label: AppStrings.profileStatsHistoryPeriodLabel,
-          value: '${_formatDate(subscription.startDate)}-${_formatDate(subscription.endDate)}',
-        ),
-      ],
-    );
   }
 
   Widget _buildWorkoutContent() {
@@ -225,6 +204,41 @@ final class _HistoryContent extends StatelessWidget {
           value: _formatDate(test.completedAt),
         ),
       ],
+    );
+  }
+}
+
+final class _HistorySubscriptionContent extends StatelessWidget {
+  const _HistorySubscriptionContent();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ProfileSubscriptionCubit, ProfileSubscriptionState>(
+      builder: (context, state) {
+        final subscription = state.activeSubscription;
+        if (subscription == null) {
+          return const _HistoryEmptyState(
+            message: AppStrings.profileStatsHistorySubscriptionEmpty,
+          );
+        }
+
+        return _HistoryValueList(
+          items: [
+            _HistoryValueItem(
+              label: AppStrings.profileStatsHistoryNameLabel,
+              value: subscription.name,
+            ),
+            _HistoryValueItem(
+              label: AppStrings.profileStatsHistoryPriceLabel,
+              value: subscription.price,
+            ),
+            _HistoryValueItem(
+              label: AppStrings.profileStatsHistoryPeriodLabel,
+              value: '${_formatDate(subscription.startDate)}-${_formatDate(subscription.endDate)}',
+            ),
+          ],
+        );
+      },
     );
   }
 }

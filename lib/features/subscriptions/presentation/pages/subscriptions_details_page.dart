@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/di/di.dart';
 import '../../../../core/router/router_paths.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/buttons/main_button.dart';
@@ -14,7 +13,6 @@ import '../../../../uikit/cards/app_card.dart';
 import '../../../../uikit/images/svg_picture_widget.dart';
 import '../../../../uikit/themes/colors/app_color_theme.dart';
 import '../../../../uikit/themes/text/app_text_theme.dart';
-import '../../../profile/presentation/cubits/profile_refresh_cubit.dart';
 import '../../domain/entities/subscription_catalog_item.dart';
 import '../cubits/subscription_details_cubit.dart';
 import '../cubits/subscription_payment_cubit.dart';
@@ -50,7 +48,6 @@ class SubscriptionsDetailsPage extends StatelessWidget {
       paymentCubit: context.read<SubscriptionPaymentCubit>(),
     );
     if (!context.mounted || didPay != true) return;
-    di<ProfileRefreshCubit>().requestRefresh();
     context.go(AppRoutePaths.profilePath);
   }
 

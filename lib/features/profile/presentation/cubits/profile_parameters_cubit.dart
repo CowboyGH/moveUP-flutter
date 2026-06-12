@@ -6,7 +6,6 @@ import '../../../../../core/result/result.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_data.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_gender.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_references.dart';
-import '../../domain/entities/profile_parameters/profile_parameters_snapshot.dart';
 import '../../domain/entities/profile_parameters/profile_parameters_submit_payload.dart';
 import '../../domain/repositories/profile_parameters_repository.dart';
 
@@ -19,18 +18,6 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
 
   /// Creates an instance of [ProfileParametersCubit].
   ProfileParametersCubit(this._repository) : super(const ProfileParametersState());
-
-  /// Stores bootstrap snapshot values from `/profile`.
-  void setBootstrapSnapshot(ProfileParametersSnapshot? snapshot) {
-    if (isClosed || state.bootstrapSnapshot == snapshot) return;
-
-    emit(
-      state.copyWith(
-        bootstrapSnapshot: snapshot,
-        selectedGender: state.selectedGender ?? state.currentParameters?.gender ?? snapshot?.gender,
-      ),
-    );
-  }
 
   /// Loads references and canonical current parameters.
   Future<void> loadInitial() async {
@@ -145,7 +132,6 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
             isSubmitting: false,
             shouldReloadWorkouts: shouldReloadWorkouts,
             currentParameters: data,
-            bootstrapSnapshot: _toSnapshot(data),
             selectedGoalId: data.goalId,
             selectedGender: data.gender,
             selectedEquipmentId: data.equipmentId,
@@ -202,9 +188,6 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
         isLoading: false,
         references: nextReferences,
         currentParameters: nextCurrentParameters,
-        bootstrapSnapshot: nextCurrentParameters == null
-            ? state.bootstrapSnapshot
-            : _toSnapshot(nextCurrentParameters),
         selectedGoalId: nextCurrentParameters?.goalId ?? state.selectedGoalId,
         selectedGender: nextCurrentParameters?.gender ?? state.selectedGender,
         selectedEquipmentId: nextCurrentParameters?.equipmentId ?? state.selectedEquipmentId,
@@ -213,14 +196,4 @@ final class ProfileParametersCubit extends Cubit<ProfileParametersState> {
       ),
     );
   }
-
-  ProfileParametersSnapshot _toSnapshot(ProfileParametersData data) => ProfileParametersSnapshot(
-    goal: data.goalName,
-    gender: data.gender,
-    age: data.age,
-    weight: data.weight,
-    height: data.height,
-    equipment: data.equipmentName,
-    level: data.levelName,
-  );
 }
