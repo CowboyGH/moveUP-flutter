@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +46,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
       paymentCubit: context.read<SubscriptionPaymentCubit>(),
     );
     if (!context.mounted || didPay != true) return;
-    context.go(AppRoutePaths.profilePath);
+    context.pop(true);
   }
 
   @override
