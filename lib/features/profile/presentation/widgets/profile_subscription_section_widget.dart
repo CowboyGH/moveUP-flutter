@@ -31,8 +31,23 @@ class ProfileSubscriptionSectionWidget extends StatefulWidget {
 class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSectionWidget> {
   bool _isCancelDialogOpen = false;
 
-  void _openCatalog() {
-    unawaited(context.push(AppRoutePaths.subscriptionsCatalogPath));
+  Future<void> _openCatalog() async {
+    final didPurchase = await context.push<bool>(AppRoutePaths.subscriptionsCatalogPath);
+    if (!mounted) return;
+    if (didPurchase == true) {
+      unawaited(context.read<ProfileSubscriptionCubit>().load());
+    }
+  }
+
+  Future<void> _openSubscriptionDetails(SubscriptionCatalogItem item) async {
+    final didPurchase = await context.push<bool>(
+      AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
+      extra: item,
+    );
+    if (!mounted) return;
+    if (didPurchase == true) {
+      unawaited(context.read<ProfileSubscriptionCubit>().load());
+    }
   }
 
   void _showCancelDialog() {
@@ -131,14 +146,16 @@ class _ProfileSubscriptionSectionWidgetState extends State<ProfileSubscriptionSe
             );
           }
 
+          final item = state.item;
           return _ProfileSubscriptionActiveState(
             activeSubscription: activeSubscription,
-            item: state.item,
+            item: item,
             isCardLoading: state.isLoading,
             hasCardFailure: state.failure != null,
             onRetryPressed: () => context.read<ProfileSubscriptionCubit>().retry(),
             onRenewPressed: _openCatalog,
             onCancelPressed: _showCancelDialog,
+            onSubscriptionCardPressed: item == null ? null : () => _openSubscriptionDetails(item),
           );
         },
       ),
@@ -154,6 +171,7 @@ final class _ProfileSubscriptionActiveState extends StatelessWidget {
   final VoidCallback onRetryPressed;
   final VoidCallback onRenewPressed;
   final VoidCallback onCancelPressed;
+  final VoidCallback? onSubscriptionCardPressed;
 
   const _ProfileSubscriptionActiveState({
     required this.activeSubscription,
@@ -163,6 +181,7 @@ final class _ProfileSubscriptionActiveState extends StatelessWidget {
     required this.onRetryPressed,
     required this.onRenewPressed,
     required this.onCancelPressed,
+    required this.onSubscriptionCardPressed,
   });
 
   @override
@@ -202,7 +221,7 @@ final class _ProfileSubscriptionActiveState extends StatelessWidget {
         if (item != null)
           SubscriptionCard(
             item: item!,
-            onPressed: () => context.push(AppRoutePaths.subscriptionsDetailsConcretePath(item!.id)),
+            onPressed: onSubscriptionCardPressed,
           )
         else if (isCardLoading)
           const _ProfileSubscriptionCardLoadingState()

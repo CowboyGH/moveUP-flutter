@@ -121,10 +121,14 @@ class SubscriptionsCatalogPage extends StatelessWidget {
           final item = items[index];
           final onPressed = item.id <= 0
               ? null
-              : () => context.push(
-                  AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
-                  extra: item,
-                );
+              : () async {
+                  final didPurchase = await context.push<bool>(
+                    AppRoutePaths.subscriptionsDetailsConcretePath(item.id),
+                    extra: item,
+                  );
+                  if (!context.mounted || didPurchase != true) return;
+                  context.pop(true);
+                };
           return Padding(
             padding: EdgeInsets.only(bottom: index == items.length - 1 ? 0 : 12),
             child: SubscriptionCard(
