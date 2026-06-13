@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/di/di.dart';
 import '../../../../core/router/router_paths.dart';
+import '../../../profile/presentation/cubits/profile_subscription_cubit.dart';
 import '../../../../uikit/buttons/app_back_button.dart';
 import '../../../../uikit/buttons/main_button.dart';
 import '../../../../uikit/cards/app_card.dart';
@@ -48,6 +50,7 @@ class SubscriptionsDetailsPage extends StatelessWidget {
       paymentCubit: context.read<SubscriptionPaymentCubit>(),
     );
     if (!context.mounted || didPay != true) return;
+    unawaited(di<ProfileSubscriptionCubit>().load());
     context.go(AppRoutePaths.profilePath);
   }
 

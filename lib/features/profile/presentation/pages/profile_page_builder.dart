@@ -64,11 +64,8 @@ class ProfilePageBuilder extends StatelessWidget {
             di<ProfileParametersRepository>(),
           )..loadInitial(),
         ),
-        BlocProvider(
-          create: (_) => ProfileSubscriptionCubit(
-            di<ProfileRepository>(),
-            di<SubscriptionsRepository>(),
-          )..load(),
+        BlocProvider.value(
+          value: di<ProfileSubscriptionCubit>()..load(),
         ),
         BlocProvider(
           create: (_) => CardsCubit(

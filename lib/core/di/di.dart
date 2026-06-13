@@ -29,6 +29,7 @@ import '../../features/profile/data/repositories/profile_statistics_repository_i
 import '../../features/profile/domain/repositories/profile_parameters_repository.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
 import '../../features/profile/domain/repositories/profile_statistics_repository.dart';
+import '../../features/profile/presentation/cubits/profile_subscription_cubit.dart';
 import '../../features/subscriptions/data/remote/subscription_payment_api_client.dart';
 import '../../features/subscriptions/data/remote/subscriptions_api_client.dart';
 import '../../features/subscriptions/data/repositories/subscriptions_repository_impl.dart';
@@ -169,6 +170,13 @@ Future<void> setupDI() async {
       di<SubscriptionsApiClient>(),
       di<SubscriptionPaymentApiClient>(),
     ),
+  );
+  di.registerLazySingleton<ProfileSubscriptionCubit>(
+    () => ProfileSubscriptionCubit(
+      di<ProfileRepository>(),
+      di<SubscriptionsRepository>(),
+    ),
+    dispose: (cubit) => cubit.close(),
   );
 
   // Fitness Start
