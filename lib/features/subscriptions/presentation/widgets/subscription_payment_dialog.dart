@@ -62,6 +62,8 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
 
   bool _rememberData = false;
 
+  String get _normalizedCardHolder => _cardHolderController.text.trim().toUpperCase();
+
   @override
   void initState() {
     super.initState();
@@ -115,7 +117,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
         subscriptionId: widget.item.id,
         saveCard: _rememberData,
         cardNumber: _cardNumberController.text.replaceAll(RegExp(r'\D'), ''),
-        cardHolder: _cardHolderController.text.trim(),
+        cardHolder: _normalizedCardHolder,
         expiryMonth: _expiryMonthController.text.trim(),
         expiryYear: _buildBackendExpiryYear(expiryYear),
         cvv: _cvvController.text.trim(),
@@ -176,6 +178,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
                       enabled: !isInProgress,
                       keyboardType: TextInputType.name,
                       textInputAction: TextInputAction.next,
+                      inputFormatters: [const _CardHolderTextInputFormatter()],
                       validator: SubscriptionPaymentValidators.cardHolder,
                     ),
                     const SizedBox(height: 12),
@@ -300,7 +303,7 @@ class _SubscriptionPaymentDialogState extends State<SubscriptionPaymentDialog> {
               right: 0,
               child: _PaymentPreviewCard(
                 previewCardNumber: _previewCardNumberController.text,
-                cardHolder: _cardHolderController.text,
+                cardHolder: _normalizedCardHolder,
                 expiryMonth: _expiryMonthController.text.trim(),
                 expiryYear: _expiryYearController.text.trim(),
               ),
@@ -537,6 +540,18 @@ final class _CardNumberTextInputFormatter extends TextInputFormatter {
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
+  }
+}
+
+final class _CardHolderTextInputFormatter extends TextInputFormatter {
+  const _CardHolderTextInputFormatter();
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    return newValue.copyWith(text: newValue.text.toUpperCase());
   }
 }
 
