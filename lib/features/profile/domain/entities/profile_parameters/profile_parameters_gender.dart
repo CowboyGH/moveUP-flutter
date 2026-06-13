@@ -4,8 +4,7 @@ enum ProfileParametersGender {
   male('male'),
 
   /// Female gender.
-  female('female')
-  ;
+  female('female');
 
   /// Backend request value.
   final String requestValue;

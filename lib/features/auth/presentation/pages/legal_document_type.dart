@@ -19,8 +19,7 @@ enum LegalDocumentType {
   publicOffer(
     title: AppStrings.legalPublicOfferTitle,
     assetPath: AppAssets.legalPublicOffer,
-  )
-  ;
+  );
 
   /// Visible title of the document page.
   final String title;

@@ -13,8 +13,7 @@ enum FrequencyPeriod {
   sixMonths('6months'),
 
   /// One year period.
-  year('year')
-  ;
+  year('year');
 
   /// Request value expected by the backend.
   final String requestValue;
