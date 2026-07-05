@@ -127,6 +127,8 @@ Future<void> setupDI() async {
       di<TokenStorage>(),
     ),
   );
+
+  // Profile
   di.registerLazySingleton<ProfileApiClient>(() => ProfileApiClient(di<Dio>()));
   di.registerLazySingleton<ProfileParametersApiClient>(
     () => ProfileParametersApiClient(di<Dio>()),
@@ -152,6 +154,8 @@ Future<void> setupDI() async {
       di<ProfileParametersApiClient>(),
     ),
   );
+
+  // Subscriptions & Cards
   di.registerLazySingleton<SubscriptionsApiClient>(() => SubscriptionsApiClient(di<Dio>()));
   di.registerLazySingleton<CardsApiClient>(() => CardsApiClient(di<Dio>()));
   di.registerLazySingleton<SubscriptionPaymentApiClient>(
